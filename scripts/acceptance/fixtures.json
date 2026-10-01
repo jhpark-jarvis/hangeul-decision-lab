@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "origin": "Synthetic inputs based on user-provided development catalog and rules; no real-game or personal data",
+  "fixtures": [
+    {
+      "id": "ordinary-line-item",
+      "board": [
+        [true, true, true, true, true, true, true, true, true, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false]
+      ],
+      "slotIds": ["DOT", "DOT", "DOT"],
+      "abilities": {
+        "reroll": 0,
+        "singleCell": 0
+      },
+      "items": [
+        {
+          "row": 0,
+          "col": 0,
+          "type": "single-cell"
+        }
+      ],
+      "journey": "ordinary"
+    },
+    {
+      "id": "blocked-reroll",
+      "board": [
+        [false, true, true, true, true, true, true, true, true, true],
+        [true, true, true, false, true, true, true, true, true, true],
+        [true, true, true, true, true, true, false, true, true, true],
+        [true, true, true, true, true, true, true, true, true, false],
+        [true, true, false, true, true, true, true, true, true, true],
+        [true, true, true, true, true, false, true, true, true, true],
+        [true, true, true, true, true, true, true, true, false, true],
+        [true, false, true, true, true, true, true, true, true, true],
+        [true, true, true, true, false, true, true, true, true, true],
+        [true, true, true, true, true, true, true, false, true, true],
+        [false, true, true, true, true, true, true, true, true, true],
+        [true, true, true, false, true, true, true, true, true, true],
+        [true, true, true, true, true, true, false, true, true, true],
+        [true, true, true, true, true, true, true, true, true, false],
+        [true, true, false, true, true, true, true, true, true, true],
+        [true, true, true, true, true, false, true, true, true, true]
+      ],
+      "slotIds": ["", "", "MIEUM"],
+      "abilities": {
+        "reroll": 1,
+        "singleCell": 0
+      },
+      "items": [],
+      "journey": "reroll"
+    },
+    {
+      "id": "single-cell-item-rescue",
+      "board": [
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [true, true, false, false, false, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, false],
+        [true, true, false, false, false, true, true, true, true, true],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false]
+      ],
+      "slotIds": ["", "", "MIEUM"],
+      "abilities": {
+        "reroll": 0,
+        "singleCell": 1
+      },
+      "items": [
+        {
+          "row": 4,
+          "col": 0,
+          "type": "reroll"
+        }
+      ],
+      "journey": "single"
+    },
+    {
+      "id": "full-gameover-recovery",
+      "board": [
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, true]
+      ],
+      "slotIds": ["", "", "MIEUM"],
+      "abilities": {
+        "reroll": 0,
+        "singleCell": 0
+      },
+      "items": [],
+      "journey": "gameover"
+    }
+  ]
+}
