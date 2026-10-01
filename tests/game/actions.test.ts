@@ -63,7 +63,6 @@ describe("central piece and reward transition", () => {
         { row: 5, col: 4, type: "reroll" },
         { row: 3, col: 8, type: "reroll" },
         { row: 3, col: 1, type: "single-cell" },
-        { row: 6, col: 3, type: "single-cell" },
       ],
     });
     for (const row of [3, 4, 5]) {
@@ -82,10 +81,7 @@ describe("central piece and reward transition", () => {
       input.hiddenItems[1],
     ]);
     expect(output.info.retainedItems).toEqual([input.hiddenItems[0]]);
-    expect(output.state.hiddenItems).toEqual([
-      input.hiddenItems[0],
-      input.hiddenItems[3],
-    ]);
+    expect(output.state.hiddenItems).toEqual([input.hiddenItems[0]]);
     expect(output.state.abilities).toEqual({ reroll: 5, singleCell: 2 });
     expect(output.state.board.flat().filter(Boolean)).toHaveLength(1);
     expect(output.state.board[6][3]).toBe(true);

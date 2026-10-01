@@ -123,7 +123,8 @@ export function BoardEditor({
       </div>
       <p className="help mt-4">
         주황: 점유 · 청록 +: 첫 추천 · 보라 테두리: 삭제 예상 행<br />
-        R: hidden reroll · S: hidden single-cell (가로줄 삭제 때 획득)
+        R: hidden reroll · S: hidden single-cell (가로줄 삭제 때 획득) · 보드
+        아이콘 최대 3개
       </p>
       <p id="keyboard-help" className="help mt-2">
         Tab으로 이동하고 Enter / Space로 입력하세요.

@@ -35,6 +35,36 @@ function finish(session: PuzzleSession) {
 }
 
 describe("input and session boundary", () => {
+  it("rejects a fourth icon without overwriting any existing one, invalidates analysis, and recovers after removal", () => {
+    let session = createSession(game());
+    for (let col = 0; col < 3; col++)
+      session = editCell(session, 0, col, "reroll");
+    session = analyze(session);
+    expect(session.analysis).not.toBeNull();
+    const failed = editCell(freezeDeep(session), 0, 3, "single-cell");
+    expect(failed.error).toContain("최대 3개");
+    expect(failed.game).toEqual(session.game);
+    expect(failed.analysis).toBeNull();
+    expect(failed.version).toBeGreaterThan(session.version);
+    const replaced = editCell(failed, 0, 1, "single-cell");
+    expect(replaced.error).toBeNull();
+    expect(replaced.game.hiddenItems).toHaveLength(3);
+    expect(replaced.game.hiddenItems.find((item) => item.col === 1)?.type).toBe(
+      "single-cell",
+    );
+    const recovered = editCell(
+      editCell(replaced, 0, 0, "remove-item"),
+      0,
+      3,
+      "single-cell",
+    );
+    expect(recovered.error).toBeNull();
+    expect(recovered.game.hiddenItems).toHaveLength(3);
+    expect(recovered.game.board).toEqual(session.game.board);
+    expect(
+      session.game.hiddenItems.every((item) => item.type === "reroll"),
+    ).toBe(true);
+  });
   it("starts at next-set input and preserves board/abilities when loading exactly three", () => {
     const initial = editCell(createSession(), 0, 0, "filled");
     const loaded = loadNextPieces(initial, ["DOT", "DOT", "MIEUM"]);

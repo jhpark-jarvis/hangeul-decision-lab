@@ -2,6 +2,7 @@ import type { Board, BoardError } from "../board/board";
 import type { Piece, PieceError, Shape } from "../pieces/types";
 
 export const MAX_ABILITY_COUNT = 7;
+export const MAX_HIDDEN_ITEM_COUNT = 3;
 export const PIECES_PER_SET = 3;
 export type PieceIndex = 0 | 1 | 2;
 export type AbilityCounts = { reroll: number; singleCell: number };

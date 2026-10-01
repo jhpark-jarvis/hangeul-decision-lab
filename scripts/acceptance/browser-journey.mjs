@@ -180,6 +180,67 @@ export function createJourney(tab, fixture) {
           true,
         );
         await tab.capture?.("capacity-retained");
+        await button("Hidden: Reroll").click();
+        await cell(15, 0).click();
+        await cell(15, 1).click();
+        await check(
+          "third icon accepted",
+          (await cell(15, 1).getAttribute("aria-label")).includes(
+            "hidden reroll",
+          ),
+          true,
+        );
+        await cell(15, 2).click();
+        await check(
+          "fourth icon rejected",
+          (await cell(15, 2).getAttribute("aria-label")).includes("hidden"),
+          false,
+        );
+        await check(
+          "fourth icon error",
+          (
+            await tab.playwright
+              .getByRole("region", { name: "입력 및 적용 상태", exact: true })
+              .innerText()
+          ).includes("최대 3개"),
+          true,
+        );
+        await check(
+          "existing retained icon preserved on error",
+          (await cell(0, 0).getAttribute("aria-label")).includes(
+            "hidden single-cell",
+          ),
+          true,
+        );
+        await check(
+          "icon error preserves occupancy",
+          await occupied(),
+          "0 / 160",
+        );
+        await tab.capture?.("icon-limit-error");
+        await button("Hidden: Single Cell").click();
+        await cell(15, 0).click();
+        await check(
+          "replace at limit allowed",
+          (await cell(15, 0).getAttribute("aria-label")).includes(
+            "hidden single-cell",
+          ),
+          true,
+        );
+        await button("아이템 지우기").click();
+        await cell(15, 1).click();
+        await button("Hidden: Reroll").click();
+        await cell(15, 2).click();
+        await check(
+          "remove then add recovers",
+          (await cell(15, 2).getAttribute("aria-label")).includes(
+            "hidden reroll",
+          ),
+          true,
+        );
+        await button("아이템 지우기").click();
+        await cell(15, 0).click();
+        await cell(15, 2).click();
         await nextSet();
         for (let index = 0; index < 3; index++)
           await slot(index).selectOption("DOT");

@@ -138,7 +138,7 @@ describe("ability candidates and immutable replay", () => {
           },
         ],
         abilities: { singleCell: 7, reroll: 0 },
-        hiddenItems: Array.from({ length: 16 }, (_, row) => ({
+        hiddenItems: Array.from({ length: 3 }, (_, row) => ({
           row,
           col: 0,
           type: "single-cell" as const,
@@ -149,7 +149,7 @@ describe("ability candidates and immutable replay", () => {
       solveTurn(input, catalog, { ...DEFAULT_SOLVER_CONFIG, maxNodes: 32 }),
     ).result;
     expect(result.search.abilitySearch?.maxActionDepth).toBeGreaterThan(7);
-    expect(result.search.abilitySearch?.maxActionDepth).toBeLessThanOrEqual(24);
+    expect(result.search.abilitySearch?.maxActionDepth).toBeLessThanOrEqual(11);
     expect(result.usedAbilities.singleCell).toBeGreaterThan(7);
     replay(input, result);
     expect(result.finalState.abilities.singleCell).toBeLessThanOrEqual(7);

@@ -4,6 +4,7 @@ import { validateAbilities } from "./abilities";
 import { validateHiddenItems } from "./hidden-items";
 import {
   gameError,
+  MAX_HIDDEN_ITEM_COUNT,
   PIECES_PER_SET,
   type GameResult,
   type GameState,
@@ -68,6 +69,11 @@ export function validateGameState(
   if (!pieces.ok) return pieces;
   const items = validateHiddenItems(source.hiddenItems);
   if (!items.ok) return items;
+  if (items.hiddenItems.length > MAX_HIDDEN_ITEM_COUNT)
+    return gameError(
+      "INVALID_HIDDEN_ITEMS",
+      "보드 아이콘은 최대 3개입니다. 실제로 사라진 아이콘을 먼저 제거하세요.",
+    );
   const abilities = validateAbilities(source.abilities);
   if (!abilities.ok) return abilities;
   let pendingReroll: PieceTarget | null = null;

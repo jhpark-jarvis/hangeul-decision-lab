@@ -18,6 +18,39 @@ import {
 } from "./fixtures";
 
 describe("GameState ingress", () => {
+  it("accepts three detached icons and rejects a fourth at every game ingress", () => {
+    const input = game({
+      hiddenItems: [
+        { row: 0, col: 0, type: "reroll" },
+        { row: 0, col: 1, type: "single-cell" },
+        { row: 15, col: 9, type: "reroll" },
+      ],
+    });
+    const valid = success(validateGameState(freezeDeep(input))).state;
+    valid.hiddenItems[0].row = 2;
+    expect(input.hiddenItems[0].row).toBe(0);
+    const invalid = freezeDeep({
+      ...input,
+      hiddenItems: [
+        ...input.hiddenItems,
+        { row: 1, col: 0, type: "single-cell" },
+      ],
+    });
+    for (const output of [
+      validateGameState(invalid),
+      getAvailableActions(invalid),
+      applyAction(invalid, placement(input.remainingPieces[0], 2, 2)),
+    ]) {
+      expect(output).toMatchObject({
+        ok: false,
+        error: {
+          code: "INVALID_HIDDEN_ITEMS",
+          message: expect.stringContaining("최대 3개"),
+        },
+      });
+    }
+    expect(invalid.hiddenItems).toHaveLength(4);
+  });
   it("accepts duplicate kinds in three distinct stable slots and detaches all fields", () => {
     const input = freezeDeep(
       game({ hiddenItems: [{ row: 4, col: 2, type: "reroll" }] }),
