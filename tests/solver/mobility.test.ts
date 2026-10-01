@@ -159,7 +159,9 @@ describe("catalog-relative mobility", () => {
     },
   ])("matches hand counts on $label", ({ board, playable, placements }) => {
     freezeDeep(board);
-    const catalog = freezeDeep(getInitialCatalog());
+    const catalog = freezeDeep(
+      ["DOT", "LINE_3", "MIEUM", "L_3"].map((id) => piece(id)),
+    );
     expect(calculateMobility(board, catalog)).toEqual({
       ok: true,
       mobility: {
@@ -281,7 +283,9 @@ describe("catalog-relative mobility", () => {
   });
   it("is deterministic, order-independent and detached from frozen input/previous output", () => {
     const board = freezeDeep(occupiedExcept(box));
-    const catalog = freezeDeep(getInitialCatalog());
+    const catalog = freezeDeep(
+      ["DOT", "LINE_3", "MIEUM", "L_3"].map((id) => piece(id)),
+    );
     const first = calculateMobility(board, catalog);
     const second = calculateMobility(board, [...catalog].reverse());
     expect(second).toEqual(first);
@@ -289,7 +293,9 @@ describe("catalog-relative mobility", () => {
     first.mobility.totalPlacements = -1;
     expect(second.mobility.totalPlacements).toBe(32);
     expect(calculateMobility(board, catalog)).toEqual(second);
-    expect(catalog).toEqual(getInitialCatalog());
+    expect(catalog).toEqual(
+      ["DOT", "LINE_3", "MIEUM", "L_3"].map((id) => piece(id)),
+    );
     expect(board).toEqual(occupiedExcept(box));
   });
 });

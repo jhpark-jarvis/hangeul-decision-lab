@@ -140,8 +140,8 @@ export function ResultPanel({
           {evaluation.remainingAbilities.singleCell}
         </p>
         <p className="help">
-          개발 catalog 4종 기준입니다. 실제 전체 이벤트 목록·출현 확률은
-          미검증입니다.
+          제공 이미지의 19종 기준입니다. 출현 확률은 줄 삭제 누적 단계에 따라
+          달라지며, 다음 조각·새 능력 아이콘은 예측하지 않습니다.
         </p>
       </div>
       <details className="mt-4">

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getInitialCatalog } from "../../src/domain/pieces/catalog";
+import reference from "../fixtures/pieces/catalog-v1.json";
 import {
   flipHorizontal,
   getUniqueVariants,
@@ -23,25 +24,29 @@ function rows(input: Shape): string {
 }
 
 describe("piece inputs and canonical catalog", () => {
-  it("contains exactly the four provided shapes and returns detached data", () => {
+  it("matches all nineteen supplied image footprints and returns detached data", () => {
     const catalog = getInitialCatalog();
     expect(
       catalog.map((piece) => [piece.id, piece.name, rows(piece.shape)]),
-    ).toEqual([
-      ["DOT", "1칸", "1"],
-      ["LINE_3", "가로 3칸", "111"],
-      ["MIEUM", "ㅁ", "111/101/111"],
-      ["L_3", "3칸 L", "10/11"],
-    ]);
+    ).toEqual(
+      reference.pieces.map((piece) => [
+        piece.id,
+        piece.name,
+        piece.rows.join("/"),
+      ]),
+    );
+    expect(new Set(catalog.map((piece) => piece.id)).size).toBe(19);
+    const ring = catalog.find((piece) => piece.id === "MIEUM")!;
     catalog[0].id = "changed";
-    catalog[2].shape[1][1] = true;
+    ring.shape[1][1] = true;
     catalog.pop();
     const fresh = getInitialCatalog();
-    expect(fresh).toHaveLength(4);
+    expect(fresh).toHaveLength(19);
     expect(fresh[0].id).toBe("DOT");
-    expect(fresh[2].shape[1][1]).toBe(false);
+    expect(fresh.find((piece) => piece.id === "MIEUM")!.shape[1][1]).toBe(
+      false,
+    );
   });
-
   it.each(
     [
       null,

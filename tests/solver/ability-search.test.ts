@@ -4,7 +4,7 @@ import {
   getAvailableActions,
 } from "../../src/domain/game/actions";
 import { resolveReroll } from "../../src/domain/game/game-state";
-import { getInitialCatalog } from "../../src/domain/pieces/catalog";
+import { getRegressionCatalog } from "../game/fixtures";
 import { getAbilityCandidates } from "../../src/domain/solver/ability-candidates";
 import { evaluateState } from "../../src/domain/solver/evaluator";
 import { solveTurn } from "../../src/domain/solver/solver";
@@ -21,7 +21,7 @@ const exact = {
   maxNodes: 10000,
   useMemoization: false,
 };
-const catalog = getInitialCatalog();
+const catalog = getRegressionCatalog();
 
 function replay(input: ReturnType<typeof game>, candidate: SolverCandidate) {
   let state = input;

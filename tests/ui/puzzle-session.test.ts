@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createEmptyBoard } from "../../src/domain/board/board";
 import { getAvailableActions } from "../../src/domain/game/actions";
-import { getInitialCatalog } from "../../src/domain/pieces/catalog";
+import { getRegressionCatalog } from "../game/fixtures";
 import { solveTurn } from "../../src/domain/solver/solver";
 import {
   applyStep,
@@ -23,7 +23,7 @@ function analyze(session: PuzzleSession) {
   return installAnalysis(
     session,
     session.version,
-    solveTurn(session.game, getInitialCatalog()),
+    solveTurn(session.game, getRegressionCatalog()),
     12.5,
   );
 }
@@ -109,7 +109,7 @@ describe("analysis, replay and revision protection", () => {
     const session = createSession(
       game({ remainingPieces: [instance(2, "MIEUM")] }),
     );
-    const result = solveTurn(session.game, getInitialCatalog());
+    const result = solveTurn(session.game, getRegressionCatalog());
     const installed = installAnalysis(session, 0, freezeDeep(result), 1);
     expect(installed.analysis?.plans.length).toBeGreaterThan(1);
     expect(nextPreview(installed).cells).toHaveLength(8);
@@ -143,7 +143,7 @@ describe("analysis, replay and revision protection", () => {
   );
   it("rejects late solver completion, including after an invalid edit", () => {
     const session = createSession(game());
-    const result = solveTurn(session.game, getInitialCatalog());
+    const result = solveTurn(session.game, getRegressionCatalog());
     for (const edited of [
       editCell(session, 0, 0, "filled"),
       replaceGame(
@@ -176,7 +176,7 @@ describe("analysis, replay and revision protection", () => {
   });
   it("rejects invalid solver actions and final-state mismatch at installation", () => {
     const session = createSession(game());
-    const result = solveTurn(session.game, getInitialCatalog());
+    const result = solveTurn(session.game, getRegressionCatalog());
     if (!result.ok) throw new Error(result.error.message);
     const invalid = structuredClone(result);
     invalid.result.actions[0].type = "reroll";

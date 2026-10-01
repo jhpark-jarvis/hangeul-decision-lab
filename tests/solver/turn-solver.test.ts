@@ -3,7 +3,7 @@ import {
   applyAction,
   getAvailableActions,
 } from "../../src/domain/game/actions";
-import { getInitialCatalog } from "../../src/domain/pieces/catalog";
+import { getRegressionCatalog } from "../game/fixtures";
 import { getValidPlacements } from "../../src/domain/pieces/placement";
 import { evaluateState } from "../../src/domain/solver/evaluator";
 import { solveOrdinaryTurn as solveTurn } from "../../src/domain/solver/solver";
@@ -119,7 +119,9 @@ describe("ordinary turn search and replay", () => {
       success(getValidPlacements(input.board, input.remainingPieces[0].piece))
         .placements,
     ).toHaveLength(0);
-    const result = success(solveTurn(input, getInitialCatalog(), exact)).result;
+    const result = success(
+      solveTurn(input, getRegressionCatalog(), exact),
+    ).result;
     expect(result.actions.map((action) => action.pieceIndex)).toEqual([2, 0]);
     expect(result.evaluation).toMatchObject({
       allCurrentPiecesPlaced: true,
@@ -138,7 +140,7 @@ describe("ordinary turn search and replay", () => {
   });
   it("replays best and every alternative and re-evaluates their cumulative rewards", () => {
     const input = freezeDeep(lineTurn());
-    const catalog = freezeDeep(getInitialCatalog());
+    const catalog = freezeDeep(getRegressionCatalog());
     const result = success(solveTurn(input, catalog, exact)).result;
     expect(result.alternatives).toHaveLength(2);
     for (const candidate of [result, ...result.alternatives]) {

@@ -9,6 +9,9 @@ const inputs = JSON.parse(
   ),
 );
 const buildId = readFileSync(".next/BUILD_ID", "utf8").trim();
+const catalogReference = JSON.parse(
+  readFileSync("tests/fixtures/pieces/catalog-v1.json", "utf8"),
+);
 
 async function measureAnalyze(page) {
   const heapBefore = await page.evaluate(
@@ -119,6 +122,33 @@ for (const fixture of inputs.fixtures) {
     );
     try {
       await page.goto("/");
+      if (fixture.journey === "ordinary") {
+        const catalog = page.getByLabel("이벤트 블록 목록", { exact: true });
+        report.catalogChecks = [];
+        for (const piece of catalogReference.pieces) {
+          const count = await catalog
+            .locator(`[data-piece-id="${piece.id}"] .shape-filled`)
+            .count();
+          expect(count).toBe(piece.cells);
+          for (let slot = 0; slot < 3; slot++) {
+            const select = page.getByRole("combobox", {
+              name: `slot ${slot} 블록`,
+              exact: true,
+            });
+            await select.selectOption(piece.id);
+            await expect(select).toHaveValue(piece.id);
+          }
+          report.catalogChecks.push({
+            id: piece.id,
+            cells: count,
+            slots: 3,
+            result: "PASS",
+          });
+        }
+        expect(await catalog.locator("[data-piece-id]").count()).toBe(19);
+        report.catalogScreenshot = testInfo.outputPath("catalog.png");
+        await catalog.screenshot({ path: report.catalogScreenshot });
+      }
       journey = createJourney(
         { playwright: page, reload: () => page.reload() },
         fixture,

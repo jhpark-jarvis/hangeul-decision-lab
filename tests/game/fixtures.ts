@@ -14,6 +14,11 @@ export function piece(id = "DOT"): Piece {
   if (!found) throw new Error("Unknown fixture piece");
   return found;
 }
+
+/** Original four-type oracle fixture; deliberately independent of default catalog growth. */
+export function getRegressionCatalog(): Piece[] {
+  return ["DOT", "LINE_3", "MIEUM", "L_3"].map((id) => piece(id));
+}
 export function instance(
   pieceIndex: PieceIndex,
   id = "DOT",

@@ -22,8 +22,9 @@ export default function HomePage() {
       </header>
       <PuzzleApp />
       <footer className="mt-8 text-xs leading-5 text-stone-500">
-        데스크톱 Chrome·Edge, 화면 폭 1280px 이상 우선 지원 목표. 개발 catalog와
-        합성 규칙 기준이며 실제 이벤트 정확성·전체 제품 수락은 검증 중입니다.
+        2026 한글 모아모아 · 데스크톱 Chrome·Edge, 화면 폭 1280px 이상 우선
+        지원. 제공 블록 이미지와 공식 안내를 기준으로 하며 세부 규칙·실전 수락은
+        검증 중입니다.
       </footer>
     </main>
   );

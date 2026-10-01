@@ -105,5 +105,5 @@ describe("representative solver resource samples", () => {
         ) + "\n",
       );
     }
-  });
+  }, 120_000); // Batch runtime is separate from the per-sample 3s acceptance target.
 });

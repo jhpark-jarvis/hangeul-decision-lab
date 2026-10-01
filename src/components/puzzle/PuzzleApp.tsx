@@ -199,18 +199,23 @@ export function PuzzleApp() {
           )}
           <div
             className="mt-4 flex flex-wrap gap-4"
-            aria-label="개발 블록 목록"
+            aria-label="이벤트 블록 목록"
           >
             {CATALOG.map((piece) => (
-              <span key={piece.id} className="flex items-center gap-2 text-xs">
+              <span
+                key={piece.id}
+                data-piece-id={piece.id}
+                className="flex items-center gap-2 text-xs"
+              >
                 <ShapeGrid shape={piece.shape} />
                 {piece.name}
               </span>
             ))}
           </div>
           <p className="help mt-3">
-            사용자 제공 개발 블록 4종입니다. 실제 전체 이벤트 catalog는 아직
-            확인되지 않았습니다.
+            2026 한글 모아모아 · 제공 이미지의 블록 19종입니다. 이름은 모양을
+            구분하기 위한 표기입니다. 실제 블록·아이콘이 바뀌면 현재 입력을
+            보정하세요.
           </p>
         </section>
         <section className="panel" aria-labelledby="abilities-heading">
