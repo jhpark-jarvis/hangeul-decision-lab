@@ -6,7 +6,7 @@ import {
 import { getInitialCatalog } from "../../src/domain/pieces/catalog";
 import { getValidPlacements } from "../../src/domain/pieces/placement";
 import { evaluateState } from "../../src/domain/solver/evaluator";
-import { solveTurn } from "../../src/domain/solver/solver";
+import { solveOrdinaryTurn as solveTurn } from "../../src/domain/solver/solver";
 import { createSearchKey } from "../../src/domain/solver/search";
 import { DEFAULT_SOLVER_CONFIG } from "../../src/domain/solver/types";
 import { freezeDeep, game, instance, piece } from "../game/fixtures";

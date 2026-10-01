@@ -28,15 +28,22 @@ export function createSearchKey(
 }
 export function actionSequenceKey(actions: SolverAction[]): string {
   return JSON.stringify(
-    actions.map((action) => [
-      action.pieceIndex,
-      action.rotation,
-      action.flipped,
-      action.row,
-      action.col,
-      action.instanceId,
-      action.pieceId,
-      action.variant,
-    ]),
+    actions.map((action) =>
+      action.type === "place-piece"
+        ? [
+            action.type,
+            action.pieceIndex,
+            action.rotation,
+            action.flipped,
+            action.row,
+            action.col,
+            action.instanceId,
+            action.pieceId,
+            action.variant,
+          ]
+        : action.type === "single-cell"
+          ? [action.type, action.row, action.col]
+          : [action.type, action.pieceIndex, action.instanceId],
+    ),
   );
 }

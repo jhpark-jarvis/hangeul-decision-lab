@@ -1,14 +1,19 @@
 import { applyAction } from "../game/actions";
 import { validateGameState } from "../game/game-state";
 import type { GameState } from "../game/types";
-import { getValidPlacements } from "../pieces/placement";
+import {
+  getAbilityCandidates,
+  getOrdinaryCandidates,
+} from "./ability-candidates";
 import { compareEvaluations, evaluateState } from "./evaluator";
 import { actionSequenceKey, createSearchKey } from "./search";
 import {
   DEFAULT_SOLVER_CONFIG,
+  ORDINARY_PROBE_BUDGET_DIVISOR,
   type PathRewards,
   type SearchInfo,
   type SolverAction,
+  type OrdinarySolverAction,
   type SolverCandidate,
   type SolverConfig,
   type SolverResult,
@@ -50,12 +55,19 @@ function validateConfig(
   return { ok: true, config: { maxNodes, maxAlternatives, useMemoization } };
 }
 
-/** Bounded DFS for ordinary pieces. Runtime is measured at the calling boundary. */
-export function solveTurn(
+function runSearch<Action extends SolverAction>(
   input: unknown,
   catalog: unknown,
-  inputConfig: unknown = DEFAULT_SOLVER_CONFIG,
-): SolverResult<{ result: TurnSolution }> {
+  inputConfig: unknown,
+  getCandidates: (
+    state: GameState,
+  ) => SolverResult<{ actions: Action[]; excludedRerollTargets?: number }>,
+  context: {
+    abilitySearch?: NonNullable<SearchInfo["abilitySearch"]>;
+    seeds?: SolverCandidate<Action>[];
+    probeNodes?: number;
+  } = {},
+): SolverResult<{ result: TurnSolution<Action> }> {
   const validated = validateGameState(input);
   if (!validated.ok) return validated;
   const configured = validateConfig(inputConfig);
@@ -67,24 +79,28 @@ export function solveTurn(
   if (!initial.ok) return initial;
   const { config } = configured;
   const memo = new Set<string>();
-  const candidates: SolverCandidate[] = [];
+  const candidates: SolverCandidate<Action>[] = [...(context.seeds ?? [])];
+  const probeNodes = context.probeNodes ?? 0;
   const search: SearchInfo = {
-    scope: "ordinary-pieces",
+    scope: context.abilitySearch ? "pieces-and-abilities" : "ordinary-pieces",
     searchComplete: true,
     optimalWithinScope: true,
     specialAbilitiesSearched: false,
     alternativesMayOmitEquivalentPaths: config.useMemoization,
     stopReason: "exhausted",
-    visitedNodes: 0,
+    visitedNodes: probeNodes,
     memoPrunedNodes: 0,
     memoEntries: 0,
     discoveredCompletePaths: 0,
     evaluatedCandidates: 0,
-    maxNodes: config.maxNodes,
+    maxNodes: config.maxNodes + probeNodes,
+    ...(context.abilitySearch
+      ? { abilitySearch: structuredClone(context.abilitySearch) }
+      : {}),
   };
   function consider(
     state: GameState,
-    actions: SolverAction[],
+    actions: Action[],
     rewards: PathRewards,
   ): SolverResult<object> {
     const evaluated = evaluateState(state, catalog, rewards);
@@ -92,10 +108,15 @@ export function solveTurn(
     search.evaluatedCandidates++;
     if (evaluated.evaluation.allCurrentPiecesPlaced)
       search.discoveredCompletePaths++;
-    const candidate: SolverCandidate = {
+    const candidate: SolverCandidate<Action> = {
       actions,
       evaluation: evaluated.evaluation,
       finalState: state,
+      usedAbilities: {
+        singleCell: actions.filter((action) => action.type === "single-cell")
+          .length,
+        reroll: actions.filter((action) => action.type === "reroll").length,
+      },
     };
     const key = actionSequenceKey(actions);
     if (!candidates.some((entry) => actionSequenceKey(entry.actions) === key))
@@ -106,10 +127,15 @@ export function solveTurn(
   }
   function visit(
     state: GameState,
-    actions: SolverAction[],
+    actions: Action[],
     rewards: PathRewards,
   ): SolverResult<{ complete: boolean }> {
     search.visitedNodes++;
+    if (search.abilitySearch)
+      search.abilitySearch.maxActionDepth = Math.max(
+        search.abilitySearch.maxActionDepth,
+        actions.length,
+      );
     if (state.pendingReroll || !state.remainingPieces.length) {
       const result = consider(state, actions, rewards);
       return result.ok ? { ok: true, complete: true } : result;
@@ -119,32 +145,24 @@ export function solveTurn(
       search.memoPrunedNodes++;
       return { ok: true, complete: true };
     }
-    const possible: SolverAction[] = [];
-    for (const instance of [...state.remainingPieces].sort(
-      (a, b) => a.pieceIndex - b.pieceIndex,
-    )) {
-      const placements = getValidPlacements(state.board, instance.piece);
-      if (!placements.ok) return placements;
-      possible.push(
-        ...placements.placements.map((placement) => ({
-          type: "place-piece" as const,
-          ...placement,
-          instanceId: instance.instanceId,
-          pieceIndex: instance.pieceIndex,
-        })),
-      );
-    }
+    const available = getCandidates(state);
+    if (!available.ok) return available;
+    const possible = available.actions;
+    if (search.abilitySearch)
+      search.abilitySearch.excludedRerollTargets +=
+        available.excludedRerollTargets ?? 0;
     if (!possible.length) {
       const result = consider(state, actions, rewards);
       if (!result.ok) return result;
     }
     for (const action of possible) {
-      if (search.visitedNodes >= config.maxNodes) {
+      if (search.visitedNodes >= search.maxNodes) {
         const result = consider(state, actions, rewards);
         return result.ok ? { ok: true, complete: false } : result;
       }
       const transition = applyAction(state, action);
       if (!transition.ok) return transition;
+      if (action.type !== "place-piece") search.specialAbilitiesSearched = true;
       const child = visit(transition.state, [...actions, action], {
         clearedRows: rewards.clearedRows + transition.info.clearedRows.length,
         acquiredItems:
@@ -179,4 +197,89 @@ export function solveTurn(
       search: { ...search },
     },
   };
+}
+
+/** Ordinary-only compatibility/reference search; no ability candidate traversal. */
+export function solveOrdinaryTurn(
+  input: unknown,
+  catalog: unknown,
+  inputConfig: unknown = DEFAULT_SOLVER_CONFIG,
+): SolverResult<{ result: TurnSolution<OrdinarySolverAction> }> {
+  return runSearch(input, catalog, inputConfig, getOrdinaryCandidates);
+}
+
+/** Bounded ordinary + ability search. Reroll ends at externally observed input. */
+export function solveTurn(
+  input: unknown,
+  catalog: unknown,
+  inputConfig: unknown = DEFAULT_SOLVER_CONFIG,
+): SolverResult<{ result: TurnSolution }> {
+  const validated = validateGameState(input);
+  if (!validated.ok) return validated;
+  const configured = validateConfig(inputConfig);
+  if (!configured.ok) return configured;
+  const { state } = validated;
+  const { config } = configured;
+  const abilitySearch: NonNullable<SearchInfo["abilitySearch"]> = {
+    singleCellCandidates: "all-legal-cells",
+    rerollCandidatesRestricted: true,
+    excludedRerollTargets: 0,
+    rerollFutureEvaluated: false,
+    maxActionDepth: 0,
+    ordinaryProbe: {
+      visitedNodes: 0,
+      searchComplete: false,
+      discoveredCompletePaths: 0,
+      noCompletePathProven: false,
+    },
+  };
+  const seeds: SolverCandidate[] = [];
+  const probeBudget =
+    state.pendingReroll || !state.remainingPieces.length
+      ? 0
+      : Math.floor(config.maxNodes / ORDINARY_PROBE_BUDGET_DIVISOR);
+  if (probeBudget > 0) {
+    const probe = solveOrdinaryTurn(state, catalog, {
+      ...config,
+      maxNodes: probeBudget,
+    });
+    if (!probe.ok) return probe;
+    const { search } = probe.result;
+    abilitySearch.ordinaryProbe = {
+      visitedNodes: search.visitedNodes,
+      searchComplete: search.searchComplete,
+      discoveredCompletePaths: search.discoveredCompletePaths,
+      noCompletePathProven:
+        search.searchComplete && search.discoveredCompletePaths === 0,
+    };
+    // An ordinary dead end with legal abilities is not an ability-search leaf.
+    for (const entry of [probe.result, ...probe.result.alternatives])
+      if (
+        entry.evaluation.allCurrentPiecesPlaced ||
+        entry.evaluation.phase === "gameover"
+      )
+        seeds.push({
+          actions: entry.actions,
+          evaluation: entry.evaluation,
+          finalState: entry.finalState,
+          usedAbilities: entry.usedAbilities,
+        });
+  }
+  const foundNoCompletePath =
+    probeBudget > 0 &&
+    abilitySearch.ordinaryProbe.discoveredCompletePaths === 0;
+  return runSearch(
+    state,
+    catalog,
+    {
+      ...config,
+      maxNodes: config.maxNodes - abilitySearch.ordinaryProbe.visitedNodes,
+    },
+    (current) => getAbilityCandidates(current, catalog, foundNoCompletePath),
+    {
+      abilitySearch,
+      seeds,
+      probeNodes: abilitySearch.ordinaryProbe.visitedNodes,
+    },
+  );
 }

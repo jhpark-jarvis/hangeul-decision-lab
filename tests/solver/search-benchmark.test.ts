@@ -8,6 +8,8 @@ import { solveTurn } from "../../src/domain/solver/solver";
 import { DEFAULT_SOLVER_CONFIG } from "../../src/domain/solver/types";
 import { game, instance } from "../game/fixtures";
 import { lineTurn, rescueTurn, success } from "./turn-fixtures";
+import { singleRescue, reacquireRescue } from "./ability-fixtures";
+import { staggeredBoard } from "./turn-fixtures";
 
 const patterned = createEmptyBoard().map((row, r) =>
   row.map((_, c) => (r * 10 + c) % 7 < 2),
@@ -25,10 +27,21 @@ const fixtures = [
   },
   { name: "dense-line-clear", state: lineTurn() },
   { name: "blocked-piece-rescue", state: rescueTurn() },
+  { name: "single-cell-clear-rescue", state: singleRescue() },
+  { name: "two-single-cell-rescue", state: singleRescue(2) },
+  { name: "reacquisition-between-pieces", state: reacquireRescue() },
+  {
+    name: "reroll-input-wait",
+    state: game({
+      board: staggeredBoard(),
+      remainingPieces: [instance(2, "MIEUM")],
+      abilities: { reroll: 1, singleCell: 0 },
+    }),
+  },
 ];
 
 describe("representative solver resource samples", () => {
-  it("keeps four synthetic cases within the selected node budget", () => {
+  it("keeps ordinary and ability cases within the selected node budget", () => {
     const benchmark = process.env.SOLVER_BENCHMARK === "1";
     const catalog = getInitialCatalog();
     const results = fixtures.map(({ name, state }) => {
@@ -55,6 +68,7 @@ describe("representative solver resource samples", () => {
           rssAfter: after.rss,
           search: solution.search,
           allCurrentPiecesPlaced: solution.evaluation.allCurrentPiecesPlaced,
+          usedAbilities: solution.usedAbilities,
         };
       });
       return { name, state, samples };
@@ -77,7 +91,7 @@ describe("representative solver resource samples", () => {
             config: DEFAULT_SOLVER_CONFIG,
             catalog,
             definition:
-              "solveTurn wall time only; one warmup then three samples per synthetic fixture. Heap/RSS are before/after observations, not peaks or memory acceptance limits. No browser or future random pieces.",
+              "solveTurn ordinary probe plus ability DFS wall time; one warmup then three samples per synthetic fixture. Heap/RSS are before/after observations, not peaks or memory acceptance limits. No browser or future random pieces/reroll outcome.",
             targetMs: 3000,
             verdict: results.every((entry) =>
               entry.samples.every((sample) => sample.elapsedMs <= 3000),
