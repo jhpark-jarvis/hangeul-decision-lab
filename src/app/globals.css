@@ -15,9 +15,88 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
-button:focus-visible {
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
   outline: 3px solid #1d4ed8;
   outline-offset: 2px;
   position: relative;
   z-index: 1;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-2xl border border-stone-200 bg-white p-5 shadow-sm;
+  }
+  .panel h2 {
+    @apply text-base font-semibold;
+  }
+  .help {
+    @apply text-xs leading-5 text-stone-500;
+  }
+  .small-button {
+    @apply cursor-pointer rounded-lg border border-stone-300 px-3 py-2 text-xs font-medium hover:bg-stone-50 disabled:cursor-default disabled:opacity-40;
+  }
+  .small-button[aria-pressed="true"] {
+    @apply border-orange-500 bg-orange-50 text-orange-900;
+  }
+  .primary-button {
+    @apply cursor-pointer rounded-lg bg-stone-800 px-4 py-3 text-sm font-semibold text-white hover:bg-stone-700 disabled:cursor-default disabled:opacity-40;
+  }
+  input,
+  select {
+    @apply mt-2 block w-full rounded-lg border border-stone-300 bg-white p-2 text-sm disabled:opacity-50;
+  }
+  .board-grid {
+    @apply mx-auto grid max-w-[370px] gap-1 rounded-xl bg-stone-50 p-2;
+  }
+  .coordinate {
+    @apply flex items-center justify-center font-mono text-[11px] text-stone-500;
+  }
+  .board-cell {
+    @apply aspect-square min-w-0 cursor-pointer rounded border border-stone-300 bg-white text-sm font-bold text-stone-700 hover:bg-stone-100 disabled:cursor-default;
+  }
+  .board-cell.filled {
+    @apply border-orange-700 bg-orange-600 text-white;
+  }
+  .board-cell.suggested {
+    @apply border-teal-700 bg-teal-100 text-teal-900;
+  }
+  .board-cell.clearing {
+    @apply outline-2 outline-purple-500 outline-offset-[-2px];
+  }
+  .piece-slot {
+    @apply rounded-lg border border-stone-200 p-3 text-center text-xs font-semibold;
+  }
+  .piece-slot.reroll-target {
+    @apply border-teal-600 bg-teal-50;
+  }
+  .shape-grid {
+    @apply inline-grid shrink-0 gap-[2px];
+  }
+  .shape-grid > span {
+    @apply h-[10px] w-[10px] rounded-[2px] bg-stone-100;
+  }
+  .shape-grid > .shape-filled {
+    @apply bg-orange-600;
+  }
+  .action-list {
+    @apply space-y-2 text-sm;
+  }
+  .action-list > li {
+    @apply rounded-lg border border-stone-100 p-3;
+  }
+  .action-list > .next-action {
+    @apply border-teal-300 bg-teal-50;
+  }
+  .action-list > .applied {
+    @apply text-stone-500;
+  }
+  .debug-grid {
+    @apply grid grid-cols-[1fr_1fr] gap-x-4 gap-y-2 text-xs;
+  }
+  summary {
+    @apply cursor-pointer text-sm font-semibold;
+  }
 }
