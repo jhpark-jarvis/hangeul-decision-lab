@@ -295,7 +295,7 @@ export function applyStep(
             version: session.version + 1,
           },
     error: null,
-    notice: `단계 ${analysis.step + 1} 적용. 삭제 행: ${result.info.clearedRows.join(", ") || "없음"}, 아이템 획득 ${result.info.acquiredItems.length}개·초과 폐기 ${result.info.discardedItems.length}개.${action.type === "reroll" ? " 실제 reroll 결과를 입력하세요." : ""}`,
+    notice: `단계 ${analysis.step + 1} 적용. 삭제 행: ${result.info.clearedRows.join(", ") || "없음"}, 아이템 획득 ${result.info.acquiredItems.length}개·상한으로 남김 ${result.info.retainedItems.length}개.${action.type === "reroll" ? " 실제 reroll 결과를 입력하세요." : ""}`,
   };
 }
 

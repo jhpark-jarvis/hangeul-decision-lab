@@ -150,7 +150,14 @@ for (const fixture of inputs.fixtures) {
         await catalog.screenshot({ path: report.catalogScreenshot });
       }
       journey = createJourney(
-        { playwright: page, reload: () => page.reload() },
+        {
+          playwright: page,
+          reload: () => page.reload(),
+          capture: async (name) => {
+            report.capacityScreenshot = testInfo.outputPath(`${name}.png`);
+            await page.screenshot({ path: report.capacityScreenshot });
+          },
+        },
         fixture,
       );
       await journey.begin();
@@ -159,7 +166,7 @@ for (const fixture of inputs.fixtures) {
         input = await journey.inputBatch(32);
       } while (!input.complete);
       await journey.finishInput();
-      if (fixture.journey !== "gameover") {
+      if (fixture.journey !== "gameover" && fixture.journey !== "capacity") {
         report.warmup = await measureAnalyze(page);
         for (let sample = 0; sample < 3; sample++)
           report.samples.push(await measureAnalyze(page));

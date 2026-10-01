@@ -149,7 +149,66 @@ export function createJourney(tab, fixture) {
       );
     },
     async run() {
-      if (fixture.journey === "ordinary") {
+      if (fixture.journey === "capacity") {
+        await analyze();
+        await check("capacity clear overlay", await clearing(), 10);
+        await apply();
+        await check(
+          "capacity row occupancy clears",
+          await occupied(),
+          "0 / 160",
+        );
+        await check(
+          "unacquired icon stays on cleared empty coordinate",
+          (await cell(0, 0).getAttribute("aria-label")).includes(
+            "hidden single-cell",
+          ),
+          true,
+        );
+        await check(
+          "capacity count stays7",
+          await input("Reroll 보유 수").getAttribute("value"),
+          "7",
+        );
+        await check(
+          "retention message",
+          (
+            await tab.playwright
+              .getByRole("region", { name: "입력 및 적용 상태", exact: true })
+              .innerText()
+          ).includes("상한으로 남김 1개"),
+          true,
+        );
+        await tab.capture?.("capacity-retained");
+        await nextSet();
+        for (let index = 0; index < 3; index++)
+          await slot(index).selectOption("DOT");
+        await button("3개 블록 입력").click();
+        await input("Reroll 보유 수").fill("6"); // Re-enter actual state after an external ability use.
+        await button("Filled").click();
+        for (let col = 0; col < 9; col++) await cell(0, col).click();
+        await check(
+          "refill preserves retained icon",
+          (await cell(0, 0).getAttribute("aria-label")).includes(
+            "hidden single-cell",
+          ),
+          true,
+        );
+        await analyze();
+        await apply();
+        await check(
+          "recleared row acquires retained single",
+          await input("Single Cell 보유 수").getAttribute("value"),
+          "1",
+        );
+        await check(
+          "acquired icon removed",
+          (await cell(0, 0).getAttribute("aria-label")).includes(
+            "hidden single-cell",
+          ),
+          false,
+        );
+      } else if (fixture.journey === "ordinary") {
         await button("토글").click();
         await cell(15, 9).press("Enter");
         await check(

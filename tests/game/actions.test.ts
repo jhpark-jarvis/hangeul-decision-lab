@@ -25,7 +25,7 @@ describe("central piece and reward transition", () => {
     expect(first.info).toEqual({
       clearedRows: [],
       acquiredItems: [],
-      discardedItems: [],
+      retainedItems: [],
       spentAbility: null,
       consumedPiece: { instanceId: "set1-1", pieceIndex: 1 },
     });
@@ -55,7 +55,7 @@ describe("central piece and reward transition", () => {
     expect(output.state.abilities).toEqual({ reroll: 0, singleCell: 0 });
     expect(output.info.acquiredItems).toEqual([]);
   });
-  it("clears three rows simultaneously, acquiring/discarding by coordinates without gravity", () => {
+  it("clears three rows simultaneously, acquiring/retaining by coordinates without gravity", () => {
     const input = game({
       remainingPieces: [instance(2, "LINE_3")],
       abilities: { reroll: 4, singleCell: 1 },
@@ -81,8 +81,11 @@ describe("central piece and reward transition", () => {
       input.hiddenItems[2],
       input.hiddenItems[1],
     ]);
-    expect(output.info.discardedItems).toEqual([input.hiddenItems[0]]);
-    expect(output.state.hiddenItems).toEqual([input.hiddenItems[3]]);
+    expect(output.info.retainedItems).toEqual([input.hiddenItems[0]]);
+    expect(output.state.hiddenItems).toEqual([
+      input.hiddenItems[0],
+      input.hiddenItems[3],
+    ]);
     expect(output.state.abilities).toEqual({ reroll: 5, singleCell: 2 });
     expect(output.state.board.flat().filter(Boolean)).toHaveLength(1);
     expect(output.state.board[6][3]).toBe(true);
@@ -230,7 +233,7 @@ describe("single-cell spend and immediate reward", () => {
       consumedPiece: null,
     });
   });
-  it("spends before acquisition, regaining capacity and discarding later coordinates", () => {
+  it("spends before acquisition, regaining capacity and retaining later coordinates", () => {
     const input = game({
       abilities: { reroll: 6, singleCell: 1 },
       hiddenItems: [
@@ -246,8 +249,8 @@ describe("single-cell spend and immediate reward", () => {
     expect(output.state.abilities).toEqual({ reroll: 6, singleCell: 1 });
     expect(output.info.clearedRows).toEqual([2]);
     expect(output.info.acquiredItems).toEqual([input.hiddenItems[1]]);
-    expect(output.info.discardedItems).toEqual([input.hiddenItems[0]]);
-    expect(output.state.hiddenItems).toEqual([]);
+    expect(output.info.retainedItems).toEqual([input.hiddenItems[0]]);
+    expect(output.state.hiddenItems).toEqual([input.hiddenItems[0]]);
     expect(output.state.board[2].some(Boolean)).toBe(false);
   });
   it.each([
@@ -343,7 +346,7 @@ describe("reroll actual result ingress", () => {
       consumedPiece: null,
       clearedRows: [],
       acquiredItems: [],
-      discardedItems: [],
+      retainedItems: [],
     });
     expect(success(getAvailableActions(rolled.state))).toEqual({
       ok: true,

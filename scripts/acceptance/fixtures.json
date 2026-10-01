@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "origin": "Synthetic inputs based on user-provided development catalog and rules; no real-game or personal data",
   "fixtures": [
     {
@@ -125,6 +125,40 @@
       },
       "items": [],
       "journey": "gameover"
+    },
+    {
+      "id": "capacity-icon-retention",
+      "journey": "capacity",
+      "board": [
+        [true, true, true, true, true, true, true, true, true, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false]
+      ],
+      "slotIds": [null, null, "DOT"],
+      "abilities": {
+        "reroll": 7,
+        "singleCell": 0
+      },
+      "items": [
+        {
+          "row": 0,
+          "col": 0,
+          "type": "single-cell"
+        }
+      ]
     }
   ]
 }

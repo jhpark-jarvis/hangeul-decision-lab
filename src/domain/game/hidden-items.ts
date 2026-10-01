@@ -45,7 +45,7 @@ export function validateHiddenItems(
   return { ok: true, hiddenItems };
 }
 
-/** ADR-0005: spend first, then acquire cleared-row items in row/col order. */
+/** ADR-0011: spend first, acquire in row/col order; retain unacquired icons at capacity. */
 export function collectHiddenItems(
   inputItems: unknown,
   inputAbilities: unknown,
@@ -54,7 +54,7 @@ export function collectHiddenItems(
   hiddenItems: HiddenItem[];
   abilities: AbilityCounts;
   acquiredItems: HiddenItem[];
-  discardedItems: HiddenItem[];
+  retainedItems: HiddenItem[];
 }> {
   const items = validateHiddenItems(inputItems);
   if (!items.ok) return items;
@@ -83,18 +83,26 @@ export function collectHiddenItems(
     .sort((a, b) => a.row - b.row || a.col - b.col);
   const abilities = counts.abilities;
   const acquiredItems: HiddenItem[] = [];
-  const discardedItems: HiddenItem[] = [];
+  const retainedItems: HiddenItem[] = [];
   for (const item of clearedItems) {
     if (abilities.reroll + abilities.singleCell < MAX_ABILITY_COUNT) {
       abilities[item.type === "reroll" ? "reroll" : "singleCell"]++;
       acquiredItems.push(item);
-    } else discardedItems.push(item);
+    } else retainedItems.push({ ...item });
   }
   return {
     ok: true,
     abilities,
     acquiredItems,
-    discardedItems,
-    hiddenItems: items.hiddenItems.filter((item) => !rows.has(item.row)),
+    retainedItems,
+    hiddenItems: items.hiddenItems
+      .filter(
+        (item) =>
+          !acquiredItems.some(
+            (acquired) =>
+              acquired.row === item.row && acquired.col === item.col,
+          ),
+      )
+      .sort((a, b) => a.row - b.row || a.col - b.col),
   };
 }

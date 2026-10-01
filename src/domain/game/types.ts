@@ -60,7 +60,7 @@ export type GameResult<T> =
 export type TransitionInfo = {
   clearedRows: number[];
   acquiredItems: HiddenItem[];
-  discardedItems: HiddenItem[];
+  retainedItems: HiddenItem[];
   spentAbility: HiddenItem["type"] | null;
   consumedPiece: PieceTarget | null;
 };

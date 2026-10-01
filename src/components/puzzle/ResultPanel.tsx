@@ -99,8 +99,8 @@ export function ResultPanel({
             <span className="help block">
               {index < analysis.step ? "적용 완료 · " : ""}삭제 row{" "}
               {plan.info[index].clearedRows.join(", ") || "없음"} · 획득{" "}
-              {plan.info[index].acquiredItems.length} · 초과 폐기{" "}
-              {plan.info[index].discardedItems.length}
+              {plan.info[index].acquiredItems.length} · 상한으로 남김{" "}
+              {plan.info[index].retainedItems.length}
             </span>
           </li>
         ))}

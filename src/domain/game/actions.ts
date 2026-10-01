@@ -80,7 +80,7 @@ export function applyAction(
   const info: TransitionInfo = {
     clearedRows: [],
     acquiredItems: [],
-    discardedItems: [],
+    retainedItems: [],
     spentAbility: null,
     consumedPiece: null,
   };
@@ -164,6 +164,6 @@ export function applyAction(
   state.abilities = collected.abilities;
   info.clearedRows = cleared.clearedRows;
   info.acquiredItems = collected.acquiredItems;
-  info.discardedItems = collected.discardedItems;
+  info.retainedItems = collected.retainedItems;
   return { ok: true, state, info };
 }
