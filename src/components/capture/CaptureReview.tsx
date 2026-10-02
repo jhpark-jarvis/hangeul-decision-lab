@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { GameState } from "@/domain/game/types";
 import { getInitialCatalog } from "@/domain/pieces/catalog";
 import {
@@ -8,6 +8,7 @@ import {
   createCaptureController,
   requestDisplayMedia,
   type CaptureStatus,
+  type CapturedFrame,
 } from "@/features/capture/capture";
 import {
   recognizeManualState,
@@ -23,6 +24,8 @@ import type {
   RecognitionResult,
   ReviewState,
 } from "@/features/recognition/types";
+import { releaseFrame } from "@/features/recognition/calibration";
+import { FrameCalibration } from "./FrameCalibration";
 
 const catalog = getInitialCatalog();
 export function CaptureReview({
@@ -48,25 +51,64 @@ export function CaptureReview({
   const [snapshot, setSnapshot] = useState("");
   const [errors, setErrors] = useState<FieldIssue[]>([]);
   const [frameMessage, setFrameMessage] = useState("");
+  const ownedFrame = useRef<CapturedFrame | null>(null);
+  const frameSerial = useRef(0);
+  const [calibration, setCalibration] = useState<{
+    id: number;
+    frame: CapturedFrame;
+    snapshot: string;
+  } | null>(null);
+  const clearCalibration = useCallback(() => {
+    releaseFrame(ownedFrame.current);
+    ownedFrame.current = null;
+    setCalibration(null);
+  }, []);
+  const gameSnapshot = JSON.stringify(game);
+  const [observedGame, setObservedGame] = useState(gameSnapshot);
+  // Reset frame selection in the same render as a changed game; the ownership
+  // effect cleans its pixels after commit. No stale selector can reappear.
+  if (observedGame !== gameSnapshot) {
+    setObservedGame(gameSnapshot);
+    if (calibration) {
+      setCalibration(null);
+      setFrameMessage(
+        "수동 상태가 바뀌어 선택 중인 프레임을 지웠습니다. 다시 캡처하세요.",
+      );
+    }
+  }
+  useEffect(() => {
+    const frame = calibration?.frame ?? null;
+    return () => {
+      releaseFrame(frame);
+      if (ownedFrame.current === frame) ownedFrame.current = null;
+    };
+  }, [calibration]);
   useEffect(() => {
     const element = video.current;
     const owned = createCaptureController(requestDisplayMedia, (status) => {
       setCapture(status);
-      if (status.phase !== "active" && video.current)
-        video.current.srcObject = null;
+      if (status.phase !== "active") {
+        clearCalibration();
+        if (video.current) video.current.srcObject = null;
+      }
     });
     controller.current = owned;
     return () => {
       owned.dispose();
       if (element) element.srcObject = null;
       controller.current = null;
+      releaseFrame(ownedFrame.current);
+      ownedFrame.current = null;
     };
-  }, []);
+  }, [clearCalibration]);
 
-  function openReview(result: RecognitionResult) {
+  function openReview(
+    result: RecognitionResult,
+    expectedSnapshot = JSON.stringify(game),
+  ) {
     onInvalidate();
     setReview(createReviewState(result));
-    setSnapshot(JSON.stringify(game));
+    setSnapshot(expectedSnapshot);
     setErrors([]);
   }
   function change(edit: (draft: RecognitionResult) => void) {
@@ -85,8 +127,9 @@ export function CaptureReview({
     <section className="panel space-y-4" aria-label="화면 캡처 및 인식 검토">
       <h2>화면 캡처·인식 검토</h2>
       <p className="help">
-        화면 공유는 미리보기와 프레임 추출만 제공합니다. 이미지 자동 인식은 아직
-        구현하지 않았습니다. 아래 mock은 현재 수동 입력의 복사입니다.
+        화면을 직접 공유하고 한 프레임에서 보드 영역·빈칸·점유 색상을 지정하면
+        보드를 판별합니다. 블록·아이템·능력은 직접 검토해야 합니다. 아래 mock은
+        현재 수동 입력의 복사입니다.
       </p>
       <div className="flex flex-wrap gap-2">
         <button
@@ -98,6 +141,7 @@ export function CaptureReview({
           }
           onClick={() => {
             onInvalidate();
+            clearCalibration();
             setReview(null);
             setErrors([]);
             setFrameMessage("");
@@ -135,18 +179,25 @@ export function CaptureReview({
           disabled={disabled || capture.phase !== "active"}
           onClick={() => {
             onInvalidate();
+            clearCalibration();
             setReview(null);
             setErrors([]);
             try {
               if (!video.current) return;
               const frame = captureCurrentFrame(video.current);
+              ownedFrame.current = frame;
+              setCalibration({
+                id: ++frameSerial.current,
+                frame,
+                snapshot: JSON.stringify(game),
+              });
               setFrameMessage(
                 `프레임 ${frame.width}×${frame.height} · 로컬 추출 완료`,
               );
               openReview(
                 unknownRecognitionEngine.recognize({ kind: "frame", frame }),
               );
-              // Payload is not retained in React state, logs or recognition result.
+              // One owned frame survives only until calibration completes or is cleared.
             } catch (error) {
               setFrameMessage(
                 error instanceof Error && error.message.startsWith("프레임")
@@ -162,6 +213,7 @@ export function CaptureReview({
           className="small-button"
           disabled={disabled || !!game.pendingReroll}
           onClick={() => {
+            clearCalibration();
             setFrameMessage("");
             openReview(recognizeManualState(game));
           }}
@@ -185,6 +237,40 @@ export function CaptureReview({
           {frameMessage}
         </p>
       )}
+      {calibration && (
+        <FrameCalibration
+          key={calibration.id}
+          frame={calibration.frame}
+          disabled={disabled}
+          onChange={() => {
+            onInvalidate();
+            setReview(null);
+            setErrors([]);
+          }}
+          onResult={(result) => {
+            const expected = calibration.snapshot;
+            clearCalibration();
+            if (expected !== JSON.stringify(game)) {
+              setFrameMessage("수동 상태가 바뀌었습니다. 다시 캡처하세요.");
+              return;
+            }
+            openReview(result, expected);
+            const unresolved = result.board
+              .flat()
+              .filter((cell) => cell.status !== "recognized").length;
+            setFrameMessage(
+              `보드 판별 완료 · 미확정 ${unresolved}칸 · 프레임을 지웠습니다.`,
+            );
+          }}
+          onCancel={() => {
+            onInvalidate();
+            clearCalibration();
+            setReview(null);
+            setErrors([]);
+            setFrameMessage("프레임 선택을 취소하고 픽셀을 지웠습니다.");
+          }}
+        />
+      )}
       {review && (
         <fieldset
           disabled={disabled}
@@ -195,7 +281,9 @@ export function CaptureReview({
           <p className="help">
             {review.draft.source.kind === "capture-stub"
               ? "프레임 인식기 미구현: 모든 값은 미확정입니다."
-              : "현재 수동 입력의 개발용 복사입니다. 이미지 인식 결과가 아닙니다."}{" "}
+              : review.draft.source.kind === "calibrated-board"
+                ? "지정 영역·색상 표본의 보드 판별 결과입니다. 블록·아이템·능력과 각 칸을 확인하세요."
+                : "현재 수동 입력의 개발용 복사입니다. 이미지 인식 결과가 아닙니다."}{" "}
             미확정(?)·불확실(!) 값은 직접 확인하세요. confidence는 생성하지
             않습니다.
           </p>
@@ -477,7 +565,10 @@ export function CaptureReview({
               onClick={() => {
                 const failures = onUse(review, snapshot);
                 setErrors(failures);
-                if (!failures.length) setReview(null);
+                if (!failures.length) {
+                  clearCalibration();
+                  setReview(null);
+                }
               }}
             >
               Use This State
@@ -486,6 +577,7 @@ export function CaptureReview({
               className="small-button"
               onClick={() => {
                 onInvalidate();
+                clearCalibration();
                 setReview(null);
                 setErrors([]);
                 setFrameMessage("");
