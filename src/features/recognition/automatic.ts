@@ -246,6 +246,7 @@ function localGridScore(frame: CapturedFrame, region: PixelRegion): number {
   let weakest = Infinity;
   for (const vertical of [true, false]) {
     const count = vertical ? BOARD_WIDTH : BOARD_HEIGHT;
+    const seamPitch = vertical ? pitch : region.height / BOARD_HEIGHT;
     for (let k = 1; k < count; k++) {
       let strongest = 0;
       for (
@@ -264,7 +265,7 @@ function localGridScore(frame: CapturedFrame, region: PixelRegion): number {
                 : region.x + region.width * across,
               vertical
                 ? region.y + region.height * across
-                : region.y + k * pitch + shift,
+                : region.y + k * seamPitch + shift,
               vertical ? 1 : 0,
               vertical ? 0 : 1,
             ),
@@ -293,7 +294,10 @@ function classify(
   for (let y = 0; y < 7; y++)
     for (let x = 0; x < 7; x++) {
       const i =
-        (Math.floor(region.y + (row + 0.2 + y * 0.1) * pitch) * frame.width +
+        (Math.floor(
+          region.y + (row + 0.2 + y * 0.1) * (region.height / BOARD_HEIGHT),
+        ) *
+          frame.width +
           Math.floor(region.x + (col + 0.2 + x * 0.1) * pitch)) *
         4;
       if (frame.pixels[i + 3] !== 255)
@@ -372,4 +376,35 @@ export function recognizeAutomaticBoard(
   result.source.kind = "automatic-board";
   result.summary.engine = "grid-tiles";
   return { ok: true, region, result };
+}
+
+/** Explicit/session ROI: inspect current pixels, never silently relocate it. */
+export function recognizeBoardRegion(
+  frame: CapturedFrame,
+  region: PixelRegion,
+): AutomaticBoardResult {
+  if (!valid(frame)) return { ok: false, reason: "INVALID_FRAME" };
+  if (
+    !region ||
+    ![region.x, region.y, region.width, region.height].every(Number.isFinite) ||
+    region.x < 0 ||
+    region.y < 0 ||
+    region.width / BOARD_WIDTH < C.minCellPixels ||
+    region.height / BOARD_HEIGHT < C.minCellPixels ||
+    Math.abs(region.width / BOARD_WIDTH / (region.height / BOARD_HEIGHT) - 1) >
+      0.05 ||
+    region.x + region.width > frame.width ||
+    region.y + region.height > frame.height ||
+    localGridScore(frame, region) < C.minGridContrast
+  )
+    return { ok: false, reason: "NOT_FOUND" };
+  const result = unknownRecognitionEngine.recognize({ kind: "frame", frame });
+  result.board = Array.from({ length: BOARD_HEIGHT }, (_, row) =>
+    Array.from({ length: BOARD_WIDTH }, (_, col) =>
+      classify(frame, region, row, col),
+    ),
+  );
+  result.source.kind = "automatic-board";
+  result.summary.engine = "grid-tiles";
+  return { ok: true, region: { ...region }, result };
 }

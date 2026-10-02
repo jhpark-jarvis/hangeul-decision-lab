@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+  type Ref,
+} from "react";
 import type { GameState } from "@/domain/game/types";
 import {
   captureCurrentFrame,
@@ -34,6 +41,19 @@ import {
   releasePanelTextTemplates,
 } from "@/features/recognition/panel-fonts";
 import { FrameCalibration } from "./FrameCalibration";
+import { SessionRegions } from "./SessionRegions";
+import { recognizeAutomaticBoard } from "@/features/recognition/automatic";
+import {
+  recognizeConfiguredGame,
+  regionsFit,
+  suggestedRegions,
+  type CaptureRegions,
+} from "@/features/recognition/regions";
+import {
+  continueTurn,
+  confirmWholeReview,
+  type TurnComparison,
+} from "@/features/recognition/continuity";
 
 import { labelReviewItem } from "@/features/recognition/item-label";
 import { ReviewPieces } from "./ReviewPieces";
@@ -48,11 +68,19 @@ export function CaptureReview({
   disabled,
   onInvalidate,
   onUse,
+  inputEpoch,
+  actions,
 }: {
   game: GameState;
   disabled: boolean;
   onInvalidate: () => void;
-  onUse: (review: ReviewState, snapshot: string) => FieldIssue[];
+  onUse: (
+    review: ReviewState,
+    snapshot: string,
+    analyze?: boolean,
+  ) => FieldIssue[];
+  inputEpoch: number;
+  actions: Ref<{ nextTurn: () => void }>;
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const controller = useRef<ReturnType<typeof createCaptureController> | null>(
@@ -66,6 +94,14 @@ export function CaptureReview({
   const [snapshot, setSnapshot] = useState("");
   const [errors, setErrors] = useState<FieldIssue[]>([]);
   const [frameMessage, setFrameMessage] = useState("");
+  const [regions, setRegions] = useState<CaptureRegions | null>(null);
+  const [linkedEpoch, setLinkedEpoch] = useState<number | null>(null);
+  const [comparison, setComparison] = useState<Omit<
+    TurnComparison,
+    "result"
+  > | null>(null);
+  const [regionsCandidate, setRegionsCandidate] =
+    useState<CaptureRegions | null>(null);
   const ownedPreview = useRef<HTMLCanvasElement | null>(null);
   const [preview, setPreview] = useState<HTMLCanvasElement | null>(null);
   const clearPreview = useCallback(() => {
@@ -79,6 +115,7 @@ export function CaptureReview({
     id: number;
     frame: CapturedFrame;
     snapshot: string;
+    mode?: "regions";
   } | null>(null);
   const clearCalibration = useCallback(() => {
     releaseFrame(ownedFrame.current);
@@ -120,6 +157,10 @@ export function CaptureReview({
       if (status.phase !== "active") {
         clearCalibration();
         clearPreview();
+        setRegions(null);
+        setRegionsCandidate(null);
+        setLinkedEpoch(null);
+        setComparison(null);
         if (video.current) video.current.srcObject = null;
       }
     });
@@ -147,6 +188,110 @@ export function CaptureReview({
     setReview(createReviewState(result));
     setSnapshot(expectedSnapshot);
     setErrors([]);
+    setComparison(null);
+  }
+  function recognize(frame: CapturedFrame, profile: CaptureRegions | null) {
+    const templates = createPanelTextTemplates();
+    try {
+      return profile
+        ? recognizeConfiguredGame(frame, profile, templates)
+        : recognizeAutomaticGame(frame, templates);
+    } finally {
+      releasePanelTextTemplates(templates);
+    }
+  }
+  function readFrame() {
+    if (disabled || capture.phase !== "active") {
+      setFrameMessage("먼저 Start Screen Capture로 게임 화면을 공유하세요.");
+      return;
+    }
+    onInvalidate();
+    clearCalibration();
+    clearPreview();
+    setReview(null);
+    setErrors([]);
+    let frame: CapturedFrame | null = null;
+    try {
+      if (!video.current) return;
+      frame = captureCurrentFrame(video.current);
+      let profile = regions;
+      if (
+        profile &&
+        (profile.dimensions.width !== frame.width ||
+          profile.dimensions.height !== frame.height)
+      ) {
+        profile = null;
+        setRegions(null);
+        setLinkedEpoch(null);
+        setFrameMessage(
+          "공유 화면 크기가 바뀌었습니다. 영역을 다시 설정하세요.",
+        );
+        return;
+      }
+      const found = recognize(frame, profile);
+      if (!found.ok) {
+        openReview(
+          unknownRecognitionEngine.recognize({ kind: "frame", frame }),
+        );
+        setFrameMessage(
+          `프레임 ${frame.width}×${frame.height} · ${found.reason === "AMBIGUOUS" ? "보드 후보가 여러 개입니다" : "보드를 확정하지 못했습니다"}. ${profile ? "설정한 위치의 격자가 맞지 않습니다. 영역 설정으로 위치·배율을 다시 맞추세요." : "게임 보드가 크게 보이도록 공유한 뒤 다시 Capture Frame을 누르거나 수동 영역·색상 선택을 사용하세요."} 프레임을 지웠습니다.`,
+        );
+        return;
+      }
+      const proposed = profile ?? suggestedRegions(frame, found.region);
+      setRegionsCandidate(regionsFit(frame, proposed) ? proposed : null);
+      const next =
+        profile && linkedEpoch === inputEpoch
+          ? continueTurn(found.result, game)
+          : null;
+      openReview(
+        next?.result ?? found.result,
+        JSON.stringify(game),
+        paintReviewPreview(frame, found.region),
+      );
+      if (next)
+        setComparison({
+          differences: next.differences,
+          inherited: next.inherited,
+          matched: next.matched,
+        });
+      const unresolved = (next?.result ?? found.result).board
+        .flat()
+        .filter((c) => c.occupied === null).length;
+      const pieces = found.result.pieces.filter(
+        (p) => p.status === "recognized",
+      ).length;
+      const counts = Object.values(found.result.abilities).filter(
+        (a) => a.status === "recognized",
+      ).length;
+      setFrameMessage(
+        `자동 보드 판별 완료 · 미확정 ${unresolved}칸 · 보유 조각 ${pieces}/3 · 능력 횟수 ${counts}/2 판독. ${profile ? "이번 공유의 영역을 재사용했습니다. " : "첫 확인 후 영역을 이어서 사용합니다. "}원본 프레임을 지웠습니다. 보드 캡처는 검토 종료 시 지웁니다.`,
+      );
+    } catch (error) {
+      setFrameMessage(frameCaptureFailureMessage(error));
+    } finally {
+      releaseFrame(frame);
+    }
+  }
+  useImperativeHandle(actions, () => ({ nextTurn: readFrame }));
+  function acceptReview(accepted: ReviewState, analyze = false) {
+    const failures = onUse(accepted, snapshot, analyze);
+    setErrors(failures);
+    if (failures.length) return;
+    if (
+      capture.phase === "active" &&
+      regionsCandidate &&
+      accepted.draft.source.kind === "automatic-game"
+    ) {
+      setRegions(structuredClone(regionsCandidate));
+      setLinkedEpoch(inputEpoch);
+    } else {
+      setLinkedEpoch(null);
+    }
+    clearCalibration();
+    clearPreview();
+    setReview(null);
+    setComparison(null);
   }
   function change(edit: (draft: RecognitionResult) => void) {
     if (!review) return;
@@ -159,15 +304,18 @@ export function CaptureReview({
   const fieldIssues = [...issues, ...errors];
   const invalid = (path: string) =>
     fieldIssues.some((issue) => issue.path === path);
+  const wholeReview = review ? confirmWholeReview(review) : null;
+  const wholeIssues = wholeReview ? validateReviewedState(wholeReview) : [];
 
   return (
     <section className="panel space-y-4" aria-label="화면 캡처 및 인식 검토">
       <h2>화면 캡처·인식 검토</h2>
       <p className="help">
-        화면을 공유한 뒤 Capture Frame을 누르면 보드·보유 조각·능력 횟수를
-        자동으로 채웁니다. 미확정 항목만 수정하고, 보드 위 아이템과 전체 상태를
-        확인하세요. 자동 인식이 실패하면 수동 영역·색상 선택을 사용하세요. 아래
-        mock은 현재 수동 입력의 복사입니다.
+        처음에 영역과 아이템을 확인하면 같은 공유에서 다음 턴까지 이어집니다. 세
+        조각을 배치한 뒤 ‘다음 턴 가져오기’를 누르고 새 조각·횟수와 달라진
+        부분을 확인하세요. 기존 아이템 위치는 Apply 결과대로 이어받습니다.
+        영역이 어긋나면 ‘영역 설정’에서 세 영역만 지정하세요. 아래 mock은 현재
+        수동 입력의 복사입니다.
       </p>
       <div className="flex flex-wrap gap-2">
         <button
@@ -216,57 +364,46 @@ export function CaptureReview({
         <button
           className="small-button"
           disabled={disabled || capture.phase !== "active"}
+          onClick={readFrame}
+        >
+          Capture Frame
+        </button>
+        <button
+          className="small-button"
+          disabled={disabled || capture.phase !== "active"}
           onClick={() => {
             onInvalidate();
             clearCalibration();
             clearPreview();
             setReview(null);
             setErrors([]);
-            let frame: CapturedFrame | null = null;
+            setLinkedEpoch(null);
+            setComparison(null);
             try {
               if (!video.current) return;
-              frame = captureCurrentFrame(video.current);
-              const templates = createPanelTextTemplates();
-              let automatic;
-              try {
-                automatic = recognizeAutomaticGame(frame, templates);
-              } finally {
-                releasePanelTextTemplates(templates);
-              }
-              if (automatic.ok) {
-                openReview(
-                  automatic.result,
-                  JSON.stringify(game),
-                  paintReviewPreview(frame, automatic.region),
-                );
-                const unresolved = automatic.result.board
-                  .flat()
-                  .filter((cell) => cell.occupied === null).length;
-                const pieces = automatic.result.pieces.filter(
-                  (p) => p.status === "recognized",
-                ).length;
-                const counts = Object.values(automatic.result.abilities).filter(
-                  (a) => a.status === "recognized",
-                ).length;
-                setFrameMessage(
-                  `자동 보드 판별 완료 · 미확정 ${unresolved}칸 · 보유 조각 ${pieces}/3 · 능력 횟수 ${counts}/2 판독. 미확정 항목은 아래에서 수정하세요. 원본 프레임을 지웠습니다. 보드 캡처는 검토 종료 시 지웁니다.`,
-                );
-              } else {
-                openReview(
-                  unknownRecognitionEngine.recognize({ kind: "frame", frame }),
-                );
-                setFrameMessage(
-                  `프레임 ${frame.width}×${frame.height} · ${automatic.reason === "AMBIGUOUS" ? "보드 후보가 여러 개입니다" : "보드를 확정하지 못했습니다"}. 게임 보드가 크게 보이도록 공유한 뒤 다시 Capture Frame을 누르거나 수동 영역·색상 선택을 사용하세요. 프레임을 지웠습니다.`,
-                );
-              }
+              const frame = captureCurrentFrame(video.current);
+              ownedFrame.current = frame;
+              const found = regions ? null : recognizeAutomaticBoard(frame);
+              const initial =
+                regions ??
+                (found?.ok ? suggestedRegions(frame, found.region) : null);
+              setRegionsCandidate(initial);
+              setCalibration({
+                id: ++frameSerial.current,
+                frame,
+                snapshot: JSON.stringify(game),
+                mode: "regions",
+              });
+              setFrameMessage(
+                "영역을 한 번 맞추면 이번 공유의 다음 턴에서도 재사용합니다.",
+              );
             } catch (error) {
+              clearCalibration();
               setFrameMessage(frameCaptureFailureMessage(error));
-            } finally {
-              releaseFrame(frame);
             }
           }}
         >
-          Capture Frame
+          영역 설정
         </button>
         <button
           className="small-button"
@@ -315,6 +452,15 @@ export function CaptureReview({
       <p role="status" aria-label="캡처 상태">
         {capture.message}
       </p>
+      <p role="status" aria-label="턴 이어가기 상태" className="help">
+        {regions
+          ? "이번 공유의 영역 유지 중"
+          : "첫 캡처 확인 또는 영역 설정을 기다리는 중"}{" "}
+        ·{" "}
+        {linkedEpoch === inputEpoch
+          ? "확인한 상태와 Apply 결과를 다음 턴에 이어갑니다"
+          : "아이템·보드 기준은 다음 확인 후 이어집니다"}
+      </p>
       <video
         ref={video}
         muted
@@ -328,7 +474,50 @@ export function CaptureReview({
           {frameMessage}
         </p>
       )}
-      {calibration && (
+      {calibration?.mode === "regions" && (
+        <SessionRegions
+          key={calibration.id}
+          frame={calibration.frame}
+          initial={regionsCandidate}
+          disabled={disabled}
+          onCancel={() => {
+            clearCalibration();
+            setFrameMessage("영역 설정을 취소하고 원본을 지웠습니다.");
+          }}
+          onUse={(profile) => {
+            const expected = calibration.snapshot;
+            try {
+              if (expected !== JSON.stringify(game)) {
+                setFrameMessage("수동 상태가 바뀌었습니다. 다시 캡처하세요.");
+                return;
+              }
+              const found = recognize(calibration.frame, profile);
+              if (!found.ok) {
+                setFrameMessage(
+                  "선택한 보드의 격자를 확인하지 못했습니다. 보드 가이드를 다시 맞추세요.",
+                );
+                return;
+              }
+              const image = paintReviewPreview(
+                calibration.frame,
+                profile.board,
+              );
+              setRegions(structuredClone(profile));
+              setRegionsCandidate(structuredClone(profile));
+              setLinkedEpoch(null);
+              openReview(found.result, expected, image);
+              clearCalibration();
+              setFrameMessage(
+                "세 영역을 설정했습니다. 처음 상태를 확인하면 다음 턴에 아이템과 배치 결과를 이어갑니다. 원본 프레임을 지웠습니다.",
+              );
+            } catch (error) {
+              clearCalibration();
+              setFrameMessage(frameCaptureFailureMessage(error));
+            }
+          }}
+        />
+      )}
+      {calibration && calibration.mode !== "regions" && (
         <FrameCalibration
           key={calibration.id}
           frame={calibration.frame}
@@ -393,6 +582,18 @@ export function CaptureReview({
               시작하세요.
             </p>
           )}
+          {comparison && (
+            <p
+              role={comparison.matched ? "status" : "alert"}
+              aria-label="이전 턴 대조"
+              className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm"
+            >
+              {comparison.matched
+                ? `직전 Apply 결과와 판독 보드가 일치합니다. 미판독 ${comparison.inherited.length}칸은 예상 상태로 이어받았고, 남은 아이템 ${review.draft.hiddenItems.length}개의 위치를 유지했습니다.`
+                : `예상 보드와 ${comparison.differences.length}칸이 다르거나 판독 근거가 부족합니다. 차이를 확인하세요. 이전 아이템 위치는 확인할 초안으로 남겼습니다.`}{" "}
+              새 아이콘이 생겼거나 게임에서 다른 배치를 했다면 수정하세요.
+            </p>
+          )}
           <button
             className="small-button"
             onClick={() =>
@@ -428,6 +629,8 @@ export function CaptureReview({
               return null;
             }}
             preview={preview}
+            differences={comparison?.differences}
+            inherited={comparison?.inherited}
             invalid={invalid}
             onLabel={(row, col, occupied) =>
               change((draft) => {
@@ -446,8 +649,9 @@ export function CaptureReview({
               보드 위 아이템 · 아이콘이 있는 칸에 표시
             </h3>
             <p className="text-sm">
-              보드에서 아이콘이 보이는 칸을 클릭하고 ‘점 찍기 아이템’ 또는 ‘바꿔
-              뽑기 아이템’을 선택하세요. 좌표를 직접 적을 필요는 없습니다.
+              {comparison
+                ? "이전 턴에서 남은 아이템 위치를 이어받았습니다. 그대로면 다시 찍지 마세요. 새로 생기거나 달라진 아이콘만 수정하세요."
+                : "보드에서 아이콘이 보이는 칸을 클릭하고 ‘점 찍기 아이템’ 또는 ‘바꿔 뽑기 아이템’을 선택하세요. 좌표를 직접 적을 필요는 없습니다."}
             </p>
             <p
               className="text-sm"
@@ -679,19 +883,28 @@ export function CaptureReview({
             <button
               className="primary-button"
               disabled={
+                !wholeReview ||
+                wholeIssues.length > 0 ||
+                stale ||
+                !!game.pendingReroll ||
+                review.draft.pieces.every((p) => p.empty === true)
+              }
+              onClick={() => {
+                if (wholeReview) acceptReview(wholeReview, true);
+              }}
+            >
+              전체 확인하고 분석
+            </button>
+            <button
+              className="primary-button"
+              disabled={
                 !!issues.length ||
                 !review.confirmed ||
                 stale ||
                 !!game.pendingReroll
               }
               onClick={() => {
-                const failures = onUse(review, snapshot);
-                setErrors(failures);
-                if (!failures.length) {
-                  clearCalibration();
-                  clearPreview();
-                  setReview(null);
-                }
+                acceptReview(review);
               }}
             >
               Use This State
@@ -710,6 +923,11 @@ export function CaptureReview({
               검토 버리기
             </button>
           </div>
+          <p className="help">
+            ‘전체 확인하고 분석’은 보드·아이템 목록(새 아이콘 포함)·새 조각·능력
+            횟수를 모두 확인했다는 뜻입니다. 미판독 필드는 먼저 수정하세요.
+            확인한 상태를 반영한 뒤 바로 분석합니다.
+          </p>
         </fieldset>
       )}
     </section>

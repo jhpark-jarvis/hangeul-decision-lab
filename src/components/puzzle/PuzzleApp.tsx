@@ -19,6 +19,7 @@ import {
   replaceGame,
   selectPlan,
   type BoardTool,
+  type PuzzleSession,
 } from "@/features/puzzle/session";
 import { BoardEditor } from "../board/BoardEditor";
 import { ShapeGrid } from "./ShapeGrid";
@@ -36,6 +37,8 @@ export function PuzzleApp() {
   const [rerollId, setRerollId] = useState("");
   const [busy, setBusy] = useState(false);
   const [captureOpen, setCaptureOpen] = useState(false);
+  const [inputEpoch, setInputEpoch] = useState(0);
+  const captureActions = useRef<{ nextTurn: () => void }>(null);
   const alive = useRef(true);
   const running = useRef(false);
   const timer = useRef<number | null>(null);
@@ -52,11 +55,11 @@ export function PuzzleApp() {
   const awaitingNext = phase === "await-next-pieces";
   const pending = session.game.pendingReroll;
 
-  function analyze() {
+  function analyze(candidate: PuzzleSession = session) {
     if (running.current) return;
     running.current = true;
-    const snapshot = structuredClone(session.game);
-    const version = session.version;
+    const snapshot = structuredClone(candidate.game);
+    const version = candidate.version;
     setSession((current) => ({ ...current, analysis: null, error: null }));
     setBusy(true);
     // Paint the busy state before bounded synchronous work. No worker or network.
@@ -97,6 +100,8 @@ export function PuzzleApp() {
         <CaptureReview
           game={session.game}
           disabled={busy}
+          inputEpoch={inputEpoch}
+          actions={captureActions}
           onInvalidate={() =>
             setSession((current) => ({
               ...current,
@@ -106,10 +111,11 @@ export function PuzzleApp() {
               notice: "화면 입력·검토가 바뀌었습니다. 확인 후 다시 분석하세요.",
             }))
           }
-          onUse={(review, snapshot) => {
+          onUse={(review, snapshot, shouldAnalyze) => {
             const result = applyReviewedState(session, review, snapshot);
             if (!result.ok) return result.issues;
             setSession(result.session);
+            if (shouldAnalyze) analyze(result.session);
             return [];
           }}
         />
@@ -124,10 +130,12 @@ export function PuzzleApp() {
             disabled={busy}
             overlay={preview.cells}
             clearedRows={preview.clearedRows}
-            onCell={(row, col) =>
-              setSession((current) => editCell(current, row, col, tool))
-            }
-            onClear={() =>
+            onCell={(row, col) => {
+              setInputEpoch((epoch) => epoch + 1);
+              setSession((current) => editCell(current, row, col, tool));
+            }}
+            onClear={() => {
+              setInputEpoch((epoch) => epoch + 1);
               setSession((current) =>
                 replaceGame(
                   current,
@@ -138,8 +146,8 @@ export function PuzzleApp() {
                   },
                   "보드와 아이템을 비웠습니다. 다시 분석하세요.",
                 ),
-              )
-            }
+              );
+            }}
           />
           <section className="panel" aria-label="입력 및 적용 상태">
             <p role="status" className="text-sm leading-6">
@@ -204,10 +212,12 @@ export function PuzzleApp() {
                             ...current,
                             analysis: null,
                           }));
-                        } else
+                        } else {
+                          setInputEpoch((epoch) => epoch + 1);
                           setSession((current) =>
                             editPiece(current, slot, value),
                           );
+                        }
                       }}
                     >
                       <option value="">
@@ -224,16 +234,36 @@ export function PuzzleApp() {
               })}
             </div>
             {awaitingNext && (
-              <button
-                className="primary-button mt-4 w-full"
-                disabled={busy || nextIds.some((id) => !id)}
-                onClick={() => {
-                  setSession((current) => loadNextPieces(current, nextIds));
-                  setNextIds(["", "", ""]);
-                }}
-              >
-                3개 블록 입력
-              </button>
+              <div className="mt-4 space-y-2">
+                {captureOpen && (
+                  <button
+                    className="primary-button w-full"
+                    disabled={busy}
+                    onClick={() => {
+                      captureActions.current?.nextTurn();
+                      document
+                        .querySelector('[aria-label="화면 캡처 및 인식 검토"]')
+                        ?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                    }}
+                  >
+                    다음 턴 가져오기
+                  </button>
+                )}
+                <button
+                  className="primary-button mt-4 w-full"
+                  disabled={busy || nextIds.some((id) => !id)}
+                  onClick={() => {
+                    setInputEpoch((epoch) => epoch + 1);
+                    setSession((current) => loadNextPieces(current, nextIds));
+                    setNextIds(["", "", ""]);
+                  }}
+                >
+                  3개 블록 입력
+                </button>
+              </div>
             )}
             <div
               className="mt-4 flex flex-wrap gap-4"
@@ -271,6 +301,7 @@ export function PuzzleApp() {
                     disabled={busy || !!pending}
                     value={session.game.abilities[ability]}
                     onChange={(event) => {
+                      setInputEpoch((epoch) => epoch + 1);
                       const raw = event.target.value;
                       setSession((current) =>
                         raw === ""
@@ -328,6 +359,7 @@ export function PuzzleApp() {
                 className="primary-button mt-3"
                 disabled={busy || !rerollId}
                 onClick={() => {
+                  setInputEpoch((epoch) => epoch + 1);
                   setSession((current) => inputReroll(current, rerollId));
                   setRerollId("");
                 }}
@@ -350,7 +382,7 @@ export function PuzzleApp() {
             <button
               className="primary-button mt-4 w-full"
               disabled={busy || awaitingNext || !!pending}
-              onClick={analyze}
+              onClick={() => analyze()}
             >
               Analyze
             </button>

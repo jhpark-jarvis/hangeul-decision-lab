@@ -136,6 +136,7 @@ test.beforeEach(async ({ page, context }, info) => {
     };
     let canvasFailure = "";
     let automaticMode = "";
+    let liveFrame = null;
     const getContext = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = function (...args) {
       return canvasFailure === "context" ? null : getContext.apply(this, args);
@@ -164,6 +165,7 @@ test.beforeEach(async ({ page, context }, info) => {
       configurable: true,
       value: () => {
         const element = document.createElement("canvas");
+        liveFrame = element;
         if (automaticMode) {
           const panelMode = automaticMode.startsWith("panel");
           const connectedMode = automaticMode.startsWith("panel-connected");
@@ -253,13 +255,17 @@ test.beforeEach(async ({ page, context }, info) => {
                 y = 30 + 26 * (0.9 + 2.9 * slot),
                 w = 122.2,
                 h = 70.2;
-              ctx.fillStyle = slot === 0 ? "#f4fafc" : "#16c4d6";
+              ctx.fillStyle =
+                slot === 0 || automaticMode === "panel-turn"
+                  ? "#f4fafc"
+                  : "#16c4d6";
               ctx.fillRect(x, y, w, h);
-              if (slot === 0) {
-                const rows = ["11", "10", "11"],
+              if (slot === 0 || automaticMode === "panel-turn") {
+                const rows =
+                    automaticMode === "panel-turn" ? ["1"] : ["11", "10", "11"],
                   p = w / 15,
-                  left = x + w * 0.25 - p,
-                  top = y + h / 2 - p * 1.5;
+                  left = x + w * 0.25 - (p * rows[0].length) / 2,
+                  top = y + h / 2 - (p * rows.length) / 2;
                 ctx.fillStyle = "#e545af";
                 rows.forEach((row, r) =>
                   [...row].forEach((cell, c) => {
@@ -321,6 +327,42 @@ test.beforeEach(async ({ page, context }, info) => {
       automaticMode: (mode) => {
         automaticMode = mode;
       },
+      nextFrame: (rows, mismatch = false) => {
+        const ctx = liveFrame.getContext("2d");
+        const image = ctx.createImageData(260, 416);
+        for (let y = 0; y < 416; y++)
+          for (let x = 0; x < 260; x++) {
+            const row = Math.floor(y / 26),
+              col = Math.floor(x / 26),
+              fx = x / 26 - col,
+              fy = y / 26 - row;
+            let color = [50, 165 + row * 0.7, 185 + row * 0.2];
+            if (fx < 0.06 || fy < 0.06) color = color.map((c) => c - 12);
+            if (
+              (rows[row][col] === "1") !==
+                (mismatch && row === 0 && col === 0) &&
+              fx > 0.08 &&
+              fx < 0.92 &&
+              fy > 0.08 &&
+              fy < 0.92
+            )
+              color = [
+                [60, 160, 220],
+                [130, 190, 40],
+                [210, 100, 180],
+                [220, 150, 30],
+              ][(row + col) % 4].map((c) =>
+                Math.min(255, c + 100 * (1 - (fx + fy) / 2)),
+              );
+            if (row === 15 && col === 9) color = [255, 255, 255]; // icon obscures tile occupancy
+            image.data.set([...color.map(Math.round), 255], (y * 260 + x) * 4);
+          }
+        ctx.putImageData(image, 20, 30);
+        image.data.fill(0);
+      },
+      resize: () => {
+        liveFrame.width = 433;
+      },
       canvasFailure: (mode) => {
         canvasFailure = mode;
       },
@@ -334,6 +376,9 @@ test.beforeEach(async ({ page, context }, info) => {
           .filter(
             (c) => c.getAttribute("aria-label") === "검토할 게임 보드 캡처",
           )
+          .map((c) => c.width === 0 && c.height === 0),
+        regionCanvases: created
+          .filter((c) => c.getAttribute("aria-label") === "세 영역 선택 프레임")
           .map((c) => c.width === 0 && c.height === 0),
         tracks: tracks.map((t) => t.readyState),
         fontCanvases: fontCanvases.map((c) => c.width === 0 && c.height === 0),
@@ -379,6 +424,7 @@ test.afterEach(async ({ page, context, browser }, info) => {
   expect(entry.cleanup.scratch.every(Boolean)).toBe(true);
   expect(entry.cleanup.canvases.every(Boolean)).toBe(true);
   expect(entry.cleanup.previews.every(Boolean)).toBe(true);
+  expect(entry.cleanup.regionCanvases.every(Boolean)).toBe(true);
   expect(entry.cleanup.fontCanvases.every(Boolean)).toBe(true);
   expect(entry.cleanup.tracks.every((state) => state === "ended")).toBe(true);
   expect(
@@ -480,6 +526,210 @@ for (const empty of [false, true])
     ).toHaveCount(0);
     await button(page, "Stop Capture").click();
   });
+
+async function startTurn(page, manualRegions = false) {
+  await page.evaluate(() => window.__calibration.automaticMode("panel-turn"));
+  await button(page, "Start Screen Capture").click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("video").videoWidth === 432 &&
+      document.querySelector("video").readyState >= 2,
+  );
+  await button(page, manualRegions ? "영역 설정" : "Capture Frame").click();
+  if (manualRegions) {
+    const selector = page.getByRole("group", {
+      name: "공유 세션 영역 설정",
+      exact: true,
+    });
+    await expect(selector).toBeVisible();
+    const picker = page.getByLabel("세 영역 선택 프레임", { exact: true });
+    const bounds = await picker.boundingBox();
+    for (const [x, y] of [
+      [20, 30],
+      [279, 445],
+    ])
+      await picker.click({
+        position: {
+          x: ((x + 0.5) / 432) * bounds.width,
+          y: ((y + 0.5) / 466) * bounds.height,
+        },
+      });
+    await expect(number(page, "공유 영역 board width")).toHaveValue("260");
+    await expect(number(page, "공유 영역 board height")).toHaveValue("416");
+    for (const [key, r] of Object.entries({
+      board: { x: 20, y: 30, width: 260, height: 416 },
+      pieces: { x: 293, y: 53.4, width: 122.2, height: 221 },
+      abilities: { x: 293, y: 290, width: 122.2, height: 156 },
+    })) {
+      await button(
+        page,
+        `${{ board: "보드", pieces: "보유 조각", abilities: "능력" }[key]} 영역 지정`,
+      ).click();
+      for (const [field, value] of Object.entries(r))
+        await number(page, `공유 영역 ${key} ${field}`).fill(String(value));
+    }
+    await button(page, "이 영역으로 인식").click();
+    await expect(selector).toHaveCount(0);
+  }
+  await expect(button(page, "전체 확인하고 분석")).toBeEnabled();
+  await page
+    .locator('button[data-review-row="15"][data-review-col="9"]')
+    .click();
+  await button(page, "바꿔 뽑기 아이템").click();
+  await button(page, "닫기").click();
+  await button(page, "전체 확인하고 분석").click();
+  for (let n = 0; n < 3; n++) {
+    await expect(button(page, "Apply Step")).toBeEnabled();
+    await button(page, "Apply Step").click();
+  }
+  await expect(button(page, "다음 턴 가져오기")).toBeEnabled();
+}
+async function updateTurnFrame(page, mismatch = false) {
+  const rows = await page.locator("button[data-row]").evaluateAll((cells) =>
+    Array.from({ length: 16 }, (_, row) =>
+      cells
+        .filter((c) => Number(c.dataset.row) === row)
+        .map((c) => (c.getAttribute("aria-pressed") === "true" ? "1" : "0"))
+        .join(""),
+    ),
+  );
+  await page.evaluate(
+    ({ rows, mismatch }) => window.__calibration.nextFrame(rows, mismatch),
+    { rows, mismatch },
+  );
+  // Canvas captureStream produces frames at 1Hz. Wait for the paint to reach video.
+  await page.waitForTimeout(1300);
+}
+test("panel continuous two turns reuse three regions and remaining item coordinates with one confirm/analyze", async ({
+  page,
+}) => {
+  await startTurn(page, true);
+  await updateTurnFrame(page);
+  await button(page, "다음 턴 가져오기").click();
+  await expect(
+    page.getByRole("status", { name: "턴 이어가기 상태" }),
+  ).toContainText("영역 유지 중");
+  await expect(
+    page.getByRole("status", { name: "이전 턴 대조" }),
+  ).toContainText("남은 아이템 1개의 위치를 유지");
+  const item = page.locator(
+    'button[data-review-row="15"][data-review-col="9"]',
+  );
+  await expect(item).toHaveAttribute("data-review-inherited", "true");
+  await expect(item).toHaveAttribute(
+    "aria-label",
+    /바꿔 뽑기 아이템.*이전 Apply/,
+  );
+  await expect(
+    page.locator('button[data-review-unresolved="true"]'),
+  ).toHaveCount(0);
+  await expect(button(page, "전체 확인하고 분석")).toBeEnabled();
+  await page.locator(".review-board").screenshot({
+    path: test.info().outputPath("synthetic-continuous-review.png"),
+  });
+  await button(page, "전체 확인하고 분석").click();
+  for (let n = 0; n < 3; n++) {
+    await expect(button(page, "Apply Step")).toBeEnabled();
+    await button(page, "Apply Step").click();
+  }
+  await expect(
+    page.locator('button[data-row="15"][data-col="9"]'),
+  ).toHaveAttribute("aria-label", /hidden reroll/);
+  await expect(button(page, "다음 턴 가져오기")).toBeEnabled();
+  // Manual game edits break the Apply lineage, while the session ROI survives.
+  await page.locator('button[data-row="0"][data-col="0"]').click();
+  await button(page, "Capture Frame").click();
+  await expect(
+    page.getByRole("status", { name: "턴 이어가기 상태" }),
+  ).toContainText("영역 유지 중");
+  await expect(page.getByRole("status", { name: "이전 턴 대조" })).toHaveCount(
+    0,
+  );
+  await expect(
+    page.getByRole("region", { name: "보드 아이템 확인" }),
+  ).toContainText("표시한 아이템 0개");
+  await expect(button(page, "전체 확인하고 분석")).toBeDisabled();
+});
+test("panel continuous mismatch is visible and does not fill unread board cells", async ({
+  page,
+}) => {
+  await startTurn(page);
+  await updateTurnFrame(page, true);
+  await button(page, "다음 턴 가져오기").click();
+  await expect(page.getByRole("alert", { name: "이전 턴 대조" })).toContainText(
+    "다르거나 판독 근거가 부족",
+  );
+  await expect(
+    page.locator('button[data-review-difference="true"]'),
+  ).toHaveCount(1);
+  await expect(
+    page.locator('button[data-review-inherited="true"]'),
+  ).toHaveCount(0);
+  await expect(
+    page.locator('button[data-review-row="15"][data-review-col="9"]'),
+  ).toHaveAttribute("data-review-unresolved", "true");
+  await expect(button(page, "전체 확인하고 분석")).toBeDisabled();
+  await expect(
+    page.getByRole("region", { name: "보드 아이템 확인" }),
+  ).toContainText("표시한 아이템 1개");
+});
+test("panel continuous session resets on resize and stop without retaining region pixels", async ({
+  page,
+}) => {
+  await startTurn(page, true);
+  await button(page, "Stop Capture").click();
+  await expect(
+    page.getByRole("status", { name: "턴 이어가기 상태" }),
+  ).toContainText("첫 캡처 확인 또는 영역 설정을 기다리는 중");
+  await button(page, "Start Screen Capture").click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("video").videoWidth === 432 &&
+      document.querySelector("video").readyState >= 2,
+  );
+  await button(page, "Capture Frame").click();
+  await expect(page.getByRole("status", { name: "이전 턴 대조" })).toHaveCount(
+    0,
+  );
+  await expect(
+    page.getByRole("region", { name: "보드 아이템 확인" }),
+  ).toContainText("표시한 아이템 0개");
+  await button(page, "전체 확인하고 분석").click();
+  for (let n = 0; n < 3; n++) {
+    await expect(button(page, "Apply Step")).toBeEnabled();
+    await button(page, "Apply Step").click();
+  }
+  await page.evaluate(() => window.__calibration.resize());
+  await page.waitForFunction(
+    () => document.querySelector("video").videoWidth === 433,
+  );
+  await button(page, "다음 턴 가져오기").click();
+  await expect(
+    page.getByText("공유 화면 크기가 바뀌었습니다. 영역을 다시 설정하세요.", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("status", { name: "턴 이어가기 상태" }),
+  ).toContainText("첫 캡처 확인 또는 영역 설정을 기다리는 중");
+  await button(page, "Stop Capture").click();
+  await expect(
+    page.getByRole("status", { name: "턴 이어가기 상태" }),
+  ).toContainText("첫 캡처 확인 또는 영역 설정을 기다리는 중");
+  await button(page, "Start Screen Capture").click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("video").videoWidth === 432 &&
+      document.querySelector("video").readyState >= 2,
+  );
+  await button(page, "Capture Frame").click();
+  await expect(page.getByRole("status", { name: "이전 턴 대조" })).toHaveCount(
+    0,
+  );
+  await expect(
+    page.getByRole("region", { name: "보드 아이템 확인" }),
+  ).toContainText("표시한 아이템 0개");
+});
 
 test("panel same-frame capture fills held pieces and abilities before explicit Use/Analyze/Apply", async ({
   page,

@@ -15,6 +15,8 @@ export function ReviewBoard({
   onLabel,
   items,
   onItem,
+  differences = [],
+  inherited = [],
 }: {
   board: RecognizedCell[][];
   preview: HTMLCanvasElement | null;
@@ -26,6 +28,8 @@ export function ReviewBoard({
     col: number,
     type: RecognizedHiddenItem["type"],
   ) => string | null;
+  differences?: { row: number; col: number }[];
+  inherited?: { row: number; col: number }[];
 }) {
   const host = useRef<HTMLDivElement>(null);
   const cells = useRef<(HTMLButtonElement | null)[]>([]);
@@ -121,6 +125,12 @@ export function ReviewBoard({
         블록이 있는지는 따로 확인해야 합니다. 점=점 찍기, 뽑=바꿔 뽑기
         아이템입니다.
       </p>
+      {!!(differences.length || inherited.length) && (
+        <p className="help">
+          빨간 테두리 Δ는 직전 예상과 다른 칸, 파란 ~는 미판독 상태를 이전 Apply
+          결과로 채운 칸입니다. 게임과 비교해 달라진 곳만 수정하세요.
+        </p>
+      )}
       <div
         className="review-board relative w-full max-w-lg"
         style={{
@@ -142,6 +152,12 @@ export function ReviewBoard({
           aria-label="검토 보드"
         >
           {flat.map((cell, index) => {
+            const different = differences.some(
+              (c) => c.row === cell.row && c.col === cell.col,
+            );
+            const carried = inherited.some(
+              (c) => c.row === cell.row && c.col === cell.col,
+            );
             const unknown =
               cell.status !== "recognized" || cell.occupied === null;
             const item = items.find(
@@ -163,20 +179,33 @@ export function ReviewBoard({
                 data-review-col={cell.col}
                 data-review-invalid={invalid(`board.${cell.row}.${cell.col}`)}
                 data-review-unresolved={unknown}
-                aria-label={`검토 row ${cell.row} col ${cell.col}: ${unknown ? "미확정" : cell.occupied ? "점유" : "빈칸"}${itemName ? ` · ${itemName} 아이템` : ""}`}
+                data-review-difference={different}
+                data-review-inherited={carried}
+                style={
+                  different
+                    ? { boxShadow: "inset 0 0 0 3px #e11d48" }
+                    : carried
+                      ? { boxShadow: "inset 0 0 0 2px #2563eb" }
+                      : undefined
+                }
+                aria-label={`검토 row ${cell.row} col ${cell.col}: ${unknown ? "미확정" : cell.occupied ? "점유" : "빈칸"}${itemName ? ` · ${itemName} 아이템` : ""}${different ? " · 캡처 당시 예상과 다름" : carried ? " · 이전 Apply에서 이어받음" : ""}`}
                 aria-pressed={selected === index}
                 aria-controls={selected === index ? id : undefined}
                 className={`review-cell ${unknown ? "unresolved" : ""} ${sourceVisible ? "over-image" : cell.occupied ? "filled" : "empty"}`}
                 onClick={() => select(index)}
               >
                 <span>
-                  {cell.status === "uncertain"
-                    ? "!"
-                    : unknown
-                      ? "?"
-                      : cell.occupied
-                        ? "●"
-                        : "·"}
+                  {different
+                    ? "Δ"
+                    : carried
+                      ? "~"
+                      : cell.status === "uncertain"
+                        ? "!"
+                        : unknown
+                          ? "?"
+                          : cell.occupied
+                            ? "●"
+                            : "·"}
                 </span>
                 {item && (
                   <small
