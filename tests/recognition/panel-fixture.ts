@@ -101,12 +101,21 @@ export function drawGlyph(
   const p = region.width * pixelFraction,
     left = region.x + (region.width - rows[0].length * p) / 2,
     top = region.y + (region.height - rows.length * p) / 2;
-  for (const [r, row] of rows.entries())
-    for (const [c, cell] of [...row].entries())
-      if (cell === "1")
-        paint(
-          frame,
-          { x: left + c * p, y: top + r * p, width: p, height: p },
-          color,
-        );
+  // Glyph strokes are continuous; rounding each little rectangle independently
+  // would erase subpixel strokes and add artificial gaps between adjacent bits.
+  for (
+    let y = Math.ceil(region.y);
+    y < Math.floor(region.y + region.height);
+    y++
+  )
+    for (
+      let x = Math.ceil(region.x);
+      x < Math.floor(region.x + region.width);
+      x++
+    ) {
+      const r = Math.floor((y + 0.5 - top) / p),
+        c = Math.floor((x + 0.5 - left) / p);
+      if (rows[r]?.[c] === "1")
+        frame.pixels.set([...color, 255], (y * frame.width + x) * 4);
+    }
 }

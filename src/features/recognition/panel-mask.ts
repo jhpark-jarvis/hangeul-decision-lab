@@ -86,6 +86,42 @@ export function matchText(
   if (!box || box.width < 2 || box.height < 4)
     return { value: null, status: "unknown" };
   const input = normalized(mask, w, h)!;
+  // A 0 and an 8 have similar outlines. Enclosed background components retain
+  // their semantic difference even when a fuzzy stroke comparison is close.
+  const holes = (data: Uint8Array) => {
+    const visited = new Uint8Array(data.length);
+    const centers: number[] = [];
+    for (let i = 0; i < data.length; i++)
+      if (!data[i] && !visited[i]) {
+        const queue = [i];
+        visited[i] = 1;
+        let edge = false,
+          size = 0,
+          sy = 0;
+        while (queue.length) {
+          const p = queue.pop()!,
+            x = p % w,
+            y = Math.floor(p / w);
+          size++;
+          sy += y;
+          edge ||= x === 0 || x === w - 1 || y === 0 || y === h - 1;
+          for (const next of [
+            x > 0 ? p - 1 : -1,
+            x < w - 1 ? p + 1 : -1,
+            y > 0 ? p - w : -1,
+            y < h - 1 ? p + w : -1,
+          ])
+            if (next >= 0 && !data[next] && !visited[next]) {
+              visited[next] = 1;
+              queue.push(next);
+            }
+        }
+        if (!edge && size >= 4) centers.push(sy / size / h);
+      }
+    visited.fill(0);
+    return centers.sort((a, b) => a - b);
+  };
+  const inputHoles = kind === "number" ? holes(input) : [];
   const coverage = (a: Uint8Array, b: Uint8Array) => {
     let hit = 0,
       total = 0;
@@ -95,8 +131,13 @@ export function matchText(
         const x = i % w,
           y = Math.floor(i / w);
         let found = false;
-        for (let dy = -1; dy <= 1; dy++)
-          for (let dx = -1; dx <= 1; dx++)
+        // Half an observed pixel is the rasterization error after normalization.
+        const rx =
+          kind === "number" ? Math.max(1, Math.ceil(w / box.width / 2)) : 1;
+        const ry =
+          kind === "number" ? Math.max(1, Math.ceil(h / box.height / 2)) : 1;
+        for (let dy = -ry; dy <= ry; dy++)
+          for (let dx = -rx; dx <= rx; dx++)
             if (
               x + dx >= 0 &&
               x + dx < w &&
@@ -120,10 +161,33 @@ export function matchText(
       )
         continue;
       const expected = normalized(template.mask, w, h)!;
-      const score = Math.min(
+      if (kind === "number") {
+        const expectedHoles = holes(expected);
+        if (
+          expectedHoles.length !== inputHoles.length ||
+          expectedHoles.some(
+            (y, i) =>
+              Math.abs(y - inputHoles[i]) > PANEL_PROFILE.numberHoleShift,
+          )
+        ) {
+          expected.fill(0);
+          continue;
+        }
+      }
+      const fuzzy = Math.min(
         coverage(input, expected),
         coverage(expected, input),
       );
+      let intersection = 0,
+        total = 0;
+      for (let i = 0; i < input.length; i++) {
+        intersection += Number(!!input[i] && !!expected[i]);
+        total += input[i] + expected[i];
+      }
+      const score =
+        kind === "number"
+          ? fuzzy * 0.65 + (total ? (2 * intersection) / total : 0) * 0.35
+          : fuzzy;
       expected.fill(0);
       scores.set(
         template.value,
@@ -134,7 +198,8 @@ export function matchText(
     if (!ranked.length) return { value: null, status: "unknown" };
     const [best, score] = ranked[0];
     return score >= PANEL_PROFILE.textMatch &&
-      score - (ranked[1]?.[1] ?? 0) >= PANEL_PROFILE.textGap
+      score - (ranked[1]?.[1] ?? 0) >=
+        (kind === "number" ? PANEL_PROFILE.numberGap : PANEL_PROFILE.textGap)
       ? { value: best, status: "recognized" }
       : { value: null, status: "uncertain" };
   } finally {

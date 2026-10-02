@@ -17,29 +17,42 @@ const { recognizePanelPieces, recognizePieceCards } = await import(
   await source("src/features/recognition/panel-pieces.ts")
 );
 const templates = [];
-for (const family of ["Malgun Gothic", "Arial", "sans-serif"])
-  for (const weight of [400, 700]) {
-    const rendered = await sharp(
-      Buffer.from(
-        `<svg width="140" height="32"><rect width="140" height="32" fill="black"/><text x="4" y="24" font-family="${family}" font-size="16" font-weight="${weight}" fill="white">사용 완료</text></svg>`,
-      ),
-    )
-      .removeAlpha()
-      .raw()
-      .toBuffer({ resolveWithObject: true });
-    const { data, info } = rendered;
-    templates.push({
-      value: "사용 완료",
-      mask: {
-        width: info.width,
-        height: info.height,
-        data: Uint8Array.from({ length: info.width * info.height }, (_, i) =>
-          Number(data[i * info.channels] > 170),
+const { recognizePanelAbilities, abilityRegions } = await import(
+  await source("src/features/recognition/panel-abilities.ts")
+);
+for (const value of [
+  "사용 완료",
+  ...Array.from({ length: 10 }, (_, i) => String(i)),
+])
+  for (const family of [
+    "Malgun Gothic",
+    "Arial",
+    "Segoe UI",
+    "Impact",
+    "sans-serif",
+  ])
+    for (const weight of [400, 700]) {
+      const rendered = await sharp(
+        Buffer.from(
+          `<svg width="140" height="32"><rect width="140" height="32" fill="black"/><text x="4" y="24" font-family="${family}" font-size="16" font-weight="${weight}" fill="white">${value}</text></svg>`,
         ),
-      },
-    });
-    data.fill(0);
-  }
+      )
+        .removeAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const { data, info } = rendered;
+      templates.push({
+        value,
+        mask: {
+          width: info.width,
+          height: info.height,
+          data: Uint8Array.from({ length: info.width * info.height }, (_, i) =>
+            Number(data[i * info.channels] > 170),
+          ),
+        },
+      });
+      data.fill(0);
+    }
 if (!process.argv[2])
   throw Error(
     "Provide the original full game screenshot externally. No image is bundled.",
@@ -89,12 +102,23 @@ for (const [index, path] of process.argv.slice(2).entries()) {
             getInitialCatalog(),
             templates,
           );
+    const countRegions =
+      index === 0 && board?.ok
+        ? abilityRegions(board.region)
+        : {
+            singleCell: { x: 77, y: 285, width: 11, height: 10 },
+            reroll: { x: 77, y: 312, width: 11, height: 10 },
+            total: { x: 46, y: 261, width: 7, height: 11 },
+          };
+    const counts = recognizePanelAbilities(frame, countRegions, templates);
     results.push({
       imageHash: hash,
       dimensions: [frame.width, frame.height],
       elapsedMs: performance.now() - start,
       boardRegion: board?.ok ? board.region : null,
       pieces: result.pieces,
+      counts,
+      expectedCounts: [0, 0, 0],
       reasons: result.reasons,
       immutable: before === createHash("sha256").update(pixels).digest("hex"),
       expected:
@@ -116,6 +140,14 @@ for (const result of results) {
     result.expected,
   );
   assert(result.pieces.every((p) => p.status === "recognized"));
+  assert.deepEqual(
+    [
+      result.counts.abilities.singleCell.value,
+      result.counts.abilities.reroll.value,
+      result.counts.total.value,
+    ],
+    result.expectedCounts,
+  );
 }
 console.log(
   JSON.stringify(
