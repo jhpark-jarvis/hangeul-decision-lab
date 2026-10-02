@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { GameState } from "@/domain/game/types";
-import { getInitialCatalog } from "@/domain/pieces/catalog";
 import {
   captureCurrentFrame,
   frameCaptureFailureMessage,
@@ -32,7 +31,14 @@ import { releaseFrame } from "@/features/recognition/calibration";
 import { recognizeAutomaticBoard } from "@/features/recognition/automatic";
 import { FrameCalibration } from "./FrameCalibration";
 
-const catalog = getInitialCatalog();
+import { labelReviewItem } from "@/features/recognition/item-label";
+import { ReviewPieces } from "./ReviewPieces";
+import {
+  abilityLabels,
+  itemLabels,
+  itemConfirmation,
+  reviewFieldLabel,
+} from "./review-labels";
 export function CaptureReview({
   game,
   disabled,
@@ -361,8 +367,7 @@ export function CaptureReview({
                 : review.draft.source.kind === "automatic-board"
                   ? "자동으로 찾은 보드 판별 결과입니다. 미확정 칸과 보드 전체, 블록·아이템·능력을 확인하세요."
                   : "현재 수동 입력의 개발용 복사입니다. 이미지 인식 결과가 아닙니다."}{" "}
-            미확정(?)·불확실(!) 값은 직접 확인하세요. confidence는 생성하지
-            않습니다.
+            아래 순서대로 보드·아이템, 보유 조각, 보유 능력을 확인하세요.
           </p>
           {stale && (
             <p role="alert">
@@ -391,9 +396,19 @@ export function CaptureReview({
           >
             미확정 보드 칸을 빈칸으로 확인
           </button>
+          <h3 className="font-semibold">보드 칸과 보드 위 아이템 확인</h3>
           <ReviewBoard
             key={`${review.draft.source.timestamp}:${snapshot}`}
             board={review.draft.board}
+            items={review.draft.hiddenItems}
+            onItem={(row, col, type) => {
+              const result = labelReviewItem(review, row, col, type);
+              if (!result.ok) return result.message;
+              onInvalidate();
+              setReview(result.review);
+              setErrors([]);
+              return null;
+            }}
             preview={preview}
             invalid={invalid}
             onLabel={(row, col, occupied) =>
@@ -405,54 +420,186 @@ export function CaptureReview({
               })
             }
           />
-          <div className="grid grid-cols-3 gap-3">
-            {review.draft.pieces.map((piece) => (
-              <label key={piece.slot}>
-                검토 slot {piece.slot}
-                <select
-                  aria-label={`검토 slot ${piece.slot} 블록`}
-                  aria-invalid={invalid(`pieces.${piece.slot}`)}
-                  value={
-                    piece.status !== "recognized"
-                      ? "unknown"
-                      : piece.empty
-                        ? "empty"
-                        : (piece.pieceId ?? "unknown")
-                  }
-                  onChange={(event) =>
+          <section
+            className="rounded-xl border border-blue-200 bg-blue-50 p-4 space-y-3"
+            aria-label="보드 아이템 확인"
+          >
+            <h3 className="font-semibold">
+              보드 위 아이템 · 아이콘이 있는 칸에 표시
+            </h3>
+            <p className="text-sm">
+              보드에서 아이콘이 보이는 칸을 클릭하고 ‘점 찍기 아이템’ 또는 ‘바꿔
+              뽑기 아이템’을 선택하세요. 좌표를 직접 적을 필요는 없습니다.
+            </p>
+            <p
+              className="text-sm"
+              role="status"
+              aria-label="표시한 보드 아이템"
+            >
+              표시한 아이템 {review.draft.hiddenItems.length}개 (보드에 최대
+              3개)
+            </p>
+            {!review.draft.hiddenItems.length && (
+              <p className="help">
+                아직 표시한 아이템이 없습니다. 게임 보드에도 아이콘이 없다면
+                추가하지 말고 아래 확인만 체크하세요.
+              </p>
+            )}
+            {review.draft.hiddenItems.length > 0 && (
+              <ul className="text-sm space-y-1">
+                {review.draft.hiddenItems.map((item, index) => (
+                  <li key={index}>
+                    {item.type ? itemLabels[item.type] : "종류 선택 필요"}{" "}
+                    아이템 ·{" "}
+                    {item.row !== null && item.col !== null
+                      ? `위에서 ${item.row + 1}번째 줄, 왼쪽에서 ${item.col + 1}번째 칸`
+                      : "위치 선택 필요"}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="help">
+              게임 보드 전체에서 빠진 아이콘이 없는지 확인한 뒤 체크하세요.
+              아이템 하나를 표시하는 것만으로 전체 확인이 끝나지는 않습니다.
+            </p>
+            <label className="block">
+              <input
+                type="checkbox"
+                aria-label={itemConfirmation}
+                style={{
+                  width: "auto",
+                  display: "inline-block",
+                  marginRight: 8,
+                }}
+                checked={review.draft.hiddenItemsStatus === "recognized"}
+                onChange={(event) =>
+                  change((draft) => {
+                    draft.hiddenItemsStatus = event.target.checked
+                      ? "recognized"
+                      : "unknown";
+                  })
+                }
+              />{" "}
+              {itemConfirmation}
+            </label>
+            <details>
+              <summary>좌표로 직접 입력 (선택 사항)</summary>
+              <p className="help mt-2">
+                보드 클릭 대신 좌표를 입력할 때만 사용하세요. 왼쪽 위는
+                행0·열0입니다. 목록을 수정하면 전체 아이템 확인을 다시 해야
+                합니다.
+              </p>
+              <div className="space-y-2 mt-2">
+                {review.draft.hiddenItems.map((item, index) => (
+                  <div className="flex flex-wrap gap-2" key={index}>
+                    <select
+                      aria-label={`검토 아이템 ${index} 종류`}
+                      value={item.type ?? "unknown"}
+                      onChange={(event) =>
+                        change((draft) => {
+                          const value = event.target.value;
+                          draft.hiddenItems[index].type =
+                            value === "unknown"
+                              ? null
+                              : (value as "reroll" | "single-cell");
+                          draft.hiddenItems[index].status = "recognized";
+                          draft.hiddenItemsStatus = "unknown";
+                          delete draft.hiddenItems[index].confidence;
+                        })
+                      }
+                    >
+                      <option value="unknown">미확정</option>
+                      <option value="reroll">바꿔 뽑기</option>
+                      <option value="single-cell">점 찍기</option>
+                    </select>
+                    {(["row", "col"] as const).map((key) => (
+                      <label key={key}>
+                        {key === "row" ? "행 (0~15)" : "열 (0~9)"}
+                        <input
+                          className="max-w-20"
+                          aria-label={`검토 아이템 ${index} ${key}`}
+                          aria-invalid={
+                            invalid(`hiddenItems.${index}`) ||
+                            invalid(`hiddenItems.${index}.${key}`)
+                          }
+                          type="number"
+                          value={item[key] ?? ""}
+                          onChange={(event) =>
+                            change((draft) => {
+                              draft.hiddenItems[index][key] =
+                                event.target.value === ""
+                                  ? null
+                                  : Number(event.target.value);
+                              draft.hiddenItems[index].status = "recognized";
+                              draft.hiddenItemsStatus = "unknown";
+                              delete draft.hiddenItems[index].confidence;
+                            })
+                          }
+                        />
+                      </label>
+                    ))}
+                    <button
+                      className="small-button"
+                      onClick={() =>
+                        change((draft) => {
+                          draft.hiddenItems.splice(index, 1);
+                          draft.hiddenItemsStatus = "unknown";
+                        })
+                      }
+                    >
+                      아이템 {index + 1} 제거
+                    </button>
+                  </div>
+                ))}
+                <button
+                  className="small-button"
+                  disabled={review.draft.hiddenItems.length >= 3}
+                  onClick={() =>
                     change((draft) => {
-                      const value = event.target.value;
-                      draft.pieces[piece.slot] = {
-                        slot: piece.slot,
-                        pieceId:
-                          value === "unknown" || value === "empty"
-                            ? null
-                            : value,
-                        empty: value === "unknown" ? null : value === "empty",
-                        status: value === "unknown" ? "unknown" : "recognized",
-                      };
+                      draft.hiddenItemsStatus = "unknown";
+                      draft.hiddenItems.push({
+                        row: null,
+                        col: null,
+                        type: null,
+                        status: "unknown",
+                      });
                     })
                   }
                 >
-                  <option value="unknown">미확정 / 불확실</option>
-                  <option value="empty">이미 사용 / 없음</option>
-                  {catalog.map((entry) => (
-                    <option key={entry.id} value={entry.id}>
-                      {entry.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ))}
-          </div>
+                  좌표로 아이템 추가
+                </button>
+              </div>
+            </details>
+          </section>
+          <ReviewPieces
+            pieces={review.draft.pieces}
+            invalid={invalid}
+            onSelect={(slot, value) =>
+              change((draft) => {
+                draft.pieces[slot] = {
+                  slot,
+                  pieceId:
+                    value === "unknown" || value === "empty" ? null : value,
+                  empty: value === "unknown" ? null : value === "empty",
+                  status: value === "unknown" ? "unknown" : "recognized",
+                };
+              })
+            }
+          />
+          <h3 className="font-semibold">보유 능력 · 게임 버튼 옆 남은 횟수</h3>
+          <p className="help">
+            게임 오른쪽 아래 ‘점 찍기’와 ‘바꿔 뽑기’ 버튼 옆 숫자를 그대로
+            적으세요. 보드 위 아이템 개수와는 다릅니다. 남은 능력이 없으면 0을
+            입력하세요. 비워두면 아직 확인하지 않은 상태입니다.
+          </p>
           <div className="grid grid-cols-2 gap-3">
-            {(["reroll", "singleCell"] as const).map((key) => (
+            {(["singleCell", "reroll"] as const).map((key) => (
               <label key={key}>
-                검토 {key}{" "}
+                {abilityLabels[key]} 남은 횟수{" "}
                 {review.draft.abilities[key].status !== "recognized" &&
-                  "(미확정 / 불확실)"}
+                  "(숫자를 입력하세요)"}
                 <input
-                  aria-label={`검토 ${key} 보유 수`}
+                  aria-label={`${abilityLabels[key]} 남은 횟수`}
                   aria-invalid={
                     invalid(`abilities.${key}`) || invalid("abilities")
                   }
@@ -477,116 +624,21 @@ export function CaptureReview({
               </label>
             ))}
           </div>
-          <div className="space-y-2" aria-label="검토 아이템">
-            <p>
-              아이템 {review.draft.hiddenItems.length}/3 ·{" "}
-              {review.draft.hiddenItemsStatus === "recognized"
-                ? "목록 확인됨"
-                : "목록 미확정 / 불확실"}
-            </p>
-            {review.draft.hiddenItems.map((item, index) => (
-              <div className="flex flex-wrap gap-2" key={index}>
-                <select
-                  aria-label={`검토 아이템 ${index} 종류`}
-                  value={item.type ?? "unknown"}
-                  onChange={(event) =>
-                    change((draft) => {
-                      const value = event.target.value;
-                      draft.hiddenItems[index].type =
-                        value === "unknown"
-                          ? null
-                          : (value as "reroll" | "single-cell");
-                      draft.hiddenItems[index].status = "recognized";
-                      delete draft.hiddenItems[index].confidence;
-                    })
-                  }
-                >
-                  <option value="unknown">미확정</option>
-                  <option value="reroll">Reroll</option>
-                  <option value="single-cell">Single Cell</option>
-                </select>
-                {(["row", "col"] as const).map((key) => (
-                  <label key={key}>
-                    {key}
-                    <input
-                      className="max-w-20"
-                      aria-label={`검토 아이템 ${index} ${key}`}
-                      aria-invalid={
-                        invalid(`hiddenItems.${index}`) ||
-                        invalid(`hiddenItems.${index}.${key}`)
-                      }
-                      type="number"
-                      value={item[key] ?? ""}
-                      onChange={(event) =>
-                        change((draft) => {
-                          draft.hiddenItems[index][key] =
-                            event.target.value === ""
-                              ? null
-                              : Number(event.target.value);
-                          draft.hiddenItems[index].status = "recognized";
-                          delete draft.hiddenItems[index].confidence;
-                        })
-                      }
-                    />
-                  </label>
-                ))}
-                <button
-                  className="small-button"
-                  onClick={() =>
-                    change((draft) => {
-                      draft.hiddenItems.splice(index, 1);
-                    })
-                  }
-                >
-                  검토 아이템 {index} 제거
-                </button>
-              </div>
-            ))}
-            <button
-              className="small-button"
-              disabled={review.draft.hiddenItems.length >= 3}
-              onClick={() =>
-                change((draft) => {
-                  draft.hiddenItems.push({
-                    row: null,
-                    col: null,
-                    type: null,
-                    status: "unknown",
-                  });
-                })
-              }
-            >
-              검토 아이템 추가
-            </button>
-            <label className="block">
-              <input
-                type="checkbox"
-                style={{
-                  width: "auto",
-                  display: "inline-block",
-                  marginRight: 8,
-                }}
-                checked={review.draft.hiddenItemsStatus === "recognized"}
-                onChange={(event) =>
-                  change((draft) => {
-                    draft.hiddenItemsStatus = event.target.checked
-                      ? "recognized"
-                      : "unknown";
-                  })
-                }
-              />{" "}
-              아이템 목록 전체 확인 (없음 포함)
-            </label>
-          </div>
           {!!fieldIssues.length && (
             <div role="alert" aria-label="검토 오류">
-              <p>확인할 필드 {fieldIssues.length}개</p>
+              <p className="font-semibold">아직 확인할 항목이 있습니다.</p>
+              {fieldIssues.some((issue) => issue.path.startsWith("board.")) && (
+                <p>보드의 노란 ?·! 칸을 눌러 칸 상태를 확인하세요.</p>
+              )}
               <ul>
-                {fieldIssues.slice(0, 12).map((issue, index) => (
-                  <li key={index}>
-                    {issue.path}: {issue.message}
-                  </li>
-                ))}
+                {fieldIssues
+                  .filter((issue) => !issue.path.startsWith("board."))
+                  .slice(0, 12)
+                  .map((issue, index) => (
+                    <li key={index}>
+                      {reviewFieldLabel(issue.path)}: {issue.message}
+                    </li>
+                  ))}
               </ul>
             </div>
           )}

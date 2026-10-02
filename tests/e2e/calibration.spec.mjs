@@ -66,13 +66,18 @@ async function cleared(page) {
 async function fillReview(page) {
   for (let slot = 0; slot < 3; slot++)
     await page
-      .getByRole("combobox", { name: `검토 slot ${slot} 블록`, exact: true })
+      .getByRole("combobox", {
+        name: ["첫 번째 보유 조각", "두 번째 보유 조각", "세 번째 보유 조각"][
+          slot
+        ],
+        exact: true,
+      })
       .selectOption("DOT");
-  for (const kind of ["reroll", "singleCell"])
-    await number(page, `검토 ${kind} 보유 수`).fill("0");
+  for (const kind of ["바꿔 뽑기", "점 찍기"])
+    await number(page, `${kind} 남은 횟수`).fill("0");
   await page
     .getByRole("checkbox", {
-      name: "아이템 목록 전체 확인 (없음 포함)",
+      name: "보드의 아이템을 모두 확인했습니다 (없으면 그대로 체크)",
       exact: true,
     })
     .check();
@@ -206,8 +211,17 @@ test.beforeEach(async ({ page, context }, info) => {
                     Math.min(255, c + 100 * (1 - (fx + fy) / 2)),
                   );
                 }
-                if (automaticMode === "occluded" && row === 1 && col === 0)
+                if (
+                  ["occluded", "items"].includes(automaticMode) &&
+                  row === 1 &&
+                  col === 0
+                )
                   color = [255, 255, 255];
+                if (automaticMode === "items" && row === 12 && col === 7)
+                  color =
+                    Math.hypot(fx - 0.5, fy - 0.5) < 0.28
+                      ? [30, 90, 240]
+                      : [255, 255, 255];
               }
               image.data.set(
                 [...color.map(Math.round), 255],
@@ -706,4 +720,171 @@ test("visual unresolved cells label in place with keyboard, crop alignment and l
   await start();
   await button(page, "화면 입력 닫기").click();
   expect((await summary()).previews.every(Boolean)).toBe(true);
+});
+
+test("visual game labels and board item marking preserve occupancy and confirmation boundaries", async ({
+  page,
+}) => {
+  const itemCheck = page.getByRole("checkbox", {
+    name: "보드의 아이템을 모두 확인했습니다 (없으면 그대로 체크)",
+    exact: true,
+  });
+  const allCheck = page.getByRole("checkbox", {
+    name: "검토한 전체 상태 확인",
+    exact: true,
+  });
+  const cell = (row, col) =>
+    page.locator(`button[data-review-row="${row}"][data-review-col="${col}"]`);
+  const editor = page.getByRole("group", {
+    name: "선택한 칸 레이블링",
+    exact: true,
+  });
+  const items = page.getByRole("region", {
+    name: "보드 아이템 확인",
+    exact: true,
+  });
+  const assertMenuBounds = async () => {
+    const menu = await editor.boundingBox(),
+      board = await page.locator(".review-board").boundingBox();
+    expect(menu.x).toBeGreaterThanOrEqual(board.x - 1);
+    expect(menu.y).toBeGreaterThanOrEqual(board.y - 1);
+    expect(menu.x + menu.width).toBeLessThanOrEqual(board.x + board.width + 1);
+    expect(menu.y + menu.height).toBeLessThanOrEqual(
+      board.y + board.height + 1,
+    );
+  };
+  await page.evaluate(() => window.__calibration.automaticMode("items"));
+  await button(page, "Start Screen Capture").click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("video").videoWidth === 300 &&
+      document.querySelector("video").readyState >= 2,
+  );
+  await button(page, "Capture Frame").click();
+  await expect(cell(12, 7)).toHaveAttribute("data-review-unresolved", "true");
+  await expect(items).toContainText("표시한 아이템 0개 (보드에 최대 3개)");
+  await expect(items).toContainText(
+    "게임 보드에도 아이콘이 없다면 추가하지 말고 아래 확인만 체크",
+  );
+  await expect(itemCheck).not.toBeChecked();
+  await expect(
+    page.getByRole("combobox", { name: "첫 번째 보유 조각", exact: true }),
+  ).toHaveValue("unknown");
+  await expect(number(page, "점 찍기 남은 횟수")).toHaveValue("");
+  await expect(
+    page.getByRole("group", { name: "인식 결과 검토", exact: true }),
+  ).toContainText("게임 버튼 옆 남은 횟수");
+  await fillReview(page);
+  await cell(12, 7).click();
+  await button(page, "점 찍기 아이템").click();
+  await expect(cell(12, 7)).toHaveAttribute("data-review-unresolved", "true");
+  await expect(cell(12, 7)).toHaveAttribute(
+    "aria-label",
+    /미확정 · 점 찍기 아이템/,
+  );
+  await expect(cell(12, 7).locator("[data-review-item]")).toHaveText("점");
+  await expect(itemCheck).not.toBeChecked();
+  await expect(allCheck).not.toBeChecked();
+  await expect(number(page, "점 찍기 남은 횟수")).toHaveValue("0");
+  await expect(items).toContainText(
+    "점 찍기 아이템 · 위에서 13번째 줄, 왼쪽에서 8번째 칸",
+  );
+  await assertMenuBounds();
+  await page
+    .locator(".review-board")
+    .screenshot({ path: test.info().outputPath("synthetic-item-review.png") });
+  await button(page, "점유 표시 보기").click();
+  await expect(cell(12, 7).locator("[data-review-item]")).toBeVisible();
+  await button(page, "게임 캡처 보기").click();
+  await button(page, "빈칸으로 표시").click();
+  await button(page, "닫기").click();
+  await cell(1, 0).click();
+  await button(page, "빈칸으로 표시").click();
+  await button(page, "닫기").click();
+  for (const [row, col] of [
+    [0, 9],
+    [15, 0],
+  ]) {
+    await cell(row, col).click();
+    await button(page, "바꿔 뽑기 아이템").click();
+    await assertMenuBounds();
+    await button(page, "닫기").click();
+  }
+  await itemCheck.check();
+  await allCheck.check();
+  await expect(button(page, "Use This State")).toBeEnabled();
+  await cell(10, 9).click();
+  await button(page, "점 찍기 아이템").click();
+  await expect(editor.getByRole("alert")).toContainText("최대 3개");
+  await expect(items).toContainText("표시한 아이템 3개");
+  await expect(cell(10, 9).locator("[data-review-item]")).toHaveCount(0);
+  await expect(itemCheck).toBeChecked();
+  await expect(allCheck).toBeChecked();
+  await expect(button(page, "Use This State")).toBeEnabled();
+  await assertMenuBounds();
+  await button(page, "닫기").click();
+  await cell(12, 7).click();
+  await button(page, "바꿔 뽑기 아이템").click(); // replacement is permitted at capacity
+  await expect(cell(12, 7).locator("[data-review-item]")).toHaveText("뽑");
+  await expect(itemCheck).not.toBeChecked();
+  await button(page, "점 찍기 아이템").click();
+  await button(page, "닫기").click();
+  for (const [row, col] of [
+    [0, 9],
+    [15, 0],
+  ]) {
+    await cell(row, col).click();
+    await button(page, "이 칸에 아이템 없음").click();
+    await expect(cell(row, col).locator("[data-review-item]")).toHaveCount(0);
+    await button(page, "닫기").click();
+  }
+  await expect(items).toContainText("표시한 아이템 1개");
+  await page
+    .getByText("첫 번째 보유 조각 모양으로 고르기", { exact: true })
+    .click();
+  await button(page, "첫 번째 보유 조각 5칸 열린 네모 선택").click();
+  await expect(
+    page
+      .getByLabel("첫 번째 보유 조각 선택 모양", { exact: true })
+      .locator(".shape-filled"),
+  ).toHaveCount(5);
+  await page
+    .getByText("첫 번째 보유 조각 모양으로 고르기", { exact: true })
+    .click();
+  for (const label of ["두 번째 보유 조각", "세 번째 보유 조각"])
+    await page
+      .getByRole("combobox", { name: label, exact: true })
+      .selectOption("empty");
+  await number(page, "점 찍기 남은 횟수").fill("");
+  await itemCheck.check();
+  await allCheck.check();
+  await expect(button(page, "Use This State")).toBeDisabled();
+  await expect(
+    page.getByRole("alert", { name: "검토 오류", exact: true }),
+  ).toContainText("점 찍기");
+  await number(page, "점 찍기 남은 횟수").fill("0");
+  await allCheck.check();
+  await items.screenshot({
+    path: test.info().outputPath("synthetic-item-instructions.png"),
+  });
+  await button(page, "Use This State").click();
+  await expect(
+    page.locator('button[data-row="12"][data-col="7"]'),
+  ).toHaveAttribute("aria-label", /hidden single-cell/);
+  await expect(
+    page.getByRole("status", { name: "점유 칸 수", exact: true }),
+  ).toHaveText("49 / 160");
+  await expect(number(page, "Single Cell 보유 수")).toHaveValue("0");
+  await expect(number(page, "Reroll 보유 수")).toHaveValue("0");
+  await expect(
+    page.getByRole("combobox", { name: "slot 0 블록", exact: true }),
+  ).toHaveValue("C_5");
+  for (const slot of [1, 2])
+    await expect(
+      page.getByRole("combobox", { name: `slot ${slot} 블록`, exact: true }),
+    ).toHaveValue("");
+  await button(page, "Analyze").click();
+  await expect(button(page, "Apply Step")).toBeEnabled();
+  await button(page, "Apply Step").click();
+  await button(page, "Stop Capture").click();
 });

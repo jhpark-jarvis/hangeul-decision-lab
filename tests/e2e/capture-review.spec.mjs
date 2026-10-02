@@ -118,17 +118,18 @@ test("review correction, unknown rejection and existing Analyze/Apply", async ({
   await expect(button(page, "Use This State")).toBeDisabled();
   await cell.click();
   await button(page, "빈칸으로 표시").click(); // explicit label resets confirmation
-  await select(page, "검토 slot 2 블록").selectOption("C_5");
-  await input(page, "검토 reroll 보유 수").fill("6");
-  await input(page, "검토 singleCell 보유 수").fill("2");
+  await select(page, "세 번째 보유 조각").selectOption("C_5");
+  await input(page, "바꿔 뽑기 남은 횟수").fill("6");
+  await input(page, "점 찍기 남은 횟수").fill("2");
   await expect(
     page.getByRole("alert", { name: "검토 오류", exact: true }),
   ).toContainText("능력 보유 합계는 7");
-  await input(page, "검토 singleCell 보유 수").fill("1");
-  await select(page, "검토 slot 1 블록").selectOption("unknown");
+  await input(page, "점 찍기 남은 횟수").fill("1");
+  await select(page, "두 번째 보유 조각").selectOption("unknown");
   await expect(button(page, "Use This State")).toBeDisabled();
-  await select(page, "검토 slot 1 블록").selectOption("DOT");
-  await button(page, "검토 아이템 추가").click();
+  await select(page, "두 번째 보유 조각").selectOption("DOT");
+  await page.getByText("좌표로 직접 입력 (선택 사항)", { exact: true }).click();
+  await button(page, "좌표로 아이템 추가").click();
   await select(page, "검토 아이템 0 종류").selectOption("reroll");
   await input(page, "검토 아이템 0 row").fill("16");
   await input(page, "검토 아이템 0 col").fill("0");
@@ -137,6 +138,12 @@ test("review correction, unknown rejection and existing Analyze/Apply", async ({
     "true",
   );
   await input(page, "검토 아이템 0 row").fill("0");
+  await page
+    .getByRole("checkbox", {
+      name: "보드의 아이템을 모두 확인했습니다 (없으면 그대로 체크)",
+      exact: true,
+    })
+    .check();
   await expect(
     review(page).getByRole("checkbox", {
       name: "검토한 전체 상태 확인",
@@ -288,12 +295,15 @@ test("capture cancel, permission, late stream, preview/frame, ended and unmount"
   // an empty board or a ready-to-use game state.
   await button(page, "미확정 보드 칸을 빈칸으로 확인").click();
   for (let slot = 0; slot < 3; slot++)
-    await select(page, `검토 slot ${slot} 블록`).selectOption("DOT");
-  await input(page, "검토 reroll 보유 수").fill("0");
-  await input(page, "검토 singleCell 보유 수").fill("0");
+    await select(
+      page,
+      ["첫 번째 보유 조각", "두 번째 보유 조각", "세 번째 보유 조각"][slot],
+    ).selectOption("DOT");
+  await input(page, "바꿔 뽑기 남은 횟수").fill("0");
+  await input(page, "점 찍기 남은 횟수").fill("0");
   await review(page)
     .getByRole("checkbox", {
-      name: "아이템 목록 전체 확인 (없음 포함)",
+      name: "보드의 아이템을 모두 확인했습니다 (없으면 그대로 체크)",
       exact: true,
     })
     .check();

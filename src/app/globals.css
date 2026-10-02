@@ -129,6 +129,9 @@ summary:focus-visible {
   .cell-label-editor {
     @apply absolute z-20 w-[248px] rounded-xl border-2 border-blue-600 bg-white p-3 text-stone-900 shadow-xl;
   }
+  .review-item-badge {
+    @apply absolute bottom-0 right-0 rounded-tl border border-blue-900 bg-blue-700 px-1 text-xs font-bold text-white;
+  }
   summary {
     @apply cursor-pointer text-sm font-semibold;
   }

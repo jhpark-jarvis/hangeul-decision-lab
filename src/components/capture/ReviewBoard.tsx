@@ -2,18 +2,30 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { BOARD_HEIGHT, BOARD_WIDTH } from "@/domain/board/board";
-import type { RecognizedCell } from "@/features/recognition/types";
+import type {
+  RecognizedCell,
+  RecognizedHiddenItem,
+} from "@/features/recognition/types";
+import { itemLabels } from "./review-labels";
 
 export function ReviewBoard({
   board,
   preview,
   invalid,
   onLabel,
+  items,
+  onItem,
 }: {
   board: RecognizedCell[][];
   preview: HTMLCanvasElement | null;
   invalid: (path: string) => boolean;
   onLabel: (row: number, col: number, occupied: boolean | null) => void;
+  items: RecognizedHiddenItem[];
+  onItem: (
+    row: number,
+    col: number,
+    type: RecognizedHiddenItem["type"],
+  ) => string | null;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const cells = useRef<(HTMLButtonElement | null)[]>([]);
@@ -21,6 +33,7 @@ export function ReviewBoard({
   const id = useId();
   const [selected, setSelected] = useState<number | null>(null);
   const [imageVisible, setImageVisible] = useState(true);
+  const [itemError, setItemError] = useState<string | null>(null);
   const flat = board.flat();
   const unresolved = flat.filter(
     (cell) => cell.status !== "recognized" || cell.occupied === null,
@@ -39,6 +52,7 @@ export function ReviewBoard({
         ?.focus({ preventScroll: true });
   }, [selected]);
   function select(index: number) {
+    setItemError(null);
     setSelected(index);
     cells.current[index]?.scrollIntoView({
       block: "center",
@@ -57,6 +71,9 @@ export function ReviewBoard({
   }
   const target = selected === null ? null : flat[selected];
   const sourceVisible = !!preview && imageVisible;
+  const targetItem = target
+    ? items.find((item) => item.row === target.row && item.col === target.col)
+    : undefined;
   return (
     <div className="space-y-3" aria-label="보드 시각 검토">
       <div className="flex flex-wrap items-center gap-2">
@@ -99,8 +116,10 @@ export function ReviewBoard({
         )}
       </div>
       <p className="help">
-        노란 테두리의 ?·! 칸을 눌러 바로 빈칸 또는 점유로 지정하세요. 다른 칸도
-        눌러 수정할 수 있습니다.
+        노란 ?·! 칸을 눌러 빈칸 또는 점유로 지정하세요. 아이콘이 보이는 칸은
+        같은 메뉴의 ‘이 칸의 아이템’에서 종류도 선택하세요. 아이템을 지정해도
+        블록이 있는지는 따로 확인해야 합니다. 점=점 찍기, 뽑=바꿔 뽑기
+        아이템입니다.
       </p>
       <div
         className="review-board relative w-full max-w-lg"
@@ -125,6 +144,14 @@ export function ReviewBoard({
           {flat.map((cell, index) => {
             const unknown =
               cell.status !== "recognized" || cell.occupied === null;
+            const item = items.find(
+              (entry) => entry.row === cell.row && entry.col === cell.col,
+            );
+            const itemName = item
+              ? item.type
+                ? itemLabels[item.type]
+                : "종류 미확정"
+              : null;
             return (
               <button
                 ref={(element) => {
@@ -136,7 +163,7 @@ export function ReviewBoard({
                 data-review-col={cell.col}
                 data-review-invalid={invalid(`board.${cell.row}.${cell.col}`)}
                 data-review-unresolved={unknown}
-                aria-label={`검토 row ${cell.row} col ${cell.col}: ${unknown ? "미확정" : cell.occupied ? "점유" : "빈칸"}`}
+                aria-label={`검토 row ${cell.row} col ${cell.col}: ${unknown ? "미확정" : cell.occupied ? "점유" : "빈칸"}${itemName ? ` · ${itemName} 아이템` : ""}`}
                 aria-pressed={selected === index}
                 aria-controls={selected === index ? id : undefined}
                 className={`review-cell ${unknown ? "unresolved" : ""} ${sourceVisible ? "over-image" : cell.occupied ? "filled" : "empty"}`}
@@ -151,6 +178,20 @@ export function ReviewBoard({
                         ? "●"
                         : "·"}
                 </span>
+                {item && (
+                  <small
+                    className="review-item-badge"
+                    data-review-item={item.type ?? "unknown"}
+                    title={`${itemName} 아이템`}
+                    aria-hidden="true"
+                  >
+                    {item.type === "single-cell"
+                      ? "점"
+                      : item.type === "reroll"
+                        ? "뽑"
+                        : "?"}
+                  </small>
+                )}
               </button>
             );
           })}
@@ -164,8 +205,8 @@ export function ReviewBoard({
             className="cell-label-editor"
             style={{
               left: `clamp(124px, ${((target.col + 0.5) / BOARD_WIDTH) * 100}%, calc(100% - 124px))`,
-              top: `${((target.row + (target.row < BOARD_HEIGHT - 4 ? 1 : 0)) / BOARD_HEIGHT) * 100}%`,
-              transform: `translate(-50%, ${target.row < BOARD_HEIGHT - 4 ? "0" : "-100%"})`,
+              top: `${((target.row + (target.row < BOARD_HEIGHT / 2 ? 1 : 0)) / BOARD_HEIGHT) * 100}%`,
+              transform: `translate(-50%, ${target.row < BOARD_HEIGHT / 2 ? "0" : "-100%"})`,
             }}
             onKeyDown={(event) => {
               if (event.key === "Escape") {
@@ -182,6 +223,9 @@ export function ReviewBoard({
                 : target.occupied
                   ? "점유"
                   : "빈칸"}
+            </p>
+            <p className="help mt-2">
+              칸 상태 · 블록이 있으면 점유, 없으면 빈칸
             </p>
             <div className="flex gap-2 mt-2">
               <button
@@ -223,6 +267,49 @@ export function ReviewBoard({
               >
                 닫기
               </button>
+            </div>
+            <div className="mt-3 border-t border-stone-200 pt-2 space-y-2">
+              <p className="text-xs font-semibold">
+                이 칸의 아이템 ·{" "}
+                {targetItem
+                  ? targetItem.type
+                    ? itemLabels[targetItem.type]
+                    : "종류 확인 필요"
+                  : "표시한 아이템 없음"}
+              </p>
+              <div className="flex flex-wrap gap-1">
+                {(["single-cell", "reroll"] as const).map((type) => (
+                  <button
+                    type="button"
+                    className="small-button"
+                    key={type}
+                    aria-pressed={targetItem?.type === type}
+                    onClick={() =>
+                      setItemError(onItem(target.row, target.col, type))
+                    }
+                  >
+                    {itemLabels[type]} 아이템
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  className="small-button"
+                  onClick={() =>
+                    setItemError(onItem(target.row, target.col, null))
+                  }
+                >
+                  이 칸에 아이템 없음
+                </button>
+              </div>
+              <p className="help">
+                아이템은 칸 상태와 별개입니다. 종류 선택 후 블록 점유도
+                확인하세요.
+              </p>
+              {itemError && (
+                <p role="alert" className="text-xs text-red-700">
+                  {itemError}
+                </p>
+              )}
             </div>
           </div>
         )}
