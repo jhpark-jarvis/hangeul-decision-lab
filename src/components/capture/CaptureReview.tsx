@@ -28,7 +28,11 @@ import type { PixelRegion } from "@/features/recognition/calibration";
 import { ReviewBoard } from "./ReviewBoard";
 import { paintReviewPreview, releaseReviewPreview } from "./review-preview";
 import { releaseFrame } from "@/features/recognition/calibration";
-import { recognizeAutomaticBoard } from "@/features/recognition/automatic";
+import { recognizeAutomaticGame } from "@/features/recognition/automatic-game";
+import {
+  createPanelTextTemplates,
+  releasePanelTextTemplates,
+} from "@/features/recognition/panel-fonts";
 import { FrameCalibration } from "./FrameCalibration";
 
 import { labelReviewItem } from "@/features/recognition/item-label";
@@ -160,10 +164,10 @@ export function CaptureReview({
     <section className="panel space-y-4" aria-label="화면 캡처 및 인식 검토">
       <h2>화면 캡처·인식 검토</h2>
       <p className="help">
-        화면을 공유한 뒤 Capture Frame을 누르면 보드 영역과 점유 칸을 자동으로
-        찾습니다. 미확정 칸과 블록·아이템·능력은 직접 검토해야 합니다. 자동
-        인식이 실패하면 수동 영역·색상 선택을 사용하세요. 아래 mock은 현재 수동
-        입력의 복사입니다.
+        화면을 공유한 뒤 Capture Frame을 누르면 보드·보유 조각·능력 횟수를
+        자동으로 채웁니다. 미확정 항목만 수정하고, 보드 위 아이템과 전체 상태를
+        확인하세요. 자동 인식이 실패하면 수동 영역·색상 선택을 사용하세요. 아래
+        mock은 현재 수동 입력의 복사입니다.
       </p>
       <div className="flex flex-wrap gap-2">
         <button
@@ -222,7 +226,13 @@ export function CaptureReview({
             try {
               if (!video.current) return;
               frame = captureCurrentFrame(video.current);
-              const automatic = recognizeAutomaticBoard(frame);
+              const templates = createPanelTextTemplates();
+              let automatic;
+              try {
+                automatic = recognizeAutomaticGame(frame, templates);
+              } finally {
+                releasePanelTextTemplates(templates);
+              }
               if (automatic.ok) {
                 openReview(
                   automatic.result,
@@ -232,8 +242,14 @@ export function CaptureReview({
                 const unresolved = automatic.result.board
                   .flat()
                   .filter((cell) => cell.occupied === null).length;
+                const pieces = automatic.result.pieces.filter(
+                  (p) => p.status === "recognized",
+                ).length;
+                const counts = Object.values(automatic.result.abilities).filter(
+                  (a) => a.status === "recognized",
+                ).length;
                 setFrameMessage(
-                  `자동 보드 판별 완료 · 미확정 ${unresolved}칸 · 원본 프레임을 지웠습니다. 보드 캡처는 검토 종료 시 지웁니다.`,
+                  `자동 보드 판별 완료 · 미확정 ${unresolved}칸 · 보유 조각 ${pieces}/3 · 능력 횟수 ${counts}/2 판독. 미확정 항목은 아래에서 수정하세요. 원본 프레임을 지웠습니다. 보드 캡처는 검토 종료 시 지웁니다.`,
                 );
               } else {
                 openReview(
@@ -364,9 +380,11 @@ export function CaptureReview({
               ? "영역·색상 선택 전: 모든 값은 미확정입니다."
               : review.draft.source.kind === "calibrated-board"
                 ? "지정 영역·색상 표본의 보드 판별 결과입니다. 블록·아이템·능력과 각 칸을 확인하세요."
-                : review.draft.source.kind === "automatic-board"
-                  ? "자동으로 찾은 보드 판별 결과입니다. 미확정 칸과 보드 전체, 블록·아이템·능력을 확인하세요."
-                  : "현재 수동 입력의 개발용 복사입니다. 이미지 인식 결과가 아닙니다."}{" "}
+                : review.draft.source.kind === "automatic-game"
+                  ? "자동으로 찾은 보드와 같은 화면의 보유 조각·능력 판독 결과입니다. 채워진 값은 게임과 비교하고 미확정 항목만 수정하세요. 아이템은 보드에서 직접 표시하세요."
+                  : review.draft.source.kind === "automatic-board"
+                    ? "자동으로 찾은 보드 판별 결과입니다. 미확정 칸과 보드 전체, 블록·아이템·능력을 확인하세요."
+                    : "현재 수동 입력의 개발용 복사입니다. 이미지 인식 결과가 아닙니다."}{" "}
             아래 순서대로 보드·아이템, 보유 조각, 보유 능력을 확인하세요.
           </p>
           {stale && (
@@ -588,9 +606,10 @@ export function CaptureReview({
           />
           <h3 className="font-semibold">보유 능력 · 게임 버튼 옆 남은 횟수</h3>
           <p className="help">
-            게임 오른쪽 아래 ‘점 찍기’와 ‘바꿔 뽑기’ 버튼 옆 숫자를 그대로
-            적으세요. 보드 위 아이템 개수와는 다릅니다. 남은 능력이 없으면 0을
-            입력하세요. 비워두면 아직 확인하지 않은 상태입니다.
+            채워진 횟수가 게임 오른쪽 아래 ‘점 찍기’와 ‘바꿔 뽑기’ 버튼 옆
+            숫자와 맞는지 확인하세요. 비어 있거나 다르면 그 숫자로 수정하세요.
+            보드 위 아이템 개수와는 다릅니다. 남은 능력이 없으면 0을 입력하세요.
+            비워두면 아직 확인하지 않은 상태입니다.
           </p>
           <div className="grid grid-cols-2 gap-3">
             {(["singleCell", "reroll"] as const).map((key) => (

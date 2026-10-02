@@ -19,7 +19,12 @@ export type RecognizedHiddenItem = Observation & {
 };
 export type RecognizedCount = Observation & { value: number | null };
 export type RecognitionSource = {
-  kind: "capture-stub" | "manual-mock" | "calibrated-board" | "automatic-board";
+  kind:
+    | "capture-stub"
+    | "manual-mock"
+    | "calibrated-board"
+    | "automatic-board"
+    | "automatic-game";
   timestamp: number;
   dimensions?: { width: number; height: number };
 };
@@ -31,7 +36,12 @@ export type RecognitionResult = {
   abilities: { reroll: RecognizedCount; singleCell: RecognizedCount };
   source: RecognitionSource;
   summary: {
-    engine: "unimplemented" | "manual-copy" | "rgb-samples" | "grid-tiles";
+    engine:
+      | "unimplemented"
+      | "manual-copy"
+      | "rgb-samples"
+      | "grid-tiles"
+      | "grid-panel";
   };
 };
 export type RecognitionInput = { kind: "frame"; frame: CapturedFrame };

@@ -1,7 +1,7 @@
 import type { CapturedFrame } from "../capture/capture";
 import type { PixelRegion } from "./calibration";
 import type { RecognizedCount, RecognitionResult } from "./types";
-import { validPanelFrame, contained } from "./panel-profile";
+import { validPanelFrame, contained, PANEL_PROFILE } from "./panel-profile";
 import { readMask, matchText, type TextTemplate } from "./panel-mask";
 
 export type AbilityRegions = {
@@ -46,7 +46,8 @@ export function recognizePanelAbilities(
     const test =
       key === "total"
         ? (r: number, g: number, b: number) => r < 110 && g < 195 && b < 220
-        : (r: number, g: number, b: number) => Math.min(r, g, b) >= 150;
+        : (r: number, g: number, b: number) =>
+            Math.min(r, g, b) >= PANEL_PROFILE.glyphMinChannel;
     const mask = readMask(frame, regions[key], test);
     if (!mask) return unknown();
     try {

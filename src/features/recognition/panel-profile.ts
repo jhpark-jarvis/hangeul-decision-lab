@@ -19,6 +19,7 @@ export const PANEL_PROFILE = {
   textGap: 0.08,
   numberGap: 0.06,
   numberHoleShift: 0.1,
+  glyphMinChannel: 150,
 } as const;
 
 export function validPanelFrame(frame: CapturedFrame): boolean {

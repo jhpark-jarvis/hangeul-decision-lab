@@ -10,6 +10,7 @@ import {
   panelFixture,
   drawPiece,
   drawUsed,
+  drawGlyph,
   rowMask,
   syntheticUsedRows,
   paint,
@@ -88,6 +89,21 @@ describe("local panel piece recognition", () => {
       { slot: 2, pieceId: null, empty: true, status: "recognized" },
     ]);
     expect(templates[0].mask.data.some(Boolean)).toBe(true);
+  });
+  it("reads a dimmed explicit usage glyph on cyan without guessing an empty card", () => {
+    const { frame, board, cards } = panelFixture();
+    paint(frame, cards[1], [20, 170, 190]);
+    drawGlyph(frame, cards[1], syntheticUsedRows, [170, 220, 230], 0.037);
+    paint(frame, cards[2], [20, 170, 190]);
+    const templates = [
+      { value: "사용 완료", mask: rowMask(syntheticUsedRows) },
+    ];
+    const result = recognizePanelPieces(frame, board, catalog, templates);
+    expect(result.pieces[1]).toMatchObject({
+      empty: true,
+      status: "recognized",
+    });
+    expect(result.pieces[2].empty).toBeNull();
   });
   it("keeps other slots when a shape is unsupported, masked or ambiguous", () => {
     const { frame, board, cards } = panelFixture();

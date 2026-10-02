@@ -90,7 +90,9 @@ export function recognizePieceCards(
       const word = readMask(
         frame,
         relative(card, 0.14, 0.3, 0.72, 0.4),
-        whitePixel,
+        // Video capture chroma conversion lowers edge brightness of tiny glyphs.
+        // The cyan-card guard below excludes other background layouts.
+        (r, g, b) => Math.min(r, g, b) >= C.glyphMinChannel,
       );
       try {
         if (

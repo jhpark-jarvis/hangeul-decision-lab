@@ -17,8 +17,9 @@ export function ReviewPieces({
     <section className="space-y-3" aria-label="보유 조각 확인">
       <h3 className="font-semibold">보유 조각 · 게임 오른쪽의 세 칸</h3>
       <p className="help">
-        게임의 ‘보유 조각’을 위에서 아래 순서로 맞추세요. ‘사용 완료’라고 보이는
-        칸은 ‘사용 완료 / 조각 없음’을 선택하세요. 이름이 어려우면 ‘모양으로
+        채워진 조각을 게임의 ‘보유 조각’과 위에서 아래 순서로 비교하세요.
+        미확정이거나 다를 때만 수정하면 됩니다. ‘사용 완료’라고 보이는 칸은
+        ‘사용 완료 / 조각 없음’을 선택하세요. 이름이 어려우면 ‘모양으로
         고르기’를 펼치세요. 회전·반전된 모양도 같은 조각입니다.
       </p>
       <div className="grid grid-cols-3 gap-3">
@@ -69,6 +70,15 @@ export function ReviewPieces({
                   </span>
                 )}
               </div>
+              <p
+                className="help"
+                role="status"
+                aria-label={`${pieceLabels[piece.slot]} 확인 상태`}
+              >
+                {piece.status === "recognized"
+                  ? "게임과 같은지 확인하세요"
+                  : "미확정 · 조각 또는 사용 완료를 선택하세요"}
+              </p>
               <details>
                 <summary>{pieceLabels[piece.slot]} 모양으로 고르기</summary>
                 <div className="grid grid-cols-2 gap-1 mt-2">

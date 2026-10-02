@@ -124,7 +124,8 @@ test.beforeEach(async ({ page, context }, info) => {
       buffers = [],
       scratch = [],
       canvases = [];
-    const created = [];
+    const created = [],
+      fontCanvases = [];
     const createElement = document.createElement.bind(document);
     document.createElement = (...args) => {
       const element = createElement(...args);
@@ -142,6 +143,12 @@ test.beforeEach(async ({ page, context }, info) => {
       if (canvasFailure === "pixels")
         throw new DOMException("private-window-info", "SecurityError");
       const image = getImageData.apply(this, args);
+      if (
+        this.canvas.width === 140 &&
+        this.canvas.height === 32 &&
+        !fontCanvases.includes(this.canvas)
+      )
+        fontCanvases.push(this.canvas);
       buffers.push(image.data);
       return image;
     };
@@ -156,10 +163,12 @@ test.beforeEach(async ({ page, context }, info) => {
       value: () => {
         const element = document.createElement("canvas");
         if (automaticMode) {
-          element.width = 300;
+          const panelMode = automaticMode.startsWith("panel");
+          const frameWidth = panelMode ? 432 : 300;
+          element.width = frameWidth;
           element.height = 466;
           const ctx = element.getContext("2d");
-          const image = new ImageData(300, 466);
+          const image = new ImageData(frameWidth, 466);
           const rows = [
             "0010000000",
             "0101000000",
@@ -179,7 +188,7 @@ test.beforeEach(async ({ page, context }, info) => {
             "0000001000",
           ];
           for (let y = 0; y < 466; y++)
-            for (let x = 0; x < 300; x++) {
+            for (let x = 0; x < frameWidth; x++) {
               const row = Math.floor((y - 30) / 26),
                 col = Math.floor((x - 20) / 26);
               let color = [30, 30, 30];
@@ -225,11 +234,59 @@ test.beforeEach(async ({ page, context }, info) => {
               }
               image.data.set(
                 [...color.map(Math.round), 255],
-                (y * 300 + x) * 4,
+                (y * frameWidth + x) * 4,
               );
             }
           ctx.putImageData(image, 0, 0);
           image.data.fill(0);
+          if (panelMode) {
+            for (let slot = 0; slot < 3; slot++) {
+              const x = 293,
+                y = 30 + 26 * (0.9 + 2.9 * slot),
+                w = 122.2,
+                h = 70.2;
+              ctx.fillStyle = slot === 0 ? "#f4fafc" : "#16c4d6";
+              ctx.fillRect(x, y, w, h);
+              if (slot === 0) {
+                const rows = ["11", "10", "11"],
+                  p = w / 15,
+                  left = x + w * 0.25 - p,
+                  top = y + h / 2 - p * 1.5;
+                ctx.fillStyle = "#e545af";
+                rows.forEach((row, r) =>
+                  [...row].forEach((cell, c) => {
+                    if (cell === "1")
+                      ctx.fillRect(left + c * p, top + r * p, p - 1, p - 1);
+                  }),
+                );
+              } else {
+                ctx.font = '700 14px "Malgun Gothic"';
+                ctx.textAlign = "center";
+                ctx.fillStyle = "white";
+                ctx.fillText(
+                  automaticMode === "panel-bad" && slot === 2
+                    ? "사용 중"
+                    : "사용 완료",
+                  x + w / 2,
+                  y + h * 0.6,
+                );
+              }
+            }
+            for (const [key, x, y, w, h] of [
+              ["singleCell", 382.7, 392.7, 16.9, 15.6],
+              ["reroll", 382.7, 429.1, 16.9, 15.6],
+              ["total", 342.4, 362.8, 10.4, 16.9],
+            ]) {
+              ctx.fillStyle = key === "total" ? "#e6fbfc" : "#1466be";
+              ctx.fillRect(x - 4, y - 4, w + 8, h + 8);
+              ctx.font = `700 ${key === "total" ? 14 : 12}px ${automaticMode === "panel-narrow" ? "Impact" : "Arial"}`;
+              ctx.textAlign = "center";
+              ctx.fillStyle = key === "total" ? "#1482a0" : "#ffffff";
+              const value =
+                automaticMode === "panel-bad" && key === "total" ? "1" : "0";
+              ctx.fillText(value, x + w / 2, y + h * 0.78);
+            }
+          }
           const stream = element.captureStream(1);
           tracks.push(...stream.getTracks());
           return Promise.resolve(stream);
@@ -271,6 +328,7 @@ test.beforeEach(async ({ page, context }, info) => {
           )
           .map((c) => c.width === 0 && c.height === 0),
         tracks: tracks.map((t) => t.readyState),
+        fontCanvases: fontCanvases.map((c) => c.width === 0 && c.height === 0),
       }),
     };
   });
@@ -313,6 +371,7 @@ test.afterEach(async ({ page, context, browser }, info) => {
   expect(entry.cleanup.scratch.every(Boolean)).toBe(true);
   expect(entry.cleanup.canvases.every(Boolean)).toBe(true);
   expect(entry.cleanup.previews.every(Boolean)).toBe(true);
+  expect(entry.cleanup.fontCanvases.every(Boolean)).toBe(true);
   expect(entry.cleanup.tracks.every((state) => state === "ended")).toBe(true);
   expect(
     entry.requests.filter(
@@ -323,6 +382,166 @@ test.afterEach(async ({ page, context, browser }, info) => {
         ["fetch", "xhr"].includes(r.type),
     ),
   ).toEqual([]);
+});
+
+test("panel same-frame capture fills held pieces and abilities before explicit Use/Analyze/Apply", async ({
+  page,
+}) => {
+  await page.evaluate(() => window.__calibration.automaticMode("panel"));
+  await button(page, "Start Screen Capture").click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("video").videoWidth === 432 &&
+      document.querySelector("video").readyState >= 2,
+  );
+  const start = performance.now();
+  await button(page, "Capture Frame").click();
+  const review = page.getByRole("group", {
+    name: "인식 결과 검토",
+    exact: true,
+  });
+  await expect(review).toContainText("같은 화면의 보유 조각·능력");
+  const labels = [
+    "첫 번째 보유 조각",
+    "두 번째 보유 조각",
+    "세 번째 보유 조각",
+  ];
+  for (const [index, value] of ["C_5", "empty", "empty"].entries())
+    await expect(
+      page.getByRole("combobox", { name: labels[index], exact: true }),
+    ).toHaveValue(value);
+  for (const label of ["점 찍기", "바꿔 뽑기"])
+    await expect(number(page, `${label} 남은 횟수`)).toHaveValue("0");
+  const entry = reports.get(test.info().testId);
+  entry.frameToReviewMs = performance.now() - start;
+  entry.source =
+    "Synthetic 432x466 board and right panel, Canvas font glyphs; native picker not used.";
+  await expect(
+    page.getByRole("status", { name: "프레임 상태", exact: true }),
+  ).toContainText("보유 조각 3/3 · 능력 횟수 2/2");
+  const itemCheck = page.getByRole("checkbox", {
+    name: "보드의 아이템을 모두 확인했습니다 (없으면 그대로 체크)",
+    exact: true,
+  });
+  const allCheck = page.getByRole("checkbox", {
+    name: "검토한 전체 상태 확인",
+    exact: true,
+  });
+  await expect(itemCheck).not.toBeChecked();
+  await expect(allCheck).not.toBeChecked();
+  await expect(button(page, "Use This State")).toBeDisabled();
+  await expect(number(page, "Single Cell 보유 수")).toHaveValue("0");
+  await expect(
+    page.getByRole("combobox", { name: "slot 0 블록", exact: true }),
+  ).toHaveValue("DOT");
+  await itemCheck.check();
+  await allCheck.check();
+  await expect(button(page, "Use This State")).toBeEnabled();
+  await page
+    .getByRole("combobox", { name: labels[0], exact: true })
+    .selectOption("HOOK_4");
+  await expect(allCheck).not.toBeChecked();
+  await page
+    .getByRole("combobox", { name: labels[0], exact: true })
+    .selectOption("C_5");
+  await allCheck.check();
+  await review.screenshot({
+    path: test.info().outputPath("synthetic-panel-review.png"),
+  });
+  await button(page, "Use This State").click();
+  await expect(
+    page.getByRole("combobox", { name: "slot 0 블록", exact: true }),
+  ).toHaveValue("C_5");
+  for (const slot of [1, 2])
+    await expect(
+      page.getByRole("combobox", { name: `slot ${slot} 블록`, exact: true }),
+    ).toHaveValue("");
+  await expect(
+    page.getByRole("status", { name: "점유 칸 수", exact: true }),
+  ).toHaveText("49 / 160");
+  await button(page, "Analyze").click();
+  await expect(button(page, "Apply Step")).toBeEnabled();
+  await button(page, "Apply Step").click();
+  await expect(
+    page.getByRole("region", { name: "입력 및 적용 상태", exact: true }),
+  ).toContainText("단계 1");
+  await button(page, "Capture Frame").click();
+  await button(page, "Stop Capture").click();
+  await cleared(page);
+});
+
+test("panel partial reads and inconsistent totals remain editable and stale review cannot apply", async ({
+  page,
+}) => {
+  await page.evaluate(() => window.__calibration.automaticMode("panel-bad"));
+  await button(page, "Start Screen Capture").click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("video").videoWidth === 432 &&
+      document.querySelector("video").readyState >= 2,
+  );
+  await button(page, "Capture Frame").click();
+  const labels = [
+    "첫 번째 보유 조각",
+    "두 번째 보유 조각",
+    "세 번째 보유 조각",
+  ];
+  for (const [index, value] of ["C_5", "empty", "unknown"].entries())
+    await expect(
+      page.getByRole("combobox", { name: labels[index], exact: true }),
+    ).toHaveValue(value);
+  for (const label of ["점 찍기", "바꿔 뽑기"])
+    await expect(number(page, `${label} 남은 횟수`)).toHaveValue("");
+  await expect(
+    page.locator('button[data-review-unresolved="true"]'),
+  ).toHaveCount(0);
+  await expect(button(page, "Use This State")).toBeDisabled();
+  await page
+    .getByRole("combobox", { name: labels[2], exact: true })
+    .selectOption("empty");
+  for (const label of ["점 찍기", "바꿔 뽑기"])
+    await number(page, `${label} 남은 횟수`).fill("0");
+  await page
+    .getByRole("checkbox", {
+      name: "보드의 아이템을 모두 확인했습니다 (없으면 그대로 체크)",
+      exact: true,
+    })
+    .check();
+  await page
+    .getByRole("checkbox", { name: "검토한 전체 상태 확인", exact: true })
+    .check();
+  await expect(button(page, "Use This State")).toBeEnabled();
+  await number(page, "Reroll 보유 수").fill("1");
+  await expect(button(page, "Use This State")).toBeDisabled();
+  await expect(
+    page.getByRole("group", { name: "인식 결과 검토", exact: true }),
+  ).toContainText("검토 중 수동 상태가 바뀌었습니다");
+  await button(page, "현재 수동 입력으로 Mock 검토").click();
+  await expect(
+    page.getByLabel("검토할 게임 보드 캡처", { exact: true }),
+  ).toHaveCount(0);
+  await button(page, "Stop Capture").click();
+});
+
+test("panel compressed narrow digits stay unresolved rather than guessed as zero", async ({
+  page,
+}) => {
+  await page.evaluate(() => window.__calibration.automaticMode("panel-narrow"));
+  await button(page, "Start Screen Capture").click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("video").videoWidth === 432 &&
+      document.querySelector("video").readyState >= 2,
+  );
+  await button(page, "Capture Frame").click();
+  for (const label of ["점 찍기", "바꿔 뽑기"])
+    await expect(number(page, `${label} 남은 횟수`)).toHaveValue("");
+  await expect(
+    page.getByRole("combobox", { name: "첫 번째 보유 조각", exact: true }),
+  ).toHaveValue("C_5");
+  await expect(button(page, "Use This State")).toBeDisabled();
+  await button(page, "검토 버리기").click();
+  await button(page, "Stop Capture").click();
 });
 
 test("coordinate calibration errors recover into review and existing Analyze/Apply", async ({
