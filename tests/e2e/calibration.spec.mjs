@@ -19,7 +19,7 @@ async function capture(page) {
         document.querySelector("video").readyState >= 2,
     );
   }
-  await button(page, "Capture Frame").click();
+  await button(page, "수동 영역·색상 선택").click();
   await expect(group(page)).toBeVisible();
   await page.evaluate(() =>
     window.__calibration.rememberCanvas(
@@ -119,6 +119,7 @@ test.beforeEach(async ({ page, context }, info) => {
       scratch = [],
       canvases = [];
     let canvasFailure = "";
+    let automaticMode = "";
     const getContext = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = function (...args) {
       return canvasFailure === "context" ? null : getContext.apply(this, args);
@@ -141,6 +142,76 @@ test.beforeEach(async ({ page, context }, info) => {
       configurable: true,
       value: () => {
         const element = document.createElement("canvas");
+        if (automaticMode) {
+          element.width = 300;
+          element.height = 466;
+          const ctx = element.getContext("2d");
+          const image = new ImageData(300, 466);
+          const rows = [
+            "0010000000",
+            "0101000000",
+            "0010000000",
+            "1000000000",
+            "1100000111",
+            "1101000011",
+            "1101111111",
+            "1001101000",
+            "0001100000",
+            "0001000000",
+            "0001000000",
+            "0111110000",
+            "0010101000",
+            "0001111110",
+            "0000010100",
+            "0000001000",
+          ];
+          for (let y = 0; y < 466; y++)
+            for (let x = 0; x < 300; x++) {
+              const row = Math.floor((y - 30) / 26),
+                col = Math.floor((x - 20) / 26);
+              let color = [30, 30, 30];
+              if (
+                automaticMode !== "missing" &&
+                row >= 0 &&
+                row < 16 &&
+                col >= 0 &&
+                col < 10
+              ) {
+                const fx = (x - 20) / 26 - col,
+                  fy = (y - 30) / 26 - row;
+                color = [50, 165 + row * 0.7, 185 + row * 0.2];
+                if (fx < 0.06 || fy < 0.06) color = color.map((c) => c - 12);
+                if (
+                  rows[row][col] === "1" &&
+                  fx > 0.08 &&
+                  fx < 0.92 &&
+                  fy > 0.08 &&
+                  fy < 0.92
+                ) {
+                  const base = [
+                    [60, 160, 220],
+                    [130, 190, 40],
+                    [210, 100, 180],
+                    [220, 150, 30],
+                  ][(row + col) % 4];
+                  color = base.map((c) =>
+                    Math.min(255, c + 100 * (1 - (fx + fy) / 2)),
+                  );
+                }
+                if (automaticMode === "occluded" && row === 1 && col === 0)
+                  color = [255, 255, 255];
+              }
+              image.data.set(
+                [...color.map(Math.round), 255],
+                (y * 300 + x) * 4,
+              );
+            }
+          ctx.putImageData(image, 0, 0);
+          image.data.fill(0);
+          const stream = element.captureStream(1);
+          tracks.push(...stream.getTracks());
+          return Promise.resolve(stream);
+        }
         element.width = 960;
         element.height = 1440;
         const ctx = element.getContext("2d");
@@ -160,6 +231,9 @@ test.beforeEach(async ({ page, context }, info) => {
       },
     });
     window.__calibration = {
+      automaticMode: (mode) => {
+        automaticMode = mode;
+      },
       canvasFailure: (mode) => {
         canvasFailure = mode;
       },
@@ -382,7 +456,7 @@ test("safe capture failures release prior selection and recover without native t
           });
       window.__calibration.canvasFailure(mode);
     }, failure);
-    await button(page, "Capture Frame").click();
+    await button(page, "수동 영역·색상 선택").click();
     await cleared(page);
     await expect(frameStatus).toContainText(
       failure === "oversized"
@@ -416,4 +490,89 @@ test("safe capture failures release prior selection and recover without native t
   await button(page, "선택한 영역의 보드 인식").click();
   await cleared(page);
   await expect(frameStatus).toContainText("보드 판별 완료");
+});
+
+test("automatic Capture Frame needs no calibration and review still gates Analyze/Apply", async ({
+  page,
+}) => {
+  await page.evaluate(() => window.__calibration.automaticMode("occluded"));
+  await button(page, "Start Screen Capture").click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("video").videoWidth === 300 &&
+      document.querySelector("video").readyState >= 2,
+  );
+  await button(page, "Capture Frame").click();
+  await cleared(page);
+  const review = page.getByRole("group", {
+    name: "인식 결과 검토",
+    exact: true,
+  });
+  await expect(review).toContainText("자동으로 찾은 보드");
+  await expect(
+    review.locator("button[data-review-row]").filter({ hasText: "●" }),
+  ).toHaveCount(49);
+  const unknown = page.locator(
+    'button[data-review-row="1"][data-review-col="0"]',
+  );
+  await expect(unknown).toHaveText("!");
+  await expect(button(page, "Use This State")).toBeDisabled();
+  await expect(
+    page.getByRole("status", { name: "점유 칸 수", exact: true }),
+  ).toHaveText("0 / 160");
+  await fillReview(page);
+  await expect(button(page, "Use This State")).toBeDisabled();
+  await unknown.click();
+  await expect(
+    page.getByRole("checkbox", { name: "검토한 전체 상태 확인", exact: true }),
+  ).not.toBeChecked();
+  await page
+    .getByRole("checkbox", { name: "검토한 전체 상태 확인", exact: true })
+    .check();
+  await button(page, "Use This State").click();
+  await expect(
+    page.getByRole("status", { name: "점유 칸 수", exact: true }),
+  ).toHaveText("49 / 160");
+  await button(page, "Analyze").click();
+  await expect(button(page, "Apply Step")).toBeEnabled();
+  await button(page, "Apply Step").click();
+  await expect(
+    page.getByRole("region", { name: "입력 및 적용 상태", exact: true }),
+  ).toContainText("단계 1");
+  await button(page, "Capture Frame").click();
+  await number(page, "Reroll 보유 수").fill("1");
+  await expect(review).toContainText("검토 중 수동 상태가 바뀌었습니다");
+  await expect(button(page, "Use This State")).toBeDisabled();
+  await button(page, "Stop Capture").click();
+  await cleared(page);
+});
+
+test("automatic missing board releases pixels and explicit manual fallback recovers", async ({
+  page,
+}) => {
+  await page.evaluate(() => window.__calibration.automaticMode("missing"));
+  await button(page, "Start Screen Capture").click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("video").videoWidth === 300 &&
+      document.querySelector("video").readyState >= 2,
+  );
+  await button(page, "Capture Frame").click();
+  await cleared(page);
+  await expect(
+    page.getByRole("status", { name: "프레임 상태", exact: true }),
+  ).toContainText("보드를 확정하지 못했습니다");
+  await expect(button(page, "Use This State")).toBeDisabled();
+  await button(page, "Stop Capture").click();
+  await page.evaluate(() => window.__calibration.automaticMode(""));
+  await capture(page);
+  await region(page);
+  await color(page, "빈칸", 200, 200);
+  await color(page, "점유", 120, 120);
+  await color(page, "점유", 200, 120);
+  await button(page, "선택한 영역의 보드 인식").click();
+  await cleared(page);
+  await expect(
+    page.getByRole("group", { name: "인식 결과 검토", exact: true }),
+  ).toContainText("지정 영역·색상 표본");
 });

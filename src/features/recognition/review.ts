@@ -99,9 +99,12 @@ export function validateRecognitionResult(input: unknown): FieldIssue[] {
   }
   if (
     !object(input.source) ||
-    !["capture-stub", "manual-mock", "calibrated-board"].includes(
-      String(input.source.kind),
-    ) ||
+    ![
+      "capture-stub",
+      "manual-mock",
+      "calibrated-board",
+      "automatic-board",
+    ].includes(String(input.source.kind)) ||
     typeof input.source.timestamp !== "number" ||
     !Number.isFinite(input.source.timestamp)
   )
@@ -117,7 +120,7 @@ export function validateRecognitionResult(input: unknown): FieldIssue[] {
     invalid("source.dimensions");
   if (
     !object(input.summary) ||
-    !["unimplemented", "manual-copy", "rgb-samples"].includes(
+    !["unimplemented", "manual-copy", "rgb-samples", "grid-tiles"].includes(
       String(input.summary.engine),
     )
   )

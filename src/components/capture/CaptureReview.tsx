@@ -26,6 +26,7 @@ import type {
   ReviewState,
 } from "@/features/recognition/types";
 import { releaseFrame } from "@/features/recognition/calibration";
+import { recognizeAutomaticBoard } from "@/features/recognition/automatic";
 import { FrameCalibration } from "./FrameCalibration";
 
 const catalog = getInitialCatalog();
@@ -128,9 +129,10 @@ export function CaptureReview({
     <section className="panel space-y-4" aria-label="화면 캡처 및 인식 검토">
       <h2>화면 캡처·인식 검토</h2>
       <p className="help">
-        화면을 직접 공유하고 한 프레임에서 보드 영역·빈칸·점유 색상을 지정하면
-        보드를 판별합니다. 블록·아이템·능력은 직접 검토해야 합니다. 아래 mock은
-        현재 수동 입력의 복사입니다.
+        화면을 공유한 뒤 Capture Frame을 누르면 보드 영역과 점유 칸을 자동으로
+        찾습니다. 미확정 칸과 블록·아이템·능력은 직접 검토해야 합니다. 자동
+        인식이 실패하면 수동 영역·색상 선택을 사용하세요. 아래 mock은 현재 수동
+        입력의 복사입니다.
       </p>
       <div className="flex flex-wrap gap-2">
         <button
@@ -183,6 +185,44 @@ export function CaptureReview({
             clearCalibration();
             setReview(null);
             setErrors([]);
+            let frame: CapturedFrame | null = null;
+            try {
+              if (!video.current) return;
+              frame = captureCurrentFrame(video.current);
+              const automatic = recognizeAutomaticBoard(frame);
+              if (automatic.ok) {
+                openReview(automatic.result);
+                const unresolved = automatic.result.board
+                  .flat()
+                  .filter((cell) => cell.occupied === null).length;
+                setFrameMessage(
+                  `자동 보드 판별 완료 · 미확정 ${unresolved}칸 · 프레임을 지웠습니다.`,
+                );
+              } else {
+                openReview(
+                  unknownRecognitionEngine.recognize({ kind: "frame", frame }),
+                );
+                setFrameMessage(
+                  `프레임 ${frame.width}×${frame.height} · ${automatic.reason === "AMBIGUOUS" ? "보드 후보가 여러 개입니다" : "보드를 확정하지 못했습니다"}. 게임 보드가 크게 보이도록 공유한 뒤 다시 Capture Frame을 누르거나 수동 영역·색상 선택을 사용하세요. 프레임을 지웠습니다.`,
+                );
+              }
+            } catch (error) {
+              setFrameMessage(frameCaptureFailureMessage(error));
+            } finally {
+              releaseFrame(frame);
+            }
+          }}
+        >
+          Capture Frame
+        </button>
+        <button
+          className="small-button"
+          disabled={disabled || capture.phase !== "active"}
+          onClick={() => {
+            onInvalidate();
+            clearCalibration();
+            setReview(null);
+            setErrors([]);
             try {
               if (!video.current) return;
               const frame = captureCurrentFrame(video.current);
@@ -204,7 +244,7 @@ export function CaptureReview({
             }
           }}
         >
-          Capture Frame
+          수동 영역·색상 선택
         </button>
         <button
           className="small-button"
@@ -280,7 +320,9 @@ export function CaptureReview({
               ? "영역·색상 선택 전: 모든 값은 미확정입니다."
               : review.draft.source.kind === "calibrated-board"
                 ? "지정 영역·색상 표본의 보드 판별 결과입니다. 블록·아이템·능력과 각 칸을 확인하세요."
-                : "현재 수동 입력의 개발용 복사입니다. 이미지 인식 결과가 아닙니다."}{" "}
+                : review.draft.source.kind === "automatic-board"
+                  ? "자동으로 찾은 보드 판별 결과입니다. 미확정 칸과 보드 전체, 블록·아이템·능력을 확인하세요."
+                  : "현재 수동 입력의 개발용 복사입니다. 이미지 인식 결과가 아닙니다."}{" "}
             미확정(?)·불확실(!) 값은 직접 확인하세요. confidence는 생성하지
             않습니다.
           </p>
