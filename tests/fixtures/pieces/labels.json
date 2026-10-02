@@ -1,0 +1,101 @@
+{
+  "catalogVersion": "2026-10-01-user-image-v1",
+  "description": "Hangul label mapping; historical counts for rieul/tieut are pre-correction.",
+  "mapping": [
+    {
+      "pieceId": "DOT",
+      "label": "점",
+      "cells": 1
+    },
+    {
+      "pieceId": "LINE_3",
+      "label": "ㅡ",
+      "cells": 3
+    },
+    {
+      "pieceId": "BRANCH_4",
+      "label": "ㅏ",
+      "cells": 4
+    },
+    {
+      "pieceId": "DOUBLE_BRANCH_7",
+      "label": "ㅑ",
+      "cells": 7
+    },
+    {
+      "pieceId": "DIAGONAL_3",
+      "label": "ㅅ",
+      "cells": 3
+    },
+    {
+      "pieceId": "L_3",
+      "label": "ㄴ",
+      "cells": 3
+    },
+    {
+      "pieceId": "DIAMOND_4",
+      "label": "ㅇ",
+      "cells": 4
+    },
+    {
+      "pieceId": "CROWN_6",
+      "label": "ㅈ",
+      "cells": 6
+    },
+    {
+      "pieceId": "HOOK_4",
+      "label": "ㄱ",
+      "cells": 4
+    },
+    {
+      "pieceId": "LINE_5",
+      "label": "ㅣ",
+      "cells": 5
+    },
+    {
+      "pieceId": "DOUBLE_ARM_RIGHT_6",
+      "label": "ㅋ",
+      "cells": 6
+    },
+    {
+      "pieceId": "C_5",
+      "label": "ㄷ",
+      "cells": 5
+    },
+    {
+      "pieceId": "STAR_9",
+      "label": "ㅎ",
+      "cells": 9
+    },
+    {
+      "pieceId": "PI_10",
+      "label": "ㅍ",
+      "cells": 10
+    },
+    {
+      "pieceId": "CROWN_7",
+      "label": "ㅊ",
+      "cells": 7
+    },
+    {
+      "pieceId": "GRID_10",
+      "label": "ㅂ",
+      "cells": 10
+    },
+    {
+      "pieceId": "MIEUM",
+      "label": "ㅁ",
+      "cells": 8
+    },
+    {
+      "pieceId": "ZIGZAG_6",
+      "label": "ㄹ",
+      "cells": 6
+    },
+    {
+      "pieceId": "DOUBLE_ARM_LEFT_6",
+      "label": "ㅌ",
+      "cells": 6
+    }
+  ]
+}
