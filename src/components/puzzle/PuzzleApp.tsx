@@ -39,6 +39,8 @@ export function PuzzleApp() {
   const [captureOpen, setCaptureOpen] = useState(false);
   const [inputEpoch, setInputEpoch] = useState(0);
   const captureActions = useRef<{ nextTurn: () => void }>(null);
+  const [autoRefreshToken, setAutoRefreshToken] = useState(0);
+  const workbench = useRef<HTMLElement>(null);
   const alive = useRef(true);
   const running = useRef(false);
   const timer = useRef<number | null>(null);
@@ -96,30 +98,6 @@ export function PuzzleApp() {
       >
         {captureOpen ? "화면 입력 닫기" : "화면 캡처·검토 열기"}
       </button>
-      {captureOpen && (
-        <CaptureReview
-          game={session.game}
-          disabled={busy}
-          inputEpoch={inputEpoch}
-          actions={captureActions}
-          onInvalidate={() =>
-            setSession((current) => ({
-              ...current,
-              version: current.version + 1,
-              analysis: null,
-              error: null,
-              notice: "화면 입력·검토가 바뀌었습니다. 확인 후 다시 분석하세요.",
-            }))
-          }
-          onUse={(review, snapshot, shouldAnalyze) => {
-            const result = applyReviewedState(session, review, snapshot);
-            if (!result.ok) return result.issues;
-            setSession(result.session);
-            if (shouldAnalyze) analyze(result.session);
-            return [];
-          }}
-        />
-      )}
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(420px,1.1fr)_minmax(420px,1fr)]">
         <div className="space-y-4 lg:sticky lg:top-4">
           <BoardEditor
@@ -166,7 +144,70 @@ export function PuzzleApp() {
             </p>
           </section>
         </div>
-        <aside className="space-y-4">
+        <aside
+          ref={workbench}
+          aria-label="배치 작업창"
+          style={{ overflowAnchor: "none" }}
+          className="space-y-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:overscroll-contain"
+        >
+          {session.analysis && (
+            <ResultPanel
+              analysis={session.analysis}
+              disabled={busy || !!session.error}
+              onSelect={(index) =>
+                setSession((current) => selectPlan(current, index))
+              }
+              onApply={() => {
+                const version = session.version;
+                const step = session.analysis?.step ?? -1;
+                const next = applyStep(session, version, step);
+                setSession(next);
+                if (
+                  next.version > session.version &&
+                  !next.error &&
+                  !next.game.pendingReroll &&
+                  next.game.remainingPieces.length === 0
+                )
+                  setAutoRefreshToken((token) => token + 1);
+              }}
+            />
+          )}
+          {captureOpen && (
+            <CaptureReview
+              game={session.game}
+              disabled={busy}
+              inputEpoch={inputEpoch}
+              actions={captureActions}
+              autoRefreshToken={autoRefreshToken}
+              onReviewReady={() => {
+                const pane = workbench.current,
+                  review = pane?.querySelector('[aria-label="인식 결과 검토"]');
+                if (pane && review)
+                  pane.scrollTop +=
+                    review.getBoundingClientRect().top -
+                    pane.getBoundingClientRect().top;
+              }}
+              onInvalidate={() =>
+                setSession((current) => ({
+                  ...current,
+                  version: current.version + 1,
+                  analysis: null,
+                  error: null,
+                  notice:
+                    "화면 입력·검토가 바뀌었습니다. 확인 후 다시 분석하세요.",
+                }))
+              }
+              onUse={(review, snapshot, shouldAnalyze) => {
+                const result = applyReviewedState(session, review, snapshot);
+                if (!result.ok) return result.issues;
+                setSession(result.session);
+                workbench.current?.scrollTo({ top: 0 });
+                if (shouldAnalyze) analyze(result.session);
+                return [];
+              }}
+            />
+          )}
+
           <section className="panel" aria-labelledby="pieces-heading">
             <h2 id="pieces-heading">
               {awaitingNext ? "블록 3개 입력" : "현재 블록 (고정 slot)"}
@@ -175,6 +216,11 @@ export function PuzzleApp() {
               {awaitingNext
                 ? "현재/다음 세트의 실제 블록 3개를 선택하세요. 보드와 능력은 유지됩니다."
                 : "이미 사용한 slot은 없음으로 표시됩니다. 입력을 보정하면 추천이 지워집니다."}
+            </p>
+            <p className="help mt-2">
+              slot은 화면 위치 번호이며 사용 순서가 아닙니다. 게임에서는 조각을
+              자유롭게 선택할 수 있습니다. 추천을 따를 때는 제시한 배치 순서를
+              확인하세요.
             </p>
             <div className="mt-4 grid grid-cols-3 gap-3">
               {SLOTS.map((slot) => {
@@ -241,12 +287,6 @@ export function PuzzleApp() {
                     disabled={busy}
                     onClick={() => {
                       captureActions.current?.nextTurn();
-                      document
-                        .querySelector('[aria-label="화면 캡처 및 인식 검토"]')
-                        ?.scrollIntoView({
-                          behavior: "smooth",
-                          block: "start",
-                        });
                     }}
                   >
                     다음 턴 가져오기
@@ -287,7 +327,7 @@ export function PuzzleApp() {
             </p>
           </section>
           <section className="panel" aria-labelledby="abilities-heading">
-            <h2 id="abilities-heading">능력 보유 수</h2>
+            <h2 id="abilities-heading">보유 능력 · 합계 최대 7개</h2>
             <div className="mt-4 grid grid-cols-2 gap-4">
               {(["reroll", "singleCell"] as const).map((ability) => (
                 <label key={ability} className="text-sm">
@@ -391,20 +431,6 @@ export function PuzzleApp() {
               경로의 최적성을 보장하지 않습니다.
             </p>
           </section>
-          {session.analysis && (
-            <ResultPanel
-              analysis={session.analysis}
-              disabled={busy || !!session.error}
-              onSelect={(index) =>
-                setSession((current) => selectPlan(current, index))
-              }
-              onApply={() => {
-                const version = session.version;
-                const step = session.analysis?.step ?? -1;
-                setSession((current) => applyStep(current, version, step));
-              }}
-            />
-          )}
         </aside>
       </div>
     </div>

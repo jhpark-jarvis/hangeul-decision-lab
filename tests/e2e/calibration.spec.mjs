@@ -647,7 +647,7 @@ test("panel continuous two turns reuse three regions and remaining item coordina
   );
   await expect(
     page.getByRole("region", { name: "보드 아이템 확인" }),
-  ).toContainText("표시한 아이템 0개");
+  ).toContainText("표시한 보드 아이콘 0개");
   await expect(button(page, "전체 확인하고 분석")).toBeDisabled();
 });
 test("panel continuous mismatch is visible and does not fill unread board cells", async ({
@@ -671,7 +671,117 @@ test("panel continuous mismatch is visible and does not fill unread board cells"
   await expect(button(page, "전체 확인하고 분석")).toBeDisabled();
   await expect(
     page.getByRole("region", { name: "보드 아이템 확인" }),
-  ).toContainText("표시한 아이템 1개");
+  ).toContainText("표시한 보드 아이콘 1개");
+});
+
+test("panel auto refresh waits for the next frame and keeps review beside placement without page scrolling", async ({
+  page,
+}) => {
+  await startTurn(page, true);
+  const pageBefore = await page.evaluate(() => window.scrollY);
+  await expect(
+    page.getByRole("status", { name: "자동 다음 턴 갱신" }),
+  ).toContainText("기다리는 중");
+  // First capture sees the previous board; simulate the game's delayed turn render.
+  await updateTurnFrame(page);
+  await expect(
+    page.getByRole("status", { name: "자동 다음 턴 갱신" }),
+  ).toContainText("자동으로 가져왔습니다");
+  await expect(
+    page.getByRole("group", { name: "인식 결과 검토", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("status", { name: "표시한 보드 아이템" }),
+  ).toHaveText("표시한 보드 아이콘 1개 / 3개");
+  await expect(
+    page.getByRole("region", { name: "보드 아이템 확인" }),
+  ).toContainText("합계 7개까지");
+  const pane = page.getByLabel("배치 작업창", { exact: true }),
+    summary = page.getByLabel("다음 턴 확인 요약", { exact: true });
+  // Automatic review scroll is scheduled after React commits the new fieldset.
+  await page.evaluate(
+    () =>
+      new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      ),
+  );
+  await expect
+    .poll(async () => {
+      const p = await pane.boundingBox(),
+        s = await summary.boundingBox();
+      reports.get(test.info().testId).layout = {
+        pane: p,
+        summary: s,
+        ...(await page.evaluate(() => ({
+          pageY: window.scrollY,
+          paneScroll: document.querySelector('[aria-label="배치 작업창"]')
+            .scrollTop,
+        }))),
+      };
+      return s.y >= p.y - 2 && s.y + s.height <= p.y + p.height + 2;
+    })
+    .toBe(true);
+  const p = await pane.boundingBox(),
+    s = await summary.boundingBox();
+  expect(s.x).toBeGreaterThanOrEqual(p.x);
+  expect(s.y).toBeGreaterThanOrEqual(p.y - 2);
+  expect(s.y + s.height).toBeLessThanOrEqual(p.y + p.height + 2);
+  expect(await page.evaluate(() => window.scrollY)).toBe(pageBefore);
+  await pane.screenshot({
+    path: test.info().outputPath("synthetic-auto-workspace.png"),
+  });
+  await button(page, "전체 확인하고 분석").click();
+  await expect(button(page, "Apply Step")).toBeEnabled();
+  const apply = await button(page, "Apply Step").boundingBox();
+  expect(apply.y).toBeGreaterThanOrEqual(p.y);
+  expect(apply.y + apply.height).toBeLessThanOrEqual(p.y + p.height);
+  // Stop cancels a new event; re-enabling sharing cannot replay an old token.
+  for (let n = 0; n < 3; n++) {
+    await expect(button(page, "Apply Step")).toBeEnabled();
+    await button(page, "Apply Step").click();
+  }
+  await button(page, "Stop Capture").click();
+  await page.waitForTimeout(1100);
+  await expect(
+    page.getByRole("group", { name: "인식 결과 검토", exact: true }),
+  ).toHaveCount(0);
+});
+test("panel auto refresh can be disabled and manual capture still recovers", async ({
+  page,
+}) => {
+  await page
+    .getByRole("checkbox", { name: "자동으로 다음 턴 가져오기", exact: true })
+    .uncheck();
+  await startTurn(page);
+  await updateTurnFrame(page);
+  await expect(
+    page.getByRole("group", { name: "인식 결과 검토", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("status", { name: "자동 다음 턴 갱신" }),
+  ).toContainText("껐습니다");
+  await button(page, "다음 턴 가져오기").click();
+  await expect(
+    page.getByRole("group", { name: "인식 결과 검토", exact: true }),
+  ).toBeVisible();
+});
+test("panel auto refresh ends its bounded wait with an editable review instead of looping", async ({
+  page,
+}) => {
+  await startTurn(page);
+  await expect(
+    page.getByRole("status", { name: "자동 다음 턴 갱신" }),
+  ).toContainText("자동 대기를 마쳤습니다", { timeout: 10000 });
+  await expect(page.getByRole("alert", { name: "이전 턴 대조" })).toBeVisible();
+  await expect(button(page, "전체 확인하고 분석")).toBeEnabled(); // fully read but different: user must explicitly confirm
+  const count = await page.evaluate(
+    () => window.__calibration.summary().buffers.length,
+  );
+  await page.waitForTimeout(1100);
+  expect(
+    await page.evaluate(() => window.__calibration.summary().buffers.length),
+  ).toBe(count);
+  await button(page, "Stop Capture").click();
 });
 test("panel continuous session resets on resize and stop without retaining region pixels", async ({
   page,
@@ -693,7 +803,7 @@ test("panel continuous session resets on resize and stop without retaining regio
   );
   await expect(
     page.getByRole("region", { name: "보드 아이템 확인" }),
-  ).toContainText("표시한 아이템 0개");
+  ).toContainText("표시한 보드 아이콘 0개");
   await button(page, "전체 확인하고 분석").click();
   for (let n = 0; n < 3; n++) {
     await expect(button(page, "Apply Step")).toBeEnabled();
@@ -728,7 +838,7 @@ test("panel continuous session resets on resize and stop without retaining regio
   );
   await expect(
     page.getByRole("region", { name: "보드 아이템 확인" }),
-  ).toContainText("표시한 아이템 0개");
+  ).toContainText("표시한 보드 아이콘 0개");
 });
 
 test("panel same-frame capture fills held pieces and abilities before explicit Use/Analyze/Apply", async ({
@@ -1328,7 +1438,7 @@ test("visual game labels and board item marking preserve occupancy and confirmat
   );
   await button(page, "Capture Frame").click();
   await expect(cell(12, 7)).toHaveAttribute("data-review-unresolved", "true");
-  await expect(items).toContainText("표시한 아이템 0개 (보드에 최대 3개)");
+  await expect(items).toContainText("표시한 보드 아이콘 0개 / 3개");
   await expect(items).toContainText(
     "게임 보드에도 아이콘이 없다면 추가하지 말고 아래 확인만 체크",
   );
@@ -1382,7 +1492,7 @@ test("visual game labels and board item marking preserve occupancy and confirmat
   await cell(10, 9).click();
   await button(page, "점 찍기 아이템").click();
   await expect(editor.getByRole("alert")).toContainText("최대 3개");
-  await expect(items).toContainText("표시한 아이템 3개");
+  await expect(items).toContainText("표시한 보드 아이콘 3개");
   await expect(cell(10, 9).locator("[data-review-item]")).toHaveCount(0);
   await expect(itemCheck).toBeChecked();
   await expect(allCheck).toBeChecked();
@@ -1404,7 +1514,7 @@ test("visual game labels and board item marking preserve occupancy and confirmat
     await expect(cell(row, col).locator("[data-review-item]")).toHaveCount(0);
     await button(page, "닫기").click();
   }
-  await expect(items).toContainText("표시한 아이템 1개");
+  await expect(items).toContainText("표시한 보드 아이콘 1개");
   await page
     .getByText("첫 번째 보유 조각 모양으로 고르기", { exact: true })
     .click();
