@@ -109,13 +109,15 @@ test("review correction, unknown rejection and existing Analyze/Apply", async ({
   await expect(button(page, "Apply Step")).toHaveCount(0);
   await expect(button(page, "Use This State")).toBeDisabled();
   const cell = page.locator('button[data-review-row="0"][data-review-col="0"]');
-  await cell.click(); // occupied -> unknown
+  await cell.click(); // selection does not change the observation
+  await button(page, "미확정으로 되돌리기").click();
   await expect(cell).toHaveText("?");
   await page
     .getByRole("checkbox", { name: "검토한 전체 상태 확인", exact: true })
     .check();
   await expect(button(page, "Use This State")).toBeDisabled();
-  await cell.click(); // unknown -> empty; resets confirmation
+  await cell.click();
+  await button(page, "빈칸으로 표시").click(); // explicit label resets confirmation
   await select(page, "검토 slot 2 블록").selectOption("C_5");
   await input(page, "검토 reroll 보유 수").fill("6");
   await input(page, "검토 singleCell 보유 수").fill("2");

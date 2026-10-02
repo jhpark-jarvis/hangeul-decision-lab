@@ -87,7 +87,7 @@ export function FrameCalibration({
   frame: CapturedFrame;
   disabled: boolean;
   onChange: () => void;
-  onResult: (result: RecognitionResult) => void;
+  onResult: (result: RecognitionResult, region: PixelRegion) => void;
   onCancel: () => void;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -385,7 +385,7 @@ export function FrameCalibration({
                 occupiedColors: colors.occupied,
                 ...parsed,
               });
-              onResult(engine.recognize({ kind: "frame", frame }));
+              onResult(engine.recognize({ kind: "frame", frame }), region);
             } catch {
               setMessage(
                 "보드 영역·표본·판별 설정을 확인하세요. 더 작은 표본 점 수나 더 큰 영역이 필요할 수 있습니다.",

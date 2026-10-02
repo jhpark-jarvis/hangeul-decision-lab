@@ -87,8 +87,9 @@ test.beforeEach(async ({ page, context }, info) => {
     measuredAt: new Date().toISOString(),
     browser: info.project.name,
     fixture: info.title,
-    source:
-      "Synthetic 960x1440 Canvas stream / arbitrary colors / 10x16 board. Native picker and actual desktop never used.",
+    source: /^(automatic|visual)/.test(info.title)
+      ? "Synthetic 300x466 gradient Canvas stream / 10x16 board / local crop. Native picker and actual desktop never used."
+      : "Synthetic 960x1440 Canvas stream / arbitrary colors / 10x16 board. Native picker and actual desktop never used.",
     requests: [],
     errors: [],
     sockets: [],
@@ -118,6 +119,13 @@ test.beforeEach(async ({ page, context }, info) => {
       buffers = [],
       scratch = [],
       canvases = [];
+    const created = [];
+    const createElement = document.createElement.bind(document);
+    document.createElement = (...args) => {
+      const element = createElement(...args);
+      if (args[0] === "canvas") created.push(element);
+      return element;
+    };
     let canvasFailure = "";
     let automaticMode = "";
     const getContext = HTMLCanvasElement.prototype.getContext;
@@ -243,6 +251,11 @@ test.beforeEach(async ({ page, context }, info) => {
         buffers: buffers.map((data) => data.every((v) => v === 0)),
         scratch: scratch.map((data) => data.every((v) => v === 0)),
         canvases: canvases.map((c) => c.width === 0 && c.height === 0),
+        previews: created
+          .filter(
+            (c) => c.getAttribute("aria-label") === "검토할 게임 보드 캡처",
+          )
+          .map((c) => c.width === 0 && c.height === 0),
         tracks: tracks.map((t) => t.readyState),
       }),
     };
@@ -285,6 +298,7 @@ test.afterEach(async ({ page, context, browser }, info) => {
   expect(entry.cleanup.buffers.every(Boolean)).toBe(true);
   expect(entry.cleanup.scratch.every(Boolean)).toBe(true);
   expect(entry.cleanup.canvases.every(Boolean)).toBe(true);
+  expect(entry.cleanup.previews.every(Boolean)).toBe(true);
   expect(entry.cleanup.tracks.every((state) => state === "ended")).toBe(true);
   expect(
     entry.requests.filter(
@@ -337,6 +351,7 @@ test("coordinate calibration errors recover into review and existing Analyze/App
   await page
     .locator('button[data-review-row="1"][data-review-col="0"]')
     .click();
+  await button(page, "빈칸으로 표시").click();
   await expect(
     page.getByRole("checkbox", { name: "검토한 전체 상태 확인", exact: true }),
   ).not.toBeChecked();
@@ -523,6 +538,7 @@ test("automatic Capture Frame needs no calibration and review still gates Analyz
   await fillReview(page);
   await expect(button(page, "Use This State")).toBeDisabled();
   await unknown.click();
+  await button(page, "빈칸으로 표시").click();
   await expect(
     page.getByRole("checkbox", { name: "검토한 전체 상태 확인", exact: true }),
   ).not.toBeChecked();
@@ -575,4 +591,119 @@ test("automatic missing board releases pixels and explicit manual fallback recov
   await expect(
     page.getByRole("group", { name: "인식 결과 검토", exact: true }),
   ).toContainText("지정 영역·색상 표본");
+});
+
+test("visual unresolved cells label in place with keyboard, crop alignment and lifecycle", async ({
+  page,
+}) => {
+  const preview = page.getByLabel("검토할 게임 보드 캡처", { exact: true });
+  const summary = () => page.evaluate(() => window.__calibration.summary());
+  const start = async () => {
+    if (await button(page, "Start Screen Capture").isEnabled()) {
+      await button(page, "Start Screen Capture").click();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("video").videoWidth === 300 &&
+          document.querySelector("video").readyState >= 2,
+      );
+    }
+    await button(page, "Capture Frame").click();
+    await expect(preview).toBeVisible();
+  };
+  await page.evaluate(() => window.__calibration.automaticMode("occluded"));
+  await start();
+  await expect(
+    page.locator('button[data-review-unresolved="true"]'),
+  ).toHaveCount(1);
+  const unknown = page.locator(
+    'button[data-review-row="1"][data-review-col="0"]',
+  );
+  await expect(unknown).toHaveCSS("border-top-width", "3px");
+  await expect(
+    page.getByRole("status", { name: "미확정 칸 수", exact: true }),
+  ).toContainText("1개");
+  expect((await summary()).previews).toEqual([false]);
+  expect((await summary()).buffers.every(Boolean)).toBe(true);
+  expect((await summary()).scratch.every(Boolean)).toBe(true);
+  const imageRect = await preview.boundingBox(),
+    cellRect = await unknown.boundingBox();
+  expect(Math.abs(cellRect.x - imageRect.x)).toBeLessThan(1);
+  expect(
+    Math.abs(cellRect.y - imageRect.y - imageRect.height / 16),
+  ).toBeLessThan(1);
+  await button(page, "다음 미확정 칸").click();
+  const editor = page.getByRole("group", {
+    name: "선택한 칸 레이블링",
+    exact: true,
+  });
+  await expect(editor).toBeVisible();
+  await expect(unknown).toHaveText("!"); // selecting never labels silently
+  await expect(unknown).toHaveAttribute("aria-pressed", "true");
+  const editRect = await editor.boundingBox();
+  expect(editRect.x).toBeGreaterThanOrEqual(imageRect.x - 1);
+  expect(editRect.x + editRect.width).toBeLessThanOrEqual(
+    imageRect.x + imageRect.width + 1,
+  );
+  await page.locator(".review-board").screenshot({
+    path: test.info().outputPath("synthetic-cell-labeling.png"),
+  });
+  await button(page, "빈칸으로 표시").press("Enter");
+  await expect(unknown).toHaveText("·");
+  await expect(button(page, "다음 미확정 칸")).toBeDisabled();
+  await button(page, "점유로 표시").click();
+  await expect(unknown).toHaveText("●");
+  await button(page, "미확정으로 되돌리기").click();
+  await expect(unknown).toHaveText("?");
+  await button(page, "빈칸으로 표시").click();
+  await button(page, "빈칸으로 표시").press("Escape");
+  await expect(editor).toHaveCount(0);
+  await expect(unknown).toBeFocused();
+  await unknown.press("Space");
+  await expect(editor).toBeVisible();
+  await button(page, "닫기").click();
+  await button(page, "점유 표시 보기").click();
+  await expect(preview).toBeHidden();
+  await button(page, "게임 캡처 보기").click();
+  await expect(preview).toBeVisible();
+  await page.screenshot({
+    path: test.info().outputPath("synthetic-visual-review.png"),
+  });
+  for (const [row, col] of [
+    [0, 9],
+    [15, 0],
+    [15, 9],
+  ]) {
+    await page
+      .locator(`button[data-review-row="${row}"][data-review-col="${col}"]`)
+      .click();
+    const a = await editor.boundingBox(),
+      b = await preview.boundingBox();
+    expect(a.x).toBeGreaterThanOrEqual(b.x - 1);
+    expect(a.x + a.width).toBeLessThanOrEqual(b.x + b.width + 1);
+    expect(a.y).toBeGreaterThanOrEqual(b.y - 1);
+    expect(a.y + a.height).toBeLessThanOrEqual(b.y + b.height + 1);
+    await button(page, "닫기").click();
+  }
+  await button(page, "검토 버리기").click();
+  expect((await summary()).previews.every(Boolean)).toBe(true);
+  await start();
+  await start(); // replacement disposes only the previous crop
+  expect((await summary()).previews.slice(0, -1).every(Boolean)).toBe(true);
+  await button(page, "현재 수동 입력으로 Mock 검토").click();
+  expect((await summary()).previews.every(Boolean)).toBe(true);
+  await start();
+  await number(page, "Reroll 보유 수").fill("1");
+  await expect(preview).toHaveCount(0);
+  expect((await summary()).previews.every(Boolean)).toBe(true);
+  await number(page, "Reroll 보유 수").fill("0");
+  await start();
+  await button(page, "Stop Capture").click();
+  expect((await summary()).previews.every(Boolean)).toBe(true);
+  await start();
+  await page.evaluate(() => window.__calibration.end());
+  await expect(preview).toHaveCount(0);
+  expect((await summary()).previews.every(Boolean)).toBe(true);
+  await start();
+  await button(page, "화면 입력 닫기").click();
+  expect((await summary()).previews.every(Boolean)).toBe(true);
 });

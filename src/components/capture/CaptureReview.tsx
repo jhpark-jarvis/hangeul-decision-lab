@@ -25,6 +25,9 @@ import type {
   RecognitionResult,
   ReviewState,
 } from "@/features/recognition/types";
+import type { PixelRegion } from "@/features/recognition/calibration";
+import { ReviewBoard } from "./ReviewBoard";
+import { paintReviewPreview, releaseReviewPreview } from "./review-preview";
 import { releaseFrame } from "@/features/recognition/calibration";
 import { recognizeAutomaticBoard } from "@/features/recognition/automatic";
 import { FrameCalibration } from "./FrameCalibration";
@@ -53,6 +56,13 @@ export function CaptureReview({
   const [snapshot, setSnapshot] = useState("");
   const [errors, setErrors] = useState<FieldIssue[]>([]);
   const [frameMessage, setFrameMessage] = useState("");
+  const ownedPreview = useRef<HTMLCanvasElement | null>(null);
+  const [preview, setPreview] = useState<HTMLCanvasElement | null>(null);
+  const clearPreview = useCallback(() => {
+    releaseReviewPreview(ownedPreview.current);
+    ownedPreview.current = null;
+    setPreview(null);
+  }, []);
   const ownedFrame = useRef<CapturedFrame | null>(null);
   const frameSerial = useRef(0);
   const [calibration, setCalibration] = useState<{
@@ -71,6 +81,7 @@ export function CaptureReview({
   // effect cleans its pixels after commit. No stale selector can reappear.
   if (observedGame !== gameSnapshot) {
     setObservedGame(gameSnapshot);
+    if (preview) setPreview(null);
     if (calibration) {
       setCalibration(null);
       setFrameMessage(
@@ -86,11 +97,19 @@ export function CaptureReview({
     };
   }, [calibration]);
   useEffect(() => {
+    const image = preview;
+    return () => {
+      releaseReviewPreview(image);
+      if (ownedPreview.current === image) ownedPreview.current = null;
+    };
+  }, [preview]);
+  useEffect(() => {
     const element = video.current;
     const owned = createCaptureController(requestDisplayMedia, (status) => {
       setCapture(status);
       if (status.phase !== "active") {
         clearCalibration();
+        clearPreview();
         if (video.current) video.current.srcObject = null;
       }
     });
@@ -101,14 +120,20 @@ export function CaptureReview({
       controller.current = null;
       releaseFrame(ownedFrame.current);
       ownedFrame.current = null;
+      releaseReviewPreview(ownedPreview.current);
+      ownedPreview.current = null;
     };
-  }, [clearCalibration]);
+  }, [clearCalibration, clearPreview]);
 
   function openReview(
     result: RecognitionResult,
     expectedSnapshot = JSON.stringify(game),
+    image: HTMLCanvasElement | null = null,
   ) {
     onInvalidate();
+    clearPreview();
+    ownedPreview.current = image;
+    setPreview(image);
     setReview(createReviewState(result));
     setSnapshot(expectedSnapshot);
     setErrors([]);
@@ -145,6 +170,7 @@ export function CaptureReview({
           onClick={() => {
             onInvalidate();
             clearCalibration();
+            clearPreview();
             setReview(null);
             setErrors([]);
             setFrameMessage("");
@@ -183,6 +209,7 @@ export function CaptureReview({
           onClick={() => {
             onInvalidate();
             clearCalibration();
+            clearPreview();
             setReview(null);
             setErrors([]);
             let frame: CapturedFrame | null = null;
@@ -191,12 +218,16 @@ export function CaptureReview({
               frame = captureCurrentFrame(video.current);
               const automatic = recognizeAutomaticBoard(frame);
               if (automatic.ok) {
-                openReview(automatic.result);
+                openReview(
+                  automatic.result,
+                  JSON.stringify(game),
+                  paintReviewPreview(frame, automatic.region),
+                );
                 const unresolved = automatic.result.board
                   .flat()
                   .filter((cell) => cell.occupied === null).length;
                 setFrameMessage(
-                  `자동 보드 판별 완료 · 미확정 ${unresolved}칸 · 프레임을 지웠습니다.`,
+                  `자동 보드 판별 완료 · 미확정 ${unresolved}칸 · 원본 프레임을 지웠습니다. 보드 캡처는 검토 종료 시 지웁니다.`,
                 );
               } else {
                 openReview(
@@ -221,6 +252,7 @@ export function CaptureReview({
           onClick={() => {
             onInvalidate();
             clearCalibration();
+            clearPreview();
             setReview(null);
             setErrors([]);
             try {
@@ -281,27 +313,33 @@ export function CaptureReview({
           disabled={disabled}
           onChange={() => {
             onInvalidate();
+            clearPreview();
             setReview(null);
             setErrors([]);
           }}
-          onResult={(result) => {
+          onResult={(result, region: PixelRegion) => {
             const expected = calibration.snapshot;
+            const image =
+              expected === JSON.stringify(game)
+                ? paintReviewPreview(calibration.frame, region)
+                : null;
             clearCalibration();
             if (expected !== JSON.stringify(game)) {
               setFrameMessage("수동 상태가 바뀌었습니다. 다시 캡처하세요.");
               return;
             }
-            openReview(result, expected);
+            openReview(result, expected, image);
             const unresolved = result.board
               .flat()
               .filter((cell) => cell.status !== "recognized").length;
             setFrameMessage(
-              `보드 판별 완료 · 미확정 ${unresolved}칸 · 프레임을 지웠습니다.`,
+              `보드 판별 완료 · 미확정 ${unresolved}칸 · 원본 프레임을 지웠습니다. 보드 캡처는 검토 종료 시 지웁니다.`,
             );
           }}
           onCancel={() => {
             onInvalidate();
             clearCalibration();
+            clearPreview();
             setReview(null);
             setErrors([]);
             setFrameMessage("프레임 선택을 취소하고 픽셀을 지웠습니다.");
@@ -353,46 +391,20 @@ export function CaptureReview({
           >
             미확정 보드 칸을 빈칸으로 확인
           </button>
-          <div
-            className="grid grid-cols-10 gap-1 max-w-lg"
-            aria-label="검토 보드"
-          >
-            {review.draft.board.flatMap((row, r) =>
-              row.map((cell, c) => (
-                <button
-                  key={`${r},${c}`}
-                  type="button"
-                  data-review-row={r}
-                  data-review-col={c}
-                  data-review-invalid={invalid(`board.${r}.${c}`)}
-                  aria-label={`검토 row ${r} col ${c}: ${cell.status !== "recognized" ? "미확정" : cell.occupied ? "점유" : "빈칸"}`}
-                  className={`h-7 rounded border text-xs ${cell.occupied ? "bg-orange-500" : "bg-white"}`}
-                  onClick={() =>
-                    change((draft) => {
-                      const target = draft.board[r][c];
-                      target.occupied =
-                        target.occupied === null
-                          ? false
-                          : target.occupied
-                            ? null
-                            : true;
-                      target.status =
-                        target.occupied === null ? "unknown" : "recognized";
-                      delete target.confidence;
-                    })
-                  }
-                >
-                  {cell.status === "uncertain"
-                    ? "!"
-                    : cell.status === "unknown" || cell.occupied === null
-                      ? "?"
-                      : cell.occupied
-                        ? "●"
-                        : "·"}
-                </button>
-              )),
-            )}
-          </div>
+          <ReviewBoard
+            key={`${review.draft.source.timestamp}:${snapshot}`}
+            board={review.draft.board}
+            preview={preview}
+            invalid={invalid}
+            onLabel={(row, col, occupied) =>
+              change((draft) => {
+                const target = draft.board[row][col];
+                target.occupied = occupied;
+                target.status = occupied === null ? "unknown" : "recognized";
+                delete target.confidence;
+              })
+            }
+          />
           <div className="grid grid-cols-3 gap-3">
             {review.draft.pieces.map((piece) => (
               <label key={piece.slot}>
@@ -606,6 +618,7 @@ export function CaptureReview({
                 setErrors(failures);
                 if (!failures.length) {
                   clearCalibration();
+                  clearPreview();
                   setReview(null);
                 }
               }}
@@ -617,6 +630,7 @@ export function CaptureReview({
               onClick={() => {
                 onInvalidate();
                 clearCalibration();
+                clearPreview();
                 setReview(null);
                 setErrors([]);
                 setFrameMessage("");

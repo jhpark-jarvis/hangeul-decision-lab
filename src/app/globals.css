@@ -96,6 +96,39 @@ summary:focus-visible {
   .debug-grid {
     @apply grid grid-cols-[1fr_1fr] gap-x-4 gap-y-2 text-xs;
   }
+  .review-cell {
+    @apply relative min-w-0 cursor-pointer border border-stone-300 text-xl font-bold text-stone-800 disabled:cursor-default;
+  }
+  .review-cell.empty {
+    @apply bg-white;
+  }
+  .review-cell.filled {
+    @apply bg-orange-500;
+  }
+  .review-cell.over-image {
+    @apply border-white/30 bg-transparent;
+  }
+  .review-cell.over-image > span {
+    @apply rounded bg-white/80 px-1 text-sm;
+  }
+  .review-cell.unresolved {
+    border: 3px solid #b45309;
+    background: repeating-linear-gradient(
+      135deg,
+      #fef3c755 0 5px,
+      #fbbf2466 5px 10px
+    );
+    color: #451a03;
+  }
+  .review-cell.unresolved > span {
+    @apply rounded bg-amber-100 px-1 text-xl;
+  }
+  .review-cell[aria-pressed="true"] {
+    @apply z-10 outline-4 outline-blue-600 outline-offset-[-4px];
+  }
+  .cell-label-editor {
+    @apply absolute z-20 w-[248px] rounded-xl border-2 border-blue-600 bg-white p-3 text-stone-900 shadow-xl;
+  }
   summary {
     @apply cursor-pointer text-sm font-semibold;
   }
