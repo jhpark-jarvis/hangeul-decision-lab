@@ -5,8 +5,76 @@ import {
   createReviewState,
   validateReviewedState,
 } from "../../src/features/recognition/review";
-import { automaticFixture, referenceRows } from "./automatic-fixture";
+import {
+  automaticFixture,
+  referenceRows,
+  surroundedBoardFixture,
+} from "./automatic-fixture";
 describe("automatic game board boundary", () => {
+  it.each([18, 26, 39, 52])(
+    "finds an empty board inside a 1920x1080 sharing frame, pitch=%i",
+    (pitch) => {
+      const original = surroundedBoardFixture(pitch, true);
+      const width = 1920,
+        height = 1080,
+        dx = 400,
+        dy = 100;
+      const pixels = new Uint8ClampedArray(width * height * 4);
+      for (let i = 0; i < pixels.length; i += 4)
+        pixels.set([30, 30, 30, 255], i);
+      for (let y = 0; y < original.height; y++)
+        pixels.set(
+          original.pixels.subarray(
+            y * original.width * 4,
+            (y + 1) * original.width * 4,
+          ),
+          ((y + dy) * width + dx) * 4,
+        );
+      const found = recognizeAutomaticBoard({
+        width,
+        height,
+        timestamp: 1,
+        pixels,
+      });
+      expect(found.ok).toBe(true);
+      if (!found.ok) return;
+      const tolerance = Math.ceil(pitch * 0.08);
+      expect(Math.abs(found.region.x - (37 + dx))).toBeLessThanOrEqual(
+        tolerance,
+      );
+      expect(Math.abs(found.region.y - (51 + dy))).toBeLessThanOrEqual(
+        tolerance,
+      );
+      expect(found.region.width).toBe(pitch * 10);
+      expect(found.result.board.flat().every((c) => c.occupied === false)).toBe(
+        true,
+      );
+    },
+  );
+  it.each(
+    [18, 26, 39, 52].flatMap((pitch) =>
+      [false, true].map((empty) => ({ pitch, empty })),
+    ),
+  )(
+    "excludes the connected right panel at $pitch pixels, empty=$empty",
+    ({ pitch, empty }) => {
+      const frame = surroundedBoardFixture(pitch, empty);
+      const found = recognizeAutomaticBoard(frame);
+      expect(found.ok).toBe(true);
+      if (!found.ok) return;
+      expect(found.region.x).toBeCloseTo(37, -1);
+      expect(found.region.y).toBeCloseTo(51, -1);
+      expect(found.region.width).toBeCloseTo(pitch * 10, -1);
+      expect(found.region.height).toBeCloseTo(pitch * 16, -1);
+      expect(
+        found.result.board.map((row) =>
+          row
+            .map((c) => (c.occupied === null ? "?" : Number(c.occupied)))
+            .join(""),
+        ),
+      ).toEqual(empty ? Array(16).fill("0000000000") : referenceRows);
+    },
+  );
   it.each([18, 26, 39, 52])(
     "finds a translated %ipx grid and reads all tiles without samples",
     (pitch) => {
@@ -54,6 +122,16 @@ describe("automatic game board boundary", () => {
       reason: "NOT_FOUND",
     });
     expect(recognizeAutomaticBoard(automaticFixture()).ok).toBe(true);
+  });
+  it("rejects panel seams when there is no board lattice", () => {
+    const frame = surroundedBoardFixture(26, true);
+    for (let y = 51; y < 51 + 16 * 26; y++)
+      for (let x = 37; x < 37 + 10 * 26; x++)
+        frame.pixels.set([50, 175, 190, 255], (y * frame.width + x) * 4);
+    expect(recognizeAutomaticBoard(frame)).toEqual({
+      ok: false,
+      reason: "NOT_FOUND",
+    });
   });
   it("rejects malformed frame and tiny grids", () => {
     const frame = automaticFixture();

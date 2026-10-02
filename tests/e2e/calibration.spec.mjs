@@ -92,9 +92,11 @@ test.beforeEach(async ({ page, context }, info) => {
     measuredAt: new Date().toISOString(),
     browser: info.project.name,
     fixture: info.title,
-    source: /^(automatic|visual)/.test(info.title)
-      ? "Synthetic 300x466 gradient Canvas stream / 10x16 board / local crop. Native picker and actual desktop never used."
-      : "Synthetic 960x1440 Canvas stream / arbitrary colors / 10x16 board. Native picker and actual desktop never used.",
+    source: /^(panel|connected)/.test(info.title)
+      ? "Synthetic 432x466 board and right-panel Canvas stream. Native picker and actual desktop never used."
+      : /^(automatic|visual)/.test(info.title)
+        ? "Synthetic 300x466 gradient Canvas stream / 10x16 board / local crop. Native picker and actual desktop never used."
+        : "Synthetic 960x1440 Canvas stream / arbitrary colors / 10x16 board. Native picker and actual desktop never used.",
     requests: [],
     errors: [],
     sockets: [],
@@ -164,6 +166,7 @@ test.beforeEach(async ({ page, context }, info) => {
         const element = document.createElement("canvas");
         if (automaticMode) {
           const panelMode = automaticMode.startsWith("panel");
+          const connectedMode = automaticMode.startsWith("panel-connected");
           const frameWidth = panelMode ? 432 : 300;
           element.width = frameWidth;
           element.height = 466;
@@ -192,6 +195,10 @@ test.beforeEach(async ({ page, context }, info) => {
               const row = Math.floor((y - 30) / 26),
                 col = Math.floor((x - 20) / 26);
               let color = [30, 30, 30];
+              if (connectedMode && x >= 20 && y >= 30 && y < 450) {
+                color = [50, 175, 190];
+                if (x >= 280 && (x - 20) % 26 < 2) color = [20, 95, 160];
+              }
               if (
                 automaticMode !== "missing" &&
                 row >= 0 &&
@@ -204,6 +211,7 @@ test.beforeEach(async ({ page, context }, info) => {
                 color = [50, 165 + row * 0.7, 185 + row * 0.2];
                 if (fx < 0.06 || fy < 0.06) color = color.map((c) => c - 12);
                 if (
+                  automaticMode !== "panel-connected-empty" &&
                   rows[row][col] === "1" &&
                   fx > 0.08 &&
                   fx < 0.92 &&
@@ -383,6 +391,95 @@ test.afterEach(async ({ page, context, browser }, info) => {
     ),
   ).toEqual([]);
 });
+
+for (const empty of [false, true])
+  test(`connected panel is excluded from the ${empty ? "empty" : "occupied"} board preview`, async ({
+    page,
+  }) => {
+    await page.evaluate(
+      (empty) =>
+        window.__calibration.automaticMode(
+          empty ? "panel-connected-empty" : "panel-connected",
+        ),
+      empty,
+    );
+    await button(page, "Start Screen Capture").click();
+    await page.waitForFunction(
+      () =>
+        document.querySelector("video").videoWidth === 432 &&
+        document.querySelector("video").readyState >= 2,
+    );
+    await button(page, "Capture Frame").click();
+    await expect(
+      page.getByLabel("검토할 게임 보드 캡처", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.locator('button[data-review-unresolved="true"]'),
+    ).toHaveCount(0);
+    await expect(page.locator("button[data-review-row]")).toHaveCount(160);
+    // Compare against the generated game frame's exact board crop, including the
+    // horizontal phase. Geometry alone would miss a same-size crop shifted right.
+    const matched = await page.evaluate(() => {
+      const video = document.querySelector("video"),
+        preview = document.querySelector(
+          'canvas[aria-label="검토할 게임 보드 캡처"]',
+        ),
+        expected = document.createElement("canvas");
+      expected.width = preview.width;
+      expected.height = preview.height;
+      const ctx = expected.getContext("2d");
+      ctx.drawImage(
+        video,
+        20,
+        30,
+        260,
+        416,
+        0,
+        0,
+        expected.width,
+        expected.height,
+      );
+      const a = ctx.getImageData(0, 0, expected.width, expected.height).data,
+        b = preview
+          .getContext("2d")
+          .getImageData(0, 0, preview.width, preview.height).data;
+      // Accept the documented grid-edge tolerance but reject UI white panels.
+      let different = 0;
+      for (let i = 0; i < a.length; i += 4)
+        if (
+          Math.abs(a[i] - b[i]) +
+            Math.abs(a[i + 1] - b[i + 1]) +
+            Math.abs(a[i + 2] - b[i + 2]) >
+          60
+        )
+          different++;
+      const ratio = different / (a.length / 4);
+      a.fill(0);
+      b.fill(0);
+      expected.width = 0;
+      expected.height = 0;
+      return ratio;
+    });
+    expect(matched).toBeLessThan(0.08);
+    await page.locator(".review-board").screenshot({
+      path: test
+        .info()
+        .outputPath(`synthetic-connected-${empty ? "empty" : "occupied"}.png`),
+    });
+    await expect(
+      page.getByRole("status", { name: "점유 칸 수", exact: true }),
+    ).toHaveText("0 / 160");
+    await expect(button(page, "Use This State")).toBeDisabled();
+    await fillReview(page);
+    await button(page, "Use This State").click();
+    await expect(
+      page.getByRole("status", { name: "점유 칸 수", exact: true }),
+    ).toHaveText(`${empty ? 0 : 49} / 160`);
+    await expect(
+      page.getByLabel("검토할 게임 보드 캡처", { exact: true }),
+    ).toHaveCount(0);
+    await button(page, "Stop Capture").click();
+  });
 
 test("panel same-frame capture fills held pieces and abilities before explicit Use/Analyze/Apply", async ({
   page,

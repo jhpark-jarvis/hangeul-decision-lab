@@ -170,37 +170,66 @@ function fit(frame: CapturedFrame, box: PixelRegion): PixelRegion | null {
     p += C.pitchStep
   ) {
     const search = (axis: ReturnType<typeof projection>, count: number) => {
-      let score = -Infinity,
-        start = 0;
+      const candidates: { score: number; start: number }[] = [];
       for (
         let offset = 0;
         offset <= axis.values.length - count * p + Math.ceil(p * 0.08);
         offset++
       ) {
-        let sum = 0;
+        const lines: number[] = [];
         for (let k = 1; k < count; k++) {
           const i = Math.round(offset + k * p);
-          sum += axis.values[i] ?? 0;
+          lines.push(axis.values[i] ?? 0);
         }
-        if (sum / (count - 1) > score) {
-          score = sum / (count - 1);
-          start = offset;
-        }
+        const score =
+          lines.reduce((sum, value) => sum + value, 0) / lines.length;
+        if (score >= C.minGridContrast)
+          candidates.push({ score, start: offset });
       }
-      return { score, start };
+      candidates.sort((a, b) => b.score - a.score || a.start - b.start);
+      const kept: typeof candidates = [];
+      for (const candidate of candidates) {
+        if (
+          kept.every(
+            (c) => Math.abs(c.start - candidate.start) >= p * C.axisSeparation,
+          )
+        )
+          kept.push(candidate);
+        if (kept.length === C.axisCandidates) break;
+      }
+      return kept;
     };
     const x = search(xs, BOARD_WIDTH),
       y = search(ys, BOARD_HEIGHT);
-    const score = Math.min(x.score, y.score);
-    if (score > best) {
-      best = score;
-      winner = {
-        x: xs.origin + x.start,
-        y: ys.origin + y.start,
-        width: p * BOARD_WIDTH,
-        height: p * BOARD_HEIGHT,
-      };
-    }
+    for (const a of x)
+      for (const b of y) {
+        const candidate = {
+          x: xs.origin + a.start,
+          y: ys.origin + b.start,
+          width: p * BOARD_WIDTH,
+          height: p * BOARD_HEIGHT,
+        };
+        if (
+          candidate.x + candidate.width > frame.width ||
+          candidate.y + candidate.height > frame.height
+        )
+          continue;
+        const seamScore = Math.min(a.score, b.score, 99) / 100;
+        if (BOARD_WIDTH * BOARD_HEIGHT + seamScore <= best) continue;
+        if (localGridScore(frame, candidate) < C.minGridContrast) continue;
+        let resolved = 0;
+        for (let row = 0; row < BOARD_HEIGHT; row++)
+          for (let col = 0; col < BOARD_WIDTH; col++)
+            if (classify(frame, candidate, row, col).occupied !== null)
+              resolved++;
+        if (resolved < BOARD_WIDTH * BOARD_HEIGHT * C.minResolvedCells)
+          continue;
+        // Prefer a full board over a shifted crop that contains UI cards/buttons.
+        const score = resolved + seamScore;
+        if (score <= best) continue;
+        best = score;
+        winner = candidate;
+      }
   }
   return best >= C.minGridContrast &&
     winner &&
@@ -210,6 +239,48 @@ function fit(frame: CapturedFrame, box: PixelRegion): PixelRegion | null {
     winner.y + winner.height <= frame.height
     ? winner
     : null;
+}
+/** Check every seam inside this crop, rather than unrelated strong panel edges. */
+function localGridScore(frame: CapturedFrame, region: PixelRegion): number {
+  const pitch = region.width / BOARD_WIDTH;
+  let weakest = Infinity;
+  for (const vertical of [true, false]) {
+    const count = vertical ? BOARD_WIDTH : BOARD_HEIGHT;
+    for (let k = 1; k < count; k++) {
+      let strongest = 0;
+      for (
+        let shift = -Math.ceil(pitch * 0.08);
+        shift <= Math.ceil(pitch * 0.08);
+        shift++
+      ) {
+        const values: number[] = [];
+        for (let j = 0; j < C.projectionSamples; j++) {
+          const across = (j + 0.5) / C.projectionSamples;
+          values.push(
+            contrast(
+              frame,
+              vertical
+                ? region.x + k * pitch + shift
+                : region.x + region.width * across,
+              vertical
+                ? region.y + region.height * across
+                : region.y + k * pitch + shift,
+              vertical ? 1 : 0,
+              vertical ? 0 : 1,
+            ),
+          );
+        }
+        values.sort((a, b) => a - b);
+        strongest = Math.max(
+          strongest,
+          values[Math.floor(values.length * 0.45)],
+        );
+      }
+      weakest = Math.min(weakest, strongest);
+      if (weakest < C.minGridContrast) return weakest;
+    }
+  }
+  return weakest;
 }
 function classify(
   frame: CapturedFrame,
