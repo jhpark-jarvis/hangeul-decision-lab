@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import reference from "../fixtures/pieces/catalog-v1.json";
+import reference from "../fixtures/pieces/catalog-v2.json";
 import { applyAction } from "../../src/domain/game/actions";
 import { enterNextPieces } from "../../src/domain/game/game-state";
 import type { GameState } from "../../src/domain/game/types";

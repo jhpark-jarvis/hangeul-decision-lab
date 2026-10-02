@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getInitialCatalog } from "../../src/domain/pieces/catalog";
-import reference from "../fixtures/pieces/catalog-v1.json";
+import reference from "../fixtures/pieces/catalog-v2.json";
 import {
   flipHorizontal,
   getUniqueVariants,

@@ -842,7 +842,7 @@ test("visual game labels and board item marking preserve occupancy and confirmat
   await page
     .getByText("첫 번째 보유 조각 모양으로 고르기", { exact: true })
     .click();
-  await button(page, "첫 번째 보유 조각 5칸 열린 네모 선택").click();
+  await button(page, "첫 번째 보유 조각 ㄷ 선택").click();
   await expect(
     page
       .getByLabel("첫 번째 보유 조각 선택 모양", { exact: true })

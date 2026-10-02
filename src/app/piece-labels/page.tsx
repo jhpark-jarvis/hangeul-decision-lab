@@ -10,23 +10,23 @@ import {
   completePieceLabels,
   HANGEUL_PIECE_LABELS,
   LABEL_CELL_COUNTS,
-  type PieceLabelMapping,
 } from "@/features/pieces/labels";
 
 const catalog = getInitialCatalog();
 export default function PieceLabelsPage() {
   const [labels, setLabels] = useState<string[]>(() => catalog.map(() => ""));
-  const [completed, setCompleted] = useState<PieceLabelMapping | null>(null);
+  const [completed, setCompleted] = useState(false);
   const [message, setMessage] = useState("");
   const result = completePieceLabels(catalog, labels);
   const selectedCount = labels.filter(Boolean).length;
-  const json = completed
-    ? JSON.stringify(
-        { catalogVersion: EVENT_CATALOG_VERSION, mapping: completed },
-        null,
-        2,
-      )
-    : "";
+  const json =
+    completed && result.ok
+      ? JSON.stringify(
+          { catalogVersion: EVENT_CATALOG_VERSION, mapping: result.mapping },
+          null,
+          2,
+        )
+      : "";
 
   return (
     <main
@@ -66,7 +66,7 @@ export default function PieceLabelsPage() {
           disabled={!result.ok || !!completed}
           onClick={() => {
             if (!result.ok) return;
-            setCompleted(result.mapping);
+            setCompleted(true);
             setMessage(
               "19개 매칭이 완료되었습니다. 이 탭을 둔 채 채팅에 ‘완료’라고 알려 주세요.",
             );
@@ -79,7 +79,7 @@ export default function PieceLabelsPage() {
             type="button"
             className="small-button"
             onClick={() => {
-              setCompleted(null);
+              setCompleted(false);
               setMessage("");
             }}
           >

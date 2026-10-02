@@ -17,7 +17,7 @@ const measuredFixtureIds = new Set([
   "single-cell-item-rescue",
 ]);
 const catalogReference = JSON.parse(
-  readFileSync("tests/fixtures/pieces/catalog-v1.json", "utf8"),
+  readFileSync("tests/fixtures/pieces/catalog-v2.json", "utf8"),
 );
 
 async function measureAnalyze(page) {

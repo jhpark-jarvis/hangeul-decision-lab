@@ -1,14 +1,16 @@
 import type { Piece } from "./types";
 
 // Canonical shape reference: tests/fixtures/pieces/catalog-v2.json.
+// Names: canonical Hangul label mapping.
+// Corrected final rows; legacy piece IDs remain stable.
 // Official update813 confirms nineteen types and rotation/reflection, not each footprint.
-export const EVENT_CATALOG_VERSION = "2026-10-01-user-image-v1";
+export const EVENT_CATALOG_VERSION = "2026-10-02-user-labels-v2";
 const EVENT_PIECES: Piece[] = [
-  { id: "DOT", name: "1칸", shape: [[true]] },
-  { id: "LINE_3", name: "가로 3칸", shape: [[true, true, true]] },
+  { id: "DOT", name: "점", shape: [[true]] },
+  { id: "LINE_3", name: "ㅡ", shape: [[true, true, true]] },
   {
     id: "BRANCH_4",
-    name: "4칸 가지",
+    name: "ㅏ",
     shape: [
       [true, false],
       [true, true],
@@ -17,7 +19,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "DOUBLE_BRANCH_7",
-    name: "7칸 두 가지",
+    name: "ㅑ",
     shape: [
       [true, false],
       [true, true],
@@ -28,7 +30,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "DIAGONAL_3",
-    name: "3칸 대각",
+    name: "ㅅ",
     shape: [
       [false, true, false],
       [true, false, true],
@@ -36,7 +38,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "L_3",
-    name: "3칸 L",
+    name: "ㄴ",
     shape: [
       [true, false],
       [true, true],
@@ -44,7 +46,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "DIAMOND_4",
-    name: "4칸 마름모",
+    name: "ㅇ",
     shape: [
       [false, true, false],
       [true, false, true],
@@ -53,7 +55,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "CROWN_6",
-    name: "6칸 지붕",
+    name: "ㅈ",
     shape: [
       [true, true, true],
       [false, true, false],
@@ -62,7 +64,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "HOOK_4",
-    name: "4칸 꺾임",
+    name: "ㄱ",
     shape: [
       [true, true],
       [false, true],
@@ -71,12 +73,12 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "LINE_5",
-    name: "세로 5칸",
+    name: "ㅣ",
     shape: [[true], [true], [true], [true], [true]],
   },
   {
     id: "DOUBLE_ARM_RIGHT_6",
-    name: "6칸 오른쪽 기둥",
+    name: "ㅋ",
     shape: [
       [true, true],
       [false, true],
@@ -86,7 +88,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "C_5",
-    name: "5칸 열린 네모",
+    name: "ㄷ",
     shape: [
       [true, true],
       [true, false],
@@ -95,7 +97,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "STAR_9",
-    name: "9칸 별",
+    name: "ㅎ",
     shape: [
       [false, false, true, false, false],
       [true, true, true, true, true],
@@ -105,7 +107,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "PI_10",
-    name: "10칸 가로 테두리",
+    name: "ㅍ",
     shape: [
       [true, true, true, true],
       [false, true, true, false],
@@ -114,7 +116,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "CROWN_7",
-    name: "7칸 지붕",
+    name: "ㅊ",
     shape: [
       [false, true, false],
       [true, true, true],
@@ -124,7 +126,7 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "GRID_10",
-    name: "10칸 세로 테두리",
+    name: "ㅂ",
     shape: [
       [true, false, true],
       [true, true, true],
@@ -143,22 +145,24 @@ const EVENT_PIECES: Piece[] = [
   },
   {
     id: "ZIGZAG_6",
-    name: "6칸 지그재그",
+    name: "ㄹ",
     shape: [
       [true, true],
       [false, true],
       [true, true],
       [true, false],
+      [true, true],
     ],
   },
   {
     id: "DOUBLE_ARM_LEFT_6",
-    name: "6칸 왼쪽 기둥",
+    name: "ㅌ",
     shape: [
       [true, true],
       [true, false],
       [true, true],
       [true, false],
+      [true, true],
     ],
   },
 ];

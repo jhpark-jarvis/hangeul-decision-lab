@@ -2,6 +2,84 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { test, expect } from "@playwright/test";
 
 const buildId = readFileSync(".next/BUILD_ID", "utf8").trim();
+test("restored ㄹ and ㅌ render five complete rows and retain user labels", async ({
+  page,
+}, info) => {
+  const mapping = JSON.parse(
+    readFileSync("tests/fixtures/pieces/labels.json", "utf8"),
+  ).mapping;
+  await page.goto("/piece-labels");
+  const shapes = [];
+  for (const [n, label, rows] of [
+    [18, "ㄹ", "1101111011"],
+    [19, "ㅌ", "1110111011"],
+  ]) {
+    const card = page.getByRole("article", { name: `도형 ${n}`, exact: true });
+    await card.scrollIntoViewIfNeeded();
+    await expect(card).toContainText("8칸");
+    const actual = await card
+      .locator('[aria-hidden="true"]')
+      .evaluate((grid) => {
+        const wrapper = grid.parentElement.getBoundingClientRect();
+        const rect = grid.getBoundingClientRect();
+        return {
+          mask: [...grid.children]
+            .map((child) =>
+              child.classList.contains("bg-pink-400") ? "1" : "0",
+            )
+            .join(""),
+          gridHeight: rect.height,
+          wrapperHeight: wrapper.height,
+          fits:
+            rect.top >= wrapper.top &&
+            rect.bottom <= wrapper.bottom &&
+            rect.left >= wrapper.left &&
+            rect.right <= wrapper.right,
+        };
+      });
+    expect(actual.mask).toBe(rows);
+    expect(actual.fits).toBe(true);
+    expect(actual.gridHeight).toBe(136);
+    shapes.push({ n, label, ...actual });
+  }
+  for (const [index, entry] of mapping.entries())
+    await page
+      .getByRole("combobox", {
+        name: `도형 ${index + 1} 한글 이름`,
+        exact: true,
+      })
+      .selectOption(entry.label);
+  await page.getByRole("button", { name: "매칭 완료", exact: true }).click();
+  const result = JSON.parse(
+    await page
+      .getByRole("textbox", { name: "한글 도형 매칭 JSON" })
+      .inputValue(),
+  );
+  expect(result.catalogVersion).toBe("2026-10-02-user-labels-v2");
+  expect(
+    result.mapping.map(({ pieceId, label }) => ({ pieceId, label })),
+  ).toEqual(mapping.map(({ pieceId, label }) => ({ pieceId, label })));
+  expect(result.mapping.slice(17).map(({ cells }) => cells)).toEqual([8, 8]);
+  await page.screenshot({
+    path: info.outputPath("corrected-label-page.png"),
+    fullPage: true,
+  });
+  writeFileSync(
+    info.outputPath("corrected-shapes.json"),
+    JSON.stringify(
+      {
+        at: new Date().toISOString(),
+        buildId,
+        browser: info.project.name,
+        source: "Canonical Hangul labels with corrected bottom rows",
+        shapes,
+        result: "PASS",
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+});
 test("user label page requires explicit unique choices, supports completion/edit and clipboard recovery", async ({
   page,
   context,
