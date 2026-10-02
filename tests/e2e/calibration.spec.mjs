@@ -118,8 +118,15 @@ test.beforeEach(async ({ page, context }, info) => {
       buffers = [],
       scratch = [],
       canvases = [];
+    let canvasFailure = "";
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (...args) {
+      return canvasFailure === "context" ? null : getContext.apply(this, args);
+    };
     const getImageData = CanvasRenderingContext2D.prototype.getImageData;
     CanvasRenderingContext2D.prototype.getImageData = function (...args) {
+      if (canvasFailure === "pixels")
+        throw new DOMException("private-window-info", "SecurityError");
       const image = getImageData.apply(this, args);
       buffers.push(image.data);
       return image;
@@ -153,6 +160,9 @@ test.beforeEach(async ({ page, context }, info) => {
       },
     });
     window.__calibration = {
+      canvasFailure: (mode) => {
+        canvasFailure = mode;
+      },
       rememberCanvas: (element) => canvases.push(element),
       end: () => tracks.at(-1).dispatchEvent(new Event("ended")),
       summary: () => ({
@@ -346,4 +356,64 @@ test("scaled preview pointer selection feeds original pixels and explicit grid",
     page.locator('button[data-review-row="0"][data-review-col="9"]'),
   ).toHaveText("·");
   await expect(button(page, "Use This State")).toBeDisabled();
+});
+
+test("safe capture failures release prior selection and recover without native text", async ({
+  page,
+}) => {
+  const frameStatus = page.getByRole("status", {
+    name: "프레임 상태",
+    exact: true,
+  });
+  for (const failure of ["unready", "oversized", "context", "pixels"]) {
+    await capture(page);
+    await page.evaluate((mode) => {
+      const video = document.querySelector("video");
+      if (mode === "unready")
+        Object.defineProperty(video, "readyState", {
+          configurable: true,
+          value: 0,
+        });
+      if (mode === "oversized")
+        for (const key of ["videoWidth", "videoHeight"])
+          Object.defineProperty(video, key, {
+            configurable: true,
+            value: 8192,
+          });
+      window.__calibration.canvasFailure(mode);
+    }, failure);
+    await button(page, "Capture Frame").click();
+    await cleared(page);
+    await expect(frameStatus).toContainText(
+      failure === "oversized"
+        ? "더 작은 창을 공유하세요"
+        : failure === "unready"
+          ? "미리보기 재생 후"
+          : failure === "context"
+            ? "Canvas를 사용할 수 없습니다"
+            : "공유 화면과 재생 상태",
+    );
+    await expect(page.locator("body")).not.toContainText("private-window-info");
+    await expect(page.locator("body")).not.toContainText("SecurityError");
+    await expect(
+      page.getByRole("status", { name: "점유 칸 수", exact: true }),
+    ).toHaveText("0 / 160");
+    await page.evaluate(() => {
+      const video = document.querySelector("video");
+      for (const key of ["readyState", "videoWidth", "videoHeight"])
+        delete video[key];
+      window.__calibration.canvasFailure("");
+    });
+  }
+  await capture(page);
+  await expect(
+    page.getByRole("group", { name: "인식 결과 검토", exact: true }),
+  ).toContainText("영역·색상 선택 전");
+  await region(page);
+  await color(page, "빈칸", 200, 200);
+  await color(page, "점유", 120, 120);
+  await color(page, "점유", 200, 120);
+  await button(page, "선택한 영역의 보드 인식").click();
+  await cleared(page);
+  await expect(frameStatus).toContainText("보드 판별 완료");
 });

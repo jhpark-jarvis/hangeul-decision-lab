@@ -9,6 +9,29 @@ export type CapturedFrame = {
   pixels: Uint8ClampedArray;
 };
 
+type FrameCaptureErrorCode = "NOT_READY" | "TOO_LARGE" | "NO_CANVAS";
+const FRAME_MESSAGES: Record<FrameCaptureErrorCode, string> = {
+  NOT_READY:
+    "프레임이 아직 준비되지 않았습니다. 미리보기 재생 후 다시 시도하세요.",
+  TOO_LARGE: "공유 화면이 너무 큽니다. 더 작은 창을 공유하세요.",
+  NO_CANVAS: "Canvas를 사용할 수 없습니다. 지원 브라우저에서 다시 시도하세요.",
+};
+const UNKNOWN_FRAME_FAILURE =
+  "프레임을 추출하지 못했습니다. 공유 화면과 재생 상태를 확인하세요.";
+export class FrameCaptureError extends Error {
+  constructor(public readonly code: FrameCaptureErrorCode) {
+    super(FRAME_MESSAGES[code]);
+    this.name = "FrameCaptureError";
+  }
+}
+/** Only our fixed codes are displayable; native message/name may be sensitive. */
+export function frameCaptureFailureMessage(error: unknown): string {
+  return error instanceof FrameCaptureError &&
+    Object.hasOwn(FRAME_MESSAGES, error.code)
+    ? FRAME_MESSAGES[error.code]
+    : UNKNOWN_FRAME_FAILURE;
+}
+
 export function requestDisplayMedia(): Promise<MediaStream> {
   if (!navigator.mediaDevices?.getDisplayMedia)
     return Promise.reject(new DOMException("", "NotSupportedError"));
@@ -97,18 +120,15 @@ export function captureCurrentFrame(video: HTMLVideoElement): CapturedFrame {
   const width = video.videoWidth;
   const height = video.videoHeight;
   if (video.readyState < 2 || width <= 0 || height <= 0)
-    throw new Error(
-      "프레임이 아직 준비되지 않았습니다. 미리보기 재생 후 다시 시도하세요.",
-    );
+    throw new FrameCaptureError("NOT_READY");
   // Bound a single RGBA allocation to 64MiB. This is not a CV performance SLA.
-  if (width * height > 16_777_216)
-    throw new Error("공유 화면이 너무 큽니다. 더 작은 창을 공유하세요.");
+  if (width * height > 16_777_216) throw new FrameCaptureError("TOO_LARGE");
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   try {
     const context = canvas.getContext("2d", { willReadFrequently: true });
-    if (!context) throw new Error("Canvas를 사용할 수 없습니다.");
+    if (!context) throw new FrameCaptureError("NO_CANVAS");
     context.drawImage(video, 0, 0, width, height);
     return {
       width,

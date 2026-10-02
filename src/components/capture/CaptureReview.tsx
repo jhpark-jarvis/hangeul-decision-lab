@@ -5,6 +5,7 @@ import type { GameState } from "@/domain/game/types";
 import { getInitialCatalog } from "@/domain/pieces/catalog";
 import {
   captureCurrentFrame,
+  frameCaptureFailureMessage,
   createCaptureController,
   requestDisplayMedia,
   type CaptureStatus,
@@ -199,11 +200,7 @@ export function CaptureReview({
               );
               // One owned frame survives only until calibration completes or is cleared.
             } catch (error) {
-              setFrameMessage(
-                error instanceof Error && error.message.startsWith("프레임")
-                  ? error.message
-                  : "프레임을 추출하지 못했습니다. 공유 화면과 재생 상태를 확인하세요.",
-              );
+              setFrameMessage(frameCaptureFailureMessage(error));
             }
           }}
         >
@@ -280,7 +277,7 @@ export function CaptureReview({
           <legend className="font-semibold">인식 결과 검토·수정</legend>
           <p className="help">
             {review.draft.source.kind === "capture-stub"
-              ? "프레임 인식기 미구현: 모든 값은 미확정입니다."
+              ? "영역·색상 선택 전: 모든 값은 미확정입니다."
               : review.draft.source.kind === "calibrated-board"
                 ? "지정 영역·색상 표본의 보드 판별 결과입니다. 블록·아이템·능력과 각 칸을 확인하세요."
                 : "현재 수동 입력의 개발용 복사입니다. 이미지 인식 결과가 아닙니다."}{" "}
