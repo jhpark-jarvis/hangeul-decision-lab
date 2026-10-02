@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "origin": "Synthetic inputs based on user-provided development catalog and rules; no real-game or personal data",
+  "version": 3,
+  "origin": "Synthetic inputs based on user-provided development/event catalog and approved rules; no real-game or personal data",
   "fixtures": [
     {
       "id": "ordinary-line-item",
@@ -159,6 +159,141 @@
           "type": "single-cell"
         }
       ]
+    },
+    {
+      "id": "event-c5-capacity-rescue",
+      "journey": "event-single",
+      "board": [
+        [false, true, true, true, true, true, true, true, true, true],
+        [true, true, true, false, true, true, true, true, true, true],
+        [true, true, true, true, true, true, false, true, true, true],
+        [true, true, false, false, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, false],
+        [true, true, false, false, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, false, true],
+        [true, false, true, true, true, true, true, true, true, true],
+        [true, true, true, true, false, true, true, true, true, true],
+        [true, true, true, true, true, true, true, false, true, true],
+        [false, true, true, true, true, true, true, true, true, true],
+        [true, true, true, false, true, true, true, true, true, true],
+        [true, true, true, true, true, true, false, true, true, true],
+        [true, true, true, true, true, true, true, true, true, false],
+        [true, true, false, true, true, true, true, true, true, true],
+        [true, true, true, true, true, false, true, true, true, true]
+      ],
+      "slotIds": [null, null, "C_5"],
+      "abilities": {
+        "reroll": 6,
+        "singleCell": 1
+      },
+      "items": [
+        {
+          "row": 3,
+          "col": 0,
+          "type": "single-cell"
+        },
+        {
+          "row": 5,
+          "col": 0,
+          "type": "reroll"
+        }
+      ],
+      "expected": {
+        "singleRow": 4,
+        "pieceCells": 5,
+        "clearCells": 20,
+        "occupied": 118,
+        "singleCell": 1,
+        "reroll": 6,
+        "acquiredItem": {
+          "row": 3,
+          "col": 0,
+          "type": "single-cell"
+        },
+        "retainedItem": {
+          "row": 5,
+          "col": 0,
+          "type": "reroll"
+        }
+      }
+    },
+    {
+      "id": "event-branch7-single-rescue",
+      "journey": "event-single",
+      "board": [
+        [false, true, true, true, true, true, true, true, true, true],
+        [true, true, true, false, true, true, true, true, true, true],
+        [true, true, true, true, true, true, false, true, true, true],
+        [true, true, true, true, true, true, true, true, true, false],
+        [true, true, false, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true, true, false],
+        [true, true, false, false, true, true, true, true, true, true],
+        [true, true, false, true, true, true, true, true, true, true],
+        [true, true, false, false, true, true, true, true, true, true],
+        [true, true, false, true, true, true, true, true, true, true],
+        [false, true, true, true, true, true, true, true, true, true],
+        [true, true, true, false, true, true, true, true, true, true],
+        [true, true, true, true, true, true, false, true, true, true],
+        [true, true, true, true, true, true, true, true, true, false],
+        [true, true, false, true, true, true, true, true, true, true],
+        [true, true, true, true, true, false, true, true, true, true]
+      ],
+      "slotIds": [null, null, "DOUBLE_BRANCH_7"],
+      "abilities": {
+        "reroll": 0,
+        "singleCell": 1
+      },
+      "items": [
+        {
+          "row": 6,
+          "col": 0,
+          "type": "reroll"
+        }
+      ],
+      "expected": {
+        "singleRow": 5,
+        "pieceCells": 7,
+        "clearCells": 40,
+        "occupied": 100,
+        "singleCell": 0,
+        "reroll": 1,
+        "acquiredItem": {
+          "row": 6,
+          "col": 0,
+          "type": "reroll"
+        }
+      }
+    },
+    {
+      "id": "event-star9-actual-pi10",
+      "journey": "reroll",
+      "board": [
+        [false, true, true, true, true, true, true, true, true, true],
+        [true, true, true, false, true, true, true, true, true, true],
+        [true, true, true, true, true, true, false, true, true, true],
+        [true, true, true, true, true, true, true, true, true, false],
+        [true, true, false, true, true, true, true, true, true, true],
+        [true, true, false, false, false, false, true, true, true, true],
+        [true, true, true, false, false, true, true, true, true, true],
+        [true, true, false, false, false, false, true, true, true, true],
+        [true, true, true, true, false, true, true, true, true, true],
+        [true, true, true, true, true, true, true, false, true, true],
+        [false, true, true, true, true, true, true, true, true, true],
+        [true, true, true, false, true, true, true, true, true, true],
+        [true, true, true, true, true, true, false, true, true, true],
+        [true, true, true, true, true, true, true, true, true, false],
+        [true, true, false, true, true, true, true, true, true, true],
+        [true, true, true, true, true, false, true, true, true, true]
+      ],
+      "slotIds": [null, null, "STAR_9"],
+      "abilities": {
+        "reroll": 1,
+        "singleCell": 0
+      },
+      "items": [],
+      "sameRerollId": "STAR_9",
+      "actualRerollId": "PI_10",
+      "actualPieceCells": 10
     }
   ]
 }

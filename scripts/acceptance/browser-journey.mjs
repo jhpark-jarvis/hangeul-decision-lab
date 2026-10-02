@@ -149,7 +149,82 @@ export function createJourney(tab, fixture) {
       );
     },
     async run() {
-      if (fixture.journey === "capacity") {
+      if (fixture.journey === "event-single") {
+        const expected = fixture.expected;
+        await analyze();
+        await check(
+          "event single gap",
+          await cell(expected.singleRow, 9).getAttribute("data-overlay"),
+          "true",
+        );
+        await check("event single clear preview", await clearing(), 10);
+        await apply();
+        await check(
+          "event single spends charge",
+          await input("Single Cell 보유 수").getAttribute("value"),
+          "0",
+        );
+        await check(
+          "event single preserves reroll",
+          await input("Reroll 보유 수").getAttribute("value"),
+          String(fixture.abilities.reroll),
+        );
+        await check(
+          "event follow-up shape",
+          await overlay(),
+          expected.pieceCells,
+        );
+        await check(
+          "event follow-up row preview",
+          await clearing(),
+          expected.clearCells,
+        );
+        await apply();
+        await check(
+          "event final occupancy",
+          await occupied(),
+          `${expected.occupied} / 160`,
+        );
+        await check(
+          "event final single count",
+          await input("Single Cell 보유 수").getAttribute("value"),
+          String(expected.singleCell),
+        );
+        await check(
+          "event final reroll count",
+          await input("Reroll 보유 수").getAttribute("value"),
+          String(expected.reroll),
+        );
+        const acquired = expected.acquiredItem;
+        await check(
+          "event acquired icon removed",
+          (
+            await cell(acquired.row, acquired.col).getAttribute("aria-label")
+          ).includes(`hidden ${acquired.type}`),
+          false,
+        );
+        if (expected.retainedItem) {
+          const retained = expected.retainedItem;
+          await check(
+            "event capacity icon retained",
+            (
+              await cell(retained.row, retained.col).getAttribute("aria-label")
+            ).includes(`hidden ${retained.type}`),
+            true,
+          );
+          await check(
+            "event retention notice",
+            (
+              await tab.playwright
+                .getByRole("region", { name: "입력 및 적용 상태", exact: true })
+                .innerText()
+            ).includes("상한으로 남김 1개"),
+            true,
+          );
+        }
+        await tab.capture?.("event-single-result");
+        await nextSet();
+      } else if (fixture.journey === "capacity") {
         await analyze();
         await check("capacity clear overlay", await clearing(), 10);
         await apply();
@@ -378,17 +453,33 @@ export function createJourney(tab, fixture) {
           name: "실제 reroll 결과",
           exact: true,
         });
-        await actual.selectOption("MIEUM");
+        await actual.selectOption(fixture.sameRerollId ?? "MIEUM");
         await button("reroll 결과 반영").click();
         await check("same type rejected", (await errorText()).length > 0, true);
         await check("same type keeps pending", await actual.count(), 1);
-        await actual.selectOption("DOT");
+        await actual.selectOption(fixture.actualRerollId ?? "DOT");
         await button("reroll 결과 반영").click();
         await check(
           "different actual result resolves pending",
           await actual.count(),
           0,
         );
+        if (fixture.actualRerollId) {
+          await check(
+            "actual event piece in fixed slot",
+            await slot(2).inputValue(),
+            fixture.actualRerollId,
+          );
+          await check(
+            "actual event piece shape",
+            await tab.playwright
+              .locator(".piece-slot")
+              .nth(2)
+              .locator(".shape-filled")
+              .count(),
+            fixture.actualPieceCells,
+          );
+        }
         await analyze();
         await apply();
         await nextSet();

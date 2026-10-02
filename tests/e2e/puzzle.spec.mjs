@@ -9,6 +9,13 @@ const inputs = JSON.parse(
   ),
 );
 const buildId = readFileSync(".next/BUILD_ID", "utf8").trim();
+// Preserve ADR-0010's original three representative boards. Added event
+// journeys verify behavior separately and do not silently redefine the sample.
+const measuredFixtureIds = new Set([
+  "ordinary-line-item",
+  "blocked-reroll",
+  "single-cell-item-rescue",
+]);
 const catalogReference = JSON.parse(
   readFileSync("tests/fixtures/pieces/catalog-v1.json", "utf8"),
 );
@@ -166,7 +173,7 @@ for (const fixture of inputs.fixtures) {
         input = await journey.inputBatch(32);
       } while (!input.complete);
       await journey.finishInput();
-      if (fixture.journey !== "gameover" && fixture.journey !== "capacity") {
+      if (measuredFixtureIds.has(fixture.id)) {
         report.warmup = await measureAnalyze(page);
         for (let sample = 0; sample < 3; sample++)
           report.samples.push(await measureAnalyze(page));
