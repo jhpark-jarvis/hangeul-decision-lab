@@ -6,7 +6,7 @@ export default function HomePage() {
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-stone-200 pb-6">
         <div>
           <p className="mb-2 text-xs font-semibold tracking-[0.18em] text-stone-500">
-            MAPLE HANGEUL SOLVER
+            HANGEUL DECISION LAB
           </p>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
             한글날 퍼즐 배치 도우미
