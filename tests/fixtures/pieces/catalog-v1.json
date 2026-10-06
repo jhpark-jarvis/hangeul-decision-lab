@@ -1,218 +1,138 @@
 {
   "version": "2026-10-01-user-image-v1",
-  "description": "Canonical piece reference data; independent whole-game verification remains pending.",
+  "description": "Historical pre-correction shape reference for regression comparison; not the current catalog.",
   "pieces": [
     {
       "sourceIndex": 1,
       "id": "DOT",
       "name": "1칸",
-      "rows": [
-        "1"
-      ],
+      "rows": ["1"],
       "cells": 1
     },
     {
       "sourceIndex": 2,
       "id": "LINE_3",
       "name": "가로 3칸",
-      "rows": [
-        "111"
-      ],
+      "rows": ["111"],
       "cells": 3
     },
     {
       "sourceIndex": 3,
       "id": "BRANCH_4",
       "name": "4칸 가지",
-      "rows": [
-        "10",
-        "11",
-        "10"
-      ],
+      "rows": ["10", "11", "10"],
       "cells": 4
     },
     {
       "sourceIndex": 4,
       "id": "DOUBLE_BRANCH_7",
       "name": "7칸 두 가지",
-      "rows": [
-        "10",
-        "11",
-        "10",
-        "11",
-        "10"
-      ],
+      "rows": ["10", "11", "10", "11", "10"],
       "cells": 7
     },
     {
       "sourceIndex": 5,
       "id": "DIAGONAL_3",
       "name": "3칸 대각",
-      "rows": [
-        "010",
-        "101"
-      ],
+      "rows": ["010", "101"],
       "cells": 3
     },
     {
       "sourceIndex": 6,
       "id": "L_3",
       "name": "3칸 L",
-      "rows": [
-        "10",
-        "11"
-      ],
+      "rows": ["10", "11"],
       "cells": 3
     },
     {
       "sourceIndex": 7,
       "id": "DIAMOND_4",
       "name": "4칸 마름모",
-      "rows": [
-        "010",
-        "101",
-        "010"
-      ],
+      "rows": ["010", "101", "010"],
       "cells": 4
     },
     {
       "sourceIndex": 8,
       "id": "CROWN_6",
       "name": "6칸 지붕",
-      "rows": [
-        "111",
-        "010",
-        "101"
-      ],
+      "rows": ["111", "010", "101"],
       "cells": 6
     },
     {
       "sourceIndex": 9,
       "id": "HOOK_4",
       "name": "4칸 꺾임",
-      "rows": [
-        "11",
-        "01",
-        "01"
-      ],
+      "rows": ["11", "01", "01"],
       "cells": 4
     },
     {
       "sourceIndex": 10,
       "id": "LINE_5",
       "name": "세로 5칸",
-      "rows": [
-        "1",
-        "1",
-        "1",
-        "1",
-        "1"
-      ],
+      "rows": ["1", "1", "1", "1", "1"],
       "cells": 5
     },
     {
       "sourceIndex": 11,
       "id": "DOUBLE_ARM_RIGHT_6",
       "name": "6칸 오른쪽 기둥",
-      "rows": [
-        "11",
-        "01",
-        "11",
-        "01"
-      ],
+      "rows": ["11", "01", "11", "01"],
       "cells": 6
     },
     {
       "sourceIndex": 12,
       "id": "C_5",
       "name": "5칸 열린 네모",
-      "rows": [
-        "11",
-        "10",
-        "11"
-      ],
+      "rows": ["11", "10", "11"],
       "cells": 5
     },
     {
       "sourceIndex": 13,
       "id": "STAR_9",
       "name": "9칸 별",
-      "rows": [
-        "00100",
-        "11111",
-        "01010",
-        "00100"
-      ],
+      "rows": ["00100", "11111", "01010", "00100"],
       "cells": 9
     },
     {
       "sourceIndex": 14,
       "id": "PI_10",
       "name": "10칸 가로 테두리",
-      "rows": [
-        "1111",
-        "0110",
-        "1111"
-      ],
+      "rows": ["1111", "0110", "1111"],
       "cells": 10
     },
     {
       "sourceIndex": 15,
       "id": "CROWN_7",
       "name": "7칸 지붕",
-      "rows": [
-        "010",
-        "111",
-        "010",
-        "101"
-      ],
+      "rows": ["010", "111", "010", "101"],
       "cells": 7
     },
     {
       "sourceIndex": 16,
       "id": "GRID_10",
       "name": "10칸 세로 테두리",
-      "rows": [
-        "101",
-        "111",
-        "101",
-        "111"
-      ],
+      "rows": ["101", "111", "101", "111"],
       "cells": 10
     },
     {
       "sourceIndex": 17,
       "id": "MIEUM",
       "name": "ㅁ",
-      "rows": [
-        "111",
-        "101",
-        "111"
-      ],
+      "rows": ["111", "101", "111"],
       "cells": 8
     },
     {
       "sourceIndex": 18,
       "id": "ZIGZAG_6",
       "name": "6칸 지그재그",
-      "rows": [
-        "11",
-        "01",
-        "11",
-        "10"
-      ],
+      "rows": ["11", "01", "11", "10"],
       "cells": 6
     },
     {
       "sourceIndex": 19,
       "id": "DOUBLE_ARM_LEFT_6",
       "name": "6칸 왼쪽 기둥",
-      "rows": [
-        "11",
-        "10",
-        "11",
-        "10"
-      ],
+      "rows": ["11", "10", "11", "10"],
       "cells": 6
     }
   ]

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "method": "Deterministic project-generated SVG; English labels for portable fonts.",
+  "source": "Synthetic board and conceptual responsibility diagrams; no game pixels.",
+  "kind": "illustration, not experiment result",
+  "figures": [
+    {
+      "id": "figure-1",
+      "file": "line-clear.svg",
+      "purpose": "16x10 placement and no-gravity clear illustration",
+      "before": [
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, true, true, false, false, false, false, false, false],
+        [false, false, true, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [true, true, true, false, false, false, false, false, false, false],
+        [false, true, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [true, true, false, false, false, false, false, false, false, false],
+        [true, true, true, true, true, true, true, false, false, false]
+      ],
+      "placed": [
+        [15, 7],
+        [15, 8],
+        [15, 9]
+      ],
+      "clearedRows": [15],
+      "after": [
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, true, true, false, false, false, false, false, false],
+        [false, false, true, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [true, true, true, false, false, false, false, false, false, false],
+        [false, true, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false],
+        [true, true, false, false, false, false, false, false, false, false],
+        [false, false, false, false, false, false, false, false, false, false]
+      ]
+    },
+    {
+      "id": "figure-2",
+      "file": "decision-pipeline.svg",
+      "purpose": "Implemented observation/review/search/replay responsibility boundary"
+    },
+    {
+      "id": "figure-3",
+      "file": "research-roadmap.svg",
+      "purpose": "Current DFS versus conditional future proposals"
+    }
+  ],
+  "regenerate": "node scripts/figures/render.mjs"
+}

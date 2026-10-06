@@ -1,6 +1,6 @@
 {
   "catalogVersion": "2026-10-01-user-image-v1",
-  "description": "Hangul label mapping; historical counts for rieul/tieut are pre-correction.",
+  "description": "Hangul name mapping. Historical cell counts for rieul/tieut are pre-correction; catalog-v2 is authoritative for current geometry.",
   "mapping": [
     {
       "pieceId": "DOT",

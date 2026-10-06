@@ -1,8 +1,8 @@
 import type { Piece } from "./types";
 
 // Canonical shape reference: tests/fixtures/pieces/catalog-v2.json.
-// Names: canonical Hangul label mapping.
-// Corrected final rows; legacy piece IDs remain stable.
+// Names: Hangul label mapping in tests/fixtures/pieces/labels.json.
+// Restored bottom rows of ㄹ/ㅌ; legacy IDs ending _6 remain stable.
 // Official update813 confirms nineteen types and rotation/reflection, not each footprint.
 export const EVENT_CATALOG_VERSION = "2026-10-02-user-labels-v2";
 const EVENT_PIECES: Piece[] = [
