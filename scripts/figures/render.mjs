@@ -161,7 +161,7 @@ const roadmap = svg(
       140,
       "Benchmark first",
       ["Seeds / simulator", "Budget / evaluation"],
-      true,
+      false,
     ),
     box(
       510,
@@ -190,7 +190,9 @@ const roadmap = svg(
       ["Policy / value hybrid", "Only if justified"],
       true,
     ),
-    ...[237, 476, 715, 954].map((x) => line(x + 2, 200, x + 30, 200, true)),
+    ...[237, 476, 715, 954].map((x, index) =>
+      line(x + 2, 200, x + 30, 200, index > 0),
+    ),
     text(
       32,
       308,
@@ -236,7 +238,8 @@ writeFileSync(
           {
             id: "figure-3",
             file: "research-roadmap.svg",
-            purpose: "Current DFS versus conditional future proposals",
+            purpose:
+              "Implemented DFS/synthetic benchmark versus conditional future proposals",
           },
         ],
         regenerate: "node scripts/figures/render.mjs",

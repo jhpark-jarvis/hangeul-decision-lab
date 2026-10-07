@@ -1,0 +1,365 @@
+{
+  "schemaVersion": 1,
+  "kind": "observed synthetic development pilot; not real-game or training evidence",
+  "status": "PASS",
+  "spec": {
+    "schemaVersion": 1,
+    "id": "pilot-budget-20261007-v1",
+    "split": "dev",
+    "seeds": [17, 42, 2026],
+    "families": ["sparse", "pressure"],
+    "maxActions": 12,
+    "repetitions": 2,
+    "baselineId": "dfs-512",
+    "configs": [
+      {
+        "id": "dfs-128",
+        "solver": {
+          "maxNodes": 128,
+          "maxAlternatives": 3,
+          "useMemoization": true
+        }
+      },
+      {
+        "id": "dfs-512",
+        "solver": {
+          "maxNodes": 512,
+          "maxAlternatives": 3,
+          "useMemoization": true
+        }
+      }
+    ]
+  },
+  "environment": {
+    "startedAtUtc": "2026-10-07T08:19:34.187Z",
+    "finishedAtUtc": "2026-10-07T08:22:25.997Z",
+    "node": "v24.15.0",
+    "compiler": "5.9.3",
+    "platform": "win32",
+    "osRelease": "10.0.19045",
+    "cpu": "Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz",
+    "cpuCount": 6,
+    "parallelWorkers": 1,
+    "moduleLoadMs": 481.28549999999996,
+    "warmupMs": 2339.2214999999997,
+    "warmupDecisionsPerConfig": 1,
+    "memoryBefore": {
+      "rss": 237789184,
+      "heapTotal": 107352064,
+      "heapUsed": 45997600,
+      "external": 20567576,
+      "arrayBuffers": 37103
+    },
+    "memoryAfter": {
+      "rss": 375623680,
+      "heapTotal": 224006144,
+      "heapUsed": 113958440,
+      "external": 20559424,
+      "arrayBuffers": 28911
+    },
+    "definitions": {
+      "latency": "solveTurn entry to return, including its candidates/evaluation/search; excludes simulator legal enumeration/environment/replay/loader",
+      "episodeWall": "episode policy + simulator legality/environment/transition; excludes replay/loader",
+      "memory": "Whole Node process before/after benchmark, including loaded compiler/cache and reports; NOT peak or browser heap acceptance",
+      "p95": "Nearest-rank ceil(0.95*N), all valid episode solve attempts including policy abstention",
+      "independentSample": "Seed/family fixture; deterministic repeats are not independent samples",
+      "assumptions": "Synthetic equal-weight catalog pieces/current-kind-excluded reroll; initial items only; no actual event probability/counter/new-icon model"
+    }
+  },
+  "summaries": [
+    {
+      "configId": "dfs-128",
+      "episodes": 12,
+      "validEpisodes": 12,
+      "independentFixtures": 6,
+      "errors": 0,
+      "endings": {
+        "gameover": 4,
+        "horizon": 6,
+        "policy-abstention": 2,
+        "tape-exhausted": 0,
+        "error": 0
+      },
+      "meanActions": 7.666666666666667,
+      "meanClears": 0.8333333333333334,
+      "meanCompletedSets": 1.6666666666666667,
+      "meanItems": 0,
+      "totalSingleCellUses": 12,
+      "totalRerollUses": 6,
+      "meanEpisodeWallMs": 3103.4142416666705,
+      "solverDecisions": 94,
+      "meanSolverLatencyMs": 395.7940489361705,
+      "p95SolverLatencyMs": 596.1674000000057,
+      "totalVisitedNodes": 11290,
+      "totalMemoPruned": 30,
+      "incompleteDecisions": 86
+    },
+    {
+      "configId": "dfs-512",
+      "episodes": 12,
+      "validEpisodes": 12,
+      "independentFixtures": 6,
+      "errors": 0,
+      "endings": {
+        "gameover": 6,
+        "horizon": 6,
+        "policy-abstention": 0,
+        "tape-exhausted": 0,
+        "error": 0
+      },
+      "meanActions": 8,
+      "meanClears": 1,
+      "meanCompletedSets": 1.6666666666666667,
+      "meanItems": 0,
+      "totalSingleCellUses": 12,
+      "totalRerollUses": 6,
+      "meanEpisodeWallMs": 11208.045841666668,
+      "solverDecisions": 96,
+      "meanSolverLatencyMs": 1400.6175208333343,
+      "p95SolverLatencyMs": 2254.7179000000033,
+      "totalVisitedNodes": 41574,
+      "totalMemoPruned": 114,
+      "incompleteDecisions": 72
+    }
+  ],
+  "paired": [
+    {
+      "fixtureId": "sparse-17",
+      "candidateId": "dfs-128",
+      "actionsDelta": 0,
+      "clearsDelta": 0,
+      "setsDelta": 0
+    },
+    {
+      "fixtureId": "sparse-42",
+      "candidateId": "dfs-128",
+      "actionsDelta": 0,
+      "clearsDelta": 0,
+      "setsDelta": 0
+    },
+    {
+      "fixtureId": "sparse-2026",
+      "candidateId": "dfs-128",
+      "actionsDelta": 0,
+      "clearsDelta": 0,
+      "setsDelta": 0
+    },
+    {
+      "fixtureId": "pressure-17",
+      "candidateId": "dfs-128",
+      "actionsDelta": 0,
+      "clearsDelta": 0,
+      "setsDelta": 0
+    },
+    {
+      "fixtureId": "pressure-42",
+      "candidateId": "dfs-128",
+      "actionsDelta": -2,
+      "clearsDelta": -1,
+      "setsDelta": 0
+    },
+    {
+      "fixtureId": "pressure-2026",
+      "candidateId": "dfs-128",
+      "actionsDelta": 0,
+      "clearsDelta": 0,
+      "setsDelta": 0
+    }
+  ],
+  "reproducible": true,
+  "integrity": {
+    "sourceHashes": {
+      "src/research/benchmark.ts": "4cc7694b14ed5284aeebab2891fc1dca05b9dfabf7fe0af73e56e75d2b50e92d",
+      "src/domain/pieces/catalog.ts": "a0b998e5fde9c8f081557263dcf4cad01394907aae7d075d5b2efff71b2bce3e",
+      "src/domain/solver/solver.ts": "cbbbae7e84de558600679e9951996b2e19f25166610f2ec5b4f5a189642d4007",
+      "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+      "src/domain/board/board.ts": "33e848d71ba6ea797e67a0e7b1d3ad59a55fa603873695881cb04edded4db44a",
+      "src/domain/board/line-clear.ts": "9e25faa546ce2c3244236e14471157832be2efbe813d10c58af41b5bf281682f",
+      "src/domain/pieces/placement.ts": "8ef4b72415c4fa05ebe7abd0c38ebef8693756007e0c4d1afe1a918352e9aeaf",
+      "src/domain/pieces/transforms.ts": "45daa497f748823e546ebf6504c9b9f573d4ae553f12a2406a58ff41e52d58a6",
+      "src/domain/game/game-state.ts": "fe651495fcf0009fe5dfa9a34b53b323e6a6f29da1bb726b1570fe42463720c3",
+      "src/domain/game/abilities.ts": "7cfc2424c8289d9a5e9f7f1f7cd4f2f6bdd2dd6cb3944b0015a974f21e5e3b08",
+      "src/domain/game/types.ts": "49fb99c0f3343e1dc47d35e0ddb6e63d9d27da3752905f538e4d7cef3e4029a9",
+      "src/domain/game/hidden-items.ts": "c165d20964b844b8d11b2f3a424b944d0bc67085a5b513903ed3b770cdcf6783",
+      "src/domain/solver/ability-candidates.ts": "9d2804ce9448a30b58fd32103f458eb5c0ece0481d60c7e84574a914608b179d",
+      "src/domain/solver/mobility.ts": "4de627ea8117efe9822ac0c446d7950a2f798781d8b7d887be79466efc6a6b04",
+      "src/domain/solver/evaluator.ts": "6561674cf06a31e1761213de852eaa0739e672276538a507fe65a46d9a9ce752",
+      "src/domain/board/board-metrics.ts": "98d86a47b880290d648658de94a51288705ae82581dbf748bfed9fa4cca800df",
+      "src/domain/solver/search.ts": "7ffcede4a462066f03f917f42f74261f9e0a2b1fd3b509eb46861c048f54f29c",
+      "src/domain/solver/types.ts": "93da18624d5568e849d8ded156b7d19fd9dcbc2356bfcf36f05aabb4e49ab128",
+      "src/research/episode.ts": "f41437244a4d3cc08dcfc80a1179ea5dd13649bc3ee02936b2f2c2b3a9427678",
+      "src/research/fixture.ts": "b2f0d9891d6124fee9a49090f0d31cc321094a82d16d80a38b9910e90e31ef79",
+      "src/research/types.ts": "f2727ed83a18036122a14c402e13776247c9be2da48cb3559e263803e4762657"
+    },
+    "runnerHashes": {
+      "scripts/research/benchmark.mjs": "b648b0f72bff05717454892835da000930a23c32ba334cfa84e739c2921ff4c8",
+      "scripts/research/runtime.mjs": "103d72746f5dbce58b646d96d403fed060874f8d9043e5a7c1c0c7c9bba04192",
+      "package.json": "dcf3f344630cf58f4ea0f34877cf8b640243c776763a792e6acd2591abf35c49",
+      "pnpm-lock.yaml": "675927278665763fd682571ed41e9d64ed8e130fa8e11a5a65776ca558d441bb"
+    },
+    "fixtureHashes": {
+      "sparse-17": "7d47639c331605068a0b24eb7e54261e91fd85e0588f5e5bf1556a476a8751f7",
+      "sparse-42": "07657e7f5295a69676b5dcba35489defd01b42ae42bd7574597082a5bd45b368",
+      "sparse-2026": "c40f219c95e388a2057af1281ab488465902dcda83451ed055c8c62be83f4459",
+      "pressure-17": "e1c8c404dd14c6e703ebec5345bb98d680090dea41f9dacc5a9cd756343b2507",
+      "pressure-42": "e7d12ef463e5e8b1b5bb53c3782e234c0ed1aee0bbe145c6948d87570ded4e14",
+      "pressure-2026": "3b97f1e178894b9912f3a07bdfdd38adb8200485a14b8878c4a6bd3ce4b4d672"
+    },
+    "traceHashes": [
+      {
+        "fixtureId": "sparse-17",
+        "configId": "dfs-128",
+        "repeat": 0,
+        "sha256": "348ce1d0f99d1ee58e8cfd232be062e30cddc4a0878db197ae99b95440f1ba9e"
+      },
+      {
+        "fixtureId": "sparse-17",
+        "configId": "dfs-512",
+        "repeat": 0,
+        "sha256": "60f908884dd4fac52fc280b750670715edb3efa4cc752c8463013eca25d18e8f"
+      },
+      {
+        "fixtureId": "sparse-42",
+        "configId": "dfs-512",
+        "repeat": 0,
+        "sha256": "9dabdc7fbf65fc22163a2785b12027d20320a3e1dd40f9830a3b624d1c8e9c81"
+      },
+      {
+        "fixtureId": "sparse-42",
+        "configId": "dfs-128",
+        "repeat": 0,
+        "sha256": "987f9349d87d42b2d80861f76f12fd21c97eb8ca620810732f66afbe7e4eeb7a"
+      },
+      {
+        "fixtureId": "sparse-2026",
+        "configId": "dfs-128",
+        "repeat": 0,
+        "sha256": "346117bb31b1de65c6745e841613570489eb2095ba3749873a83b1ac5e578018"
+      },
+      {
+        "fixtureId": "sparse-2026",
+        "configId": "dfs-512",
+        "repeat": 0,
+        "sha256": "52ed3d0742a66dedf33e0aa708e77387770b8638a9922a09898b3f0fc2942219"
+      },
+      {
+        "fixtureId": "pressure-17",
+        "configId": "dfs-512",
+        "repeat": 0,
+        "sha256": "10921602f82f170733836ed8080cd29ceef612125adbf2dd86d34be4c1129485"
+      },
+      {
+        "fixtureId": "pressure-17",
+        "configId": "dfs-128",
+        "repeat": 0,
+        "sha256": "c677de4c40c5dbe2b63287d7a6c202317b082606fba5c66cf8513013504655bb"
+      },
+      {
+        "fixtureId": "pressure-42",
+        "configId": "dfs-128",
+        "repeat": 0,
+        "sha256": "335fe5dcb3af804c7c6199ca10aae79bb8fef86867664267ea23295bbf8acfda"
+      },
+      {
+        "fixtureId": "pressure-42",
+        "configId": "dfs-512",
+        "repeat": 0,
+        "sha256": "8289da0b5e2a4322dab18991c3c35e3bcd50be7922ab2850965a9948ba147fe2"
+      },
+      {
+        "fixtureId": "pressure-2026",
+        "configId": "dfs-512",
+        "repeat": 0,
+        "sha256": "f6856a656818bcd43480d1cdcedb27fbf94432bc5a454d4b63508fddfcc1b2ab"
+      },
+      {
+        "fixtureId": "pressure-2026",
+        "configId": "dfs-128",
+        "repeat": 0,
+        "sha256": "3b955ebadcbfed5216c67109c34eef5565f75765cd7641c569385ec25e3d157d"
+      },
+      {
+        "fixtureId": "sparse-17",
+        "configId": "dfs-512",
+        "repeat": 1,
+        "sha256": "60f908884dd4fac52fc280b750670715edb3efa4cc752c8463013eca25d18e8f"
+      },
+      {
+        "fixtureId": "sparse-17",
+        "configId": "dfs-128",
+        "repeat": 1,
+        "sha256": "348ce1d0f99d1ee58e8cfd232be062e30cddc4a0878db197ae99b95440f1ba9e"
+      },
+      {
+        "fixtureId": "sparse-42",
+        "configId": "dfs-128",
+        "repeat": 1,
+        "sha256": "987f9349d87d42b2d80861f76f12fd21c97eb8ca620810732f66afbe7e4eeb7a"
+      },
+      {
+        "fixtureId": "sparse-42",
+        "configId": "dfs-512",
+        "repeat": 1,
+        "sha256": "9dabdc7fbf65fc22163a2785b12027d20320a3e1dd40f9830a3b624d1c8e9c81"
+      },
+      {
+        "fixtureId": "sparse-2026",
+        "configId": "dfs-512",
+        "repeat": 1,
+        "sha256": "52ed3d0742a66dedf33e0aa708e77387770b8638a9922a09898b3f0fc2942219"
+      },
+      {
+        "fixtureId": "sparse-2026",
+        "configId": "dfs-128",
+        "repeat": 1,
+        "sha256": "346117bb31b1de65c6745e841613570489eb2095ba3749873a83b1ac5e578018"
+      },
+      {
+        "fixtureId": "pressure-17",
+        "configId": "dfs-128",
+        "repeat": 1,
+        "sha256": "c677de4c40c5dbe2b63287d7a6c202317b082606fba5c66cf8513013504655bb"
+      },
+      {
+        "fixtureId": "pressure-17",
+        "configId": "dfs-512",
+        "repeat": 1,
+        "sha256": "10921602f82f170733836ed8080cd29ceef612125adbf2dd86d34be4c1129485"
+      },
+      {
+        "fixtureId": "pressure-42",
+        "configId": "dfs-512",
+        "repeat": 1,
+        "sha256": "8289da0b5e2a4322dab18991c3c35e3bcd50be7922ab2850965a9948ba147fe2"
+      },
+      {
+        "fixtureId": "pressure-42",
+        "configId": "dfs-128",
+        "repeat": 1,
+        "sha256": "335fe5dcb3af804c7c6199ca10aae79bb8fef86867664267ea23295bbf8acfda"
+      },
+      {
+        "fixtureId": "pressure-2026",
+        "configId": "dfs-128",
+        "repeat": 1,
+        "sha256": "3b955ebadcbfed5216c67109c34eef5565f75765cd7641c569385ec25e3d157d"
+      },
+      {
+        "fixtureId": "pressure-2026",
+        "configId": "dfs-512",
+        "repeat": 1,
+        "sha256": "f6856a656818bcd43480d1cdcedb27fbf94432bc5a454d4b63508fddfcc1b2ab"
+      }
+    ],
+    "protocolSha256": "8426cb193b4a29dc61203209123a6f76c571e80dc961bbc848edc2693a46c3ef"
+  },
+  "rawReportSha256": "1dd33bb9f341b09df31765c20ed031e0c61f7ca8d884f5862cf5cb176f5c7f91",
+  "reproduce": "pnpm research:benchmark --output <new-directory>; identical fixture/trace hashes expected, timing/process memory may vary",
+  "limits": [
+    "Only six development fixtures; deterministic repeats are not independent samples",
+    "No equal-wall-time comparison or uncertainty interval",
+    "Sparse runs truncated at action 12; all acquired items zero",
+    "Initial items only; synthetic piece/reroll distribution",
+    "CNN/ML/RL not implemented"
+  ]
+}

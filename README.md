@@ -2,13 +2,13 @@
 
 ### Budgeted Search and a Research Agenda for a Hangul Block Puzzle
 
-**Implemented:** deterministic DFS placement assistant · **Research:** FUTURE / NOT ACTIVE
+**Implemented:** deterministic DFS assistant, seeded synthetic simulator and DFS benchmark · **CNN/ML/RL:** FUTURE
 
 ## Abstract
 
 Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열 블록 퍼즐을 상태 공간 문제로 모델링하고, 제한된 계산 예산 안에서 현재 조각과 특수 능력의 사용 순서를 추천하는 웹 도구다. 현재 구현은 합법 배치 열거, 공통 게임 전이, 사전식 상태 평가, 완료된 부분 탐색의 재사용을 결합한 deterministic depth-first search(DFS)를 사용한다. 화면 입력은 로컬 캡처·판별·사용자 검토를 거쳐 명시적으로 확정하며 실제 게임 조작은 사용자가 수행한다.
 
-장기 연구 질문은 **같은 의사결정 시간 안에서 탐색과 학습이 장기 생존 및 줄 삭제를 얼마나 개선할 수 있는가**이다. seeded simulator와 재현 가능한 benchmark를 먼저 준비하고, DFS 예산·후보·평가 개선, Beam Search, Monte Carlo Tree Search(MCTS)를 비교한 뒤 잔여 한계가 확인될 때만 learned policy/value와 강화학습을 검토한다. **강화학습 모델·학습 결과는 아직 없다.** 이 README는 현재 방법과 미래 연구 설계이며 알고리즘 우월성이나 전체 게임 최적성을 주장하지 않는다.
+장기 연구 질문은 **같은 의사결정 시간 안에서 탐색과 학습이 장기 생존 및 줄 삭제를 얼마나 개선할 수 있는가**이다. 현재 seeded simulator와 재현 가능한 합성 DFS 비교 도구까지 구현했다. 이후 DFS 예산·후보·평가 개선, Beam Search, Monte Carlo Tree Search(MCTS)를 비교하고 잔여 한계가 확인될 때 learned policy/value와 강화학습을 검토한다. **CNN·강화학습 모델과 학습 결과는 아직 없다.** 아래 pilot은 실행 기반 확인용이며 알고리즘 우월성이나 전체 게임 최적성을 주장하지 않는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -85,13 +85,13 @@ _Figure 2. 구현된 입력–검토–탐색–재생 경계. 판별기는 초�
 
 검사는 합성 보드, 독립 좌표 oracle, 전이 replay, 예산/memo, 입력 수명 및 브라우저 여정을 다룬다. 작은 fixture의 완전 비교는 해당 범위의 correctness 근거이고 전체 게임 oracle가 아니다. `optimalWithinScope`는 설정 후보/평가 범위에 한정된다.
 
-실제 연속 턴·전체 형상/숫자/배율의 인식 정확도·신규 아이콘/확률·사람 사용감/별도 제품 수락은 미완료다. 새로운 장기 생존 측정, 알고리즘 승률, 학습 curve는 제시하지 않는다. 테스트의 runtime 관측을 episode benchmark 성과로 확대하지 않는다.
+실제 연속 턴·전체 형상/숫자/배율의 인식 정확도·신규 아이콘/확률·사람 사용감/별도 제품 수락은 미완료다. 짧은 합성 episode의 관측은 다음 절에 제시한다. 실제 게임 장기 생존·알고리즘 승률·학습 curve의 증거로 확대하지 않는다.
 
-## 5. Future Research Protocol — NOT ACTIVE
+## 5. Synthetic Benchmark and Future Research
 
 ### 5.1 Benchmark First
 
-핵심 제품 경로와 실제 상태/규칙 검증, 승인된 replay, 기존 전이를 재사용하는 headless simulator, seeded fixture/reference 이후 별도 승인으로 연구를 시작한다. 현재 장기 seeded simulator/training pipeline은 없다.
+실제 게임 플레이 없이 기존 domain 전이를 재사용하는 headless simulator를 실행할 수 있다. 합성 환경은 19종 조각에 동등 가중치를 주고 재뽑기에서 현재 종류를 제외하며, 초기 아이템만 사용한다. 실제 출현 확률·새 아이콘 생성·7수 카운터는 모델링하지 않는다. 실제 게임 일치 검증은 별도 과제로 유지한다. 학습 pipeline은 아직 없다.
 
 초기 상태, catalog/rules version, 다음 조각/재뽑기/아이콘 과정, seed/PRNG, 종료/horizon을 고정한다. 환경/정책/rollout/학습 난수를 분리하고 action별 난수 소비 차이를 통제한다. 미래 tape를 정책에 노출하지 않는다. 다음 입력 대기·실제 gameover·시간/episode truncation을 구별하고 임의 균등분포를 실제 출현 확률로 가정하지 않는다.
 
@@ -106,11 +106,26 @@ _Figure 2. 구현된 입력–검토–탐색–재생 경계. 판별기는 초�
 
 같은 초기 상태·paired seeds·종료/시간 상한으로 비교한다. 알고리즘 간 node count를 동일 비용으로 취급하지 않는다. train/dev/test는 seed와 fixture 계열을 분리하고 test benchmark로 학습/tuning하지 않는다. reward 합계 외에 생존/삭제·지연/메모리·안정성을 보고한다.
 
+**실행된 pilot — 2026-10-07.** seed 17·42·2026 × sparse/pressure 보드의 6개 dev fixture를 예산 128/512, memo 사용, 대안 3개, 최대 12행동으로 각각 2번 실행했다. 총 24episode이며 반복을 독립 표본으로 세지 않는다. 실행 순서는 회전하고 별도 seed 0의 warmup은 제외했다. 모든 episode 재생과 반복 trace 일치가 통과했다.
+
+| 관측 | DFS 128 | DFS 512 |
+| --- | ---: | ---: |
+| 평균 수행 행동 / 최대 12 | 7.67 | 8.00 |
+| 평균 삭제 행 | 0.83 | 1.00 |
+| 평균 판단 시간 | 395.79ms | 1,400.62ms |
+| 판단 시간 p95 | 596.17ms | 2,254.72ms |
+| 불완전 탐색 / 판단 횟수 | 86 / 94 | 72 / 96 |
+| gameover / horizon / 정책 포기 | 4 / 6 / 2 | 6 / 6 / 0 |
+
+측정 환경은 Windows 10, i5-9400F, Node 24.15.0, 단일 worker다. 판단 시간은 `solveTurn` 호출부터 반환까지이며 simulator 합법 action 생성·환경 공급·replay·모듈 로드는 제외한다. p95는 유효 episode의 판단 표본에서 nearest-rank로 계산한다. 보드마다 행동 경로가 달라 두 설정의 판단 표본 수는 다르다. 이 비교는 **동일 시간 예산 실험이 아니다**. 전후 Node heap은 약 43.87→108.68MiB, RSS는 226.77→358.22MiB였으며 compiler·누적 기록을 포함한 전체 프로세스 관측이다. 순간 피크나 브라우저 메모리 기준이 아니다.
+
+6개 paired fixture 중 pressure-42에서만 DFS 512가 2행동 더 진행하고 1행 더 지웠다. 그 외 합산 행동/삭제는 같았다. sparse 3개는 모두 길이 제한에 도달했고 아이템 획득은 전부 0이었다. 따라서 장기 생존·아이템 전략·학습 효과를 판정할 표본은 부족하다. 정책 포기는 합법 action이 남아도 정책이 action을 반환하지 않은 경우이며 gameover와 구분한다. 관측·protocol·source/trace hash의 기계 판독 기록은 [pilot summary](assets/research/pilot-budget-20261007-v1.json)에 있다. CLI는 전체 fixture/tape/action/state 기록을 로컬 JSON으로 생성한다.
+
 ### 5.2 Search Before Learning
 
 ![Future research progression](assets/figures/research-roadmap.svg)
 
-_Figure 3. 연구 진행 가설. 실선 DFS만 현재 구현이고 점선 단계는 향후 비교안이다. 반복 가능한 한계와 비용 대비 개선 근거에 따라 다음 단계를 선택하며 확정 구현 일정이 아니다._
+_Figure 3. DFS와 합성 benchmark 기반은 구현되어 있다. 점선 방법은 향후 비교안이며, 반복 가능한 한계와 비용 대비 개선 근거에 따라 선택한다. 도식 자체는 측정 결과가 아니다._
 
 1. **Baseline / budget:** revision/config·probe·memo·평가를 고정하고 예산 곡선을 만든다.
 2. **Pruning / evaluation:** 작은 완전 reference로 잘못된 제거를 검출하고 후보 순서·평가를 ablation한다.
@@ -147,10 +162,13 @@ pnpm lint
 pnpm build
 pnpm start                  # production: 127.0.0.1:45001
 pnpm test:e2e               # 별도 터미널, 설치된 Chrome/Edge 필요
+pnpm research:benchmark     # 게임 실행 없이 고정 합성 pilot; 결과는 로컬 .research-output/runs/
 node scripts/figures/render.mjs
 ```
 
-마지막 명령은 SVG 세 개와 합성 입력을 재생성하며 게임 이미지·학습/benchmark를 사용하지 않는다. 입력/metadata는 [figure-data.json](assets/figures/figure-data.json)에 있다. `src/domain`은 규칙/지표/탐색, `src/features`는 캡처/인식/검토/세션, `src/components`/`src/app`은 UI, `tests/fixtures`는 비민감 재현 데이터다.
+benchmark는 기존 TypeScript compiler로 순수 모듈을 `.research-output/runtime`에 생성하고, 새 결과 폴더에 `protocol.json`, 전체 `report.json`, `summary.csv`를 남긴다. Node/기존 개발 dependency 외에 Python·GPU·새 서비스는 필요하지 않다. 다른 dev 설정은 `pnpm research:benchmark --protocol <json파일> --output <새폴더>`로 지정하며 기존 폴더를 덮어쓰지 않는다. 최대 2,000행동의 실험 행렬과 최대 8,192노드/판단을 허용하며 강제 wall-time timeout은 없다. 저장되는 것은 합성 상태이며 앱의 화면 캡처 저장 기능은 추가하지 않는다.
+
+그림 생성 명령은 SVG 세 개와 합성 입력을 재생성하며 게임 이미지·학습/benchmark를 사용하지 않는다. 입력/metadata는 [figure-data.json](assets/figures/figure-data.json)에 있다. `src/domain`은 규칙/지표/탐색, `src/research`는 simulator/비교, `src/features`는 캡처/인식/검토/세션, `src/components`/`src/app`은 UI, `tests/fixtures`는 비민감 재현 데이터다.
 
 ## References
 

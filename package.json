@@ -17,7 +17,8 @@
     "lint": "eslint . --max-warnings 0",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "research:benchmark": "node scripts/research/benchmark.mjs"
   },
   "dependencies": {
     "next": "16.3.8",

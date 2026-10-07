@@ -59,7 +59,7 @@
     {
       "id": "figure-3",
       "file": "research-roadmap.svg",
-      "purpose": "Current DFS versus conditional future proposals"
+      "purpose": "Implemented DFS/synthetic benchmark versus conditional future proposals"
     }
   ],
   "regenerate": "node scripts/figures/render.mjs"

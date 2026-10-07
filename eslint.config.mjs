@@ -35,6 +35,7 @@ export default defineConfig([
   },
   globalIgnores([
     ".next/**",
+    ".research-output/**",
     "node_modules/**",
     "out/**",
     "coverage/**",
