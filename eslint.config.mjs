@@ -6,7 +6,7 @@ export default defineConfig([
   ...nextVitals,
   ...nextTs,
   {
-    files: ["src/domain/**/*.ts"],
+    files: ["src/domain/**/*.ts", "src/research/**/*.ts"],
     rules: {
       "no-restricted-imports": [
         "error",
