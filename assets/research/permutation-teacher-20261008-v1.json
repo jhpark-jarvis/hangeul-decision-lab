@@ -1,0 +1,427 @@
+{
+  "schemaVersion": 1,
+  "id": "permutation-teacher-20261008-v1",
+  "status": "PASS",
+  "protocol": {
+    "schemaVersion": 1,
+    "id": "permutation-teacher-20261008-v1",
+    "status": "FROZEN_DIAGNOSTIC",
+    "scope": "returned-current-turn-paths-only",
+    "trainSeeds": [4000, 4001, 4002, 4003],
+    "devSeeds": [5000, 5001],
+    "families": ["sparse", "pressure"],
+    "actionIndex": 0,
+    "scriptedCases": 8,
+    "states": 20,
+    "permutations": ["012", "021", "102", "120", "201", "210"],
+    "conditions": {
+      "baseline": {
+        "maxNodes": 512
+      },
+      "largeSingle": {
+        "maxNodes": 3072
+      },
+      "permutationUnion": {
+        "maxNodesPerCall": 512,
+        "callsPerState": 6
+      }
+    },
+    "perCall": {
+      "maxAlternatives": 3,
+      "useMemoization": true,
+      "sharedMemo": false
+    },
+    "controls": ["permutationUnionAfterCycle", "baselineAfterReverseArray"],
+    "repetitions": 2,
+    "measuredSolveCalls": 600,
+    "measuredNodeCap": 409600,
+    "warmupSolveCalls": 8,
+    "warmupNodeCap": 6656,
+    "warmupSource": "first-scripted-state",
+    "executionOrder": "rotate-five-conditions-by-state-index-plus-repetition",
+    "timeCriterion": "OBSERVATION_ONLY_NOT_EQUAL_WALL_TIME",
+    "heldOut": "NOT_RUN",
+    "training": "NOT_RUN",
+    "inputs": [
+      {
+        "id": "train-4000-sparse",
+        "stateSha256": "2d722efcd4592446b63bd60b9f05f7bd70387aef20c2a602fce94dc756f234bc"
+      },
+      {
+        "id": "train-4000-pressure",
+        "stateSha256": "2722682f5de8e8f95853eb5842c67d8357e3ab73e9e128b4e40e74343b2f2bf8"
+      },
+      {
+        "id": "train-4001-sparse",
+        "stateSha256": "014792571f2194ce69050062d565bfacddada0047c93dd867f36e5eaf9bf7bc0"
+      },
+      {
+        "id": "train-4001-pressure",
+        "stateSha256": "bab6c38a81e2dc49fc9fb1e5b0bd6fad765d60bbc505851cfa133fd713b7dfea"
+      },
+      {
+        "id": "train-4002-sparse",
+        "stateSha256": "bb36de19d7a9749fe2194057f16416aa64ae0decec131cdf63b7727b1bc33c61"
+      },
+      {
+        "id": "train-4002-pressure",
+        "stateSha256": "4f083b1897ed6edbc254e2842a606281b8b617549a0230b72dbd97b864c5b97e"
+      },
+      {
+        "id": "train-4003-sparse",
+        "stateSha256": "bba0fe7837e07976fe91e56571725a429ea29ac8a20ad2e3969b73ac16e89218"
+      },
+      {
+        "id": "train-4003-pressure",
+        "stateSha256": "b3e5ed3431482cfb9978f94b436bee085adcddd4068a23cea9a9ed3dae9cc328"
+      },
+      {
+        "id": "dev-5000-sparse",
+        "stateSha256": "2d621c35ddf8114c572fc8d83ab3400ea75c9dd01d7fdd1265d72f0d2ddc33eb"
+      },
+      {
+        "id": "dev-5000-pressure",
+        "stateSha256": "4118fb0e9759cb2f00daa0a897e6ea7c5d79edcb1315b652edee807ba4f9c253"
+      },
+      {
+        "id": "dev-5001-sparse",
+        "stateSha256": "8e66440728ef6f4c6bd232c4a2668aae00f1a92adfaf4e141c7c4e26a8633747"
+      },
+      {
+        "id": "dev-5001-pressure",
+        "stateSha256": "15a621b08b25a7ffaee5f8ae7685f3f7feed55e33a2dc075d61f023e780acae2"
+      },
+      {
+        "id": "item-acquisition",
+        "stateSha256": "fcb3a701265b306835f3852769c11f0e61a7730db5249ba0b9ed5b3c925adb0f"
+      },
+      {
+        "id": "item-retention",
+        "stateSha256": "41f1b5f6ab6997bce8454d596c432e408f5f6f1db3b5b53d64500375d5234e4f"
+      },
+      {
+        "id": "single-spend-acquire",
+        "stateSha256": "15b5bf75410f152870da6ee21b437381e496a9922feef31bf099107696a360e1"
+      },
+      {
+        "id": "reroll-boundary",
+        "stateSha256": "1f07a955938bb8a4b1cb8feaf7f72c90f4e7fcc3d1944f6010449cd1990ab88e"
+      },
+      {
+        "id": "capacity-six-row-order",
+        "stateSha256": "83809182f7e7e9301cc21c219844717efcdc65c443c17dcdd5366e43698532d0"
+      },
+      {
+        "id": "spend-at-capacity",
+        "stateSha256": "41f1b5f6ab6997bce8454d596c432e408f5f6f1db3b5b53d64500375d5234e4f"
+      },
+      {
+        "id": "simultaneous-row-order",
+        "stateSha256": "da4aebdec055f3dc313c4c17d1644f0596e4f30d09f95b20a68c3072f1565f1f"
+      },
+      {
+        "id": "capacity-reroll-boundary",
+        "stateSha256": "00a2c817007c3357f9c6e9dd6c384ab631eab23db4c988fc8443d73243013e23"
+      }
+    ]
+  },
+  "summary": {
+    "states": 20,
+    "uniqueConditions": 100,
+    "measuredCalls": 600,
+    "returnedPathsVerified": 1740,
+    "repeatedConditionsChecked": 100,
+    "arrayControlsChecked": 20,
+    "cycleControls": {
+      "states": 20,
+      "semanticFirstSame": 20,
+      "evaluationSame": 20,
+      "finalSemanticSame": 20,
+      "physicalFirstChanged": 0
+    },
+    "candidateForUserReview": false,
+    "trainingRuns": 0,
+    "generatedTestStates": 0,
+    "comparisons": [
+      {
+        "stratum": "generated",
+        "comparison": "permutationUnion-vs-baseline",
+        "states": 12,
+        "better": 8,
+        "worse": 0,
+        "equal": 4,
+        "physicalFirstChanged": 8,
+        "semanticFirstChanged": 8
+      },
+      {
+        "stratum": "generated",
+        "comparison": "permutationUnion-vs-largeSingle",
+        "states": 12,
+        "better": 5,
+        "worse": 6,
+        "equal": 1,
+        "physicalFirstChanged": 10,
+        "semanticFirstChanged": 10
+      },
+      {
+        "stratum": "scripted",
+        "comparison": "permutationUnion-vs-baseline",
+        "states": 8,
+        "better": 0,
+        "worse": 0,
+        "equal": 8,
+        "physicalFirstChanged": 1,
+        "semanticFirstChanged": 1
+      },
+      {
+        "stratum": "scripted",
+        "comparison": "permutationUnion-vs-largeSingle",
+        "states": 8,
+        "better": 0,
+        "worse": 0,
+        "equal": 8,
+        "physicalFirstChanged": 1,
+        "semanticFirstChanged": 1
+      }
+    ],
+    "groups": [
+      {
+        "stratum": "generated",
+        "condition": "baseline",
+        "states": 12,
+        "calls": 12,
+        "incompleteCalls": 12,
+        "conditionsWithIncompleteCall": 12,
+        "selectedSourceCallIncomplete": 12,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 3,
+        "pendingRerollPaths": 2,
+        "abstentions": 0,
+        "visitedNodes": 6144,
+        "ordinaryProbeNodes": 1440,
+        "totals": {
+          "clearedRows": 5,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 29,
+          "singleCellSpends": 3,
+          "rerollSpends": 2
+        },
+        "timing": {
+          "samples": 24,
+          "meanMs": 1265.3735625000038,
+          "p95Ms": 1846.800500000012,
+          "minMs": 682.6846999999834,
+          "maxMs": 1850.8659000000005
+        }
+      },
+      {
+        "stratum": "generated",
+        "condition": "largeSingle",
+        "states": 12,
+        "calls": 12,
+        "incompleteCalls": 12,
+        "conditionsWithIncompleteCall": 12,
+        "selectedSourceCallIncomplete": 12,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 5,
+        "pendingRerollPaths": 2,
+        "abstentions": 0,
+        "visitedNodes": 36864,
+        "ordinaryProbeNodes": 7452,
+        "totals": {
+          "clearedRows": 8,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 31,
+          "singleCellSpends": 5,
+          "rerollSpends": 2
+        },
+        "timing": {
+          "samples": 24,
+          "meanMs": 7021.41928333333,
+          "p95Ms": 10336.775400000006,
+          "minMs": 3467.5022000000026,
+          "maxMs": 10340.091799999995
+        }
+      },
+      {
+        "stratum": "generated",
+        "condition": "permutationUnion",
+        "states": 12,
+        "calls": 72,
+        "incompleteCalls": 72,
+        "conditionsWithIncompleteCall": 12,
+        "selectedSourceCallIncomplete": 12,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 5,
+        "pendingRerollPaths": 2,
+        "abstentions": 0,
+        "visitedNodes": 36864,
+        "ordinaryProbeNodes": 8640,
+        "totals": {
+          "clearedRows": 9,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 29,
+          "singleCellSpends": 5,
+          "rerollSpends": 2
+        },
+        "timing": {
+          "samples": 24,
+          "meanMs": 7705.540241666656,
+          "p95Ms": 10940.288500000024,
+          "minMs": 4060.753999999957,
+          "maxMs": 10982.855899999995
+        }
+      },
+      {
+        "stratum": "scripted",
+        "condition": "baseline",
+        "states": 8,
+        "calls": 8,
+        "incompleteCalls": 5,
+        "conditionsWithIncompleteCall": 5,
+        "selectedSourceCallIncomplete": 5,
+        "acquisitionPaths": 5,
+        "retentionPaths": 2,
+        "singleSpendPaths": 6,
+        "pendingRerollPaths": 1,
+        "abstentions": 0,
+        "visitedNodes": 3047,
+        "ordinaryProbeNodes": 89,
+        "totals": {
+          "clearedRows": 47,
+          "acquiredItems": 9,
+          "retainedItemEvents": 2,
+          "placements": 7,
+          "singleCellSpends": 40,
+          "rerollSpends": 1
+        },
+        "timing": {
+          "samples": 16,
+          "meanMs": 1034.7269000000088,
+          "p95Ms": 1568.6685999999754,
+          "minMs": 12.373600000049919,
+          "maxMs": 1568.6685999999754
+        }
+      },
+      {
+        "stratum": "scripted",
+        "condition": "largeSingle",
+        "states": 8,
+        "calls": 8,
+        "incompleteCalls": 5,
+        "conditionsWithIncompleteCall": 5,
+        "selectedSourceCallIncomplete": 5,
+        "acquisitionPaths": 5,
+        "retentionPaths": 2,
+        "singleSpendPaths": 6,
+        "pendingRerollPaths": 1,
+        "abstentions": 0,
+        "visitedNodes": 15847,
+        "ordinaryProbeNodes": 89,
+        "totals": {
+          "clearedRows": 47,
+          "acquiredItems": 9,
+          "retainedItemEvents": 2,
+          "placements": 7,
+          "singleCellSpends": 40,
+          "rerollSpends": 1
+        },
+        "timing": {
+          "samples": 16,
+          "meanMs": 5451.020131249999,
+          "p95Ms": 10074.013199999928,
+          "minMs": 10.15610000002198,
+          "maxMs": 10074.013199999928
+        }
+      },
+      {
+        "stratum": "scripted",
+        "condition": "permutationUnion",
+        "states": 8,
+        "calls": 48,
+        "incompleteCalls": 30,
+        "conditionsWithIncompleteCall": 5,
+        "selectedSourceCallIncomplete": 5,
+        "acquisitionPaths": 5,
+        "retentionPaths": 2,
+        "singleSpendPaths": 6,
+        "pendingRerollPaths": 1,
+        "abstentions": 0,
+        "visitedNodes": 18282,
+        "ordinaryProbeNodes": 534,
+        "totals": {
+          "clearedRows": 47,
+          "acquiredItems": 9,
+          "retainedItemEvents": 2,
+          "placements": 7,
+          "singleCellSpends": 40,
+          "rerollSpends": 1
+        },
+        "timing": {
+          "samples": 16,
+          "meanMs": 6281.774593750037,
+          "p95Ms": 9183.514399999985,
+          "minMs": 65.42269999999553,
+          "maxMs": 9183.514399999985
+        }
+      }
+    ]
+  },
+  "warmup": {
+    "calls": 8,
+    "returnedPathsVerified": 24,
+    "excludedFromMeasuredSummary": true
+  },
+  "identity": {
+    "protocolSha256": "43701d51f314085a1ac74c1c98ccad127127a2fbad4b3b9d41835cd7ae81502a",
+    "configSha256": "afc480023944c09861fdce58984c2fa2e33a5b8bd314ef4ddc3aaa4b54b05d92",
+    "sourceHashes": {
+      "src/research/permutation-teacher.ts": "360cbf6b69de469dd50ae7b23c7aac5121f5d007a11a5f84f93dc27df650594c",
+      "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+      "src/domain/board/board.ts": "33e848d71ba6ea797e67a0e7b1d3ad59a55fa603873695881cb04edded4db44a",
+      "src/domain/board/line-clear.ts": "9e25faa546ce2c3244236e14471157832be2efbe813d10c58af41b5bf281682f",
+      "src/domain/pieces/placement.ts": "8ef4b72415c4fa05ebe7abd0c38ebef8693756007e0c4d1afe1a918352e9aeaf",
+      "src/domain/pieces/transforms.ts": "45daa497f748823e546ebf6504c9b9f573d4ae553f12a2406a58ff41e52d58a6",
+      "src/domain/game/game-state.ts": "fe651495fcf0009fe5dfa9a34b53b323e6a6f29da1bb726b1570fe42463720c3",
+      "src/domain/game/abilities.ts": "7cfc2424c8289d9a5e9f7f1f7cd4f2f6bdd2dd6cb3944b0015a974f21e5e3b08",
+      "src/domain/game/types.ts": "49fb99c0f3343e1dc47d35e0ddb6e63d9d27da3752905f538e4d7cef3e4029a9",
+      "src/domain/game/hidden-items.ts": "c165d20964b844b8d11b2f3a424b944d0bc67085a5b513903ed3b770cdcf6783",
+      "src/domain/pieces/catalog.ts": "a0b998e5fde9c8f081557263dcf4cad01394907aae7d075d5b2efff71b2bce3e",
+      "src/domain/solver/evaluator.ts": "6561674cf06a31e1761213de852eaa0739e672276538a507fe65a46d9a9ce752",
+      "src/domain/board/board-metrics.ts": "98d86a47b880290d648658de94a51288705ae82581dbf748bfed9fa4cca800df",
+      "src/domain/solver/mobility.ts": "4de627ea8117efe9822ac0c446d7950a2f798781d8b7d887be79466efc6a6b04",
+      "src/domain/solver/solver.ts": "cbbbae7e84de558600679e9951996b2e19f25166610f2ec5b4f5a189642d4007",
+      "src/domain/solver/ability-candidates.ts": "9d2804ce9448a30b58fd32103f458eb5c0ece0481d60c7e84574a914608b179d",
+      "src/domain/solver/search.ts": "7ffcede4a462066f03f917f42f74261f9e0a2b1fd3b509eb46861c048f54f29c",
+      "src/domain/solver/types.ts": "93da18624d5568e849d8ded156b7d19fd9dcbc2356bfcf36f05aabb4e49ab128",
+      "src/research/episode.ts": "f41437244a4d3cc08dcfc80a1179ea5dd13649bc3ee02936b2f2c2b3a9427678",
+      "src/research/fixture.ts": "b2f0d9891d6124fee9a49090f0d31cc321094a82d16d80a38b9910e90e31ef79",
+      "src/research/types.ts": "f2727ed83a18036122a14c402e13776247c9be2da48cb3559e263803e4762657",
+      "src/research/item-coverage.ts": "da6bc1a56db9dd39f4134254d07759d442b9f89e7ebffb3d1aa20c1ef7fc5a13",
+      "src/research/teacher-audit.ts": "d8288aad50594faaddba34e88c1bcb768f76bee58d6ebff58fb7c7f486193b94",
+      "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+      "src/research/teacher-matrix.ts": "23693f3b469379befebe81bd6ab03ff9a8d72477a3b7ee1e216f2e951bf0d82c",
+      "src/research/teacher-quality.ts": "5b5b2a1b35a4601f86ebf4b3796edc9e43c977871082356501f5ad46eb44ec2e"
+    },
+    "runnerSha256": "bc5527bd28f8ab1ba6215319fc1f51ce3a43d39d075108c2007c153ca9114929",
+    "lockSha256": "675927278665763fd682571ed41e9d64ed8e130fa8e11a5a65776ca558d441bb"
+  },
+  "limits": [
+    "Twelve generated initial states and eight deliberate scripted states, reported separately; not real event probabilities or independent game outcomes",
+    "Repeated runs check determinism and do not increase the independent sample count",
+    "Union selects only returned paths; tied current-turn evaluation does not imply equal future action value",
+    "All per-call SearchInfo remains in raw evidence; restricted reroll and incomplete search are not promoted to an aggregate oracle",
+    "A single 3072-node call and six 512-node calls have equal nominal node caps, not equal runtime or memoization cost",
+    "Condition latency includes transformation, legality, solve, selection and replay; callback serialization and disk logging are reported separately",
+    "Per-call loggingMs excludes condition-summary callback cost; overall raw runner duration includes both logging stages",
+    "Warmup is excluded; no concurrent validation work is required during measured execution",
+    "No dataset/teacher label changes, test generation/evaluation, training, production integration or external data transmission",
+    "Candidate-for-review flag is a finite pilot gate, not user approval or statistical/model benefit evidence"
+  ]
+}

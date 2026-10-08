@@ -328,6 +328,31 @@ deliberate coverage 표본은 규칙을 검사하기 위한 예이며, 실제 �
 
 tiny reference의 완전성은 ordinary-only의 공통 평가 범위에 한정된다. 능력 전체나 미래 최적성은 보장하지 않는다. 상황별 forced transition과 선택 결과, hash는 [coverage summary](assets/research/item-coverage-20261008-v1.json)에 보관한다. 새 학습, test 평가, 앱 의미 변경은 없다.
 
+### 5.9 Permutation Union and Equal Node-Cap Comparison
+
+기존 **generated 초기 상태 12개와 scripted 상태 8개**를 재사용해 slot 순서의 영향과 탐색량 증가의 영향을 분리했다. 현재 teacher와 모델을 변경하지 않는 diagnostic이다.
+
+- **A:** 기존 slot 순서의 단일 DFS 512.
+- **B:** 같은 순서의 단일 DFS 3072.
+- **C:** 여섯 slot 순서에서 각각 DFS 512를 실행하고, 반환 경로를 원래 slot으로 복원한 합집합에서 선택.
+
+B와 C의 총 노드 상한은 상태당 **3,072**로 같다. memo는 호출마다 새로 시작하며, 같은 상한이 같은 실행 시간이나 실제 탐색 비용을 뜻하지는 않는다.
+
+| 현재 턴 경로 평가: 향상 / 저하 / 동일 | C vs A512 | C vs B3072 |
+| ------------------------------------- | --------- | ---------- |
+| generated 초기 상태 12개              | 8 / 0 / 4 | 5 / 6 / 1  |
+| scripted 상태 8개                     | 0 / 0 / 8 | 0 / 0 / 8  |
+
+**C는 A보다 나은 경로를 찾았지만, 같은 노드 상한의 B보다 우월하다는 근거는 얻지 못했다.** generated에서 C의 기본 순서 호출이 A를 포함하므로 C vs A의 저하 0은 구조적으로 기대한 결과다. C vs B의 저하 0·향상 1 이상이라는 pilot gate는 미충족이며, 기존 teacher label과 CNN은 유지한다.
+
+반복·slot 순환·배열 대조를 포함해 measured **600호출**, 반환 경로 **1,740개**를 검사했다. 반복 100조건, 배열 대조 20쌍, C의 slot 순환 대조 20쌍이 일치했다. 과거 A512의 best/alternatives와 SearchInfo도 20/20 일치했다. 별도 warmup 8호출은 집계에서 제외했다.
+
+generated의 A/B/C 선택 경로는 획득·상한 잔류가 모두 0이었다. scripted에서는 세 조건 모두 획득 발생 5/8·잔류 2/8·점 사용 6/8·reroll 대기 1/8이었다. 의도적 coverage 상태는 실제 빈도나 학습 분포를 대표하지 않는다.
+
+generated B/C의 실제 visited nodes는 반복을 제외하면 각각 36,864였다. condition latency 평균은 B 약 7.02초, C 약 7.71초로 관측했다. 이 시간에는 변환·합법성 대조·solve·선택·replay가 포함되며 per-call 파일 기록 비용은 분리했다. warmup, GC/JIT, 표본 크기의 한계 때문에 앱 응답 시간 수락이나 동일 시간 비교로 해석하지 않는다.
+
+measured 호출 중 **510/600은 incomplete**였다. 합집합은 반환된 경로만 사용하며 제한 reroll과 alternatives 누락 가능성을 유지한다. 현재 턴 평가의 동점은 미래 가치의 동등 label을 뜻하지 않는다. 추가 학습, 새 test 평가, 앱 policy 변경은 수행하지 않았다. 고정 설정·집단별 coverage/시간·hash는 [permutation summary](assets/research/permutation-teacher-20261008-v1.json)에 있다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
