@@ -171,6 +171,24 @@ PyTorch의 [공식 학습 경로](https://docs.pytorch.org/tutorials/beginner/ba
 
 Windows10/i5-9400F 개발 PC 관측이다. 추론은 load/warmup을 제외한 finite 검사/argmax 포함이며 domain 후보 생성·JSON·프로세스 시작·IPC·UI 시간은 포함하지 않는다. 처리 시간도 Python/PyTorch import를 제외한다. 45개 연속 상태를 독립45게임으로 세지 않으며 계열 밖 일반화·통계 우월성·실전 생존/RL은 미검증이다. **단순 기준선보다 낮아 현재 모델의 제품 적용을 추천하지 않는다.** 동일한 가치의 다른 합법 선택도 top1에서는 오답이 될 수 있어 생존 성과를 뜻하지 않는다. 비민감 수치·protocol/source/data hash는 [CNN pilot summary](assets/research/pilot-cnn-imitation-20261008-v1.json)에 있다. raw data/checkpoint는 Git 밖 로컬에 보관하며 설치 다운로드 외 자료 전송은 없다.
 
+### 5.5 Teacher Order and Coverage Audit
+
+**진단 — 2026-10-08.** 재학습에 앞서 기존 자료의 분포와 교사 선택을 검사했다. label이나 모델 성적을 보지 않고 train1000–1003/dev2000–2003 × sparse/pressure의 최초 상태16개를 고정했다. 각 상태에 원본, 조각 배열 뒤집기 대조, slot 번호 순환(0→1→2→0)을 적용해 DFS512를 총48회 실행했다. slot 변경은 보드·조각 instance/형상·능력·아이템과 전체 물리적 합법 행동 집합을 보존한다. 게임에서 조각 선택 순서는 자유롭다.
+
+| 진단 관측 | 결과 |
+| --- | --- |
+| 배열만 뒤집은 대조 | 16/16 경로·평가·탐색 정보 동일 |
+| slot 순환 뒤 물리적 첫 행동 변경 | 14/16 상태 |
+| 선택 경로의 사전식 평가 | 향상7 / 저하7 / 동일2 |
+| 변경된 첫 행동 중 경로 평가 동점 | 0/14 |
+| 원본 탐색 미완료 | 16/16 |
+| 반환 경로의 domain 재생 | 144/144 통과 |
+| 모델 입력의 정확 중복 | split 내부·split 간 모두0 |
+
+교사는 후보를 slot 순서로 방문하고 제한된 탐색에서 찾은 경로를 반환한다. 위 관측은 **이 예산과 표본에서의 순서 민감성**을 보여준다. 다른 첫 행동을 같은 정답으로 합쳐도 된다는 증거나 CNN 성적 저하의 단독 원인은 아니다. 반환 대안3에서는 서로 다른 첫 행동의 최상 동점이 관측되지 않았지만, memo와 잘린 탐색 때문에 전체 동점 후보의 부재를 증명하지 않는다. 경로 평가 동점도 즉시 행동 가치·미래 생존의 동일성을 뜻하지 않는다.
+
+학습 자료에서 first-legal label은 전체84/168(50.0%), 탐색 완료5/37(13.5%), 미완료79/131(60.3%)다. 배치 label의124/131(94.7%)는 남은 조각 중 가장 작은 slot이고, sparse는89/89다. 아이템 획득은 train/dev/test에서2/1/0회에 불과하다. seed 분리와 정확한 관측 중복0은 계열 밖 일반화나 충분한 전략 표본을 보장하지 않는다. 기존 test 통계는 설명용으로만 집계했으며 새 test 탐색·튜닝·점수 측정을 하지 않았다. 현재 CNN 결과와 앱 DFS는 유지한다. [진단 요약과 고정 protocol](assets/research/teacher-order-audit-20261008-v1.json)에 분모·계열별 수치·hash를 보관한다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
@@ -211,6 +229,12 @@ node scripts/research/verify-imitation.mjs .research-output/datasets/my-pilot .r
 자료/모델/schema·hash가 맞지 않거나 NaN이 나오면 중단한다. 실패한 출력도 보존하고 같은 경로를 덮어쓰지 않는다. checkpoint는 자체 생성 state dict만 `weights_only=True`로 읽는다. `summarize-cnn.mjs <model폴더> <repeat폴더> <새JSON>`으로 domain/repro 판정이 모두 통과한 비민감 요약을 재생성할 수 있다.
 
 그림 생성 명령은 SVG 세 개와 합성 입력을 재생성하며 게임 이미지·학습/benchmark를 사용하지 않는다. 입력/metadata는 [figure-data.json](assets/figures/figure-data.json)에 있다. `src/domain`은 규칙/지표/탐색, `src/research`는 simulator/비교, `src/features`는 캡처/인식/검토/세션, `src/components`/`src/app`은 UI, `tests/fixtures`는 비민감 재현 데이터다.
+
+기존 자료만 읽는 순서 진단은 아래 명령으로 실행한다. 기본 `audit-protocol.json`은 위 pilot의 train/dev 초기16상태만 지정하며 test 탐색이나 학습을 수행하지 않는다. 원본 자료의 hash와 전체 encoding/replay를 확인한 뒤 새 폴더에 `report.json`, 완료 상태별 `probes.jsonl`, 공개용 `summary.json`을 남긴다. 중단된 raw도 보존하며 같은 출력 폴더를 다시 사용하지 않는다.
+
+```powershell
+pnpm research:teacher-audit --dataset .research-output/datasets/my-pilot --output .research-output/audits/my-audit
+```
 
 ## References
 

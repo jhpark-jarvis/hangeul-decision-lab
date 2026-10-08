@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 1,
+  "id": "teacher-order-audit-20261008-v1",
+  "status": "PASS",
+  "protocol": {
+    "schemaVersion": 1,
+    "id": "teacher-order-audit-20261008-v1",
+    "trainSeeds": [1000, 1001, 1002, 1003],
+    "devSeeds": [2000, 2001, 2002, 2003],
+    "families": ["sparse", "pressure"],
+    "actionIndex": 0,
+    "solver": {
+      "maxNodes": 512,
+      "maxAlternatives": 3,
+      "useMemoization": true
+    },
+    "variants": ["baseline", "reverse-array", "cycle-slots"]
+  },
+  "descriptions": {
+    "splits": {
+      "train": {
+        "all": {
+          "count": 168,
+          "firstLegalLabels": 84,
+          "firstLegalFraction": 0.5,
+          "meanNormalizedLabelRank": 0.20612903491913404,
+          "actionTypes": {
+            "place-piece": 131,
+            "single-cell": 24,
+            "reroll": 13
+          },
+          "placementLabels": 131,
+          "minimumRemainingSlotLabels": 124,
+          "minimumRemainingSlotFraction": 0.9465648854961832
+        },
+        "complete": {
+          "count": 37,
+          "firstLegalLabels": 5,
+          "firstLegalFraction": 0.13513513513513514,
+          "meanNormalizedLabelRank": 0.5497179684216886,
+          "actionTypes": {
+            "place-piece": 15,
+            "single-cell": 11,
+            "reroll": 11
+          },
+          "placementLabels": 15,
+          "minimumRemainingSlotLabels": 13,
+          "minimumRemainingSlotFraction": 0.8666666666666667
+        },
+        "incomplete": {
+          "count": 131,
+          "firstLegalLabels": 79,
+          "firstLegalFraction": 0.6030534351145038,
+          "meanNormalizedLabelRank": 0.10908483232680939,
+          "actionTypes": {
+            "place-piece": 116,
+            "single-cell": 13,
+            "reroll": 2
+          },
+          "placementLabels": 116,
+          "minimumRemainingSlotLabels": 111,
+          "minimumRemainingSlotFraction": 0.9568965517241379
+        },
+        "families": {
+          "sparse": {
+            "count": 96,
+            "firstLegalLabels": 68,
+            "firstLegalFraction": 0.7083333333333334,
+            "meanNormalizedLabelRank": 0.08378525359058951,
+            "actionTypes": {
+              "place-piece": 89,
+              "single-cell": 7,
+              "reroll": 0
+            },
+            "placementLabels": 89,
+            "minimumRemainingSlotLabels": 89,
+            "minimumRemainingSlotFraction": 1
+          },
+          "pressure": {
+            "count": 72,
+            "firstLegalLabels": 16,
+            "firstLegalFraction": 0.2222222222222222,
+            "meanNormalizedLabelRank": 0.3692540766905266,
+            "actionTypes": {
+              "place-piece": 42,
+              "single-cell": 17,
+              "reroll": 13
+            },
+            "placementLabels": 42,
+            "minimumRemainingSlotLabels": 35,
+            "minimumRemainingSlotFraction": 0.8333333333333334
+          }
+        },
+        "uniqueModelObservations": 168,
+        "repeatedModelObservations": 0,
+        "acquiredItems": 2
+      },
+      "dev": {
+        "all": {
+          "count": 45,
+          "firstLegalLabels": 25,
+          "firstLegalFraction": 0.5555555555555556,
+          "meanNormalizedLabelRank": 0.21501540739613817,
+          "actionTypes": {
+            "place-piece": 36,
+            "single-cell": 6,
+            "reroll": 3
+          },
+          "placementLabels": 36,
+          "minimumRemainingSlotLabels": 35,
+          "minimumRemainingSlotFraction": 0.9722222222222222
+        },
+        "complete": {
+          "count": 6,
+          "firstLegalLabels": 0,
+          "firstLegalFraction": 0,
+          "meanNormalizedLabelRank": 0.6128623188405796,
+          "actionTypes": {
+            "place-piece": 3,
+            "single-cell": 1,
+            "reroll": 2
+          },
+          "placementLabels": 3,
+          "minimumRemainingSlotLabels": 3,
+          "minimumRemainingSlotFraction": 1
+        },
+        "incomplete": {
+          "count": 39,
+          "firstLegalLabels": 25,
+          "firstLegalFraction": 0.6410256410256411,
+          "meanNormalizedLabelRank": 0.15380819025083942,
+          "actionTypes": {
+            "place-piece": 33,
+            "single-cell": 5,
+            "reroll": 1
+          },
+          "placementLabels": 33,
+          "minimumRemainingSlotLabels": 32,
+          "minimumRemainingSlotFraction": 0.9696969696969697
+        },
+        "families": {
+          "sparse": {
+            "count": 24,
+            "firstLegalLabels": 17,
+            "firstLegalFraction": 0.7083333333333334,
+            "meanNormalizedLabelRank": 0.11941843014860808,
+            "actionTypes": {
+              "place-piece": 22,
+              "single-cell": 2,
+              "reroll": 0
+            },
+            "placementLabels": 22,
+            "minimumRemainingSlotLabels": 22,
+            "minimumRemainingSlotFraction": 1
+          },
+          "pressure": {
+            "count": 21,
+            "firstLegalLabels": 8,
+            "firstLegalFraction": 0.38095238095238093,
+            "meanNormalizedLabelRank": 0.32426909567902956,
+            "actionTypes": {
+              "place-piece": 14,
+              "single-cell": 4,
+              "reroll": 3
+            },
+            "placementLabels": 14,
+            "minimumRemainingSlotLabels": 13,
+            "minimumRemainingSlotFraction": 0.9285714285714286
+          }
+        },
+        "uniqueModelObservations": 45,
+        "repeatedModelObservations": 0,
+        "acquiredItems": 1
+      },
+      "test": {
+        "all": {
+          "count": 45,
+          "firstLegalLabels": 29,
+          "firstLegalFraction": 0.6444444444444445,
+          "meanNormalizedLabelRank": 0.15442138757768248,
+          "actionTypes": {
+            "place-piece": 36,
+            "single-cell": 5,
+            "reroll": 4
+          },
+          "placementLabels": 36,
+          "minimumRemainingSlotLabels": 32,
+          "minimumRemainingSlotFraction": 0.8888888888888888
+        },
+        "complete": {
+          "count": 13,
+          "firstLegalLabels": 6,
+          "firstLegalFraction": 0.46153846153846156,
+          "meanNormalizedLabelRank": 0.34339367687077466,
+          "actionTypes": {
+            "place-piece": 6,
+            "single-cell": 3,
+            "reroll": 4
+          },
+          "placementLabels": 6,
+          "minimumRemainingSlotLabels": 5,
+          "minimumRemainingSlotFraction": 0.8333333333333334
+        },
+        "incomplete": {
+          "count": 32,
+          "firstLegalLabels": 23,
+          "firstLegalFraction": 0.71875,
+          "meanNormalizedLabelRank": 0.07765139505236376,
+          "actionTypes": {
+            "place-piece": 30,
+            "single-cell": 2,
+            "reroll": 0
+          },
+          "placementLabels": 30,
+          "minimumRemainingSlotLabels": 27,
+          "minimumRemainingSlotFraction": 0.9
+        },
+        "families": {
+          "sparse": {
+            "count": 24,
+            "firstLegalLabels": 16,
+            "firstLegalFraction": 0.6666666666666666,
+            "meanNormalizedLabelRank": 0.10198278487497359,
+            "actionTypes": {
+              "place-piece": 22,
+              "single-cell": 2,
+              "reroll": 0
+            },
+            "placementLabels": 22,
+            "minimumRemainingSlotLabels": 22,
+            "minimumRemainingSlotFraction": 1
+          },
+          "pressure": {
+            "count": 21,
+            "firstLegalLabels": 13,
+            "firstLegalFraction": 0.6190476190476191,
+            "meanNormalizedLabelRank": 0.2143512192379212,
+            "actionTypes": {
+              "place-piece": 14,
+              "single-cell": 3,
+              "reroll": 4
+            },
+            "placementLabels": 14,
+            "minimumRemainingSlotLabels": 10,
+            "minimumRemainingSlotFraction": 0.7142857142857143
+          }
+        },
+        "uniqueModelObservations": 45,
+        "repeatedModelObservations": 0,
+        "acquiredItems": 0
+      }
+    },
+    "exactModelObservationOverlap": {
+      "train-dev": 0,
+      "train-test": 0,
+      "dev-test": 0
+    }
+  },
+  "probes": {
+    "states": 16,
+    "probes": 48,
+    "arrayControlsUnchanged": 16,
+    "cycleChangedFirst": 14,
+    "changedFirstEqualEvaluation": 0,
+    "cycleBetter": 7,
+    "cycleWorse": 7,
+    "cycleEqual": 2,
+    "baselineIncomplete": 16,
+    "baselineMultipleReturnedTieRoots": 0,
+    "returnedPathsVerified": 144
+  },
+  "identity": {
+    "dataSha256": "1fd6e32cfcaafae4f516164a02cd847030b57878380605c6ffcfac5ae92b66ca",
+    "protocolSha256": "c980460646797e73d0ec6fdb8ef53fb1830562c467b0a6f010006dc803d5e33e",
+    "sourceHashes": {
+      "src/research/teacher-audit.ts": "d8288aad50594faaddba34e88c1bcb768f76bee58d6ebff58fb7c7f486193b94",
+      "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+      "src/domain/board/board.ts": "33e848d71ba6ea797e67a0e7b1d3ad59a55fa603873695881cb04edded4db44a",
+      "src/domain/board/line-clear.ts": "9e25faa546ce2c3244236e14471157832be2efbe813d10c58af41b5bf281682f",
+      "src/domain/pieces/placement.ts": "8ef4b72415c4fa05ebe7abd0c38ebef8693756007e0c4d1afe1a918352e9aeaf",
+      "src/domain/pieces/transforms.ts": "45daa497f748823e546ebf6504c9b9f573d4ae553f12a2406a58ff41e52d58a6",
+      "src/domain/game/game-state.ts": "fe651495fcf0009fe5dfa9a34b53b323e6a6f29da1bb726b1570fe42463720c3",
+      "src/domain/game/abilities.ts": "7cfc2424c8289d9a5e9f7f1f7cd4f2f6bdd2dd6cb3944b0015a974f21e5e3b08",
+      "src/domain/game/types.ts": "49fb99c0f3343e1dc47d35e0ddb6e63d9d27da3752905f538e4d7cef3e4029a9",
+      "src/domain/game/hidden-items.ts": "c165d20964b844b8d11b2f3a424b944d0bc67085a5b513903ed3b770cdcf6783",
+      "src/domain/pieces/catalog.ts": "a0b998e5fde9c8f081557263dcf4cad01394907aae7d075d5b2efff71b2bce3e",
+      "src/domain/solver/solver.ts": "cbbbae7e84de558600679e9951996b2e19f25166610f2ec5b4f5a189642d4007",
+      "src/domain/solver/ability-candidates.ts": "9d2804ce9448a30b58fd32103f458eb5c0ece0481d60c7e84574a914608b179d",
+      "src/domain/solver/mobility.ts": "4de627ea8117efe9822ac0c446d7950a2f798781d8b7d887be79466efc6a6b04",
+      "src/domain/solver/evaluator.ts": "6561674cf06a31e1761213de852eaa0739e672276538a507fe65a46d9a9ce752",
+      "src/domain/board/board-metrics.ts": "98d86a47b880290d648658de94a51288705ae82581dbf748bfed9fa4cca800df",
+      "src/domain/solver/search.ts": "7ffcede4a462066f03f917f42f74261f9e0a2b1fd3b509eb46861c048f54f29c",
+      "src/domain/solver/types.ts": "93da18624d5568e849d8ded156b7d19fd9dcbc2356bfcf36f05aabb4e49ab128",
+      "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+      "src/research/episode.ts": "f41437244a4d3cc08dcfc80a1179ea5dd13649bc3ee02936b2f2c2b3a9427678",
+      "src/research/fixture.ts": "b2f0d9891d6124fee9a49090f0d31cc321094a82d16d80a38b9910e90e31ef79",
+      "src/research/types.ts": "f2727ed83a18036122a14c402e13776247c9be2da48cb3559e263803e4762657"
+    },
+    "runnerSha256": "31b74cc164d18d74c442524de92793c2efe5102440c62e5aa2c6bd7b6d19c973",
+    "lockSha256": "675927278665763fd682571ed41e9d64ed8e130fa8e11a5a65776ca558d441bb"
+  },
+  "interpretation": "Slot intervention measures this bounded teacher's order sensitivity. Equal evaluations concern selected full paths, not equivalent first-action values or future survival.",
+  "limits": [
+    "16 preselected train/dev initial states; no new test probes or tuning",
+    "Top3/memo may omit tied roots; reported ties are a lower bound",
+    "Historical test metadata is descriptive; it is not a fresh held-out score",
+    "No learning, production solver modification, UI integration or real-game conclusion"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "teacher-order-audit-20261008-v1",
+  "trainSeeds": [1000, 1001, 1002, 1003],
+  "devSeeds": [2000, 2001, 2002, 2003],
+  "families": ["sparse", "pressure"],
+  "actionIndex": 0,
+  "solver": { "maxNodes": 512, "maxAlternatives": 3, "useMemoization": true },
+  "variants": ["baseline", "reverse-array", "cycle-slots"]
+}

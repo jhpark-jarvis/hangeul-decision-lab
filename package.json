@@ -19,7 +19,8 @@
     "format": "prettier --write .",
     "test:e2e": "playwright test",
     "research:benchmark": "node scripts/research/benchmark.mjs",
-    "research:dataset": "node scripts/research/imitation.mjs"
+    "research:dataset": "node scripts/research/imitation.mjs",
+    "research:teacher-audit": "node scripts/research/teacher-audit.mjs"
   },
   "dependencies": {
     "next": "16.3.8",
