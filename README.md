@@ -191,7 +191,7 @@ Windows10/i5-9400F 개발 PC 관측이다. 추론은 load/warmup을 제외한 fi
 
 ### 5.6 Complete Reference and Experiment Preflight
 
-순서 진단 뒤 다음 비교 실험의 [제안 protocol](research/experiments/teacher-quality-v1.json)과 실행 전 검사 도구를 추가했다. train4000–4003/dev5000–5001, reserved test6000–6003을 분리하고 노드예산128/512·slot 대조·반복2를 설계했다. **본 실험은 PROPOSED / NOT RUN**이며 reserved test를 생성하거나 새 모델을 학습하지 않았다. 동일 노드 수는 동일 실행 시간이 아니므로 현재 동기 DFS에 실제 deadline이 생기기 전까지 시간은 관측값으로만 비교하도록 명시했다.
+순서 진단 뒤 다음 비교 실험의 [제안 protocol](research/experiments/teacher-quality-v1.json)과 실행 전 검사 도구를 추가했다. train4000–4003/dev5000–5001, reserved test6000–6003을 분리하고 노드예산128/512·slot 대조·반복2를 설계했다. **이 preflight 당시 본 실험은 PROPOSED / NOT RUN**이었다. 제안 원본은 보존하며 이후 train/dev 진단은 5.7에 별도 기록한다. reserved test를 생성하거나 새 모델을 학습하지 않았다. 동일 노드 수는 동일 실행 시간이 아니므로 현재 동기 DFS에 실제 deadline이 생기기 전까지 시간은 관측값으로만 비교하도록 명시했다.
 
 실행한 검사는 7개의 의도적으로 만든 합성 상태를 사용한다. 연구 reference는 최대2조각의 전체 일반 배치 경로를 memo/pruning 없이 열거한다. domain 전이와 평가를 공유하므로 게임 규칙의 독립 oracle가 아니다. 노드 상한1024에서 미완료이면 최적 첫 행동 집합을 반환하지 않는다. 능력 사용은 별도로 지정한 전이를 검사하며 일반 reference는 능력을 탐색하지 않는다.
 
@@ -205,6 +205,23 @@ Windows10/i5-9400F 개발 PC 관측이다. 추론은 load/warmup을 제외한 fi
 | 새 reserved test 생성 / 학습 실행                   | 0 / 0                        |
 
 완전한 작은 트리에서는 대안3보다 많은 최상 첫 행동을 확인할 수 있었다. 이는 **해당 ordinary-only 현재 턴의 경로 평가**에 한정되며 3조각/능력 전체 탐색·미래 생존의 동등 label을 증명하지 않는다. deliberate coverage 표본은 규칙을 통과하는 예이며 실제 빈도·모델 효용의 증거가 아니다. 기존 CNN top1과 앱의 DFS는 유지한다. 비민감 결과·hash는 [preflight summary](assets/research/teacher-quality-preflight-20261008-v1.json)에 있다.
+
+### 5.7 Train/Dev Order and Budget Diagnostics
+
+위 제안의 새 train/dev seed × sparse/pressure **12개 초기 상태**를 기존 `solveTurn`으로 진단했다. 노드128/512 × 순서3가지 × 반복2의 **144호출**, 반환경로 **432개**를 domain으로 재생했다. 현재3조각과 능력만 전달하며 future tape를 전달하지 않는다. memo=true/대안3은 유지하고, 상태 인덱스와 반복에 따라 6조건의 실행 순서를 회전했다. 반복72조건이 동일했고 단순 배열 뒤집기 대조24쌍도 동일했다. 반복은 독립 표본으로 세지 않는다.
+
+| 현재 턴 관측, 독립 초기 상태12개 | DFS128 | DFS512 |
+| --- | --- | --- |
+| slot 순환 후 첫 추천 변화 | 10/12 | 10/12 |
+| slot 순환 후 경로 평가 향상 / 저하 / 동일 | 7 / 3 / 2 | 5 / 6 / 1 |
+| 기본 순서 탐색 미완료 | 12/12 | 12/12 |
+| 기본 순서 선택 경로 줄 삭제 합계 | 4 | 5 |
+| 기본 순서 점 능력 사용 경로 / reroll 대기 경로 | 4 / 2 | 3 / 2 |
+| 기본 순서 아이템 획득 / 상한 잔류 | 0 / 0 | 0 / 0 |
+
+기본 순서에서128→512로 늘리면 공유 사전식 경로 평가가 **8/12 향상·4/12 동일**했고 첫 추천은2/12에서 바뀌었다. slot 순환 조건에서는5/12 향상·7/12 동일이었다. 모든72개 독립 상태·조건의 탐색이 미완료이고 획득/잔류 표본은0이었다. 따라서 더 큰 예산이 순서 민감성을 해소하거나 아이템을 충분히 대표한다고 볼 수 없다. 같은 경로 평가의 첫 행동 변경1건도 장기 생존의 동등 정답이 아니다.
+
+시간은 워밍업 없이 cold/JIT·개발 PC의 동시 테스트/정적 검사 영향을 포함한 관측값이다. 작은 집단의 p95를 속도 수락이나 동일 시간 비교로 사용하지 않는다. 보드12개는 현재 합성 profile의 초기 상태이며 장기 episode 분포나 실제 게임 확률이 아니다. 새 test 평가·추가 학습·앱 정책 변경은 실행하지 않았다. 집단별 coverage/시간·고정 실행 설정·hash는 [matrix summary](assets/research/teacher-matrix-20261008-v1.json)에 있다.
 
 ## 6. Reproduction and Usage
 
@@ -257,6 +274,12 @@ pnpm research:teacher-audit --dataset .research-output/datasets/my-pilot --outpu
 
 ```powershell
 pnpm research:teacher-quality --output .research-output/preflight/my-preflight
+```
+
+새 train/dev 초기 상태 진단은 아래 명령이다. 현재 로컬 개발 revision에 추가했으며 공개 저장소 갱신은 별도다. 기존 제안 JSON을 검증하고 실행 snapshot을 상태 생성 전에 저장한다. reserved test6000대와 기존 test3000대를 생성/평가하지 않고 학습하지 않는다. 전체 상태·경로/환경은 `report.json`과 `probes.jsonl`, 시작 시 hash/환경은 `started.json`, 비민감 집계는 `summary.json`이다. 잘못된 설정과 기존 output은 거절한다. 실행 중 검증 실패 시 중간 raw와 `failure.json`을 보존한다.
+
+```powershell
+pnpm research:teacher-matrix --output .research-output/matrices/my-matrix
 ```
 
 ## References

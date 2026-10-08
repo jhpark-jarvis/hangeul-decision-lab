@@ -1,0 +1,826 @@
+{
+  "schemaVersion": 1,
+  "id": "teacher-matrix-20261008-v1",
+  "status": "PASS",
+  "experimentStatus": "TRAIN_DEV_DIAGNOSTIC_COMPLETE",
+  "protocol": {
+    "proposal": {
+      "schemaVersion": 1,
+      "id": "teacher-quality-design-20261008-v1",
+      "status": "PROPOSED_NOT_RUN",
+      "scope": "offline-teacher-diagnostics",
+      "splits": {
+        "train": [4000, 4001, 4002, 4003],
+        "dev": [5000, 5001],
+        "reservedTest": [6000, 6001, 6002, 6003]
+      },
+      "families": ["sparse", "pressure"],
+      "nodeBudgets": [128, 512],
+      "slotVariants": ["baseline", "reverse-array", "cycle-slots"],
+      "repetitions": 2,
+      "timeComparison": "OBSERVE_ONLY_UNTIL_COOPERATIVE_DEADLINE",
+      "reference": {
+        "scope": "ordinary-only",
+        "maxPieces": 2,
+        "maxNodes": 1024
+      },
+      "coverageCases": [
+        "ordinary-dot",
+        "ordinary-two-dots",
+        "blocked-line",
+        "item-acquisition",
+        "item-retention",
+        "single-spend-acquire",
+        "reroll-boundary"
+      ],
+      "gates": {
+        "completeReferenceMustMatch": true,
+        "allReturnedPathsMustReplay": true,
+        "coverageTransitionsMustMatch": true,
+        "heldOutAfterFreezeOnly": true,
+        "equalNodeIsNotEqualTime": true
+      }
+    },
+    "execution": {
+      "version": "initial-state-matrix-v1",
+      "actionIndex": 0,
+      "scope": "solveTurn-current-state",
+      "useMemoization": true,
+      "maxAlternatives": 3,
+      "order": "rotate-six-conditions-by-state-index-plus-repetition",
+      "warmup": "none",
+      "heldOut": "NOT_RUN",
+      "training": "NOT_RUN"
+    }
+  },
+  "summary": {
+    "states": 12,
+    "probes": 144,
+    "uniqueConditions": 72,
+    "repeatedConditionsChecked": 72,
+    "arrayControlsChecked": 24,
+    "returnedPathsVerified": 432,
+    "generatedReservedTestStates": 0,
+    "trainingRuns": 0,
+    "comparisons": [
+      {
+        "budget": 128,
+        "states": 12,
+        "changedFirst": 10,
+        "better": 7,
+        "worse": 3,
+        "equal": 2,
+        "changedFirstEqualEvaluation": 1
+      },
+      {
+        "budget": 512,
+        "states": 12,
+        "changedFirst": 10,
+        "better": 5,
+        "worse": 6,
+        "equal": 1,
+        "changedFirstEqualEvaluation": 0
+      }
+    ],
+    "budgetComparisons": [
+      {
+        "variant": "baseline",
+        "states": 12,
+        "changedFirst": 2,
+        "better": 8,
+        "worse": 0,
+        "equal": 4
+      },
+      {
+        "variant": "reverse-array",
+        "states": 12,
+        "changedFirst": 2,
+        "better": 8,
+        "worse": 0,
+        "equal": 4
+      },
+      {
+        "variant": "cycle-slots",
+        "states": 12,
+        "changedFirst": 0,
+        "better": 5,
+        "worse": 0,
+        "equal": 7
+      }
+    ],
+    "groups": [
+      {
+        "split": "train",
+        "family": "sparse",
+        "budget": 128,
+        "variant": "baseline",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 0,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 12,
+          "singleCellSpends": 0,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 518.9675499999964,
+          "p95Ms": 616.9804999999906,
+          "minMs": 415.2810999999965,
+          "maxMs": 616.9804999999906
+        }
+      },
+      {
+        "split": "train",
+        "family": "sparse",
+        "budget": 128,
+        "variant": "reverse-array",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 0,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 12,
+          "singleCellSpends": 0,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 552.1097624999991,
+          "p95Ms": 688.8028999999951,
+          "minMs": 405.4323999999997,
+          "maxMs": 688.8028999999951
+        }
+      },
+      {
+        "split": "train",
+        "family": "sparse",
+        "budget": 128,
+        "variant": "cycle-slots",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 0,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 12,
+          "singleCellSpends": 0,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 564.8691125000009,
+          "p95Ms": 739.0812000000005,
+          "minMs": 412.45950000000084,
+          "maxMs": 739.0812000000005
+        }
+      },
+      {
+        "split": "train",
+        "family": "sparse",
+        "budget": 512,
+        "variant": "baseline",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 1,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 1,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 12,
+          "singleCellSpends": 1,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 2129.0550624999996,
+          "p95Ms": 2518.897699999994,
+          "minMs": 1695.9238000000005,
+          "maxMs": 2518.897699999994
+        }
+      },
+      {
+        "split": "train",
+        "family": "sparse",
+        "budget": 512,
+        "variant": "reverse-array",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 1,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 1,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 12,
+          "singleCellSpends": 1,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 2115.420250000003,
+          "p95Ms": 2914.1460000000006,
+          "minMs": 1701.7090000000007,
+          "maxMs": 2914.1460000000006
+        }
+      },
+      {
+        "split": "train",
+        "family": "sparse",
+        "budget": 512,
+        "variant": "cycle-slots",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 0,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 12,
+          "singleCellSpends": 0,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 2040.3020124999998,
+          "p95Ms": 2680.066500000001,
+          "minMs": 1648.4186999999993,
+          "maxMs": 2680.066500000001
+        }
+      },
+      {
+        "split": "train",
+        "family": "pressure",
+        "budget": 128,
+        "variant": "baseline",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 2,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 2,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 11,
+          "singleCellSpends": 2,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 245.83167500000172,
+          "p95Ms": 315.7208000000028,
+          "minMs": 183.1122000000032,
+          "maxMs": 315.7208000000028
+        }
+      },
+      {
+        "split": "train",
+        "family": "pressure",
+        "budget": 128,
+        "variant": "reverse-array",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 2,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 2,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 11,
+          "singleCellSpends": 2,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 238.45764999999983,
+          "p95Ms": 311.76430000000255,
+          "minMs": 179.79969999999958,
+          "maxMs": 311.76430000000255
+        }
+      },
+      {
+        "split": "train",
+        "family": "pressure",
+        "budget": 128,
+        "variant": "cycle-slots",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 3,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 6,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 11,
+          "singleCellSpends": 3,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 281.95443749999754,
+          "p95Ms": 383.44989999999234,
+          "minMs": 229.72299999999814,
+          "maxMs": 383.44989999999234
+        }
+      },
+      {
+        "split": "train",
+        "family": "pressure",
+        "budget": 512,
+        "variant": "baseline",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 1,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 1,
+        "totals": {
+          "clearedRows": 2,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 10,
+          "singleCellSpends": 0,
+          "rerollSpends": 1
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 1087.3765124999973,
+          "p95Ms": 1496.4568,
+          "minMs": 766.1978999999992,
+          "maxMs": 1496.4568
+        }
+      },
+      {
+        "split": "train",
+        "family": "pressure",
+        "budget": 512,
+        "variant": "reverse-array",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 1,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 1,
+        "totals": {
+          "clearedRows": 2,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 10,
+          "singleCellSpends": 0,
+          "rerollSpends": 1
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 993.1577625,
+          "p95Ms": 1182.5676999999996,
+          "minMs": 823.4809999999998,
+          "maxMs": 1182.5676999999996
+        }
+      },
+      {
+        "split": "train",
+        "family": "pressure",
+        "budget": 512,
+        "variant": "cycle-slots",
+        "states": 4,
+        "incomplete": 4,
+        "pendingRerollPaths": 1,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 4,
+        "rerollSpendPaths": 1,
+        "totals": {
+          "clearedRows": 8,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 11,
+          "singleCellSpends": 4,
+          "rerollSpends": 1
+        },
+        "timing": {
+          "samples": 8,
+          "meanMs": 1103.7377125000007,
+          "p95Ms": 1347.8508000000002,
+          "minMs": 846.2020999999986,
+          "maxMs": 1347.8508000000002
+        }
+      },
+      {
+        "split": "dev",
+        "family": "sparse",
+        "budget": 128,
+        "variant": "baseline",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 0,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 6,
+          "singleCellSpends": 0,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 402.98804999999993,
+          "p95Ms": 417.8104000000021,
+          "minMs": 364.4109999999928,
+          "maxMs": 417.8104000000021
+        }
+      },
+      {
+        "split": "dev",
+        "family": "sparse",
+        "budget": 128,
+        "variant": "reverse-array",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 0,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 6,
+          "singleCellSpends": 0,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 394.36345000000074,
+          "p95Ms": 441.11299999999756,
+          "minMs": 363.6081000000122,
+          "maxMs": 441.11299999999756
+        }
+      },
+      {
+        "split": "dev",
+        "family": "sparse",
+        "budget": 128,
+        "variant": "cycle-slots",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 0,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 6,
+          "singleCellSpends": 0,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 418.01607499999955,
+          "p95Ms": 481.2899999999936,
+          "minMs": 361.0917000000045,
+          "maxMs": 481.2899999999936
+        }
+      },
+      {
+        "split": "dev",
+        "family": "sparse",
+        "budget": 512,
+        "variant": "baseline",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 0,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 6,
+          "singleCellSpends": 0,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 1606.595449999997,
+          "p95Ms": 1696.4054999999935,
+          "minMs": 1510.918399999995,
+          "maxMs": 1696.4054999999935
+        }
+      },
+      {
+        "split": "dev",
+        "family": "sparse",
+        "budget": 512,
+        "variant": "reverse-array",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 0,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 6,
+          "singleCellSpends": 0,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 1657.5969750000004,
+          "p95Ms": 1879.634699999995,
+          "minMs": 1508.645000000004,
+          "maxMs": 1879.634699999995
+        }
+      },
+      {
+        "split": "dev",
+        "family": "sparse",
+        "budget": 512,
+        "variant": "cycle-slots",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 0,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 0,
+        "rerollSpendPaths": 0,
+        "totals": {
+          "clearedRows": 0,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 6,
+          "singleCellSpends": 0,
+          "rerollSpends": 0
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 1594.4106250000004,
+          "p95Ms": 1749.6489000000001,
+          "minMs": 1451.2439000000013,
+          "maxMs": 1749.6489000000001
+        }
+      },
+      {
+        "split": "dev",
+        "family": "pressure",
+        "budget": 128,
+        "variant": "baseline",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 2,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 2,
+        "rerollSpendPaths": 2,
+        "totals": {
+          "clearedRows": 2,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 3,
+          "singleCellSpends": 2,
+          "rerollSpends": 2
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 199.33062500000233,
+          "p95Ms": 205.2033000000083,
+          "minMs": 192.8683000000019,
+          "maxMs": 205.2033000000083
+        }
+      },
+      {
+        "split": "dev",
+        "family": "pressure",
+        "budget": 128,
+        "variant": "reverse-array",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 2,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 2,
+        "rerollSpendPaths": 2,
+        "totals": {
+          "clearedRows": 2,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 3,
+          "singleCellSpends": 2,
+          "rerollSpends": 2
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 203.54447499999878,
+          "p95Ms": 226.00019999999495,
+          "minMs": 195.50179999999818,
+          "maxMs": 226.00019999999495
+        }
+      },
+      {
+        "split": "dev",
+        "family": "pressure",
+        "budget": 128,
+        "variant": "cycle-slots",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 2,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 2,
+        "rerollSpendPaths": 2,
+        "totals": {
+          "clearedRows": 2,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 4,
+          "singleCellSpends": 2,
+          "rerollSpends": 2
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 212.13984999999957,
+          "p95Ms": 241.19129999999132,
+          "minMs": 201.078600000008,
+          "maxMs": 241.19129999999132
+        }
+      },
+      {
+        "split": "dev",
+        "family": "pressure",
+        "budget": 512,
+        "variant": "baseline",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 1,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 2,
+        "rerollSpendPaths": 1,
+        "totals": {
+          "clearedRows": 2,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 1,
+          "singleCellSpends": 2,
+          "rerollSpends": 1
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 711.1180499999973,
+          "p95Ms": 788.591499999995,
+          "minMs": 623.3093999999983,
+          "maxMs": 788.591499999995
+        }
+      },
+      {
+        "split": "dev",
+        "family": "pressure",
+        "budget": 512,
+        "variant": "reverse-array",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 1,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 2,
+        "rerollSpendPaths": 1,
+        "totals": {
+          "clearedRows": 2,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 1,
+          "singleCellSpends": 2,
+          "rerollSpends": 1
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 728.4547250000069,
+          "p95Ms": 851.6389000000054,
+          "minMs": 610.0801999999967,
+          "maxMs": 851.6389000000054
+        }
+      },
+      {
+        "split": "dev",
+        "family": "pressure",
+        "budget": 512,
+        "variant": "cycle-slots",
+        "states": 2,
+        "incomplete": 2,
+        "pendingRerollPaths": 1,
+        "acquisitionPaths": 0,
+        "retentionPaths": 0,
+        "singleSpendPaths": 2,
+        "rerollSpendPaths": 1,
+        "totals": {
+          "clearedRows": 2,
+          "acquiredItems": 0,
+          "retainedItemEvents": 0,
+          "placements": 2,
+          "singleCellSpends": 2,
+          "rerollSpends": 1
+        },
+        "timing": {
+          "samples": 4,
+          "meanMs": 722.2514749999973,
+          "p95Ms": 873.5211000000127,
+          "minMs": 599.1557999999932,
+          "maxMs": 873.5211000000127
+        }
+      }
+    ]
+  },
+  "identity": {
+    "protocolSha256": "ae9dc60d2995319911488686fd4c90bc679cc561773e7314ea2f48bff77bfcbc",
+    "sourceHashes": {
+      "src/research/teacher-matrix.ts": "23693f3b469379befebe81bd6ab03ff9a8d72477a3b7ee1e216f2e951bf0d82c",
+      "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+      "src/domain/board/board.ts": "33e848d71ba6ea797e67a0e7b1d3ad59a55fa603873695881cb04edded4db44a",
+      "src/domain/board/line-clear.ts": "9e25faa546ce2c3244236e14471157832be2efbe813d10c58af41b5bf281682f",
+      "src/domain/pieces/placement.ts": "8ef4b72415c4fa05ebe7abd0c38ebef8693756007e0c4d1afe1a918352e9aeaf",
+      "src/domain/pieces/transforms.ts": "45daa497f748823e546ebf6504c9b9f573d4ae553f12a2406a58ff41e52d58a6",
+      "src/domain/game/game-state.ts": "fe651495fcf0009fe5dfa9a34b53b323e6a6f29da1bb726b1570fe42463720c3",
+      "src/domain/game/abilities.ts": "7cfc2424c8289d9a5e9f7f1f7cd4f2f6bdd2dd6cb3944b0015a974f21e5e3b08",
+      "src/domain/game/types.ts": "49fb99c0f3343e1dc47d35e0ddb6e63d9d27da3752905f538e4d7cef3e4029a9",
+      "src/domain/game/hidden-items.ts": "c165d20964b844b8d11b2f3a424b944d0bc67085a5b513903ed3b770cdcf6783",
+      "src/domain/pieces/catalog.ts": "a0b998e5fde9c8f081557263dcf4cad01394907aae7d075d5b2efff71b2bce3e",
+      "src/domain/solver/solver.ts": "cbbbae7e84de558600679e9951996b2e19f25166610f2ec5b4f5a189642d4007",
+      "src/domain/solver/ability-candidates.ts": "9d2804ce9448a30b58fd32103f458eb5c0ece0481d60c7e84574a914608b179d",
+      "src/domain/solver/mobility.ts": "4de627ea8117efe9822ac0c446d7950a2f798781d8b7d887be79466efc6a6b04",
+      "src/domain/solver/evaluator.ts": "6561674cf06a31e1761213de852eaa0739e672276538a507fe65a46d9a9ce752",
+      "src/domain/board/board-metrics.ts": "98d86a47b880290d648658de94a51288705ae82581dbf748bfed9fa4cca800df",
+      "src/domain/solver/search.ts": "7ffcede4a462066f03f917f42f74261f9e0a2b1fd3b509eb46861c048f54f29c",
+      "src/domain/solver/types.ts": "93da18624d5568e849d8ded156b7d19fd9dcbc2356bfcf36f05aabb4e49ab128",
+      "src/research/fixture.ts": "b2f0d9891d6124fee9a49090f0d31cc321094a82d16d80a38b9910e90e31ef79",
+      "src/research/types.ts": "f2727ed83a18036122a14c402e13776247c9be2da48cb3559e263803e4762657",
+      "src/research/teacher-audit.ts": "d8288aad50594faaddba34e88c1bcb768f76bee58d6ebff58fb7c7f486193b94",
+      "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+      "src/research/episode.ts": "f41437244a4d3cc08dcfc80a1179ea5dd13649bc3ee02936b2f2c2b3a9427678",
+      "src/research/teacher-quality.ts": "5b5b2a1b35a4601f86ebf4b3796edc9e43c977871082356501f5ad46eb44ec2e"
+    },
+    "runnerSha256": "7c6b1dd6661bc1143027002f8b161584448330f350f76e7094ab87364668ebd9",
+    "lockSha256": "675927278665763fd682571ed41e9d64ed8e130fa8e11a5a65776ca558d441bb"
+  },
+  "limits": [
+    "Initial states only; 12 seed/family states, repetitions are not independent samples",
+    "Shared domain path replay is not an independent game rules oracle or a proof of optimal teacher labels",
+    "Selected current-turn path coverage is not representative long-run episode frequency",
+    "Retained item events count per transition, not distinct icons",
+    "Timing includes cold/JIT effects without warmup; node budgets do not equal wall time",
+    "Restricted reroll candidates and incomplete DFS remain unchanged; no future tapes are supplied",
+    "Reserved test and old test are not generated or evaluated; no training or production integration"
+  ]
+}
