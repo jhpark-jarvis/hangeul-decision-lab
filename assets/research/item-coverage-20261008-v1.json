@@ -1,0 +1,494 @@
+{
+  "schemaVersion": 1,
+  "id": "item-coverage-20261008-v1",
+  "status": "PASS",
+  "protocol": {
+    "schemaVersion": 1,
+    "id": "item-coverage-20261008-v1",
+    "provenance": "synthetic-scripted",
+    "scope": "current-turn-diagnostic-only",
+    "nodeBudgets": [128, 512],
+    "repetitions": 2,
+    "useMemoization": true,
+    "maxAlternatives": 3,
+    "ordinaryReferenceMaxNodes": 1024,
+    "cases": [
+      "item-acquisition",
+      "item-retention",
+      "single-spend-acquire",
+      "reroll-boundary",
+      "capacity-six-row-order",
+      "spend-at-capacity",
+      "simultaneous-row-order",
+      "capacity-reroll-boundary"
+    ],
+    "heldOut": "NOT_RUN",
+    "training": "NOT_RUN"
+  },
+  "summary": {
+    "scriptedCases": 8,
+    "scriptedTransitions": 8,
+    "completeOrdinaryReferences": 8,
+    "ordinaryComparisons": 8,
+    "fullProbes": 32,
+    "repeatedConditionsChecked": 16,
+    "returnedPathsVerified": 106,
+    "generatedTestStates": 0,
+    "trainingRuns": 0,
+    "selectedByBudget": [
+      {
+        "budget": 128,
+        "states": 8,
+        "incomplete": 6,
+        "acquisitionPaths": 5,
+        "retentionPaths": 2,
+        "singleSpendPaths": 6,
+        "rerollSpendPaths": 1,
+        "scriptedFirstMatches": 2
+      },
+      {
+        "budget": 512,
+        "states": 8,
+        "incomplete": 5,
+        "acquisitionPaths": 5,
+        "retentionPaths": 2,
+        "singleSpendPaths": 6,
+        "rerollSpendPaths": 1,
+        "scriptedFirstMatches": 2
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "item-acquisition",
+      "scripted": {
+        "clearedRows": 1,
+        "acquiredItems": 2,
+        "retainedItems": 0,
+        "spentAbility": null,
+        "pendingReroll": false
+      },
+      "ordinary": {
+        "complete": true,
+        "visitedNodes": 17,
+        "optimalFirstActions": 3
+      },
+      "selected": [
+        {
+          "budget": 128,
+          "searchComplete": true,
+          "visitedNodes": 34,
+          "firstAction": "place-piece",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "retainedItemEvents": 0,
+            "placements": 1,
+            "singleCellSpends": 0,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        },
+        {
+          "budget": 512,
+          "searchComplete": true,
+          "visitedNodes": 34,
+          "firstAction": "place-piece",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "retainedItemEvents": 0,
+            "placements": 1,
+            "singleCellSpends": 0,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "item-retention",
+      "scripted": {
+        "clearedRows": 1,
+        "acquiredItems": 0,
+        "retainedItems": 2,
+        "spentAbility": null,
+        "pendingReroll": false
+      },
+      "ordinary": {
+        "complete": true,
+        "visitedNodes": 17,
+        "optimalFirstActions": 3
+      },
+      "selected": [
+        {
+          "budget": 128,
+          "searchComplete": false,
+          "visitedNodes": 128,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 9,
+            "acquiredItems": 1,
+            "retainedItemEvents": 1,
+            "placements": 1,
+            "singleCellSpends": 8,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        },
+        {
+          "budget": 512,
+          "searchComplete": false,
+          "visitedNodes": 512,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 9,
+            "acquiredItems": 1,
+            "retainedItemEvents": 1,
+            "placements": 1,
+            "singleCellSpends": 8,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "single-spend-acquire",
+      "scripted": {
+        "clearedRows": 1,
+        "acquiredItems": 1,
+        "retainedItems": 0,
+        "spentAbility": "single-cell",
+        "pendingReroll": false
+      },
+      "ordinary": {
+        "complete": true,
+        "visitedNodes": 17,
+        "optimalFirstActions": 3
+      },
+      "selected": [
+        {
+          "budget": 128,
+          "searchComplete": false,
+          "visitedNodes": 128,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 2,
+            "acquiredItems": 0,
+            "retainedItemEvents": 0,
+            "placements": 1,
+            "singleCellSpends": 1,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        },
+        {
+          "budget": 512,
+          "searchComplete": true,
+          "visitedNodes": 450,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 2,
+            "acquiredItems": 0,
+            "retainedItemEvents": 0,
+            "placements": 1,
+            "singleCellSpends": 1,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "reroll-boundary",
+      "scripted": {
+        "clearedRows": 0,
+        "acquiredItems": 0,
+        "retainedItems": 0,
+        "spentAbility": "reroll",
+        "pendingReroll": true
+      },
+      "ordinary": {
+        "complete": true,
+        "visitedNodes": 1,
+        "optimalFirstActions": 0
+      },
+      "selected": [
+        {
+          "budget": 128,
+          "searchComplete": true,
+          "visitedNodes": 3,
+          "firstAction": "reroll",
+          "scriptedFirstMatches": true,
+          "coverage": {
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "retainedItemEvents": 0,
+            "placements": 0,
+            "singleCellSpends": 0,
+            "rerollSpends": 1,
+            "pendingReroll": true
+          }
+        },
+        {
+          "budget": 512,
+          "searchComplete": true,
+          "visitedNodes": 3,
+          "firstAction": "reroll",
+          "scriptedFirstMatches": true,
+          "coverage": {
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "retainedItemEvents": 0,
+            "placements": 0,
+            "singleCellSpends": 0,
+            "rerollSpends": 1,
+            "pendingReroll": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "capacity-six-row-order",
+      "scripted": {
+        "clearedRows": 1,
+        "acquiredItems": 1,
+        "retainedItems": 1,
+        "spentAbility": null,
+        "pendingReroll": false
+      },
+      "ordinary": {
+        "complete": true,
+        "visitedNodes": 17,
+        "optimalFirstActions": 3
+      },
+      "selected": [
+        {
+          "budget": 128,
+          "searchComplete": false,
+          "visitedNodes": 128,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 9,
+            "acquiredItems": 3,
+            "retainedItemEvents": 0,
+            "placements": 1,
+            "singleCellSpends": 8,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        },
+        {
+          "budget": 512,
+          "searchComplete": false,
+          "visitedNodes": 512,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 9,
+            "acquiredItems": 3,
+            "retainedItemEvents": 0,
+            "placements": 1,
+            "singleCellSpends": 8,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "spend-at-capacity",
+      "scripted": {
+        "clearedRows": 1,
+        "acquiredItems": 1,
+        "retainedItems": 1,
+        "spentAbility": "single-cell",
+        "pendingReroll": false
+      },
+      "ordinary": {
+        "complete": true,
+        "visitedNodes": 17,
+        "optimalFirstActions": 3
+      },
+      "selected": [
+        {
+          "budget": 128,
+          "searchComplete": false,
+          "visitedNodes": 128,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": true,
+          "coverage": {
+            "clearedRows": 9,
+            "acquiredItems": 1,
+            "retainedItemEvents": 1,
+            "placements": 1,
+            "singleCellSpends": 8,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        },
+        {
+          "budget": 512,
+          "searchComplete": false,
+          "visitedNodes": 512,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": true,
+          "coverage": {
+            "clearedRows": 9,
+            "acquiredItems": 1,
+            "retainedItemEvents": 1,
+            "placements": 1,
+            "singleCellSpends": 8,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "simultaneous-row-order",
+      "scripted": {
+        "clearedRows": 5,
+        "acquiredItems": 1,
+        "retainedItems": 2,
+        "spentAbility": null,
+        "pendingReroll": false
+      },
+      "ordinary": {
+        "complete": true,
+        "visitedNodes": 2,
+        "optimalFirstActions": 1
+      },
+      "selected": [
+        {
+          "budget": 128,
+          "searchComplete": false,
+          "visitedNodes": 128,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 8,
+            "acquiredItems": 3,
+            "retainedItemEvents": 0,
+            "placements": 1,
+            "singleCellSpends": 8,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        },
+        {
+          "budget": 512,
+          "searchComplete": false,
+          "visitedNodes": 512,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 9,
+            "acquiredItems": 3,
+            "retainedItemEvents": 0,
+            "placements": 1,
+            "singleCellSpends": 8,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "capacity-reroll-boundary",
+      "scripted": {
+        "clearedRows": 0,
+        "acquiredItems": 0,
+        "retainedItems": 0,
+        "spentAbility": "reroll",
+        "pendingReroll": true
+      },
+      "ordinary": {
+        "complete": true,
+        "visitedNodes": 1,
+        "optimalFirstActions": 0
+      },
+      "selected": [
+        {
+          "budget": 128,
+          "searchComplete": false,
+          "visitedNodes": 128,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 8,
+            "acquiredItems": 1,
+            "retainedItemEvents": 0,
+            "placements": 1,
+            "singleCellSpends": 7,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        },
+        {
+          "budget": 512,
+          "searchComplete": false,
+          "visitedNodes": 512,
+          "firstAction": "single-cell",
+          "scriptedFirstMatches": false,
+          "coverage": {
+            "clearedRows": 8,
+            "acquiredItems": 1,
+            "retainedItemEvents": 0,
+            "placements": 1,
+            "singleCellSpends": 7,
+            "rerollSpends": 0,
+            "pendingReroll": false
+          }
+        }
+      ]
+    }
+  ],
+  "identity": {
+    "protocolSha256": "38479d5c3d315aeb81d2d1be00360fd87258fd4ba883752629d73582817dd4f6",
+    "sourceHashes": {
+      "src/research/item-coverage.ts": "da6bc1a56db9dd39f4134254d07759d442b9f89e7ebffb3d1aa20c1ef7fc5a13",
+      "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+      "src/domain/board/board.ts": "33e848d71ba6ea797e67a0e7b1d3ad59a55fa603873695881cb04edded4db44a",
+      "src/domain/board/line-clear.ts": "9e25faa546ce2c3244236e14471157832be2efbe813d10c58af41b5bf281682f",
+      "src/domain/pieces/placement.ts": "8ef4b72415c4fa05ebe7abd0c38ebef8693756007e0c4d1afe1a918352e9aeaf",
+      "src/domain/pieces/transforms.ts": "45daa497f748823e546ebf6504c9b9f573d4ae553f12a2406a58ff41e52d58a6",
+      "src/domain/game/game-state.ts": "fe651495fcf0009fe5dfa9a34b53b323e6a6f29da1bb726b1570fe42463720c3",
+      "src/domain/game/abilities.ts": "7cfc2424c8289d9a5e9f7f1f7cd4f2f6bdd2dd6cb3944b0015a974f21e5e3b08",
+      "src/domain/game/types.ts": "49fb99c0f3343e1dc47d35e0ddb6e63d9d27da3752905f538e4d7cef3e4029a9",
+      "src/domain/game/hidden-items.ts": "c165d20964b844b8d11b2f3a424b944d0bc67085a5b513903ed3b770cdcf6783",
+      "src/domain/pieces/catalog.ts": "a0b998e5fde9c8f081557263dcf4cad01394907aae7d075d5b2efff71b2bce3e",
+      "src/domain/solver/evaluator.ts": "6561674cf06a31e1761213de852eaa0739e672276538a507fe65a46d9a9ce752",
+      "src/domain/board/board-metrics.ts": "98d86a47b880290d648658de94a51288705ae82581dbf748bfed9fa4cca800df",
+      "src/domain/solver/mobility.ts": "4de627ea8117efe9822ac0c446d7950a2f798781d8b7d887be79466efc6a6b04",
+      "src/domain/solver/solver.ts": "cbbbae7e84de558600679e9951996b2e19f25166610f2ec5b4f5a189642d4007",
+      "src/domain/solver/ability-candidates.ts": "9d2804ce9448a30b58fd32103f458eb5c0ece0481d60c7e84574a914608b179d",
+      "src/domain/solver/search.ts": "7ffcede4a462066f03f917f42f74261f9e0a2b1fd3b509eb46861c048f54f29c",
+      "src/domain/solver/types.ts": "93da18624d5568e849d8ded156b7d19fd9dcbc2356bfcf36f05aabb4e49ab128",
+      "src/research/teacher-audit.ts": "d8288aad50594faaddba34e88c1bcb768f76bee58d6ebff58fb7c7f486193b94",
+      "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+      "src/research/episode.ts": "f41437244a4d3cc08dcfc80a1179ea5dd13649bc3ee02936b2f2c2b3a9427678",
+      "src/research/fixture.ts": "b2f0d9891d6124fee9a49090f0d31cc321094a82d16d80a38b9910e90e31ef79",
+      "src/research/types.ts": "f2727ed83a18036122a14c402e13776247c9be2da48cb3559e263803e4762657",
+      "src/research/teacher-matrix.ts": "23693f3b469379befebe81bd6ab03ff9a8d72477a3b7ee1e216f2e951bf0d82c",
+      "src/research/teacher-quality.ts": "5b5b2a1b35a4601f86ebf4b3796edc9e43c977871082356501f5ad46eb44ec2e"
+    },
+    "runnerSha256": "6f456ce83d5c1e013df3f93b101e93e893e12c0c24912dfb39d7375a6403ecd0",
+    "lockSha256": "675927278665763fd682571ed41e9d64ed8e130fa8e11a5a65776ca558d441bb"
+  },
+  "limits": [
+    "Deliberate scripted mechanics coverage, not representative frequency or a training dataset",
+    "Scripted transition coverage and solver-selected path coverage are reported separately",
+    "Ordinary-only complete reference shares domain/evaluator; it does not prove full ability search or future optimality",
+    "Retained events count per transition, repetitions do not create independent states",
+    "No new test states, model training, teacher label changes or production integration"
+  ]
+}

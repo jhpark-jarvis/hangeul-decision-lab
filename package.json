@@ -22,7 +22,8 @@
     "research:dataset": "node scripts/research/imitation.mjs",
     "research:teacher-audit": "node scripts/research/teacher-audit.mjs",
     "research:teacher-quality": "node scripts/research/teacher-quality.mjs",
-    "research:teacher-matrix": "node scripts/research/teacher-matrix.mjs"
+    "research:teacher-matrix": "node scripts/research/teacher-matrix.mjs",
+    "research:item-coverage": "node scripts/research/item-coverage.mjs"
   },
   "dependencies": {
     "next": "16.3.8",

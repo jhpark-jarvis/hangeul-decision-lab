@@ -223,6 +223,21 @@ Windows10/i5-9400F 개발 PC 관측이다. 추론은 load/warmup을 제외한 fi
 
 시간은 워밍업 없이 cold/JIT·개발 PC의 동시 테스트/정적 검사 영향을 포함한 관측값이다. 작은 집단의 p95를 속도 수락이나 동일 시간 비교로 사용하지 않는다. 보드12개는 현재 합성 profile의 초기 상태이며 장기 episode 분포나 실제 게임 확률이 아니다. 새 test 평가·추가 학습·앱 정책 변경은 실행하지 않았다. 집단별 coverage/시간·고정 실행 설정·hash는 [matrix summary](assets/research/teacher-matrix-20261008-v1.json)에 있다.
 
+### 5.8 Scripted Item and Capacity Coverage
+
+초기 상태 진단에서 획득/상한 잔류가0이었던 한계를 점검하기 위해 **의도적으로 만든8개 상태**를 별도로 실행했다. 일반 획득, 상한7의 미획득 잔류, 점 소모 후 획득, reroll 대기와 함께 용량6의 획득순서, 상한에서 점소모 후 획득/초과잔류,5행 동시삭제의 row/col 획득, 상한에서 reroll소모 후 관측 대기를 검사한다. 이들은 실제 이벤트 빈도나 학습자료 분포를 나타내지 않는다.
+
+| 검사 | 결과 |
+| --- | --- |
+| 명시 정답 전이 / ordinary-only 완전 reference 대조 | 8/8 / 8/8 |
+| 기존 full solver 호출 / 동일 반복조건 | 32 / 16/16 |
+| 일반·능력 반환경로 domain 재생 | 106/106 |
+| 선택 경로 획득 / 상한 잔류 발생, 각 예산8상태 | 5/8 / 2/8 (128·512 모두) |
+| 선택 경로 점사용 / reroll 대기, 각 예산8상태 | 6/8 / 1/8 (128·512 모두) |
+| full 탐색 미완료,128 / 512 | 6/8 / 5/8 |
+
+강제 전이의 기대값과 솔버 선택 결과를 분리했다. **규칙을 통과하는 상황을 만들었다는 사실은 솔버가 같은 첫 행동을 선택한다는 뜻이 아니다.** scripted 첫 행동과 추천이 일치한 상태는 각예산2/8이며 목표는 그 일치율을 최대화하는 것이 아니다. 상한에서 점을 먼저 쓰면 용량을 확보해 아이콘 하나를 획득하고 초과 아이콘은 남는다. 역순으로 넣은 아이콘도 여러행 동시삭제에서 row/col 순으로 획득했다. tiny reference의 완전성은 ordinary-only 공유평가 범위에 한정되고 능력 전체/미래 최적성은 보장하지 않는다. [coverage summary](assets/research/item-coverage-20261008-v1.json)에 상황별 강제/선택 결과와 hash를 보관한다. 새 학습/test평가·앱 의미변경은 없다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
@@ -276,10 +291,16 @@ pnpm research:teacher-audit --dataset .research-output/datasets/my-pilot --outpu
 pnpm research:teacher-quality --output .research-output/preflight/my-preflight
 ```
 
-새 train/dev 초기 상태 진단은 아래 명령이다. 현재 로컬 개발 revision에 추가했으며 공개 저장소 갱신은 별도다. 기존 제안 JSON을 검증하고 실행 snapshot을 상태 생성 전에 저장한다. reserved test6000대와 기존 test3000대를 생성/평가하지 않고 학습하지 않는다. 전체 상태·경로/환경은 `report.json`과 `probes.jsonl`, 시작 시 hash/환경은 `started.json`, 비민감 집계는 `summary.json`이다. 잘못된 설정과 기존 output은 거절한다. 실행 중 검증 실패 시 중간 raw와 `failure.json`을 보존한다.
+새 train/dev 초기 상태 진단은 아래 명령이다. 기존 제안 JSON을 검증하고 실행 snapshot을 상태 생성 전에 저장한다. reserved test6000대와 기존 test3000대를 생성/평가하지 않고 학습하지 않는다. 전체 상태·경로/환경은 `report.json`과 `probes.jsonl`, 시작 시 hash/환경은 `started.json`, 비민감 집계는 `summary.json`이다. 잘못된 설정과 기존 output은 거절한다. 실행 중 검증 실패 시 중간 raw와 `failure.json`을 보존한다.
 
 ```powershell
 pnpm research:teacher-matrix --output .research-output/matrices/my-matrix
+```
+
+아이템·상한 scripted 진단은 아래 명령이다. seed 없이 고정8상태를 사용하고 시작 전에 protocol/hash를 저장한다. `cases.jsonl`에는 완료한 상황별 전이·reference·선택경로, `report.json`에는 전체 실행, `summary.json`에는 강제/선택을 분리한 비민감 집계를 남긴다. 기존 출력은 덮어쓰지 않으며 학습/test를 실행하지 않는다.
+
+```powershell
+pnpm research:item-coverage --output .research-output/coverage/my-coverage
 ```
 
 ## References
