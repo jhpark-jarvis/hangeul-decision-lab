@@ -426,6 +426,16 @@ pnpm research:teacher-matrix --output .research-output/matrices/my-matrix
 pnpm research:item-coverage --output .research-output/coverage/my-coverage
 ```
 
+slot 순서와 탐색 예산을 분리하는 diagnostic은 아래 명령으로 실행한다. 기존 generated 초기 상태 12개와 scripted 상태 8개를 재사용한다. A (DFS 512), B (단일 DFS 3072), C (여섯 순서의 DFS 512)를 비교하고 slot 순환·배열 대조·반복을 검사한다.
+
+고정 protocol의 원본 상태 hash를 실행 전에 대조한다. warmup 8회는 집계에서 제외하고, 본 진단은 총 600회 호출한다. 같은 총 노드 한도가 같은 실행 시간을 뜻하지는 않는다. 반환 경로를 원래 slot으로 복원해 domain에서 replay하며, 현재 teacher label과 학습 모델은 바꾸지 않는다.
+
+```powershell
+pnpm research:permutation-teacher --output .research-output/permutation/my-diagnostic
+```
+
+protocol과 hash·환경은 `protocol.json`과 `started.json`, 진행 기록은 `calls.jsonl`과 `conditions.jsonl`, 전체 결과와 비민감 집계는 `report.json`과 `summary.json`에 남긴다. 기존 output은 거절하고 실행 중 실패 기록은 보존한다. reserved test 생성·평가와 학습은 수행하지 않는다.
+
 ## References
 
 [1]: https://maplestory.nexon.com/News/Event/Ongoing/1393
