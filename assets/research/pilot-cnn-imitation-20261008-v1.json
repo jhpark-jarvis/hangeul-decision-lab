@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "id": "cnn-imitation-20261008-v1",
+  "kind": "offline-synthetic-dfs-imitation-feasibility",
+  "status": "PASS",
+  "protocol": {
+    "schemaVersion": 1,
+    "id": "cnn-imitation-20261008-v1",
+    "dataset": {
+      "trainSeeds": [
+        1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011,
+        1012, 1013, 1014, 1015
+      ],
+      "devSeeds": [2000, 2001, 2002, 2003],
+      "testSeeds": [3000, 3001, 3002, 3003],
+      "families": ["sparse", "pressure"],
+      "maxActions": 6,
+      "teacher": {
+        "maxNodes": 512,
+        "maxAlternatives": 3,
+        "useMemoization": true
+      }
+    },
+    "training": {
+      "seed": 20261008,
+      "epochs": 12,
+      "batchSize": 8,
+      "threads": 2,
+      "convChannels": 8,
+      "embedding": 32,
+      "poolRows": 4,
+      "poolCols": 5,
+      "learningRate": 0.001,
+      "weightDecay": 0.0001
+    }
+  },
+  "environment": {
+    "python": "3.13.13",
+    "torch": "2.14.1+cpu",
+    "threads": 2,
+    "interopThreads": 1,
+    "cudaBuild": null
+  },
+  "parameters": 12189,
+  "counts": {
+    "train": {
+      "episodes": 32,
+      "examples": 168,
+      "skips": 0,
+      "incompleteTeacher": 131,
+      "maxCandidates": 1463
+    },
+    "dev": {
+      "episodes": 8,
+      "examples": 45,
+      "skips": 0,
+      "incompleteTeacher": 39,
+      "maxCandidates": 1586
+    },
+    "test": {
+      "episodes": 8,
+      "examples": 45,
+      "skips": 0,
+      "incompleteTeacher": 32,
+      "maxCandidates": 1088
+    }
+  },
+  "selectedEpoch": 11,
+  "selectedDev": {
+    "examples": 45,
+    "correct": 18,
+    "top1": 0.4,
+    "firstLegalTop1": 0.5555555555555556,
+    "fixtures": 8,
+    "fixtureMacroTop1": 0.375
+  },
+  "trainLoss": {
+    "first": 5.165497488918758,
+    "last": 4.122520174742455
+  },
+  "test": {
+    "examples": 45,
+    "correct": 24,
+    "top1": 0.5333333333333333,
+    "firstLegalTop1": 0.6444444444444445,
+    "fixtures": 8,
+    "fixtureMacroTop1": 0.5416666666666666
+  },
+  "teacherSubgroups": {
+    "complete": {
+      "examples": 13,
+      "correct": 8,
+      "top1": 0.6153846153846154,
+      "firstLegalTop1": 0.46153846153846156,
+      "fixtures": 5,
+      "fixtureMacroTop1": 0.6
+    },
+    "incomplete": {
+      "examples": 32,
+      "correct": 16,
+      "top1": 0.5,
+      "firstLegalTop1": 0.71875,
+      "fixtures": 8,
+      "fixtureMacroTop1": 0.4125
+    }
+  },
+  "timings": {
+    "dataLoadValidationMs": 1573.5879999701865,
+    "trainingDevMs": 3666.5351999690756,
+    "checkpointLoadMs": 11.523800028953701,
+    "testTensorConstructionMs": 51.49500002153218,
+    "warmupMs": 4.377799981739372,
+    "pureInference": {
+      "count": 135,
+      "meanMs": 0.5613385199534672,
+      "p95Ms": 0.9171999990940094,
+      "maxMs": 1.568900013808161
+    },
+    "tensorToKey": {
+      "count": 45,
+      "meanMs": 1.98644888587296,
+      "p95Ms": 4.68190002720803,
+      "maxMs": 5.592899979092181
+    },
+    "totalMs": 7279.6675999998115
+  },
+  "memory": {
+    "definition": "Windows process working set before data load / after evaluation; not peak",
+    "beforeBytes": 192876544,
+    "afterBytes": 366665728
+  },
+  "domain": {
+    "status": "PASS",
+    "dataSha256": "1fd6e32cfcaafae4f516164a02cd847030b57878380605c6ffcfac5ae92b66ca",
+    "episodesReplayed": 48,
+    "examplesChecked": 258,
+    "testPredictionsApplied": 45,
+    "illegalPredictions": 0
+  },
+  "reproduction": {
+    "exactWeightsEqual": true,
+    "exactTrainDevHistoryEqual": true,
+    "testScored": false
+  },
+  "provenance": {
+    "dataSha256": "1fd6e32cfcaafae4f516164a02cd847030b57878380605c6ffcfac5ae92b66ca",
+    "checkpointSha256": "6c42c7fb76206582e57e9713d6d850534bbdee700b3a4e494790a8a92607c4cf",
+    "trainingReportSha256": "f7b29d6b3279050babd2a4cd10ffa30c82183afc42c333b4cabf2e4fb1f2f034",
+    "domainReportSha256": "4daeada77fe8ae847ba2c863cf38d9a5b4568eb8a1f1747b252fef1464149032",
+    "reproductionReportSha256": "5e1bbbd6da4ecc39bf0acd8f4efe357096a5a702f74d84c35c4056fb2bbb46c4",
+    "pilotSourceHashes": {
+      "data.py": "4badea4e604c76cdb557dbdc49f4dd6d09ce47ca8df94e634f4382949ec0aa84",
+      "model.py": "5d9809c50d8e8be1a79bb7c2a4252a8e39a7d7244276c4d479b421cf2306e3ac",
+      "protocol.json": "dd43c9a946d8e7ca251a2a5012bb13bd722357c22286d58569c7ab81c3c8242d",
+      "requirements-lock.txt": "42d790804f8b14a228274e790186a7e6f31fc97104cefd050af1edf1e2d2bed0",
+      "requirements.txt": "65299ae51bcfa88acc5fa33429d7b431d75dd3dd295b10da70d17ca5186cea87",
+      "test_cnn.py": "49631573a3251b0c311e2fe44ca3ff3b6d0dffec95019332bb0b8020efa2f4dc",
+      "train.py": "650302d0f68023c921a805f1683b1c2cf07bf12c3c91286ade08593b749bacd0"
+    },
+    "reproductionSourceHashes": {
+      "data.py": "c976d6dc81ced3d89dd45ff1f2b6657117178b5e3e118e866d55f00f0eb4b2e7",
+      "model.py": "5d9809c50d8e8be1a79bb7c2a4252a8e39a7d7244276c4d479b421cf2306e3ac",
+      "reproduce.py": "2379b6dc9b13e53c51aa8c55838d1c4e26754c7def6d9b84a1899bf0cf384f82",
+      "test_cnn.py": "1e3535e8baf62aff1fa268bb57ed8ad8f2ecd3a3c16fd56e011824856b80ef86",
+      "train.py": "4c3ec66f95420d0cbedcfcd3ec503125742cde8db2497185cdc4901c5fca7f12"
+    }
+  },
+  "interpretation": "Test top1 is below the first-legal-action baseline; no adoption or survival benefit established.",
+  "limits": [
+    "48 synthetic episodes; teacher-state imitation only",
+    "bounded DFS is not an optimal oracle",
+    "correlated states within fixture; no statistical superiority or survival conclusion",
+    "no real-game, closed-loop learned-policy episodes, RL or application integration",
+    "pure inference excludes JSON, tensor encoding, domain candidates, IPC and UI"
+  ],
+  "regenerate": "node scripts/research/summarize-cnn.mjs <model-directory> <reproduction-directory> <new-summary.json>"
+}

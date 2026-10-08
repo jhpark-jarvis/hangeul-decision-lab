@@ -2,13 +2,13 @@
 
 ### Budgeted Search and a Research Agenda for a Hangul Block Puzzle
 
-**Implemented:** deterministic DFS assistant, seeded synthetic simulator and DFS benchmark · **CPU CNN imitation:** IN PROGRESS · **RL:** FUTURE
+**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN imitation pilot · **Application policy:** DFS · **RL:** FUTURE
 
 ## Abstract
 
 Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열 블록 퍼즐을 상태 공간 문제로 모델링하고, 제한된 계산 예산 안에서 현재 조각과 특수 능력의 사용 순서를 추천하는 웹 도구다. 현재 구현은 합법 배치 열거, 공통 게임 전이, 사전식 상태 평가, 완료된 부분 탐색의 재사용을 결합한 deterministic depth-first search(DFS)를 사용한다. 화면 입력은 로컬 캡처·판별·사용자 검토를 거쳐 명시적으로 확정하며 실제 게임 조작은 사용자가 수행한다.
 
-장기 연구 질문은 **같은 의사결정 시간 안에서 탐색과 학습이 장기 생존 및 줄 삭제를 얼마나 개선할 수 있는가**이다. 현재 seeded simulator와 재현 가능한 합성 DFS 비교 도구, CPU CNN 모방용 데이터 경계를 구현했다. 이후 탐색 개선·학습 정책과 가치 모델을 비교하고 강화학습을 검토한다. **CNN 학습 결과는 아직 검증 중이며 강화학습은 구현하지 않았다.** 아래 pilot은 실행 기반 확인용이며 알고리즘 우월성이나 전체 게임 최적성을 주장하지 않는다.
+장기 연구 질문은 **같은 의사결정 시간 안에서 탐색과 학습이 장기 생존 및 줄 삭제를 얼마나 개선할 수 있는가**이다. 현재 seeded simulator/DFS 비교와 오프라인 CPU CNN 교사 모방을 구현했다. 작은 합성 시험에서 CNN의 선택 일치율은 53.3%로 첫 합법 행동 기준선 64.4%보다 낮았다. 학습 경로는 검증했으나 앱 정책 채택이나 생존 향상을 뒷받침하지 않는다. 이후 탐색 개선·학습 정책/가치 모델을 비교하며 강화학습은 향후 연구다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -91,7 +91,7 @@ _Figure 2. 구현된 입력–검토–탐색–재생 경계. 판별기는 초�
 
 ### 5.1 Benchmark First
 
-실제 게임 플레이 없이 기존 domain 전이를 재사용하는 headless simulator를 실행할 수 있다. 합성 환경은 19종 조각에 동등 가중치를 주고 재뽑기에서 현재 종류를 제외하며, 초기 아이템만 사용한다. 실제 출현 확률·새 아이콘 생성·7수 카운터는 모델링하지 않는다. 실제 게임 일치 검증은 별도 과제로 유지한다. 학습 pipeline은 아직 없다.
+실제 게임 플레이 없이 기존 domain 전이를 재사용하는 headless simulator를 실행할 수 있다. 합성 환경은 19종 조각에 동등 가중치를 주고 재뽑기에서 현재 종류를 제외하며, 초기 아이템만 사용한다. 실제 출현 확률·새 아이콘 생성·7수 카운터는 모델링하지 않는다. 실제 게임 일치 검증은 별도 과제로 유지한다. 오프라인 모방 학습은 아래 5.4의 이 환경만 사용한다.
 
 초기 상태, catalog/rules version, 다음 조각/재뽑기/아이콘 과정, seed/PRNG, 종료/horizon을 고정한다. 환경/정책/rollout/학습 난수를 분리하고 action별 난수 소비 차이를 통제한다. 미래 tape를 정책에 노출하지 않는다. 다음 입력 대기·실제 gameover·시간/episode truncation을 구별하고 임의 균등분포를 실제 출현 확률로 가정하지 않는다.
 
@@ -104,7 +104,7 @@ _Figure 2. 구현된 입력–검토–탐색–재생 경계. 판별기는 초�
 | Search cost / memory        | 알고리즘별 nodes/simulations/memo, 정의한 heap/RSS/피크 한계 |
 | Reference / reproducibility | 유효 경로 도달률, action/state hash, 오류/timeout/분산       |
 
-같은 초기 상태·paired seeds·종료/시간 상한으로 비교한다. 알고리즘 간 node count를 동일 비용으로 취급하지 않는다. train/dev/test는 seed와 fixture 계열을 분리하고 test benchmark로 학습/tuning하지 않는다. reward 합계 외에 생존/삭제·지연/메모리·안정성을 보고한다.
+같은 초기 상태·paired seeds·종료/시간 상한으로 비교한다. 알고리즘 간 node count를 동일 비용으로 취급하지 않는다. train/dev/test는 seed·episode 단위로 분리하며 계열 밖 일반화는 별도 실험이 필요하다. 아래 작은 CNN pilot은 sparse/pressure 계열을 모든 split에서 공유한다. test benchmark로 학습/tuning하지 않고 생존/삭제·지연/메모리·안정성을 구분한다.
 
 **실행된 pilot — 2026-10-07.** seed 17·42·2026 × sparse/pressure 보드의 6개 dev fixture를 예산 128/512, memo 사용, 대안 3개, 최대 12행동으로 각각 2번 실행했다. 총 24episode이며 반복을 독립 표본으로 세지 않는다. 실행 순서는 회전하고 별도 seed 0의 warmup은 제외했다. 모든 episode 재생과 반복 trace 일치가 통과했다.
 
@@ -125,6 +125,8 @@ _Figure 2. 구현된 입력–검토–탐색–재생 경계. 판별기는 초�
 
 ![Future research progression](assets/figures/research-roadmap.svg)
 
+그림의 policy/value hybrid·RL은 조건부 후속이다. 별도로 실행한 CPU CNN 모방 feasibility는 5.4에 기록하며, 이 그림은 측정 chart가 아니다.
+
 _Figure 3. DFS와 합성 benchmark 기반은 구현되어 있다. 점선 방법은 향후 비교안이며, 반복 가능한 한계와 비용 대비 개선 근거에 따라 선택한다. 도식 자체는 측정 결과가 아니다._
 
 1. **Baseline / budget:** revision/config·probe·memo·평가를 고정하고 예산 곡선을 만든다.
@@ -135,7 +137,7 @@ _Figure 3. DFS와 합성 benchmark 기반은 구현되어 있다. 점선 방법�
 
 ### 5.3 Conditional Policy / Value Learning
 
-점유/아이템 plane과 조각/능력 입력의 CNN encoder·policy/value head를 첫 표현 가설로 검토한다. RNN은 의미 있는 시간 의존성, GNN은 구조 표현의 측정 가능한 이점이 있을 때 비교한다. 채택된 모델은 없다.
+점유/아이템 plane과 조각/능력 입력의 소형 CNN candidate scorer를 오프라인 모방 pilot에 구현했다. 앱에 채택된 학습 정책·가치 모델은 없으며 RNN/GNN·policy/value hybrid는 측정 가능한 이점이 있을 때 검토한다.
 
 DQN[3], Actor-Critic/PPO[4], policy-guided search, learned value + MCTS는 후보 방법이다. 합법성은 기존 domain mask와 최종 전이 검증이 맡는다. 학습은 승인된 simulator episode 생성이며 상대방과 대전하는 무조건적 self-play로 설명하지 않는다.
 
@@ -149,12 +151,25 @@ reward 후보는 생존/삭제/획득과 mobility·능력 잔여·고립/불필�
 | ------------------------- | ------------------------------------------------ | ------------------------------------------------------------- |
 | 게임 규칙·탐색·시뮬레이션 | TypeScript / Node.js, pure domain, 예산 제한 DFS | 현재 전이를 학습 자료 생성·합법 행동 검증에도 재사용          |
 | 화면 입력·검토            | React / Next.js, 브라우저 Canvas의 로컬 판별     | 이번 CNN 실험에서 변경 없음                                   |
-| 신경망 학습               | 연구 전용 Python3.13.13 / PyTorch2.14.1+cpu | 소형 CNN 오프라인 학습·held-out 평가 진행 중 |
+| 신경망 학습               | 연구 전용 Python3.13.13 / PyTorch2.14.1+cpu | 소형 CNN 오프라인 모방 pilot 완료 |
 | 학습 목표                 | 합성 상태에서 DFS512 첫 행동의 supervised imitation | 장기 생존·RL은 별도 후속 연구 |
 
-PyTorch는 모델 구성·학습·CPU 실행을 지원하는 [공식 학습 경로](https://docs.pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html)를 사용할 수 있어 첫 연구 도구로 제안한다. 초기 목표는 학습/추론 경로의 재현 가능성과 비용을 확인하는 것이다. 보드의 점유·아이템 plane과 현재 조각·능력을 입력으로 사용하고, 기존 domain의 전체 합법 행동만 후보로 둔다. 미래 조각/seed를 모델에 알려주지 않으며 DFS의 불완전 탐색 여부도 교사 자료에 기록한다. 교사 선택은 최적 정답이 아니다.
+PyTorch의 [공식 학습 경로](https://docs.pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html)를 참고해 CPU 실행을 연구 전용으로 채택했다. 보드3plane의 3×3 convolution8/8채널과 4×5 pooling, 조각/능력 metadata140값, 합법 candidate52값을 32차원에서 함께 점수화한다. 총12,189parameter이며 전체 domain 합법 후보에만 softmax를 적용한다. 미래 조각/seed/instance명/교사 결과는 forward 입력에서 제외한다. bounded DFS512 교사 선택은 최적 정답이 아니며 search scope/미완료 진단을 보존한다.
 
-train/dev/test를 seed·episode 단위로 분리해 모방 정확도·불법 행동·CPU 추론 시간·학습 자원을 평가한다. **연구 전용 Python3.13.13/PyTorch2.14.1+cpu를 채택했고 학습·평가는 진행 중이다.** 현재 48개 합성 episode에서 258개 교사 선택과 전체 합법 후보를 생성·재생 검증했다. 기존 앱 추천과 강화학습/실전 생존은 이번 실험 범위 밖이다. 설치 파일만 내려받으며 합성/게임 자료는 외부로 업로드하지 않는다.
+**실행된 CNN pilot — 2026-10-08.** 고정 train1000–1015/dev2000–2003/test3000–3003 × sparse/pressure, horizon6의48episode에서168/45/45선택을 얻었다. 교사202/258선택은 탐색 미완료, skip/error0이며 모든 episode/encoding/key를 domain에 대조했다. Adam(lr0.001, weight decay0.0001), batch8,12epoch, seed20261008, CPU2thread로 학습했다. dev top1이 가장 높은 첫 checkpoint(epoch11,40.0%)를 선택한 뒤 test를 평가했다. 같은 train/dev 재실행은 전체 loss/선택과 가중치가 bit-equal이었고 재현 검사에서 test 점수는 사용하지 않았다.
+
+| 시험 관측 | 결과 |
+| --- | --- |
+| CNN top1 / 첫 합법 행동 기준선 | 24/45(53.3%) / 29/45(64.4%) |
+| fixture macro top1 | 54.2%, 독립 test fixture8개 |
+| 교사 complete / incomplete의 CNN 일치 | 8/13(61.5%) / 16/32(50.0%) |
+| 최종 domain 적용 | 45/45합법, NaN0·반복 예측 일치 |
+| CPU 추론 mean / p95 | 0.56 / 0.92ms,45선택×고정3반복 |
+| tensor 생성→선택 key mean / p95 | 1.99 / 4.68ms,45선택 |
+| 학습+dev / 연구 runner 처리 시간 | 3.67 / 7.28초 |
+| process working set 전후 | 183.9 / 349.7MiB, 순간피크 제외 |
+
+Windows10/i5-9400F 개발 PC 관측이다. 추론은 load/warmup을 제외한 finite 검사/argmax 포함이며 domain 후보 생성·JSON·프로세스 시작·IPC·UI 시간은 포함하지 않는다. 처리 시간도 Python/PyTorch import를 제외한다. 45개 연속 상태를 독립45게임으로 세지 않으며 계열 밖 일반화·통계 우월성·실전 생존/RL은 미검증이다. **단순 기준선보다 낮아 현재 모델의 제품 적용을 추천하지 않는다.** 동일한 가치의 다른 합법 선택도 top1에서는 오답이 될 수 있어 생존 성과를 뜻하지 않는다. 비민감 수치·protocol/source/data hash는 [CNN pilot summary](assets/research/pilot-cnn-imitation-20261008-v1.json)에 있다. raw data/checkpoint는 Git 밖 로컬에 보관하며 설치 다운로드 외 자료 전송은 없다.
 
 ## 6. Reproduction and Usage
 
@@ -180,6 +195,20 @@ node scripts/figures/render.mjs
 ```
 
 benchmark는 기존 TypeScript compiler로 순수 모듈을 `.research-output/runtime`에 생성하고, 새 결과 폴더에 `protocol.json`, 전체 `report.json`, `summary.csv`를 남긴다. Node/기존 개발 dependency 외에 Python·GPU·새 서비스는 필요하지 않다. 다른 dev 설정은 `pnpm research:benchmark --protocol <json파일> --output <새폴더>`로 지정하며 기존 폴더를 덮어쓰지 않는다. 최대 2,000행동의 실험 행렬과 최대 8,192노드/판단을 허용하며 강제 wall-time timeout은 없다. 저장되는 것은 합성 상태이며 앱의 화면 캡처 저장 기능은 추가하지 않는다.
+
+별도 CPU CNN 연구의 Windows 재현 절차다. `research/cnn/protocol.json`으로 data와 학습을 함께 고정하며 각 실행은 **새 출력 폴더**를 사용한다. NumPy/torchvision/GPU는 필요하지 않고 앱 실행에는 Python을 사용하지 않는다.
+
+```powershell
+python -m venv .research-output/venv-cnn
+.research-output/venv-cnn/Scripts/python.exe -m pip install --only-binary=:all: -r research/cnn/requirements-lock.txt
+pnpm research:dataset --output .research-output/datasets/my-pilot
+.research-output/venv-cnn/Scripts/python.exe research/cnn/train.py --dataset .research-output/datasets/my-pilot --output .research-output/models/my-pilot
+node scripts/research/verify-imitation.mjs .research-output/datasets/my-pilot .research-output/models/my-pilot/predictions.json .research-output/models/my-pilot/domain-validation.json
+.research-output/venv-cnn/Scripts/python.exe research/cnn/reproduce.py --dataset .research-output/datasets/my-pilot --reference .research-output/models/my-pilot --output .research-output/models/my-pilot-repeat
+.research-output/venv-cnn/Scripts/python.exe -m unittest discover -s research/cnn -p test_cnn.py
+```
+
+자료/모델/schema·hash가 맞지 않거나 NaN이 나오면 중단한다. 실패한 출력도 보존하고 같은 경로를 덮어쓰지 않는다. checkpoint는 자체 생성 state dict만 `weights_only=True`로 읽는다. `summarize-cnn.mjs <model폴더> <repeat폴더> <새JSON>`으로 domain/repro 판정이 모두 통과한 비민감 요약을 재생성할 수 있다.
 
 그림 생성 명령은 SVG 세 개와 합성 입력을 재생성하며 게임 이미지·학습/benchmark를 사용하지 않는다. 입력/metadata는 [figure-data.json](assets/figures/figure-data.json)에 있다. `src/domain`은 규칙/지표/탐색, `src/research`는 simulator/비교, `src/features`는 캡처/인식/검토/세션, `src/components`/`src/app`은 UI, `tests/fixtures`는 비민감 재현 데이터다.
 

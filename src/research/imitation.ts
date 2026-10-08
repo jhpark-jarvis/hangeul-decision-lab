@@ -65,6 +65,7 @@ export type DatasetPack = {
     fixtureId: string;
     actionIndex: number;
     reason: "teacher-abstention";
+    teacher: { search: SearchInfo; latencyMs: number };
   }[];
   status: "PASS" | "FAIL";
 };
@@ -287,6 +288,7 @@ export function buildImitationDataset(
                 fixtureId: fixture.value.id,
                 actionIndex,
                 reason: "teacher-abstention",
+                teacher: { search: solved.result.search, latencyMs },
               });
               return { action: null, search: solved.result.search };
             }

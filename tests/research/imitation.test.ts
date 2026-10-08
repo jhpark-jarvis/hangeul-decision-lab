@@ -145,4 +145,19 @@ describe("CNN imitation contract", () => {
     const error = buildImitationDataset(spec(), () => NaN);
     expect(error.ok && error.value.status).toBe("FAIL");
   });
+  it("preserves diagnostics for teacher abstention without inventing a label", () => {
+    const input = spec();
+    input.teacher.maxNodes = 1;
+    const built = buildImitationDataset(input, () => 1);
+    expect(built.ok).toBe(true);
+    if (!built.ok) return;
+    expect(built.value.status).toBe("FAIL");
+    expect(built.value.skips).toHaveLength(3);
+    expect(Object.values(built.value.examples).flat()).toHaveLength(0);
+    for (const skip of built.value.skips) {
+      expect(skip.teacher.search.searchComplete).toBe(false);
+      expect(skip.teacher.search.maxNodes).toBe(1);
+      expect(skip.teacher.latencyMs).toBe(0);
+    }
+  });
 });
