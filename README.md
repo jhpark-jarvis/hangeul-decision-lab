@@ -2,13 +2,13 @@
 
 ### Budgeted Search and a Research Agenda for a Hangul Block Puzzle
 
-**Implemented:** deterministic DFS assistant, seeded synthetic simulator and DFS benchmark · **CNN/ML/RL:** FUTURE
+**Implemented:** deterministic DFS assistant, seeded synthetic simulator and DFS benchmark · **CPU CNN imitation:** IN PROGRESS · **RL:** FUTURE
 
 ## Abstract
 
 Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열 블록 퍼즐을 상태 공간 문제로 모델링하고, 제한된 계산 예산 안에서 현재 조각과 특수 능력의 사용 순서를 추천하는 웹 도구다. 현재 구현은 합법 배치 열거, 공통 게임 전이, 사전식 상태 평가, 완료된 부분 탐색의 재사용을 결합한 deterministic depth-first search(DFS)를 사용한다. 화면 입력은 로컬 캡처·판별·사용자 검토를 거쳐 명시적으로 확정하며 실제 게임 조작은 사용자가 수행한다.
 
-장기 연구 질문은 **같은 의사결정 시간 안에서 탐색과 학습이 장기 생존 및 줄 삭제를 얼마나 개선할 수 있는가**이다. 현재 seeded simulator와 재현 가능한 합성 DFS 비교 도구까지 구현했다. 이후 DFS 예산·후보·평가 개선, Beam Search, Monte Carlo Tree Search(MCTS)를 비교하고 잔여 한계가 확인될 때 learned policy/value와 강화학습을 검토한다. **CNN·강화학습 모델과 학습 결과는 아직 없다.** 아래 pilot은 실행 기반 확인용이며 알고리즘 우월성이나 전체 게임 최적성을 주장하지 않는다.
+장기 연구 질문은 **같은 의사결정 시간 안에서 탐색과 학습이 장기 생존 및 줄 삭제를 얼마나 개선할 수 있는가**이다. 현재 seeded simulator와 재현 가능한 합성 DFS 비교 도구, CPU CNN 모방용 데이터 경계를 구현했다. 이후 탐색 개선·학습 정책과 가치 모델을 비교하고 강화학습을 검토한다. **CNN 학습 결과는 아직 검증 중이며 강화학습은 구현하지 않았다.** 아래 pilot은 실행 기반 확인용이며 알고리즘 우월성이나 전체 게임 최적성을 주장하지 않는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -149,12 +149,12 @@ reward 후보는 생존/삭제/획득과 mobility·능력 잔여·고립/불필�
 | ------------------------- | ------------------------------------------------ | ------------------------------------------------------------- |
 | 게임 규칙·탐색·시뮬레이션 | TypeScript / Node.js, pure domain, 예산 제한 DFS | 현재 전이를 학습 자료 생성·합법 행동 검증에도 재사용          |
 | 화면 입력·검토            | React / Next.js, 브라우저 Canvas의 로컬 판별     | 이번 CNN 실험에서 변경 없음                                   |
-| 신경망 학습               | 아직 없음                                        | Python / PyTorch, 소형 CNN의 로컬 CPU 학습                    |
-| 학습 목표                 | 아직 없음                                        | 합성 상태에서 DFS512의 첫 행동을 모방하는 supervised learning |
+| 신경망 학습               | 연구 전용 Python3.13.13 / PyTorch2.14.1+cpu | 소형 CNN 오프라인 학습·held-out 평가 진행 중 |
+| 학습 목표                 | 합성 상태에서 DFS512 첫 행동의 supervised imitation | 장기 생존·RL은 별도 후속 연구 |
 
 PyTorch는 모델 구성·학습·CPU 실행을 지원하는 [공식 학습 경로](https://docs.pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html)를 사용할 수 있어 첫 연구 도구로 제안한다. 초기 목표는 학습/추론 경로의 재현 가능성과 비용을 확인하는 것이다. 보드의 점유·아이템 plane과 현재 조각·능력을 입력으로 사용하고, 기존 domain의 전체 합법 행동만 후보로 둔다. 미래 조각/seed를 모델에 알려주지 않으며 DFS의 불완전 탐색 여부도 교사 자료에 기록한다. 교사 선택은 최적 정답이 아니다.
 
-train/dev/test를 seed·episode 단위로 분리해 모방 정확도·불법 행동·CPU 추론 시간·학습 자원을 평가하는 작은 오프라인 실험부터 제안한다. **PyTorch 채택·설치·CNN 학습은 아직 진행하지 않았다.** 기존 앱 추천을 교체하거나 강화학습/실전 생존 향상을 구현한 상태가 아니다. 도구가 채택되면 설치 파일만 내려받고 합성/게임 자료를 외부로 업로드하지 않는 로컬 환경을 구성한다.
+train/dev/test를 seed·episode 단위로 분리해 모방 정확도·불법 행동·CPU 추론 시간·학습 자원을 평가한다. **연구 전용 Python3.13.13/PyTorch2.14.1+cpu를 채택했고 학습·평가는 진행 중이다.** 현재 48개 합성 episode에서 258개 교사 선택과 전체 합법 후보를 생성·재생 검증했다. 기존 앱 추천과 강화학습/실전 생존은 이번 실험 범위 밖이다. 설치 파일만 내려받으며 합성/게임 자료는 외부로 업로드하지 않는다.
 
 ## 6. Reproduction and Usage
 

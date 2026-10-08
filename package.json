@@ -18,7 +18,8 @@
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "test:e2e": "playwright test",
-    "research:benchmark": "node scripts/research/benchmark.mjs"
+    "research:benchmark": "node scripts/research/benchmark.mjs",
+    "research:dataset": "node scripts/research/imitation.mjs"
   },
   "dependencies": {
     "next": "16.3.8",
