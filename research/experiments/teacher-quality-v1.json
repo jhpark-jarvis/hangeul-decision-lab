@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "teacher-quality-design-20261008-v1",
+  "status": "PROPOSED_NOT_RUN",
+  "scope": "offline-teacher-diagnostics",
+  "splits": {
+    "train": [4000, 4001, 4002, 4003],
+    "dev": [5000, 5001],
+    "reservedTest": [6000, 6001, 6002, 6003]
+  },
+  "families": ["sparse", "pressure"],
+  "nodeBudgets": [128, 512],
+  "slotVariants": ["baseline", "reverse-array", "cycle-slots"],
+  "repetitions": 2,
+  "timeComparison": "OBSERVE_ONLY_UNTIL_COOPERATIVE_DEADLINE",
+  "reference": { "scope": "ordinary-only", "maxPieces": 2, "maxNodes": 1024 },
+  "coverageCases": [
+    "ordinary-dot",
+    "ordinary-two-dots",
+    "blocked-line",
+    "item-acquisition",
+    "item-retention",
+    "single-spend-acquire",
+    "reroll-boundary"
+  ],
+  "gates": {
+    "completeReferenceMustMatch": true,
+    "allReturnedPathsMustReplay": true,
+    "coverageTransitionsMustMatch": true,
+    "heldOutAfterFreezeOnly": true,
+    "equalNodeIsNotEqualTime": true
+  }
+}

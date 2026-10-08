@@ -189,6 +189,23 @@ Windows10/i5-9400F 개발 PC 관측이다. 추론은 load/warmup을 제외한 fi
 
 학습 자료에서 first-legal label은 전체84/168(50.0%), 탐색 완료5/37(13.5%), 미완료79/131(60.3%)다. 배치 label의124/131(94.7%)는 남은 조각 중 가장 작은 slot이고, sparse는89/89다. 아이템 획득은 train/dev/test에서2/1/0회에 불과하다. seed 분리와 정확한 관측 중복0은 계열 밖 일반화나 충분한 전략 표본을 보장하지 않는다. 기존 test 통계는 설명용으로만 집계했으며 새 test 탐색·튜닝·점수 측정을 하지 않았다. 현재 CNN 결과와 앱 DFS는 유지한다. [진단 요약과 고정 protocol](assets/research/teacher-order-audit-20261008-v1.json)에 분모·계열별 수치·hash를 보관한다.
 
+### 5.6 Complete Reference and Experiment Preflight
+
+순서 진단 뒤 다음 비교 실험의 [제안 protocol](research/experiments/teacher-quality-v1.json)과 실행 전 검사 도구를 추가했다. train4000–4003/dev5000–5001, reserved test6000–6003을 분리하고 노드예산128/512·slot 대조·반복2를 설계했다. **본 실험은 PROPOSED / NOT RUN**이며 reserved test를 생성하거나 새 모델을 학습하지 않았다. 동일 노드 수는 동일 실행 시간이 아니므로 현재 동기 DFS에 실제 deadline이 생기기 전까지 시간은 관측값으로만 비교하도록 명시했다.
+
+실행한 검사는 7개의 의도적으로 만든 합성 상태를 사용한다. 연구 reference는 최대2조각의 전체 일반 배치 경로를 memo/pruning 없이 열거한다. domain 전이와 평가를 공유하므로 게임 규칙의 독립 oracle가 아니다. 노드 상한1024에서 미완료이면 최적 첫 행동 집합을 반환하지 않는다. 능력 사용은 별도로 지정한 전이를 검사하며 일반 reference는 능력을 탐색하지 않는다.
+
+| 실행 전 검사 관측 — 2026-10-08                      | 결과                         |
+| --------------------------------------------------- | ---------------------------- |
+| 완전 일반 reference                                 | 7/7, 총903노드               |
+| production ordinary DFS의 memo off/on 비교          | 14/14 최상 평가·첫 행동 일치 |
+| 반환 경로의 domain 재생                             | 34/34                        |
+| 직접 지정한 획득·상한 잔류·점 소모/획득·reroll 대기 | 4/4                          |
+| 가장 큰 최상 첫 행동 집합                           | 22개                         |
+| 새 reserved test 생성 / 학습 실행                   | 0 / 0                        |
+
+완전한 작은 트리에서는 대안3보다 많은 최상 첫 행동을 확인할 수 있었다. 이는 **해당 ordinary-only 현재 턴의 경로 평가**에 한정되며 3조각/능력 전체 탐색·미래 생존의 동등 label을 증명하지 않는다. deliberate coverage 표본은 규칙을 통과하는 예이며 실제 빈도·모델 효용의 증거가 아니다. 기존 CNN top1과 앱의 DFS는 유지한다. 비민감 결과·hash는 [preflight summary](assets/research/teacher-quality-preflight-20261008-v1.json)에 있다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
@@ -234,6 +251,12 @@ node scripts/research/verify-imitation.mjs .research-output/datasets/my-pilot .r
 
 ```powershell
 pnpm research:teacher-audit --dataset .research-output/datasets/my-pilot --output .research-output/audits/my-audit
+```
+
+다음 실험의 실행 전 검사는 아래 명령으로 실행한다. 제안한 seed 행렬과 reserved test를 사용하지 않고 7개 scripted case만 검사한다. 전체 상태/경로·환경은 새 로컬 폴더의 `report.json`, 비민감 집계는 `summary.json`에 보관하며 기존 폴더는 덮어쓰지 않는다.
+
+```powershell
+pnpm research:teacher-quality --output .research-output/preflight/my-preflight
 ```
 
 ## References
