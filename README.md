@@ -353,6 +353,14 @@ generated B/C의 실제 visited nodes는 반복을 제외하면 각각 36,864였
 
 measured 호출 중 **510/600은 incomplete**였다. 합집합은 반환된 경로만 사용하며 제한 reroll과 alternatives 누락 가능성을 유지한다. 현재 턴 평가의 동점은 미래 가치의 동등 label을 뜻하지 않는다. 추가 학습, 새 test 평가, 앱 policy 변경은 수행하지 않았다. 고정 설정·집단별 coverage/시간·hash는 [permutation summary](assets/research/permutation-teacher-20261008-v1.json)에 있다.
 
+### 5.10 Next Diagnostic: Canonical Piece Order (Proposed)
+
+다음 설계 후보는 **도형 기준의 canonical 순서에서 단일 DFS 512를 실행하는 대조**다. 화면 slot에 따른 방문 순서를 줄이면서 여섯 호출의 초기화 비용을 피할 수 있는지 확인하려는 제안이며, 아직 구현하거나 실행하지 않았다.
+
+도형의 unique variants에서 정렬 key를 고정하고, 중복 인스턴스와 pending reroll을 보존한 채 slot을 변환·복원한다. 기존 slot 순서와 같은 노드 예산으로 비교하며, 여섯 slot 변경·배열 뒤집기·instance rename·반복에 대한 semantic 결과를 검사하도록 설계했다. solver의 best 선택 규칙은 유지한다.
+
+기존 20개 상태의 진단만 제안하며 새 학습 자료나 test를 만들지 않는다. 결과가 좋아도 teacher label 채택과 CNN 재학습은 별도 결정이다. 현재 앱 DFS와 기존 모델은 유지한다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
