@@ -24,7 +24,8 @@
     "research:teacher-quality": "node scripts/research/teacher-quality.mjs",
     "research:teacher-matrix": "node scripts/research/teacher-matrix.mjs",
     "research:item-coverage": "node scripts/research/item-coverage.mjs",
-    "research:permutation-teacher": "node scripts/research/permutation-teacher.mjs"
+    "research:permutation-teacher": "node scripts/research/permutation-teacher.mjs",
+    "research:canonical-teacher": "node scripts/research/canonical-teacher.mjs"
   },
   "dependencies": {
     "next": "16.3.8",

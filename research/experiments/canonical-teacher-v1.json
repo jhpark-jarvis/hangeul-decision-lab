@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "id": "canonical-teacher-20261010-v1",
+  "status": "FROZEN_DIAGNOSTIC",
+  "scope": "canonical-single-search-no-teacher-adoption",
+  "inputSource": "P041 fixed 20 initial states",
+  "inputs": [
+    {
+      "id": "train-4000-sparse",
+      "stateSha256": "2d722efcd4592446b63bd60b9f05f7bd70387aef20c2a602fce94dc756f234bc"
+    },
+    {
+      "id": "train-4000-pressure",
+      "stateSha256": "2722682f5de8e8f95853eb5842c67d8357e3ab73e9e128b4e40e74343b2f2bf8"
+    },
+    {
+      "id": "train-4001-sparse",
+      "stateSha256": "014792571f2194ce69050062d565bfacddada0047c93dd867f36e5eaf9bf7bc0"
+    },
+    {
+      "id": "train-4001-pressure",
+      "stateSha256": "bab6c38a81e2dc49fc9fb1e5b0bd6fad765d60bbc505851cfa133fd713b7dfea"
+    },
+    {
+      "id": "train-4002-sparse",
+      "stateSha256": "bb36de19d7a9749fe2194057f16416aa64ae0decec131cdf63b7727b1bc33c61"
+    },
+    {
+      "id": "train-4002-pressure",
+      "stateSha256": "4f083b1897ed6edbc254e2842a606281b8b617549a0230b72dbd97b864c5b97e"
+    },
+    {
+      "id": "train-4003-sparse",
+      "stateSha256": "bba0fe7837e07976fe91e56571725a429ea29ac8a20ad2e3969b73ac16e89218"
+    },
+    {
+      "id": "train-4003-pressure",
+      "stateSha256": "b3e5ed3431482cfb9978f94b436bee085adcddd4068a23cea9a9ed3dae9cc328"
+    },
+    {
+      "id": "dev-5000-sparse",
+      "stateSha256": "2d621c35ddf8114c572fc8d83ab3400ea75c9dd01d7fdd1265d72f0d2ddc33eb"
+    },
+    {
+      "id": "dev-5000-pressure",
+      "stateSha256": "4118fb0e9759cb2f00daa0a897e6ea7c5d79edcb1315b652edee807ba4f9c253"
+    },
+    {
+      "id": "dev-5001-sparse",
+      "stateSha256": "8e66440728ef6f4c6bd232c4a2668aae00f1a92adfaf4e141c7c4e26a8633747"
+    },
+    {
+      "id": "dev-5001-pressure",
+      "stateSha256": "15a621b08b25a7ffaee5f8ae7685f3f7feed55e33a2dc075d61f023e780acae2"
+    },
+    {
+      "id": "item-acquisition",
+      "stateSha256": "fcb3a701265b306835f3852769c11f0e61a7730db5249ba0b9ed5b3c925adb0f"
+    },
+    {
+      "id": "item-retention",
+      "stateSha256": "41f1b5f6ab6997bce8454d596c432e408f5f6f1db3b5b53d64500375d5234e4f"
+    },
+    {
+      "id": "single-spend-acquire",
+      "stateSha256": "15b5bf75410f152870da6ee21b437381e496a9922feef31bf099107696a360e1"
+    },
+    {
+      "id": "reroll-boundary",
+      "stateSha256": "1f07a955938bb8a4b1cb8feaf7f72c90f4e7fcc3d1944f6010449cd1990ab88e"
+    },
+    {
+      "id": "capacity-six-row-order",
+      "stateSha256": "83809182f7e7e9301cc21c219844717efcdc65c443c17dcdd5366e43698532d0"
+    },
+    {
+      "id": "spend-at-capacity",
+      "stateSha256": "41f1b5f6ab6997bce8454d596c432e408f5f6f1db3b5b53d64500375d5234e4f"
+    },
+    {
+      "id": "simultaneous-row-order",
+      "stateSha256": "da4aebdec055f3dc313c4c17d1644f0596e4f30d09f95b20a68c3072f1565f1f"
+    },
+    {
+      "id": "capacity-reroll-boundary",
+      "stateSha256": "00a2c817007c3357f9c6e9dd6c384ab631eab23db4c988fc8443d73243013e23"
+    }
+  ],
+  "states": 20,
+  "strata": {
+    "generated": 12,
+    "scripted": 8
+  },
+  "sortKey": [
+    "variantOrbitMinimum",
+    "normalizedShapeKey",
+    "pieceId",
+    "pendingRank"
+  ],
+  "ordinal": "JavaScript UTF-16 code-unit < >; no localeCompare",
+  "duplicatePhysicalTie": "original slot ascending; instanceId is never an ordering key",
+  "map": "n occupied to 0..n-1; missing source slots ascending to remaining destinations",
+  "inverseTargets": [
+    "actions",
+    "finalState.remainingPieces",
+    "finalState.pendingReroll"
+  ],
+  "selection": "keep solveTurn best; restore every alternative separately",
+  "perCall": {
+    "maxNodes": 512,
+    "maxAlternatives": 3,
+    "useMemoization": true,
+    "sharedMemo": false
+  },
+  "conditions": {
+    "baseline": {
+      "callsPerState": 1
+    },
+    "canonicalAllSlots": {
+      "permutations": ["012", "021", "102", "120", "201", "210"],
+      "callsPerState": 6
+    },
+    "canonicalReverseArray": {
+      "callsPerState": 1
+    },
+    "canonicalRenameInstances": {
+      "callsPerState": 1
+    }
+  },
+  "repetitions": 2,
+  "measuredSolveCalls": 360,
+  "measuredNodeCap": 184320,
+  "warmupSolveCalls": 2,
+  "warmupNodeCap": 1024,
+  "warmupSource": "first-scripted-state A/D once",
+  "executionOrder": "rotate-nine-conditions-by-state-index-plus-repetition",
+  "repeatedConditions": 180,
+  "invariancePairsWithoutRepeat": 140,
+  "invarianceChecksWithRepeat": 280,
+  "timeCriterion": "OBSERVATION_ONLY_NOT_EQUAL_WALL_TIME",
+  "training": "NOT_AUTHORIZED",
+  "testGenerationAndEvaluation": "NOT_AUTHORIZED",
+  "pilotGate": {
+    "generatedBetterAtLeast": 1,
+    "generatedWorse": 0,
+    "requiredInvariance": "semantic full path/evaluation/final state; physical changes recorded separately",
+    "doesNotApproveLabelOrTraining": true
+  }
+}
