@@ -1,0 +1,5144 @@
+{
+  "schemaVersion": 1,
+  "id": "canonical-teacher-20261010-v1",
+  "status": "PASS",
+  "protocol": {
+    "schemaVersion": 1,
+    "id": "canonical-teacher-20261010-v1",
+    "status": "FROZEN_DIAGNOSTIC",
+    "scope": "canonical-single-search-no-teacher-adoption",
+    "inputSource": "P041 fixed 20 initial states",
+    "inputs": [
+      {
+        "id": "train-4000-sparse",
+        "stateSha256": "2d722efcd4592446b63bd60b9f05f7bd70387aef20c2a602fce94dc756f234bc"
+      },
+      {
+        "id": "train-4000-pressure",
+        "stateSha256": "2722682f5de8e8f95853eb5842c67d8357e3ab73e9e128b4e40e74343b2f2bf8"
+      },
+      {
+        "id": "train-4001-sparse",
+        "stateSha256": "014792571f2194ce69050062d565bfacddada0047c93dd867f36e5eaf9bf7bc0"
+      },
+      {
+        "id": "train-4001-pressure",
+        "stateSha256": "bab6c38a81e2dc49fc9fb1e5b0bd6fad765d60bbc505851cfa133fd713b7dfea"
+      },
+      {
+        "id": "train-4002-sparse",
+        "stateSha256": "bb36de19d7a9749fe2194057f16416aa64ae0decec131cdf63b7727b1bc33c61"
+      },
+      {
+        "id": "train-4002-pressure",
+        "stateSha256": "4f083b1897ed6edbc254e2842a606281b8b617549a0230b72dbd97b864c5b97e"
+      },
+      {
+        "id": "train-4003-sparse",
+        "stateSha256": "bba0fe7837e07976fe91e56571725a429ea29ac8a20ad2e3969b73ac16e89218"
+      },
+      {
+        "id": "train-4003-pressure",
+        "stateSha256": "b3e5ed3431482cfb9978f94b436bee085adcddd4068a23cea9a9ed3dae9cc328"
+      },
+      {
+        "id": "dev-5000-sparse",
+        "stateSha256": "2d621c35ddf8114c572fc8d83ab3400ea75c9dd01d7fdd1265d72f0d2ddc33eb"
+      },
+      {
+        "id": "dev-5000-pressure",
+        "stateSha256": "4118fb0e9759cb2f00daa0a897e6ea7c5d79edcb1315b652edee807ba4f9c253"
+      },
+      {
+        "id": "dev-5001-sparse",
+        "stateSha256": "8e66440728ef6f4c6bd232c4a2668aae00f1a92adfaf4e141c7c4e26a8633747"
+      },
+      {
+        "id": "dev-5001-pressure",
+        "stateSha256": "15a621b08b25a7ffaee5f8ae7685f3f7feed55e33a2dc075d61f023e780acae2"
+      },
+      {
+        "id": "item-acquisition",
+        "stateSha256": "fcb3a701265b306835f3852769c11f0e61a7730db5249ba0b9ed5b3c925adb0f"
+      },
+      {
+        "id": "item-retention",
+        "stateSha256": "41f1b5f6ab6997bce8454d596c432e408f5f6f1db3b5b53d64500375d5234e4f"
+      },
+      {
+        "id": "single-spend-acquire",
+        "stateSha256": "15b5bf75410f152870da6ee21b437381e496a9922feef31bf099107696a360e1"
+      },
+      {
+        "id": "reroll-boundary",
+        "stateSha256": "1f07a955938bb8a4b1cb8feaf7f72c90f4e7fcc3d1944f6010449cd1990ab88e"
+      },
+      {
+        "id": "capacity-six-row-order",
+        "stateSha256": "83809182f7e7e9301cc21c219844717efcdc65c443c17dcdd5366e43698532d0"
+      },
+      {
+        "id": "spend-at-capacity",
+        "stateSha256": "41f1b5f6ab6997bce8454d596c432e408f5f6f1db3b5b53d64500375d5234e4f"
+      },
+      {
+        "id": "simultaneous-row-order",
+        "stateSha256": "da4aebdec055f3dc313c4c17d1644f0596e4f30d09f95b20a68c3072f1565f1f"
+      },
+      {
+        "id": "capacity-reroll-boundary",
+        "stateSha256": "00a2c817007c3357f9c6e9dd6c384ab631eab23db4c988fc8443d73243013e23"
+      }
+    ],
+    "states": 20,
+    "strata": {
+      "generated": 12,
+      "scripted": 8
+    },
+    "sortKey": [
+      "variantOrbitMinimum",
+      "normalizedShapeKey",
+      "pieceId",
+      "pendingRank"
+    ],
+    "ordinal": "JavaScript UTF-16 code-unit < >; no localeCompare",
+    "duplicatePhysicalTie": "original slot ascending; instanceId is never an ordering key",
+    "map": "n occupied to 0..n-1; missing source slots ascending to remaining destinations",
+    "inverseTargets": [
+      "actions",
+      "finalState.remainingPieces",
+      "finalState.pendingReroll"
+    ],
+    "selection": "keep solveTurn best; restore every alternative separately",
+    "perCall": {
+      "maxNodes": 512,
+      "maxAlternatives": 3,
+      "useMemoization": true,
+      "sharedMemo": false
+    },
+    "conditions": {
+      "baseline": {
+        "callsPerState": 1
+      },
+      "canonicalAllSlots": {
+        "permutations": ["012", "021", "102", "120", "201", "210"],
+        "callsPerState": 6
+      },
+      "canonicalReverseArray": {
+        "callsPerState": 1
+      },
+      "canonicalRenameInstances": {
+        "callsPerState": 1
+      }
+    },
+    "repetitions": 2,
+    "measuredSolveCalls": 360,
+    "measuredNodeCap": 184320,
+    "warmupSolveCalls": 2,
+    "warmupNodeCap": 1024,
+    "warmupSource": "first-scripted-state A/D once",
+    "executionOrder": "rotate-nine-conditions-by-state-index-plus-repetition",
+    "repeatedConditions": 180,
+    "invariancePairsWithoutRepeat": 140,
+    "invarianceChecksWithRepeat": 280,
+    "timeCriterion": "OBSERVATION_ONLY_NOT_EQUAL_WALL_TIME",
+    "training": "NOT_AUTHORIZED",
+    "testGenerationAndEvaluation": "NOT_AUTHORIZED",
+    "pilotGate": {
+      "generatedBetterAtLeast": 1,
+      "generatedWorse": 0,
+      "requiredInvariance": "semantic full path/evaluation/final state; physical changes recorded separately",
+      "doesNotApproveLabelOrTraining": true
+    }
+  },
+  "summary": {
+    "measuredCalls": 360,
+    "nominalNodeCap": 184320,
+    "returnedPathsVerified": 1044,
+    "comparisons": [
+      {
+        "stratum": "generated",
+        "states": 12,
+        "better": 2,
+        "worse": 4,
+        "equal": 6,
+        "differences": [
+          {
+            "fixtureId": "train-4000-sparse",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "train-4000-pressure",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "train-4001-sparse",
+            "comparison": 1,
+            "physicalPathChanged": true,
+            "semanticPathChanged": true
+          },
+          {
+            "fixtureId": "train-4001-pressure",
+            "comparison": -1,
+            "physicalPathChanged": true,
+            "semanticPathChanged": true
+          },
+          {
+            "fixtureId": "train-4002-sparse",
+            "comparison": -1,
+            "physicalPathChanged": true,
+            "semanticPathChanged": true
+          },
+          {
+            "fixtureId": "train-4002-pressure",
+            "comparison": 0,
+            "physicalPathChanged": true,
+            "semanticPathChanged": true
+          },
+          {
+            "fixtureId": "train-4003-sparse",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "train-4003-pressure",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "dev-5000-sparse",
+            "comparison": -1,
+            "physicalPathChanged": true,
+            "semanticPathChanged": true
+          },
+          {
+            "fixtureId": "dev-5000-pressure",
+            "comparison": -1,
+            "physicalPathChanged": true,
+            "semanticPathChanged": true
+          },
+          {
+            "fixtureId": "dev-5001-sparse",
+            "comparison": 1,
+            "physicalPathChanged": true,
+            "semanticPathChanged": true
+          },
+          {
+            "fixtureId": "dev-5001-pressure",
+            "comparison": 0,
+            "physicalPathChanged": true,
+            "semanticPathChanged": true
+          }
+        ]
+      },
+      {
+        "stratum": "scripted",
+        "states": 8,
+        "better": 0,
+        "worse": 0,
+        "equal": 8,
+        "differences": [
+          {
+            "fixtureId": "item-acquisition",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "item-retention",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "single-spend-acquire",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "reroll-boundary",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "capacity-six-row-order",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "spend-at-capacity",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "simultaneous-row-order",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          },
+          {
+            "fixtureId": "capacity-reroll-boundary",
+            "comparison": 0,
+            "physicalPathChanged": false,
+            "semanticPathChanged": false
+          }
+        ]
+      }
+    ],
+    "invariance": {
+      "uniquePairs": 140,
+      "checks": 280,
+      "passed": true,
+      "physicalChanges": 0,
+      "details": [
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-021",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-102",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-120",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-201",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-210",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-reverse-array",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-rename-instances",
+          "repetition": 0,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-021",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-102",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-120",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-201",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-210",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-reverse-array",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-rename-instances",
+          "repetition": 1,
+          "semanticEqual": true,
+          "physicalPathChanged": false
+        }
+      ]
+    },
+    "repeated": {
+      "conditions": 180,
+      "passed": true,
+      "details": [
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-sparse",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4000-pressure",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-sparse",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4001-pressure",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-sparse",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4002-pressure",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-sparse",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "train-4003-pressure",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-sparse",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5000-pressure",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-sparse",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "dev-5001-pressure",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-acquisition",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "item-retention",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "single-spend-acquire",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "reroll-boundary",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-six-row-order",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "spend-at-capacity",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "baseline",
+          "equal": true
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "simultaneous-row-order",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-012",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-021",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-102",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-120",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-201",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-210",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-reverse-array",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "canonical-rename-instances",
+          "equal": true
+        },
+        {
+          "fixtureId": "capacity-reroll-boundary",
+          "condition": "baseline",
+          "equal": true
+        }
+      ]
+    },
+    "candidateForUserReview": false,
+    "conditions": [
+      {
+        "condition": "baseline",
+        "latency": {
+          "samples": 40,
+          "minMs": 10.994000000006054,
+          "medianMs": 1255.4968000000226,
+          "p95Ms": 1589.0136000000002,
+          "maxMs": 1864.4254000000074
+        },
+        "logging": {
+          "samples": 40,
+          "minMs": 0.4143000000040047,
+          "medianMs": 0.7418999999936204,
+          "p95Ms": 1.021999999997206,
+          "maxMs": 2.945799999986775
+        },
+        "strata": [
+          {
+            "stratum": "generated",
+            "states": 12,
+            "incomplete": 12,
+            "coverage": [
+              {
+                "fixtureId": "train-4000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-sparse",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "train-4003-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4003-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5001-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              }
+            ]
+          },
+          {
+            "stratum": "scripted",
+            "states": 8,
+            "incomplete": 5,
+            "coverage": [
+              {
+                "fixtureId": "item-acquisition",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "item-retention",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "single-spend-acquire",
+                "clearedRows": 2,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "reroll-boundary",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "capacity-six-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "spend-at-capacity",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "simultaneous-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "capacity-reroll-boundary",
+                "clearedRows": 8,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 0,
+                "singleCell": 7,
+                "reroll": 0,
+                "pendingReroll": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "condition": "canonical-012",
+        "latency": {
+          "samples": 40,
+          "minMs": 9.93450000003213,
+          "medianMs": 1236.1814000000013,
+          "p95Ms": 1579.7799999999988,
+          "maxMs": 1912.9740999999995
+        },
+        "logging": {
+          "samples": 40,
+          "minMs": 0.4603999999817461,
+          "medianMs": 0.7515999999886844,
+          "p95Ms": 0.9692999999970198,
+          "maxMs": 1.0419000000110827
+        },
+        "strata": [
+          {
+            "stratum": "generated",
+            "states": 12,
+            "incomplete": 12,
+            "coverage": [
+              {
+                "fixtureId": "train-4000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-sparse",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "train-4003-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4003-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "dev-5001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5001-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              }
+            ]
+          },
+          {
+            "stratum": "scripted",
+            "states": 8,
+            "incomplete": 5,
+            "coverage": [
+              {
+                "fixtureId": "item-acquisition",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "item-retention",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "single-spend-acquire",
+                "clearedRows": 2,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "reroll-boundary",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "capacity-six-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "spend-at-capacity",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "simultaneous-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "capacity-reroll-boundary",
+                "clearedRows": 8,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 0,
+                "singleCell": 7,
+                "reroll": 0,
+                "pendingReroll": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "condition": "canonical-021",
+        "latency": {
+          "samples": 40,
+          "minMs": 10.131499999959487,
+          "medianMs": 1213.0769000000437,
+          "p95Ms": 1596.8016000000025,
+          "maxMs": 1866.4780000000028
+        },
+        "logging": {
+          "samples": 40,
+          "minMs": 0.41670000000158325,
+          "medianMs": 0.7449999999953434,
+          "p95Ms": 1.017200000002049,
+          "maxMs": 366.9321999999811
+        },
+        "strata": [
+          {
+            "stratum": "generated",
+            "states": 12,
+            "incomplete": 12,
+            "coverage": [
+              {
+                "fixtureId": "train-4000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-sparse",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "train-4003-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4003-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "dev-5001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5001-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              }
+            ]
+          },
+          {
+            "stratum": "scripted",
+            "states": 8,
+            "incomplete": 5,
+            "coverage": [
+              {
+                "fixtureId": "item-acquisition",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "item-retention",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "single-spend-acquire",
+                "clearedRows": 2,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "reroll-boundary",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "capacity-six-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "spend-at-capacity",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "simultaneous-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "capacity-reroll-boundary",
+                "clearedRows": 8,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 0,
+                "singleCell": 7,
+                "reroll": 0,
+                "pendingReroll": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "condition": "canonical-102",
+        "latency": {
+          "samples": 40,
+          "minMs": 10.55980000004638,
+          "medianMs": 1234.7651000000187,
+          "p95Ms": 1582.681199999999,
+          "maxMs": 1852.0980999999956
+        },
+        "logging": {
+          "samples": 40,
+          "minMs": 0.4061999999685213,
+          "medianMs": 0.74299999998766,
+          "p95Ms": 0.8447999999989406,
+          "maxMs": 1.0292999999946915
+        },
+        "strata": [
+          {
+            "stratum": "generated",
+            "states": 12,
+            "incomplete": 12,
+            "coverage": [
+              {
+                "fixtureId": "train-4000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-sparse",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "train-4003-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4003-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "dev-5001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5001-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              }
+            ]
+          },
+          {
+            "stratum": "scripted",
+            "states": 8,
+            "incomplete": 5,
+            "coverage": [
+              {
+                "fixtureId": "item-acquisition",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "item-retention",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "single-spend-acquire",
+                "clearedRows": 2,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "reroll-boundary",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "capacity-six-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "spend-at-capacity",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "simultaneous-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "capacity-reroll-boundary",
+                "clearedRows": 8,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 0,
+                "singleCell": 7,
+                "reroll": 0,
+                "pendingReroll": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "condition": "canonical-120",
+        "latency": {
+          "samples": 40,
+          "minMs": 10.915199999988545,
+          "medianMs": 1244.0014999999548,
+          "p95Ms": 1673.8555000000051,
+          "maxMs": 1873.2214999999997
+        },
+        "logging": {
+          "samples": 40,
+          "minMs": 0.44809999997960404,
+          "medianMs": 0.7537000000011176,
+          "p95Ms": 2.1472000000067055,
+          "maxMs": 957.3172999999952
+        },
+        "strata": [
+          {
+            "stratum": "generated",
+            "states": 12,
+            "incomplete": 12,
+            "coverage": [
+              {
+                "fixtureId": "train-4000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-sparse",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "train-4003-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4003-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "dev-5001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5001-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              }
+            ]
+          },
+          {
+            "stratum": "scripted",
+            "states": 8,
+            "incomplete": 5,
+            "coverage": [
+              {
+                "fixtureId": "item-acquisition",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "item-retention",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "single-spend-acquire",
+                "clearedRows": 2,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "reroll-boundary",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "capacity-six-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "spend-at-capacity",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "simultaneous-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "capacity-reroll-boundary",
+                "clearedRows": 8,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 0,
+                "singleCell": 7,
+                "reroll": 0,
+                "pendingReroll": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "condition": "canonical-201",
+        "latency": {
+          "samples": 40,
+          "minMs": 10.456699999980628,
+          "medianMs": 1250.1895000000368,
+          "p95Ms": 1532.4710000000196,
+          "maxMs": 2012.5040999999983
+        },
+        "logging": {
+          "samples": 40,
+          "minMs": 0.43319999997038394,
+          "medianMs": 0.7543000000005122,
+          "p95Ms": 0.9053999999996449,
+          "maxMs": 1.029500000004191
+        },
+        "strata": [
+          {
+            "stratum": "generated",
+            "states": 12,
+            "incomplete": 12,
+            "coverage": [
+              {
+                "fixtureId": "train-4000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-sparse",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "train-4003-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4003-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "dev-5001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5001-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              }
+            ]
+          },
+          {
+            "stratum": "scripted",
+            "states": 8,
+            "incomplete": 5,
+            "coverage": [
+              {
+                "fixtureId": "item-acquisition",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "item-retention",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "single-spend-acquire",
+                "clearedRows": 2,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "reroll-boundary",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "capacity-six-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "spend-at-capacity",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "simultaneous-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "capacity-reroll-boundary",
+                "clearedRows": 8,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 0,
+                "singleCell": 7,
+                "reroll": 0,
+                "pendingReroll": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "condition": "canonical-210",
+        "latency": {
+          "samples": 40,
+          "minMs": 11.113199999963399,
+          "medianMs": 1255.622800000012,
+          "p95Ms": 1661.2452000000048,
+          "maxMs": 1999.2271000000037
+        },
+        "logging": {
+          "samples": 40,
+          "minMs": 0.47740000003250316,
+          "medianMs": 0.7510000000183936,
+          "p95Ms": 1.0995000000111759,
+          "maxMs": 716.8065999999963
+        },
+        "strata": [
+          {
+            "stratum": "generated",
+            "states": 12,
+            "incomplete": 12,
+            "coverage": [
+              {
+                "fixtureId": "train-4000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-sparse",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "train-4003-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4003-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "dev-5001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5001-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              }
+            ]
+          },
+          {
+            "stratum": "scripted",
+            "states": 8,
+            "incomplete": 5,
+            "coverage": [
+              {
+                "fixtureId": "item-acquisition",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "item-retention",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "single-spend-acquire",
+                "clearedRows": 2,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "reroll-boundary",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "capacity-six-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "spend-at-capacity",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "simultaneous-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "capacity-reroll-boundary",
+                "clearedRows": 8,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 0,
+                "singleCell": 7,
+                "reroll": 0,
+                "pendingReroll": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "condition": "canonical-reverse-array",
+        "latency": {
+          "samples": 40,
+          "minMs": 10.230000000039581,
+          "medianMs": 1219.2138999999734,
+          "p95Ms": 1650.2165999999997,
+          "maxMs": 1722.273699999998
+        },
+        "logging": {
+          "samples": 40,
+          "minMs": 0.4634000000078231,
+          "medianMs": 0.751299999999901,
+          "p95Ms": 0.9413999999960652,
+          "maxMs": 1.0425000000104774
+        },
+        "strata": [
+          {
+            "stratum": "generated",
+            "states": 12,
+            "incomplete": 12,
+            "coverage": [
+              {
+                "fixtureId": "train-4000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-sparse",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "train-4003-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4003-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "dev-5001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5001-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              }
+            ]
+          },
+          {
+            "stratum": "scripted",
+            "states": 8,
+            "incomplete": 5,
+            "coverage": [
+              {
+                "fixtureId": "item-acquisition",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "item-retention",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "single-spend-acquire",
+                "clearedRows": 2,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "reroll-boundary",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "capacity-six-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "spend-at-capacity",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "simultaneous-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "capacity-reroll-boundary",
+                "clearedRows": 8,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 0,
+                "singleCell": 7,
+                "reroll": 0,
+                "pendingReroll": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "condition": "canonical-rename-instances",
+        "latency": {
+          "samples": 40,
+          "minMs": 10.601800000004005,
+          "medianMs": 1214.452900000033,
+          "p95Ms": 1653.3896999999997,
+          "maxMs": 2097.8862999999983
+        },
+        "logging": {
+          "samples": 40,
+          "minMs": 0.43410000001313165,
+          "medianMs": 0.7501000000047497,
+          "p95Ms": 1.0047000000195112,
+          "maxMs": 2.2005999999819323
+        },
+        "strata": [
+          {
+            "stratum": "generated",
+            "states": 12,
+            "incomplete": 12,
+            "coverage": [
+              {
+                "fixtureId": "train-4000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4001-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-sparse",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4002-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "train-4003-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "train-4003-pressure",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5000-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "dev-5001-sparse",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "dev-5001-pressure",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 1,
+                "pendingReroll": true
+              }
+            ]
+          },
+          {
+            "stratum": "scripted",
+            "states": 8,
+            "incomplete": 5,
+            "coverage": [
+              {
+                "fixtureId": "item-acquisition",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "item-retention",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "single-spend-acquire",
+                "clearedRows": 2,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 1,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "reroll-boundary",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "retainedItemPlacements": 0,
+                "singleCell": 0,
+                "reroll": 1,
+                "pendingReroll": true
+              },
+              {
+                "fixtureId": "capacity-six-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "spend-at-capacity",
+                "clearedRows": 9,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 1,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "simultaneous-row-order",
+                "clearedRows": 9,
+                "acquiredItems": 3,
+                "retainedItemPlacements": 0,
+                "singleCell": 8,
+                "reroll": 0,
+                "pendingReroll": false
+              },
+              {
+                "fixtureId": "capacity-reroll-boundary",
+                "clearedRows": 8,
+                "acquiredItems": 1,
+                "retainedItemPlacements": 0,
+                "singleCell": 7,
+                "reroll": 0,
+                "pendingReroll": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "warmup": {
+    "calls": 2,
+    "returnedPathsVerified": 6,
+    "excludedFromMeasuredSummary": true
+  },
+  "identity": {
+    "protocolSha256": "ac82736e42ea7641ea913ff17a0bab5b78d170b7c5bf4f5de9ecb7349a760c98",
+    "configSha256": "a9be01d8a0cdf7439b848f3144812fa0d0d14358161d738e7c2d20feae395764",
+    "sourceHashes": {
+      "src/research/canonical-teacher.ts": "28b35ea9bf485e6c00d62ee30f0a67e9b1e478641aff3f4b5f1da101e1191dfc",
+      "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+      "src/domain/board/board.ts": "33e848d71ba6ea797e67a0e7b1d3ad59a55fa603873695881cb04edded4db44a",
+      "src/domain/board/line-clear.ts": "9e25faa546ce2c3244236e14471157832be2efbe813d10c58af41b5bf281682f",
+      "src/domain/pieces/placement.ts": "8ef4b72415c4fa05ebe7abd0c38ebef8693756007e0c4d1afe1a918352e9aeaf",
+      "src/domain/pieces/transforms.ts": "45daa497f748823e546ebf6504c9b9f573d4ae553f12a2406a58ff41e52d58a6",
+      "src/domain/game/game-state.ts": "fe651495fcf0009fe5dfa9a34b53b323e6a6f29da1bb726b1570fe42463720c3",
+      "src/domain/game/abilities.ts": "7cfc2424c8289d9a5e9f7f1f7cd4f2f6bdd2dd6cb3944b0015a974f21e5e3b08",
+      "src/domain/game/types.ts": "49fb99c0f3343e1dc47d35e0ddb6e63d9d27da3752905f538e4d7cef3e4029a9",
+      "src/domain/game/hidden-items.ts": "c165d20964b844b8d11b2f3a424b944d0bc67085a5b513903ed3b770cdcf6783",
+      "src/domain/pieces/catalog.ts": "a0b998e5fde9c8f081557263dcf4cad01394907aae7d075d5b2efff71b2bce3e",
+      "src/domain/solver/solver.ts": "cbbbae7e84de558600679e9951996b2e19f25166610f2ec5b4f5a189642d4007",
+      "src/domain/solver/ability-candidates.ts": "9d2804ce9448a30b58fd32103f458eb5c0ece0481d60c7e84574a914608b179d",
+      "src/domain/solver/mobility.ts": "4de627ea8117efe9822ac0c446d7950a2f798781d8b7d887be79466efc6a6b04",
+      "src/domain/solver/evaluator.ts": "6561674cf06a31e1761213de852eaa0739e672276538a507fe65a46d9a9ce752",
+      "src/domain/board/board-metrics.ts": "98d86a47b880290d648658de94a51288705ae82581dbf748bfed9fa4cca800df",
+      "src/domain/solver/search.ts": "7ffcede4a462066f03f917f42f74261f9e0a2b1fd3b509eb46861c048f54f29c",
+      "src/domain/solver/types.ts": "93da18624d5568e849d8ded156b7d19fd9dcbc2356bfcf36f05aabb4e49ab128",
+      "src/research/episode.ts": "f41437244a4d3cc08dcfc80a1179ea5dd13649bc3ee02936b2f2c2b3a9427678",
+      "src/research/fixture.ts": "b2f0d9891d6124fee9a49090f0d31cc321094a82d16d80a38b9910e90e31ef79",
+      "src/research/types.ts": "f2727ed83a18036122a14c402e13776247c9be2da48cb3559e263803e4762657",
+      "src/research/permutation-teacher.ts": "360cbf6b69de469dd50ae7b23c7aac5121f5d007a11a5f84f93dc27df650594c",
+      "src/research/item-coverage.ts": "da6bc1a56db9dd39f4134254d07759d442b9f89e7ebffb3d1aa20c1ef7fc5a13",
+      "src/research/teacher-audit.ts": "d8288aad50594faaddba34e88c1bcb768f76bee58d6ebff58fb7c7f486193b94",
+      "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+      "src/research/teacher-matrix.ts": "23693f3b469379befebe81bd6ab03ff9a8d72477a3b7ee1e216f2e951bf0d82c",
+      "src/research/teacher-quality.ts": "5b5b2a1b35a4601f86ebf4b3796edc9e43c977871082356501f5ad46eb44ec2e"
+    },
+    "runnerSha256": "05d58e4a24ea190b3b4595c96b9aeb03f8554227e7cc42035c33ec468eacfff6",
+    "lockSha256": "675927278665763fd682571ed41e9d64ed8e130fa8e11a5a65776ca558d441bb"
+  },
+  "limits": [
+    "Fixed twenty P041 initial states: twelve generated and eight scripted, reported separately; not real event probabilities",
+    "Two repetitions check determinism, not additional independent samples",
+    "Canonicalization changes only research input slots and array order; original shape orientation and solveTurn best selection are preserved",
+    "Identical geometric instances may change physical identity; full semantic path/evaluation/final state invariance is tested separately",
+    "All per-call SearchInfo remains in raw evidence; incomplete search, restricted reroll and alternative omissions remain visible",
+    "Condition latency includes key/map/legality, solve, inverse restoration and full replay; callback serialization and disk logging are separate",
+    "Overall raw runner duration includes condition-summary callbacks; warmup is excluded from measured summary",
+    "No new data/teacher labels, held-out test generation/evaluation, training, production integration or external state transmission",
+    "Finite pilot gate is not teacher adoption, statistical benefit evidence or app response-time acceptance"
+  ]
+}

@@ -355,11 +355,22 @@ measured 호출 중 **510/600은 incomplete**였다. 합집합은 반환된 경�
 
 ### 5.10 Canonical Piece Order Diagnostic
 
-**도형 기준의 canonical 순서에서 단일 DFS 512를 실행하는 연구 진단**을 구현했다. 화면 slot·배열·instance ID 변화가 결과에 미치는 영향을 같은 노드 예산에서 검사한다. 실제 고정 표본 실행 결과는 검증 후 별도로 기록한다.
+**도형 기준의 canonical 순서에서 단일 DFS 512를 실행하는 연구 진단**을 구현하고, 기존 20개 초기 상태에서 실행했다. 정렬 key는 variant orbit의 최솟값, 현재 shape, catalog ID, pending 상태다. instance ID와 이름은 정렬에 사용하지 않는다. 기존 shape와 solver의 best 선택 규칙은 유지하며 결과를 원래 조각에 복원한다.
 
-도형의 unique variants에서 정렬 key를 고정하고, 중복 인스턴스와 pending reroll을 보존한 채 slot을 변환·복원한다. 기존 slot 순서와 같은 노드 예산으로 비교하며, 여섯 slot 변경·배열 뒤집기·instance rename·반복에 대한 semantic 결과를 검사하도록 설계했다. solver의 best 선택 규칙은 유지한다.
+기본 순서 A와 canonical 순서 D를 같은 512-node 예산에서 비교했다. D에는 여섯 slot 순서, 배열 반전, instance rename을 적용하고 2회 반복했다. warmup 2회는 집계에서 제외했다.
 
-기존 20개 초기 상태만 재사용하고 새 학습 자료나 held-out test를 만들지 않는다. 결과가 좋아도 teacher label 채택과 CNN 재학습은 별도 결정이다. 현재 앱 DFS와 기존 모델은 유지한다.
+| 표본                          | D가 A보다 향상 | 저하 | 동일 |
+| ----------------------------- | -------------: | ---: | ---: |
+| Generated initial states (12) |              2 |    4 |    6 |
+| Scripted states (8)           |              0 |    0 |    8 |
+
+본 진단 **360회 호출**, **1,044개 반환 경로**의 raw·복원 replay를 통과했다. 같은 조건의 반복 180개와 canonical identity 대비 semantic full path·evaluation·final state의 invariance 280회도 통과했다. 기존 A의 20개 결과는 이전 진단과 정확히 같았다.
+
+Pilot gate는 generated 저하 0개와 향상 1개 이상, 모든 invariance 통과를 요구한다. 이번 결과는 **미충족**이며 기존 teacher, label과 CNN을 유지한다. 이 고정 표본에서의 invariance를 임의 상태의 수학적 보장이나 미래 턴 가치 개선으로 해석하지 않는다.
+
+Condition latency의 median은 A 약 1.26초, D 약 1.24초였다. 이는 generated·scripted와 두 반복을 합친 관측으로, key·매핑·합법성 대조·solve·복원·replay를 포함한다. 파일 기록 비용은 분리했다. 앱 응답 시간 수락이나 동일 wall-time 실험은 아니다.
+
+본 진단의 **306/360 호출은 incomplete**였다. 반환 경로와 제한된 reroll만 평가하며 미래 최적성이나 teacher 채택을 보장하지 않는다. 새 학습 자료, held-out test와 추가 학습은 만들지 않았다. 고정 설정, 표본별 차이, coverage와 시간·hash는 [canonical summary](assets/research/canonical-teacher-20261010-v1.json)에 있다.
 
 ## 6. Reproduction and Usage
 
