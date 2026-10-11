@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "id": "action-outcome-train-dev-v1",
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "approval": "USER_APPROVED",
+  "source": {
+    "experiment": "paired-teacher-cnn-20261011-v1",
+    "splits": ["train", "dev"],
+    "examples": {
+      "train": 339,
+      "dev": 89
+    },
+    "label": "A512-best-first-exact-domain-legal-index",
+    "newTeacherCalls": 0,
+    "newEpisodes": 0,
+    "testAccess": false,
+    "labelsAndCandidateOrderUnchanged": true,
+    "dataSha256": "fa72eb460151763e664ecdd0a2438e1ae69172b98dbb5ab4b3f6f44b9e4c29fb"
+  },
+  "features": {
+    "baselineSize": 52,
+    "candidateSize": 74,
+    "schemaVersion": "legal-candidate-outcome-v2",
+    "newFields": [
+      {
+        "name": "clearedRows",
+        "size": 1,
+        "divisor": 16
+      },
+      {
+        "name": "acquiredSingleCellItems",
+        "size": 1,
+        "divisor": 3
+      },
+      {
+        "name": "acquiredRerollItems",
+        "size": 1,
+        "divisor": 3
+      },
+      {
+        "name": "retainedItems",
+        "size": 1,
+        "divisor": 3
+      },
+      {
+        "name": "occupiedAfter",
+        "size": 1,
+        "divisor": 160
+      },
+      {
+        "name": "pendingRerollAfter",
+        "size": 1,
+        "divisor": 1
+      },
+      {
+        "name": "rowOccupancyAfter",
+        "size": 16,
+        "divisor": 10
+      }
+    ],
+    "producer": "TS domain applyAction(currentState, currentLegalAction) only",
+    "reroll": "Stop at pending; no resolve or future ticket",
+    "ranges": "finite [0,1]; rows absolute 0..15 after simultaneous clear without gravity",
+    "observationAndMetadataUnchanged": true,
+    "futureTapeTeacherPathRewardAndLabelExcluded": true
+  },
+  "training": {
+    "runs": 2,
+    "models": ["baseline52", "outcome74"],
+    "seed": 20261008,
+    "epochs": 12,
+    "batchSize": 8,
+    "threads": 2,
+    "convChannels": 8,
+    "embedding": 32,
+    "poolRows": 4,
+    "poolCols": 5,
+    "learningRate": 0.001,
+    "weightDecay": 0.0001,
+    "initialization": "Baseline common parameters copied into outcome model; additional candidate and bias columns zero; initial logits exact before training",
+    "order": "Same example and explicit shuffle order for both models",
+    "selection": "Each model highest A512 dev top1; earliest epoch tie",
+    "baselineControl": "Reproduce original A512 dev history, selected epoch and weights or STOP",
+    "parameterCounts": {
+      "baseline": 12189,
+      "outcome": 12915
+    }
+  },
+  "gates": {
+    "devExamples": 89,
+    "minimumOutcomeCorrect": 48,
+    "minimumCorrectGainVsBaseline": 5,
+    "minimumSingleCellCorrect": 3,
+    "singleCellExamples": 13,
+    "minimumRerollCorrectVsBaseline": 7,
+    "rerollExamples": 8,
+    "meaning": "All gates required for a separate fresh-test proposal; not product or policy superiority",
+    "failure": "Report fixed result and stop; no extra epoch/seed/feature/tuning"
+  },
+  "limits": {
+    "additionalDomainTransitions": 149597,
+    "additionalDfsNodes": 0,
+    "trainingRuns": 2,
+    "epochsPerRun": 12,
+    "testEpisodes": 0,
+    "policyRollouts": 0,
+    "newDependenciesServicesPorts": 0
+  },
+  "boundaries": {
+    "originalSourceDataWeightsUnchanged": true,
+    "appUsesDfs": true,
+    "newFeatureAndModelFilesOnly": true,
+    "rawDataAndModelsPrivate": true,
+    "pushDeploymentRlAndGameAutomation": false,
+    "freshTestNeedsSeparateContractAndApproval": true
+  }
+}
