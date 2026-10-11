@@ -2,7 +2,7 @@
 
 ### Budgeted Search and a Research Agenda for a Hangul Block Puzzle
 
-**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN pilot and paired teacher experiment · **Application policy:** DFS · **RL:** FUTURE
+**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN experiments and action-outcome contrast · **Application policy:** DFS · **RL:** FUTURE
 
 ## Abstract
 
@@ -12,7 +12,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 장기 연구 질문은 **같은 의사결정 시간 안에서 탐색과 학습이 장기 생존 및 줄 삭제를 얼마나 개선할 수 있는가**이다. 현재 seeded simulator를 통한 DFS 비교와 오프라인 CPU CNN의 supervised imitation pilot을 구현했다.
 
-초기 합성 pilot에서 CNN의 teacher 선택 일치율은 53.3%로, first-legal baseline의 64.4%보다 낮았다. 같은 입력에서 DFS512/1024 teacher와 CNN을 비교한 추가 고정 실험은 5.12에 기록했다. 학습 절차는 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. 이후 탐색 개선과 learned policy/value model을 비교하며, reinforcement learning (RL)은 향후 연구로 남는다.
+초기 합성 pilot에서 CNN의 teacher 선택 일치율은 53.3%로, first-legal baseline의 64.4%보다 낮았다. 이후 paired teacher 비교와 train/dev 오류 분석을 거쳐, 행동 직후 결과 22개를 추가한 고정 대조 실험을 수행했다. 확장 모델의 dev top1은 기존 모델과 같은 **29/89 (32.6%)**였으며, 점 찍기 정답은 **0/13**이었다. 사전에 정한 개선 gate를 통과하지 못했다.
+
+5.12–5.14는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -430,6 +432,72 @@ Top1은 해당 bounded teacher와의 일치율이며 최적 행동의 정확도�
 
 실제 visited nodes는 622,511개, policy 결정은 211개였고 전체 실행은 27.76분이었다. 실행 환경은 Windows, Intel Core i5-9400F(6 cores), RAM 약 32 GiB, 기존 CPU PyTorch 2.14.1이다. 시간과 전후 memory는 해당 PC의 관측값이며 peak memory·동일 wall-time 우열을 측정한 결과가 아니다. 기존 pilot 자료·checkpoint와 앱 DFS는 유지하고 이번 두 모델도 offline 연구에만 사용한다. 각 teacher당 한 번, 공통 seed 한 개로 학습했으므로 학습 seed 변동성은 평가하지 않았다. 새 runtime·dependency·service·RL은 도입하지 않았다.
 
+### 5.13 Frozen Train/Dev Error Analysis
+
+**실행 — 2026-10-11.** 5.12에서 고정한 두 checkpoint를 기존 train 339개와 dev 89개 관측에 대조했다. 학습·teacher 호출·test 재평가는 하지 않았다. 동일 입력의 logits를 반복해 정확한 일치를 확인하고, 행동 종류·도형·family·후보 수·teacher 탐색 완료 여부별로 분모를 함께 기록했다.
+
+| Split | 모델  | Own-teacher top1 | First-legal top1 | Top5  | NLL / uniform NLL |
+| ----- | ----- | ---------------- | ---------------- | ----- | ----------------- |
+| train | A512  | 123/339 (36.3%)  | 52.5%            | 59.6% | 3.871 / 5.075     |
+| train | A1024 | 123/339 (36.3%)  | 49.6%            | 57.8% | 3.870 / 5.075     |
+| dev   | A512  | 29/89 (32.6%)    | 52.8%            | 52.8% | 3.812 / 4.988     |
+| dev   | A1024 | 26/89 (29.2%)    | 48.3%            | 52.8% | 3.818 / 4.988     |
+
+두 모델 모두 teacher가 점 찍기를 선택한 train **52개**와 dev **13개**에서 top1이 0이었다. 두 모델의 weights는 서로 다르지만, 예측은 train 314/339개와 dev 86/89개에서 같았다. 같은 checkpoint를 잘못 읽었다는 설명과는 맞지 않는다.
+
+Train에서도 낮은 top1이 나타나므로 test 일반화 문제만으로 설명하기 어렵다. 전체 NLL은 uniform보다 낮아 아무것도 학습하지 않았다고 단정할 수도 없다. 입력 표현·최적화·label noise 중 어떤 요인이 원인인지는 아직 확정하지 못했다.
+
+전체 그룹 집계와 모델·자료 hash는 [diagnostic summary](assets/research/frozen-train-dev-diagnostic-20261011-v1.json)에 있다. 작은 합성 표본의 모방 정확도이며 정책 가치나 생존 성능이 아니다.
+
+### 5.14 Fixed Action-Outcome Feature Contrast
+
+**실행 — 2026-10-12.** 행동별 즉시 결과를 직접 제공하면 점 찍기 모방이 나아질 수 있다는 가설을 검토했다. 기존 A512 label과 train 339개 / dev 89개 관측을 그대로 사용했다. 후보 순서·전체 합법 mask·관측·metadata도 유지했다.
+
+기존 52개 candidate feature 뒤에 다음 22개를 붙여 별도 74개 입력을 만들었다. 기존 앱과 모델의 입력 계약은 유지했다.
+
+| 추가 입력                           | 개수 | 정규화    |
+| ----------------------------------- | ---- | --------- |
+| 삭제한 행 수                        | 1    | / 16      |
+| 획득한 점 찍기·reroll 아이템 수     | 2    | 각각 / 3  |
+| 상한 때문에 획득하지 못한 아이템 수 | 1    | / 3       |
+| 행동 후 점유 칸 수                  | 1    | / 160     |
+| 행동 후 pending reroll 여부         | 1    | 0 또는 1  |
+| 행동 후 각 행의 점유 칸 수          | 16   | 각각 / 10 |
+
+기존 TS domain의 `applyAction`을 현재 합법 후보마다 한 번 호출했다. 전체 **149,597개 후보**의 즉시 결과만 계산했으며, 새 DFS 탐색·episode·label은 만들지 않았다. Reroll은 pending 상태에서 멈췄다. 미래 조각·reroll 결과·teacher 경로·reward·정답은 model feature에 넣지 않았다.
+
+Baseline52와 outcome74를 동일 CPU 환경에서 각각 **12 epoch** 학습했다. Seed·batch·optimizer·loss·shuffle을 고정하고 각 모델의 A512 dev top1이 가장 높은 최초 epoch를 선택했다. 추가 22개 입력의 weights는 0으로 시작했다. 기존 52개 입력의 선형 계산을 유지하는 별도 branch를 합쳐, 학습 전 **428개 관측의 initial logits가 정확히 같음**을 확인했다. Parameter 수는 12,189 → 12,915개다.
+
+Baseline은 원본의 전체 epoch 기록·선택 epoch·weights를 정확히 재현했고, checkpoint byte hash도 같았다. 이 대조를 통과한 뒤에만 outcome 학습을 시작했다.
+
+| 지표                   | Baseline52          | Outcome74           |
+| ---------------------- | ------------------- | ------------------- |
+| 선택 epoch             | 11                  | 12                  |
+| Train top1             | 123/339 (36.3%)     | 123/339 (36.3%)     |
+| Dev top1               | 29/89 (32.6%)       | 29/89 (32.6%)       |
+| Dev top5               | 47/89 (52.8%)       | 55/89 (61.8%)       |
+| Dev NLL                | 3.812               | 3.534               |
+| Dev fixture macro top1 | 32.3% / 16 fixtures | 32.3% / 16 fixtures |
+| Dev 점 찍기 top1       | 0/13                | 0/13                |
+| Dev reroll top1        | 7/8                 | 8/8                 |
+
+First-legal dev top1은 47/89 (52.8%)였다. NLL은 자연로그이며 같은 후보 목록의 uniform NLL은 4.988이다. Top5와 NLL 변화가 top1 선택 개선을 뜻하지는 않는다.
+
+| 사전 gate — 모두 충족해야 통과 | 실제 outcome | 판정 |
+| ------------------------------ | ------------ | ---- |
+| Dev 정답 ≥ 48/89               | 29/89        | FAIL |
+| Baseline보다 정답 ≥ 5개 증가   | 증가 0개     | FAIL |
+| 점 찍기 정답 ≥ 3/13            | 0/13         | FAIL |
+| Reroll 정답 ≥ 7/8              | 8/8          | PASS |
+
+**실험 실행·재현 검사는 PASS, 개선 gate는 FAIL**이다. 추가 epoch·seed·feature·학습을 진행하지 않았다. 기존 test를 파싱하거나 평가하지 않았고, 새 test와 policy rollout도 실행하지 않았다. 기존 test 파일의 byte hash는 원본 보존 감사에만 사용했다.
+
+최초 preflight에서는 protocol의 설명 필드를 숫자 hyperparameter처럼 대조한 adapter 오류로 중단됐다. 학습 시작 전의 오류였다. 실패 기록을 보존하고 검증 코드를 정정한 뒤, 이미 만든 feature 파일을 그대로 새 출력에 복사했다. Producer·config·원본 hash와 학습 미시작을 확인했으며, 추가 전이는 0이었다. 새 source freeze와 initial control을 거쳐 승인된 두 학습만 수행했다.
+
+이 결과는 이미 분석한 dev를 재사용한 실험 선별이며 held-out 일반화 증거가 아니다. 고정 12 epoch에서 입력 확장이 top1·점 찍기 목표를 해결하지 못했다는 관측으로 한정한다. Feature 표현이 무의미하다거나 특정 loss가 원인이라는 결론은 내리지 않는다. 앱은 계속 DFS를 사용하며, 새 held-out 실험·학습 변경·RL·제품 적용은 후속 연구다.
+
+[Fixed config](research/experiments/outcome-features-v1.json)와 [결과·그룹별 분모·hash](assets/research/action-outcome-train-dev-20261012-v1.json)를 공개한다. Raw 관측·checkpoint·게임 원본은 공개 저장소에 포함하지 않는다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
@@ -573,6 +641,26 @@ pnpm research:paired-cnn --python .research-output/venv-cnn/Scripts/python.exe -
 ```
 
 Raw data와 checkpoint는 로컬 출력 폴더에 보관하고 공개 저장소에는 코드와 비민감 집계만 포함한다. 동일 Windows CPU 환경의 재현 절차이며 다른 PyTorch/OS의 bitwise 결과를 보장하지 않는다.
+
+5.13의 readonly diagnostic과 5.14의 대조 실행기는 다음과 같다. `--source`와 `--freeze`는 **원본 paired 실험의 로컬 자료**를 가리킨다. 공개 저장소에는 자료와 checkpoint가 없으며, 고정 config의 원본 data hash와 다르면 실행을 거절한다. 새로 생성한 자료의 hash를 바꿔 끼우면 이 실험의 재현으로 볼 수 없다.
+
+```powershell
+$pairedSource = '.research-output/paired-teacher/paired-teacher-cnn-20261011-v1'
+
+.research-output/venv-cnn/Scripts/python.exe research/cnn/diagnose.py `
+  --dataset "$pairedSource/train-dev" `
+  --freeze "$pairedSource/freeze.json" `
+  --output .research-output/my-frozen-diagnostic
+
+node scripts/research/outcome-cnn.mjs `
+  --source $pairedSource `
+  --python .research-output/venv-cnn/Scripts/python.exe `
+  --output .research-output/my-action-outcome-contrast
+
+.research-output/venv-cnn/Scripts/python.exe -m unittest discover -s research/cnn -p 'test_*.py'
+```
+
+대조 실행에는 학습 전 clean Git 상태와 **새 출력 폴더**가 필요하다. `progress.jsonl`, `execution.json`, 확장 feature 파일, 단계별 checkpoint/report, 최종 report/freeze를 로컬에 남긴다. Hash·schema·초기 출력·baseline 재현 검사에 실패하면 학습을 중단한다. 기존 결과를 덮어쓰지 않으며 실패 기록도 보존한다. 같은 Windows CPU/PyTorch 환경의 재현 범위이고, 역사적 freeze의 원본 source byte hash도 일치해야 한다. Checkout의 LF/CRLF 차이가 있으면 원본 보관 자료와 내용을 먼저 대조하며 hash identity를 임의로 바꾸지 않는다.
 
 ## References
 
