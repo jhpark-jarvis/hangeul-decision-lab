@@ -372,6 +372,28 @@ Condition latency의 median은 A 약 1.26초, D 약 1.24초였다. 이는 genera
 
 본 진단의 **306/360 호출은 incomplete**였다. 반환 경로와 제한된 reroll만 평가하며 미래 최적성이나 teacher 채택을 보장하지 않는다. 새 학습 자료, held-out test와 추가 학습은 만들지 않았다. 고정 설정, 표본별 차이, coverage와 시간·hash는 [canonical summary](assets/research/canonical-teacher-20261010-v1.json)에 있다.
 
+### 5.11 Search Budget and Root Cause
+
+Canonical 결과가 낮았던 네 사례를 기존 20개 상태에서 추가로 분석했다. 기존 보고서의 522개 반환 경로를 재생했고, canonical 결과는 기존 여섯 순서 중 같은 permutation의 결과와 20/20 일치했다.
+
+Passive trace를 포함한 **60회 호출·176개 반환 경로**를 검증했다. 반복 24조건과 trace를 켠 12회 결과도 기존 결과와 정확히 같았다. Solver의 탐색·평가 규칙은 유지했다.
+
+세 저하 사례에서는 기존 최선 경로의 첫 수가 canonical 탐색의 93·419·150번째 후보로 밀렸고, 512-node 예산에서 방문되지 않았다. 나머지 한 사례는 첫 수를 방문했지만 예산 종료 때 다른 깊이의 frontier를 평가해 기존 경로가 후보에 포함되지 않았다. Canonical 예산을 3,072로 늘려도 앞 세 사례는 기존 DFS512보다 낮았다.
+
+기존 결과를 유지하는 portfolio는 A512와 D512 중 평가가 더 좋은 결과를 고르고, 동점이면 A를 유지한다. 이 후보와 단일 A1024를 같은 **총노드 상한 1,024**에서 비교했다.
+
+| 비교               | Generated 12: 향상 / 저하 / 동일 | Scripted 8 |
+| ------------------ | -------------------------------- | ---------- |
+| Portfolio vs A512  | 2 / 0 / 10                       | 모두 동일  |
+| A1024 vs A512      | 4 / 0 / 8                        | 모두 동일  |
+| Portfolio vs A1024 | 2 / 4 / 6                        | 모두 동일  |
+
+Portfolio는 유지한 A512 대비 현재 평가 저하를 막지만 A1024와의 우열은 섞였다. 같은 wall time이나 미래 턴 가치를 비교한 결과는 아니다. 노드 예산을 늘리면 ordinary probe와 reroll 조건도 달라질 수 있어 탐색 후보의 포함 관계를 가정하지 않는다.
+
+**평가가 향상된 A1024의 네 사례 중 첫 행동 변경은 두 사례였다.** 전체 경로 평가 개선과 single hard label 개선을 구분해야 한다. 다음 제안은 같은 관측을 DFS512/1024가 각각 labeling하고 같은 CNN 설정으로 학습·교차 평가하는 실험이다. 아직 제안이며 새 자료·학습·held-out test·앱 모델 적용은 실행하지 않았다.
+
+60회 중 54회는 incomplete였다. 고정 초기 상태의 관측이며 teacher 채택이나 장기 정책 개선을 보장하지 않는다. 입력·source·파생 trace hash와 표본별 결과는 [root cause summary](assets/research/teacher-root-cause-20261011-v1.json)에 있다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
@@ -487,6 +509,26 @@ pnpm research:canonical-teacher --output .research-output/canonical/my-diagnosti
 ```
 
 protocol, hash, 실행 환경, 진행 JSONL, report와 summary, 실패 기록은 새 output에 남긴다. 기존 출력은 덮어쓰지 않는다. 원래 shape와 solveTurn best를 유지하며 teacher label이나 학습 모델을 변경하지 않는다.
+
+Root cause 진단은 위 permutation/canonical 두 보고서를 입력으로 사용한다. 기본 protocol은 당시 원본 보고서의 byte hash를 고정한다. 새 재현에서는 먼저 두 진단을 새 폴더에서 실행하고, 새 보고서의 hash만 별도 protocol에 기록한다. 상태·예산·호출·teacher 경계는 유지한다.
+
+Windows PowerShell 7 예시:
+
+```powershell
+pnpm research:permutation-teacher --output .research-output/permutation/replay
+pnpm research:canonical-teacher --output .research-output/canonical/replay
+
+$canonicalReport = '.research-output/canonical/replay/report.json'
+$permutationReport = '.research-output/permutation/replay/report.json'
+$rootCauseProtocol = Get-Content research/experiments/teacher-root-cause-v1.json -Raw | ConvertFrom-Json
+$rootCauseProtocol.reports.canonicalSha256 = (Get-FileHash $canonicalReport -Algorithm SHA256).Hash.ToLowerInvariant()
+$rootCauseProtocol.reports.permutationSha256 = (Get-FileHash $permutationReport -Algorithm SHA256).Hash.ToLowerInvariant()
+$rootCauseProtocol | ConvertTo-Json -Depth 20 | Set-Content .research-output/root-cause-replay-protocol.json -Encoding utf8NoBOM
+
+pnpm research:teacher-root-cause --output .research-output/root-cause/replay --protocol .research-output/root-cause-replay-protocol.json --canonical-report $canonicalReport --permutation-report $permutationReport
+```
+
+세 output 폴더는 새 경로여야 한다. 원본 보고서와 입력/source hash가 맞지 않으면 탐색을 시작하지 않는다. 파생 trace를 포함한 결과는 원래 solver 결과와 대조하고, timing은 trace/replay overhead를 포함한 관측으로 남긴다.
 
 ## References
 

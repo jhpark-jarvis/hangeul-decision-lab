@@ -1,0 +1,1634 @@
+{
+  "schemaVersion": 1,
+  "protocol": {
+    "schemaVersion": 1,
+    "id": "teacher-root-cause-20261011-v1",
+    "status": "FROZEN_DIAGNOSTIC",
+    "states": 20,
+    "lossIds": [
+      "train-4001-pressure",
+      "train-4002-sparse",
+      "dev-5000-sparse",
+      "dev-5000-pressure"
+    ],
+    "baselineBudget": 1024,
+    "canonicalLossBudget": 3072,
+    "repetitions": 2,
+    "untracedCalls": 48,
+    "tracedCalls": 12,
+    "totalSolveCalls": 60,
+    "nominalNodeCap": 81920,
+    "warmupCalls": 0,
+    "timeCriterion": "OBSERVATION_ONLY_TRACE_OVERHEAD_NOT_POLICY_LATENCY",
+    "portfolio": "historical-A512-best-plus-D512-best; keep-A-on-evaluation-ties; diagnostic-only",
+    "noNewSeeds": true,
+    "noTeacherLabelOrTrainingChanges": true,
+    "inputs": [
+      {
+        "id": "train-4000-sparse",
+        "stateSha256": "2d722efcd4592446b63bd60b9f05f7bd70387aef20c2a602fce94dc756f234bc"
+      },
+      {
+        "id": "train-4000-pressure",
+        "stateSha256": "2722682f5de8e8f95853eb5842c67d8357e3ab73e9e128b4e40e74343b2f2bf8"
+      },
+      {
+        "id": "train-4001-sparse",
+        "stateSha256": "014792571f2194ce69050062d565bfacddada0047c93dd867f36e5eaf9bf7bc0"
+      },
+      {
+        "id": "train-4001-pressure",
+        "stateSha256": "bab6c38a81e2dc49fc9fb1e5b0bd6fad765d60bbc505851cfa133fd713b7dfea"
+      },
+      {
+        "id": "train-4002-sparse",
+        "stateSha256": "bb36de19d7a9749fe2194057f16416aa64ae0decec131cdf63b7727b1bc33c61"
+      },
+      {
+        "id": "train-4002-pressure",
+        "stateSha256": "4f083b1897ed6edbc254e2842a606281b8b617549a0230b72dbd97b864c5b97e"
+      },
+      {
+        "id": "train-4003-sparse",
+        "stateSha256": "bba0fe7837e07976fe91e56571725a429ea29ac8a20ad2e3969b73ac16e89218"
+      },
+      {
+        "id": "train-4003-pressure",
+        "stateSha256": "b3e5ed3431482cfb9978f94b436bee085adcddd4068a23cea9a9ed3dae9cc328"
+      },
+      {
+        "id": "dev-5000-sparse",
+        "stateSha256": "2d621c35ddf8114c572fc8d83ab3400ea75c9dd01d7fdd1265d72f0d2ddc33eb"
+      },
+      {
+        "id": "dev-5000-pressure",
+        "stateSha256": "4118fb0e9759cb2f00daa0a897e6ea7c5d79edcb1315b652edee807ba4f9c253"
+      },
+      {
+        "id": "dev-5001-sparse",
+        "stateSha256": "8e66440728ef6f4c6bd232c4a2668aae00f1a92adfaf4e141c7c4e26a8633747"
+      },
+      {
+        "id": "dev-5001-pressure",
+        "stateSha256": "15a621b08b25a7ffaee5f8ae7685f3f7feed55e33a2dc075d61f023e780acae2"
+      },
+      {
+        "id": "item-acquisition",
+        "stateSha256": "fcb3a701265b306835f3852769c11f0e61a7730db5249ba0b9ed5b3c925adb0f"
+      },
+      {
+        "id": "item-retention",
+        "stateSha256": "41f1b5f6ab6997bce8454d596c432e408f5f6f1db3b5b53d64500375d5234e4f"
+      },
+      {
+        "id": "single-spend-acquire",
+        "stateSha256": "15b5bf75410f152870da6ee21b437381e496a9922feef31bf099107696a360e1"
+      },
+      {
+        "id": "reroll-boundary",
+        "stateSha256": "1f07a955938bb8a4b1cb8feaf7f72c90f4e7fcc3d1944f6010449cd1990ab88e"
+      },
+      {
+        "id": "capacity-six-row-order",
+        "stateSha256": "83809182f7e7e9301cc21c219844717efcdc65c443c17dcdd5366e43698532d0"
+      },
+      {
+        "id": "spend-at-capacity",
+        "stateSha256": "41f1b5f6ab6997bce8454d596c432e408f5f6f1db3b5b53d64500375d5234e4f"
+      },
+      {
+        "id": "simultaneous-row-order",
+        "stateSha256": "da4aebdec055f3dc313c4c17d1644f0596e4f30d09f95b20a68c3072f1565f1f"
+      },
+      {
+        "id": "capacity-reroll-boundary",
+        "stateSha256": "00a2c817007c3357f9c6e9dd6c384ab631eab23db4c988fc8443d73243013e23"
+      }
+    ],
+    "reports": {
+      "canonicalSha256": "f54384e16c29f96d1eacd70d824ccc4332ba65e673eb7f848e206d802eb53723",
+      "permutationSha256": "49d425af1ba23b7141f1820c4e437790f15b1e708d42bba60e3e9d7230b7a511"
+    }
+  },
+  "identity": {
+    "protocolSha256": "882cb859ef74d81249a5995b8c28d1a046d5341f8f0698b75e4ed6385a2908d7",
+    "sourceHashes": {
+      "src/research/teacher-root-cause.ts": "7a2a5f4acb32ddf41bcd6ef6c3bf7ab83beb0f71dc727a523dcc1bdb94336f12",
+      "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+      "src/domain/board/board.ts": "33e848d71ba6ea797e67a0e7b1d3ad59a55fa603873695881cb04edded4db44a",
+      "src/domain/board/line-clear.ts": "9e25faa546ce2c3244236e14471157832be2efbe813d10c58af41b5bf281682f",
+      "src/domain/pieces/placement.ts": "8ef4b72415c4fa05ebe7abd0c38ebef8693756007e0c4d1afe1a918352e9aeaf",
+      "src/domain/pieces/transforms.ts": "45daa497f748823e546ebf6504c9b9f573d4ae553f12a2406a58ff41e52d58a6",
+      "src/domain/game/game-state.ts": "fe651495fcf0009fe5dfa9a34b53b323e6a6f29da1bb726b1570fe42463720c3",
+      "src/domain/game/abilities.ts": "7cfc2424c8289d9a5e9f7f1f7cd4f2f6bdd2dd6cb3944b0015a974f21e5e3b08",
+      "src/domain/game/types.ts": "49fb99c0f3343e1dc47d35e0ddb6e63d9d27da3752905f538e4d7cef3e4029a9",
+      "src/domain/game/hidden-items.ts": "c165d20964b844b8d11b2f3a424b944d0bc67085a5b513903ed3b770cdcf6783",
+      "src/domain/pieces/catalog.ts": "a0b998e5fde9c8f081557263dcf4cad01394907aae7d075d5b2efff71b2bce3e",
+      "src/domain/solver/ability-candidates.ts": "9d2804ce9448a30b58fd32103f458eb5c0ece0481d60c7e84574a914608b179d",
+      "src/domain/solver/mobility.ts": "4de627ea8117efe9822ac0c446d7950a2f798781d8b7d887be79466efc6a6b04",
+      "src/domain/solver/evaluator.ts": "6561674cf06a31e1761213de852eaa0739e672276538a507fe65a46d9a9ce752",
+      "src/domain/board/board-metrics.ts": "98d86a47b880290d648658de94a51288705ae82581dbf748bfed9fa4cca800df",
+      "src/research/episode.ts": "f41437244a4d3cc08dcfc80a1179ea5dd13649bc3ee02936b2f2c2b3a9427678",
+      "src/research/fixture.ts": "b2f0d9891d6124fee9a49090f0d31cc321094a82d16d80a38b9910e90e31ef79",
+      "src/research/types.ts": "f2727ed83a18036122a14c402e13776247c9be2da48cb3559e263803e4762657",
+      "src/research/canonical-teacher.ts": "28b35ea9bf485e6c00d62ee30f0a67e9b1e478641aff3f4b5f1da101e1191dfc",
+      "src/domain/solver/solver.ts": "cbbbae7e84de558600679e9951996b2e19f25166610f2ec5b4f5a189642d4007",
+      "src/domain/solver/search.ts": "7ffcede4a462066f03f917f42f74261f9e0a2b1fd3b509eb46861c048f54f29c",
+      "src/domain/solver/types.ts": "93da18624d5568e849d8ded156b7d19fd9dcbc2356bfcf36f05aabb4e49ab128",
+      "src/research/permutation-teacher.ts": "360cbf6b69de469dd50ae7b23c7aac5121f5d007a11a5f84f93dc27df650594c",
+      "src/research/item-coverage.ts": "da6bc1a56db9dd39f4134254d07759d442b9f89e7ebffb3d1aa20c1ef7fc5a13",
+      "src/research/teacher-audit.ts": "d8288aad50594faaddba34e88c1bcb768f76bee58d6ebff58fb7c7f486193b94",
+      "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+      "src/research/teacher-matrix.ts": "23693f3b469379befebe81bd6ab03ff9a8d72477a3b7ee1e216f2e951bf0d82c",
+      "src/research/teacher-quality.ts": "5b5b2a1b35a4601f86ebf4b3796edc9e43c977871082356501f5ad46eb44ec2e"
+    },
+    "runnerSha256": "7c32e5fe8c082dbfd0ce27e191f857e88b0887c634fbeb7d079f95ad6b154f74",
+    "lockSha256": "675927278665763fd682571ed41e9d64ed8e130fa8e11a5a65776ca558d441bb",
+    "trace": {
+      "originalCompiledSha256": "3bf0dcbbdc9e15c6e57d4d0334ee1c4f131e6763fc71759e1c126ecfbe952432",
+      "instrumentedSha256": "f5f3bff7bb871266568c0f42c62fd04a0acd584a113206514e10651f375ed0b4",
+      "insertionCounts": {
+        "visit": 1,
+        "consider": 1
+      },
+      "originalSourceUnchanged": true
+    }
+  },
+  "summary": {
+    "status": "PASS",
+    "id": "teacher-root-cause-20261011-v1",
+    "historical": {
+      "sourceCallsVerified": 180,
+      "returnedPathsVerified": 522,
+      "canonicalEquivalentPermutationMatches": 20
+    },
+    "measuredCalls": 60,
+    "nominalNodeCap": 81920,
+    "repeatedConditions": 24,
+    "traceParityCalls": 12,
+    "returnedPathsVerified": 176,
+    "comparisons": [
+      {
+        "fixtureId": "train-4000-sparse",
+        "stratum": "generated",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 2,
+          "discoveredCompletePaths": 762,
+          "evaluatedCandidates": 763,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 9,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 256,
+              "searchComplete": false,
+              "discoveredCompletePaths": 252,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "train-4000-pressure",
+        "stratum": "generated",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 1,
+        "portfolioVsA1024": -1,
+        "a1024Difference": {
+          "axis": "playablePieceTypes",
+          "left": 16,
+          "right": 14,
+          "comparison": 1
+        },
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 380,
+          "discoveredCompletePaths": 117,
+          "evaluatedCandidates": 385,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 119,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 256,
+              "searchComplete": false,
+              "discoveredCompletePaths": 35,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "train-4001-sparse",
+        "stratum": "generated",
+        "portfolioSource": "D512",
+        "portfolioVsA512": 1,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 1,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 1,
+          "discoveredCompletePaths": 763,
+          "evaluatedCandidates": 764,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 8,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 256,
+              "searchComplete": false,
+              "discoveredCompletePaths": 253,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "train-4001-pressure",
+        "stratum": "generated",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 1,
+        "portfolioVsA1024": -1,
+        "a1024Difference": {
+          "axis": "playablePieceTypes",
+          "left": 18,
+          "right": 16,
+          "comparison": 1
+        },
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 46,
+          "discoveredCompletePaths": 718,
+          "evaluatedCandidates": 719,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 53,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 256,
+              "searchComplete": false,
+              "discoveredCompletePaths": 238,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "train-4002-sparse",
+        "stratum": "generated",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 3,
+          "discoveredCompletePaths": 761,
+          "evaluatedCandidates": 762,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 10,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 256,
+              "searchComplete": false,
+              "discoveredCompletePaths": 252,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "train-4002-pressure",
+        "stratum": "generated",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 57,
+          "memoEntries": 329,
+          "discoveredCompletePaths": 0,
+          "evaluatedCandidates": 605,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 0,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 32,
+              "searchComplete": true,
+              "discoveredCompletePaths": 0,
+              "noCompletePathProven": true
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "train-4003-sparse",
+        "stratum": "generated",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 1,
+        "portfolioVsA1024": -1,
+        "a1024Difference": {
+          "axis": "totalPlacements",
+          "left": 3418,
+          "right": 3359,
+          "comparison": 1
+        },
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 12,
+          "discoveredCompletePaths": 752,
+          "evaluatedCandidates": 753,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 19,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 256,
+              "searchComplete": false,
+              "discoveredCompletePaths": 249,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "train-4003-pressure",
+        "stratum": "generated",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 7,
+          "memoEntries": 369,
+          "discoveredCompletePaths": 210,
+          "evaluatedCandidates": 390,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 197,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 256,
+              "searchComplete": false,
+              "discoveredCompletePaths": 141,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "dev-5000-sparse",
+        "stratum": "generated",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 3,
+          "discoveredCompletePaths": 761,
+          "evaluatedCandidates": 762,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 10,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 256,
+              "searchComplete": false,
+              "discoveredCompletePaths": 252,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "dev-5000-pressure",
+        "stratum": "generated",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 1,
+        "portfolioVsA1024": -1,
+        "a1024Difference": {
+          "axis": "allCurrentPiecesPlaced",
+          "left": 1,
+          "right": 0,
+          "comparison": 1
+        },
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 78,
+          "memoEntries": 348,
+          "discoveredCompletePaths": 2,
+          "evaluatedCandidates": 424,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 0,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 172,
+              "searchComplete": true,
+              "discoveredCompletePaths": 0,
+              "noCompletePathProven": true
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "dev-5001-sparse",
+        "stratum": "generated",
+        "portfolioSource": "D512",
+        "portfolioVsA512": 1,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 1,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 14,
+          "discoveredCompletePaths": 750,
+          "evaluatedCandidates": 751,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 21,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 256,
+              "searchComplete": false,
+              "discoveredCompletePaths": 248,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "dev-5001-pressure",
+        "stratum": "generated",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 359,
+          "discoveredCompletePaths": 0,
+          "evaluatedCandidates": 407,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 0,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 256,
+              "searchComplete": false,
+              "discoveredCompletePaths": 0,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "item-acquisition",
+        "stratum": "scripted",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": true,
+          "optimalWithinScope": true,
+          "specialAbilitiesSearched": false,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "exhausted",
+          "visitedNodes": 34,
+          "memoPrunedNodes": 0,
+          "memoEntries": 1,
+          "discoveredCompletePaths": 16,
+          "evaluatedCandidates": 16,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 0,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 1,
+            "ordinaryProbe": {
+              "visitedNodes": 17,
+              "searchComplete": true,
+              "discoveredCompletePaths": 16,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "item-retention",
+        "stratum": "scripted",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 10,
+          "discoveredCompletePaths": 988,
+          "evaluatedCandidates": 989,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 0,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 9,
+            "ordinaryProbe": {
+              "visitedNodes": 17,
+              "searchComplete": true,
+              "discoveredCompletePaths": 16,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "single-spend-acquire",
+        "stratum": "scripted",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": true,
+          "optimalWithinScope": true,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "exhausted",
+          "visitedNodes": 450,
+          "memoPrunedNodes": 0,
+          "memoEntries": 17,
+          "discoveredCompletePaths": 416,
+          "evaluatedCandidates": 416,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 1,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 2,
+            "ordinaryProbe": {
+              "visitedNodes": 17,
+              "searchComplete": true,
+              "discoveredCompletePaths": 16,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "reroll-boundary",
+        "stratum": "scripted",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": true,
+          "optimalWithinScope": true,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "exhausted",
+          "visitedNodes": 3,
+          "memoPrunedNodes": 0,
+          "memoEntries": 1,
+          "discoveredCompletePaths": 0,
+          "evaluatedCandidates": 1,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 0,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 1,
+            "ordinaryProbe": {
+              "visitedNodes": 1,
+              "searchComplete": true,
+              "discoveredCompletePaths": 0,
+              "noCompletePathProven": true
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "capacity-six-row-order",
+        "stratum": "scripted",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 10,
+          "discoveredCompletePaths": 988,
+          "evaluatedCandidates": 989,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 18,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 9,
+            "ordinaryProbe": {
+              "visitedNodes": 17,
+              "searchComplete": true,
+              "discoveredCompletePaths": 16,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "spend-at-capacity",
+        "stratum": "scripted",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 10,
+          "discoveredCompletePaths": 988,
+          "evaluatedCandidates": 989,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 0,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 9,
+            "ordinaryProbe": {
+              "visitedNodes": 17,
+              "searchComplete": true,
+              "discoveredCompletePaths": 16,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "simultaneous-row-order",
+        "stratum": "scripted",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 11,
+          "discoveredCompletePaths": 1002,
+          "evaluatedCandidates": 1003,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 19,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 9,
+            "ordinaryProbe": {
+              "visitedNodes": 2,
+              "searchComplete": true,
+              "discoveredCompletePaths": 1,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "capacity-reroll-boundary",
+        "stratum": "scripted",
+        "portfolioSource": "A512",
+        "portfolioVsA512": 0,
+        "a1024VsA512": 0,
+        "portfolioVsA1024": 0,
+        "a1024Difference": null,
+        "a1024Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 1024,
+          "memoPrunedNodes": 0,
+          "memoEntries": 10,
+          "discoveredCompletePaths": 996,
+          "evaluatedCandidates": 1007,
+          "maxNodes": 1024,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 0,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 8,
+            "ordinaryProbe": {
+              "visitedNodes": 1,
+              "searchComplete": true,
+              "discoveredCompletePaths": 0,
+              "noCompletePathProven": true
+            }
+          }
+        }
+      }
+    ],
+    "losses": [
+      {
+        "fixtureId": "train-4001-pressure",
+        "map": "201",
+        "firstDifference": {
+          "axis": "playablePieceTypes",
+          "left": 15,
+          "right": 16,
+          "comparison": -1
+        },
+        "root": {
+          "aFirst": "[\"place-piece\",\"pressure-4001:set-0:slot-0\",\"C_5\",5,4,[[true,true],[true,false],[true,true]]]",
+          "dFirst": "[\"place-piece\",\"pressure-4001:set-0:slot-1\",\"HOOK_4\",2,2,[[true,true],[false,true],[false,true]]]",
+          "aFirstOrdinalUnderA": 0,
+          "aFirstOrdinalUnderD": 92,
+          "originalPieceIds": ["C_5", "HOOK_4", "BRANCH_4"],
+          "canonicalPieceIds": ["HOOK_4", "BRANCH_4", "C_5"]
+        },
+        "d512Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 512,
+          "memoPrunedNodes": 0,
+          "memoEntries": 66,
+          "discoveredCompletePaths": 313,
+          "evaluatedCandidates": 315,
+          "maxNodes": 512,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 72,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 128,
+              "searchComplete": false,
+              "discoveredCompletePaths": 109,
+              "noCompletePathProven": false
+            }
+          }
+        },
+        "a512Witness": {
+          "targetLength": 3,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": 2,
+              "fullNode": 130
+            },
+            {
+              "length": 2,
+              "ordinaryNode": 73,
+              "fullNode": null
+            },
+            {
+              "length": 3,
+              "ordinaryNode": 83,
+              "fullNode": null
+            }
+          ],
+          "evaluations": [
+            {
+              "scope": "ordinary-pieces",
+              "node": 83,
+              "evaluation": {
+                "survivable": true,
+                "allCurrentPiecesPlaced": true,
+                "phase": "await-next-pieces",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "mobility": {
+                  "playablePieceTypes": 16,
+                  "totalPieceTypes": 19,
+                  "totalPlacements": 331
+                },
+                "remainingAbilities": {
+                  "reroll": 1,
+                  "singleCell": 1
+                },
+                "isolatedEmptyCells": 5,
+                "unfillableGaps": 0,
+                "emptyCells": 68
+              }
+            }
+          ],
+          "rootVisited": true
+        },
+        "d512Witness": {
+          "targetLength": 3,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 2,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 3,
+              "ordinaryNode": null,
+              "fullNode": null
+            }
+          ],
+          "evaluations": [],
+          "rootVisited": false
+        },
+        "d3072Witness": {
+          "targetLength": 3,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 2,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 3,
+              "ordinaryNode": null,
+              "fullNode": null
+            }
+          ],
+          "evaluations": [],
+          "rootVisited": false
+        },
+        "d3072VsA512": -1,
+        "d3072VsD512": 1,
+        "d3072VsB3072": -1,
+        "d3072Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 3072,
+          "memoPrunedNodes": 0,
+          "memoEntries": 343,
+          "discoveredCompletePaths": 1955,
+          "evaluatedCandidates": 1958,
+          "maxNodes": 3072,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 348,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 768,
+              "searchComplete": false,
+              "discoveredCompletePaths": 687,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "train-4002-sparse",
+        "map": "201",
+        "firstDifference": {
+          "axis": "totalPlacements",
+          "left": 3749,
+          "right": 4069,
+          "comparison": -1
+        },
+        "root": {
+          "aFirst": "[\"place-piece\",\"sparse-4002:set-0:slot-0\",\"PI_10\",0,5,[[true,true,true,true],[false,true,true,false],[true,true,true,true]]]",
+          "dFirst": "[\"place-piece\",\"sparse-4002:set-0:slot-1\",\"LINE_3\",0,0,[[true,true,true]]]",
+          "aFirstOrdinalUnderA": 0,
+          "aFirstOrdinalUnderD": 418,
+          "originalPieceIds": ["PI_10", "LINE_3", "DOUBLE_BRANCH_7"],
+          "canonicalPieceIds": ["LINE_3", "DOUBLE_BRANCH_7", "PI_10"]
+        },
+        "d512Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 512,
+          "memoPrunedNodes": 0,
+          "memoEntries": 5,
+          "discoveredCompletePaths": 375,
+          "evaluatedCandidates": 376,
+          "maxNodes": 512,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 12,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 128,
+              "searchComplete": false,
+              "discoveredCompletePaths": 123,
+              "noCompletePathProven": false
+            }
+          }
+        },
+        "a512Witness": {
+          "targetLength": 4,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": 2,
+              "fullNode": 130
+            },
+            {
+              "length": 2,
+              "ordinaryNode": 3,
+              "fullNode": 131
+            },
+            {
+              "length": 3,
+              "ordinaryNode": null,
+              "fullNode": 318
+            },
+            {
+              "length": 4,
+              "ordinaryNode": null,
+              "fullNode": 412
+            }
+          ],
+          "evaluations": [
+            {
+              "scope": "pieces-and-abilities",
+              "node": 412,
+              "evaluation": {
+                "survivable": true,
+                "allCurrentPiecesPlaced": true,
+                "phase": "await-next-pieces",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "mobility": {
+                  "playablePieceTypes": 19,
+                  "totalPieceTypes": 19,
+                  "totalPlacements": 4069
+                },
+                "remainingAbilities": {
+                  "reroll": 1,
+                  "singleCell": 0
+                },
+                "isolatedEmptyCells": 0,
+                "unfillableGaps": 0,
+                "emptyCells": 134
+              }
+            }
+          ],
+          "rootVisited": true
+        },
+        "d512Witness": {
+          "targetLength": 4,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 2,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 3,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 4,
+              "ordinaryNode": null,
+              "fullNode": null
+            }
+          ],
+          "evaluations": [],
+          "rootVisited": false
+        },
+        "d3072Witness": {
+          "targetLength": 4,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 2,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 3,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 4,
+              "ordinaryNode": null,
+              "fullNode": null
+            }
+          ],
+          "evaluations": [],
+          "rootVisited": false
+        },
+        "d3072VsA512": -1,
+        "d3072VsD512": 1,
+        "d3072VsB3072": -1,
+        "d3072Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 3072,
+          "memoPrunedNodes": 0,
+          "memoEntries": 37,
+          "discoveredCompletePaths": 2263,
+          "evaluatedCandidates": 2264,
+          "maxNodes": 3072,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 44,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 768,
+              "searchComplete": false,
+              "discoveredCompletePaths": 753,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "dev-5000-sparse",
+        "map": "102",
+        "firstDifference": {
+          "axis": "totalPlacements",
+          "left": 4115,
+          "right": 4145,
+          "comparison": -1
+        },
+        "root": {
+          "aFirst": "[\"place-piece\",\"sparse-5000:set-0:slot-0\",\"C_5\",0,0,[[true,true],[true,false],[true,true]]]",
+          "dFirst": "[\"place-piece\",\"sparse-5000:set-0:slot-1\",\"DOT\",0,0,[[true]]]",
+          "aFirstOrdinalUnderA": 0,
+          "aFirstOrdinalUnderD": 149,
+          "originalPieceIds": ["C_5", "DOT", "DOUBLE_ARM_LEFT_6"],
+          "canonicalPieceIds": ["DOT", "C_5", "DOUBLE_ARM_LEFT_6"]
+        },
+        "d512Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 512,
+          "memoPrunedNodes": 0,
+          "memoEntries": 1,
+          "discoveredCompletePaths": 379,
+          "evaluatedCandidates": 380,
+          "maxNodes": 512,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 8,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 128,
+              "searchComplete": false,
+              "discoveredCompletePaths": 125,
+              "noCompletePathProven": false
+            }
+          }
+        },
+        "a512Witness": {
+          "targetLength": 3,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": 2,
+              "fullNode": 130
+            },
+            {
+              "length": 2,
+              "ordinaryNode": 3,
+              "fullNode": 131
+            },
+            {
+              "length": 3,
+              "ordinaryNode": 99,
+              "fullNode": 227
+            }
+          ],
+          "evaluations": [
+            {
+              "scope": "ordinary-pieces",
+              "node": 99,
+              "evaluation": {
+                "survivable": true,
+                "allCurrentPiecesPlaced": true,
+                "phase": "await-next-pieces",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "mobility": {
+                  "playablePieceTypes": 19,
+                  "totalPieceTypes": 19,
+                  "totalPlacements": 4145
+                },
+                "remainingAbilities": {
+                  "reroll": 1,
+                  "singleCell": 1
+                },
+                "isolatedEmptyCells": 1,
+                "unfillableGaps": 0,
+                "emptyCells": 135
+              }
+            },
+            {
+              "scope": "pieces-and-abilities",
+              "node": 227,
+              "evaluation": {
+                "survivable": true,
+                "allCurrentPiecesPlaced": true,
+                "phase": "await-next-pieces",
+                "clearedRows": 0,
+                "acquiredItems": 0,
+                "mobility": {
+                  "playablePieceTypes": 19,
+                  "totalPieceTypes": 19,
+                  "totalPlacements": 4145
+                },
+                "remainingAbilities": {
+                  "reroll": 1,
+                  "singleCell": 1
+                },
+                "isolatedEmptyCells": 1,
+                "unfillableGaps": 0,
+                "emptyCells": 135
+              }
+            }
+          ],
+          "rootVisited": true
+        },
+        "d512Witness": {
+          "targetLength": 3,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 2,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 3,
+              "ordinaryNode": null,
+              "fullNode": null
+            }
+          ],
+          "evaluations": [],
+          "rootVisited": false
+        },
+        "d3072Witness": {
+          "targetLength": 3,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 2,
+              "ordinaryNode": null,
+              "fullNode": null
+            },
+            {
+              "length": 3,
+              "ordinaryNode": null,
+              "fullNode": null
+            }
+          ],
+          "evaluations": [],
+          "rootVisited": false
+        },
+        "d3072VsA512": -1,
+        "d3072VsD512": 1,
+        "d3072VsB3072": -1,
+        "d3072Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 3072,
+          "memoPrunedNodes": 0,
+          "memoEntries": 12,
+          "discoveredCompletePaths": 2288,
+          "evaluatedCandidates": 2289,
+          "maxNodes": 3072,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 19,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 768,
+              "searchComplete": false,
+              "discoveredCompletePaths": 761,
+              "noCompletePathProven": false
+            }
+          }
+        }
+      },
+      {
+        "fixtureId": "dev-5000-pressure",
+        "map": "102",
+        "firstDifference": {
+          "axis": "totalPlacements",
+          "left": 179,
+          "right": 180,
+          "comparison": -1
+        },
+        "root": {
+          "aFirst": "[\"single-cell\",3,8]",
+          "dFirst": "[\"single-cell\",3,8]",
+          "aFirstOrdinalUnderA": 0,
+          "aFirstOrdinalUnderD": 0,
+          "originalPieceIds": ["C_5", "DOT", "DOUBLE_ARM_LEFT_6"],
+          "canonicalPieceIds": ["DOT", "C_5", "DOUBLE_ARM_LEFT_6"]
+        },
+        "d512Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 512,
+          "memoPrunedNodes": 46,
+          "memoEntries": 133,
+          "discoveredCompletePaths": 0,
+          "evaluatedCandidates": 203,
+          "maxNodes": 512,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 0,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 128,
+              "searchComplete": false,
+              "discoveredCompletePaths": 0,
+              "noCompletePathProven": false
+            }
+          }
+        },
+        "a512Witness": {
+          "targetLength": 1,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": null,
+              "fullNode": 130
+            }
+          ],
+          "evaluations": [
+            {
+              "scope": "pieces-and-abilities",
+              "node": 512,
+              "evaluation": {
+                "survivable": true,
+                "allCurrentPiecesPlaced": false,
+                "phase": "playing",
+                "clearedRows": 1,
+                "acquiredItems": 0,
+                "mobility": {
+                  "playablePieceTypes": 11,
+                  "totalPieceTypes": 19,
+                  "totalPlacements": 180
+                },
+                "remainingAbilities": {
+                  "reroll": 1,
+                  "singleCell": 0
+                },
+                "isolatedEmptyCells": 6,
+                "unfillableGaps": 0,
+                "emptyCells": 69
+              }
+            }
+          ],
+          "rootVisited": true
+        },
+        "d512Witness": {
+          "targetLength": 1,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": null,
+              "fullNode": 130
+            }
+          ],
+          "evaluations": [],
+          "rootVisited": true
+        },
+        "d3072Witness": {
+          "targetLength": 1,
+          "prefixes": [
+            {
+              "length": 1,
+              "ordinaryNode": null,
+              "fullNode": 174
+            }
+          ],
+          "evaluations": [],
+          "rootVisited": true
+        },
+        "d3072VsA512": 1,
+        "d3072VsD512": 1,
+        "d3072VsB3072": -1,
+        "d3072Search": {
+          "scope": "pieces-and-abilities",
+          "searchComplete": false,
+          "optimalWithinScope": false,
+          "specialAbilitiesSearched": true,
+          "alternativesMayOmitEquivalentPaths": true,
+          "stopReason": "node-budget",
+          "visitedNodes": 3072,
+          "memoPrunedNodes": 499,
+          "memoEntries": 955,
+          "discoveredCompletePaths": 4,
+          "evaluatedCandidates": 1444,
+          "maxNodes": 3072,
+          "abilitySearch": {
+            "singleCellCandidates": "all-legal-cells",
+            "rerollCandidatesRestricted": true,
+            "excludedRerollTargets": 0,
+            "rerollFutureEvaluated": false,
+            "maxActionDepth": 4,
+            "ordinaryProbe": {
+              "visitedNodes": 172,
+              "searchComplete": true,
+              "discoveredCompletePaths": 0,
+              "noCompletePathProven": true
+            }
+          }
+        }
+      }
+    ],
+    "strata": [
+      {
+        "stratum": "generated",
+        "portfolioVsA512": {
+          "states": 12,
+          "better": 2,
+          "worse": 0,
+          "equal": 10
+        },
+        "a1024VsA512": {
+          "states": 12,
+          "better": 4,
+          "worse": 0,
+          "equal": 8
+        },
+        "portfolioVsA1024": {
+          "states": 12,
+          "better": 2,
+          "worse": 4,
+          "equal": 6
+        }
+      },
+      {
+        "stratum": "scripted",
+        "portfolioVsA512": {
+          "states": 8,
+          "better": 0,
+          "worse": 0,
+          "equal": 8
+        },
+        "a1024VsA512": {
+          "states": 8,
+          "better": 0,
+          "worse": 0,
+          "equal": 8
+        },
+        "portfolioVsA1024": {
+          "states": 8,
+          "better": 0,
+          "worse": 0,
+          "equal": 8
+        }
+      }
+    ],
+    "limits": [
+      "Observed fixed20 pilot, not held-out teacher adoption or future turn optimality",
+      "Larger budgets also change ordinary-probe reservation and may change restricted reroll gating; do not assume a nested search tree",
+      "Portfolio protects current evaluation relative to retained A512 only; hard-label/future value equivalence is not claimed",
+      "Trace overhead is included; timing is observation only, not equal-wall-time/app acceptance",
+      "No new seeds/test/data/model/teacher labels/training/product changes or external data transmission"
+    ]
+  }
+}
