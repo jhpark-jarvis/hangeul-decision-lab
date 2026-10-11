@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "paired-teacher-cnn-20261011-v1",
+  "status": "FROZEN_PAIRED_EXPERIMENT",
+  "sourceProtocolSha256": "dd43c9a946d8e7ca251a2a5012bb13bd722357c22286d58569c7ab81c3c8242d",
+  "dataset": {
+    "trainSeeds": [
+      8000, 8001, 8002, 8003, 8004, 8005, 8006, 8007, 8008, 8009, 8010, 8011,
+      8012, 8013, 8014, 8015, 8016, 8017, 8018, 8019, 8020, 8021, 8022, 8023,
+      8024, 8025, 8026, 8027, 8028, 8029, 8030, 8031
+    ],
+    "devSeeds": [9000, 9001, 9002, 9003, 9004, 9005, 9006, 9007],
+    "reservedTestSeeds": [6000, 6001, 6002, 6003],
+    "families": ["sparse", "pressure"],
+    "maxActions": 6,
+    "collectionPolicy": "A512",
+    "episodeCap": 88,
+    "observationCap": 528,
+    "sharedObservations": true,
+    "pairedSkip": true,
+    "crossSplitForwardAndSemanticDuplicate": "STOP",
+    "withinSplitDuplicate": "KEEP_FIRST_RECORD_CONFLICTS",
+    "excludedSeeds": "prior3000-test; diagnostics4000/5000",
+    "scriptedTraining": false,
+    "testGate": "BOTH_DEV_CHECKPOINTS_AND_PROTOCOL_SOURCE_FREEZE"
+  },
+  "teachers": {
+    "A512": {
+      "maxNodes": 512,
+      "maxAlternatives": 3,
+      "useMemoization": true
+    },
+    "A1024": {
+      "maxNodes": 1024,
+      "maxAlternatives": 3,
+      "useMemoization": true
+    },
+    "sharedMemo": false,
+    "label": "best-first-exact-domain-legal-index",
+    "ties": "existing-solver-best-order"
+  },
+  "training": {
+    "seed": 20261008,
+    "epochs": 12,
+    "batchSize": 8,
+    "threads": 2,
+    "convChannels": 8,
+    "embedding": 32,
+    "poolRows": 4,
+    "poolCols": 5,
+    "learningRate": 0.001,
+    "weightDecay": 0.0001,
+    "runs": 2,
+    "loss": "single-hard-label-cross-entropy",
+    "initialization": "same-weights",
+    "sampleOrder": "same-paired-example-indices",
+    "checkpointSelection": "own-teacher-highest-dev-top1-first-tie",
+    "additionalTuning": false
+  },
+  "evaluation": {
+    "crossTeacherTop1": true,
+    "domainLegalAndNaN": true,
+    "coverageBySplitFamily": true,
+    "rolloutPolicies": [
+      "A512",
+      "A1024",
+      "first-legal",
+      "CNN-A512",
+      "CNN-A1024"
+    ],
+    "testEpisodes": 8,
+    "maxActions": 6,
+    "decisionCap": 240,
+    "futureTapeOwner": "environment-only",
+    "postTestReselection": false
+  },
+  "cost": {
+    "collectionNodeCap": 270336,
+    "labelNodeCap": 811008,
+    "rolloutNodeCap": 73728,
+    "totalNominalDfsNodeCap": 1155072,
+    "wallTime": "OBSERVATION_ONLY",
+    "memory": "OBSERVATION_ONLY"
+  },
+  "boundaries": {
+    "existingDataModelPreserved": true,
+    "newRuntime": false,
+    "dependencyInstall": false,
+    "externalService": false,
+    "dataTransfer": false,
+    "appModel": false,
+    "reinforcementLearning": false,
+    "push": false
+  },
+  "execution": "FROZEN_BEFORE_EXECUTION"
+}

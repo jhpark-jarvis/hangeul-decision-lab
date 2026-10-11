@@ -26,7 +26,8 @@
     "research:item-coverage": "node scripts/research/item-coverage.mjs",
     "research:permutation-teacher": "node scripts/research/permutation-teacher.mjs",
     "research:canonical-teacher": "node scripts/research/canonical-teacher.mjs",
-    "research:teacher-root-cause": "node scripts/research/teacher-root-cause.mjs"
+    "research:teacher-root-cause": "node scripts/research/teacher-root-cause.mjs",
+    "research:paired-cnn": "node scripts/research/paired-cnn.mjs"
   },
   "dependencies": {
     "next": "16.3.8",
