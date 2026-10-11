@@ -1,0 +1,1775 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "id": "paired-teacher-cnn-20261011-v1",
+  "protocol": {
+    "schemaVersion": 1,
+    "id": "paired-teacher-cnn-20261011-v1",
+    "status": "FROZEN_PAIRED_EXPERIMENT",
+    "sourceProtocolSha256": "dd43c9a946d8e7ca251a2a5012bb13bd722357c22286d58569c7ab81c3c8242d",
+    "dataset": {
+      "trainSeeds": [
+        8000, 8001, 8002, 8003, 8004, 8005, 8006, 8007, 8008, 8009, 8010, 8011,
+        8012, 8013, 8014, 8015, 8016, 8017, 8018, 8019, 8020, 8021, 8022, 8023,
+        8024, 8025, 8026, 8027, 8028, 8029, 8030, 8031
+      ],
+      "devSeeds": [9000, 9001, 9002, 9003, 9004, 9005, 9006, 9007],
+      "reservedTestSeeds": [6000, 6001, 6002, 6003],
+      "families": ["sparse", "pressure"],
+      "maxActions": 6,
+      "collectionPolicy": "A512",
+      "episodeCap": 88,
+      "observationCap": 528,
+      "sharedObservations": true,
+      "pairedSkip": true,
+      "crossSplitForwardAndSemanticDuplicate": "STOP",
+      "withinSplitDuplicate": "KEEP_FIRST_RECORD_CONFLICTS",
+      "excludedSeeds": "prior3000-test; diagnostics4000/5000",
+      "scriptedTraining": false,
+      "testGate": "BOTH_DEV_CHECKPOINTS_AND_PROTOCOL_SOURCE_FREEZE"
+    },
+    "teachers": {
+      "A512": {
+        "maxNodes": 512,
+        "maxAlternatives": 3,
+        "useMemoization": true
+      },
+      "A1024": {
+        "maxNodes": 1024,
+        "maxAlternatives": 3,
+        "useMemoization": true
+      },
+      "sharedMemo": false,
+      "label": "best-first-exact-domain-legal-index",
+      "ties": "existing-solver-best-order"
+    },
+    "training": {
+      "seed": 20261008,
+      "epochs": 12,
+      "batchSize": 8,
+      "threads": 2,
+      "convChannels": 8,
+      "embedding": 32,
+      "poolRows": 4,
+      "poolCols": 5,
+      "learningRate": 0.001,
+      "weightDecay": 0.0001,
+      "runs": 2,
+      "loss": "single-hard-label-cross-entropy",
+      "initialization": "same-weights",
+      "sampleOrder": "same-paired-example-indices",
+      "checkpointSelection": "own-teacher-highest-dev-top1-first-tie",
+      "additionalTuning": false
+    },
+    "evaluation": {
+      "crossTeacherTop1": true,
+      "domainLegalAndNaN": true,
+      "coverageBySplitFamily": true,
+      "rolloutPolicies": [
+        "A512",
+        "A1024",
+        "first-legal",
+        "CNN-A512",
+        "CNN-A1024"
+      ],
+      "testEpisodes": 8,
+      "maxActions": 6,
+      "decisionCap": 240,
+      "futureTapeOwner": "environment-only",
+      "postTestReselection": false
+    },
+    "cost": {
+      "collectionNodeCap": 270336,
+      "labelNodeCap": 811008,
+      "rolloutNodeCap": 73728,
+      "totalNominalDfsNodeCap": 1155072,
+      "wallTime": "OBSERVATION_ONLY",
+      "memory": "OBSERVATION_ONLY"
+    },
+    "boundaries": {
+      "existingDataModelPreserved": true,
+      "newRuntime": false,
+      "dependencyInstall": false,
+      "externalService": false,
+      "dataTransfer": false,
+      "appModel": false,
+      "reinforcementLearning": false,
+      "push": false
+    },
+    "execution": "FROZEN_BEFORE_EXECUTION"
+  },
+  "sourceHashes": {
+    "src/research/paired-teacher.ts": "b3bdd3ce802a771ee9632641ab2ca8fe43a8e280dbe969844957d5f0f295bbe8",
+    "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+    "src/domain/board/board.ts": "33e848d71ba6ea797e67a0e7b1d3ad59a55fa603873695881cb04edded4db44a",
+    "src/domain/board/line-clear.ts": "9e25faa546ce2c3244236e14471157832be2efbe813d10c58af41b5bf281682f",
+    "src/domain/pieces/placement.ts": "8ef4b72415c4fa05ebe7abd0c38ebef8693756007e0c4d1afe1a918352e9aeaf",
+    "src/domain/pieces/transforms.ts": "45daa497f748823e546ebf6504c9b9f573d4ae553f12a2406a58ff41e52d58a6",
+    "src/domain/game/game-state.ts": "fe651495fcf0009fe5dfa9a34b53b323e6a6f29da1bb726b1570fe42463720c3",
+    "src/domain/game/abilities.ts": "7cfc2424c8289d9a5e9f7f1f7cd4f2f6bdd2dd6cb3944b0015a974f21e5e3b08",
+    "src/domain/game/types.ts": "49fb99c0f3343e1dc47d35e0ddb6e63d9d27da3752905f538e4d7cef3e4029a9",
+    "src/domain/game/hidden-items.ts": "c165d20964b844b8d11b2f3a424b944d0bc67085a5b513903ed3b770cdcf6783",
+    "src/domain/pieces/catalog.ts": "a0b998e5fde9c8f081557263dcf4cad01394907aae7d075d5b2efff71b2bce3e",
+    "src/domain/solver/solver.ts": "cbbbae7e84de558600679e9951996b2e19f25166610f2ec5b4f5a189642d4007",
+    "src/domain/solver/ability-candidates.ts": "9d2804ce9448a30b58fd32103f458eb5c0ece0481d60c7e84574a914608b179d",
+    "src/domain/solver/mobility.ts": "4de627ea8117efe9822ac0c446d7950a2f798781d8b7d887be79466efc6a6b04",
+    "src/domain/solver/evaluator.ts": "6561674cf06a31e1761213de852eaa0739e672276538a507fe65a46d9a9ce752",
+    "src/domain/board/board-metrics.ts": "98d86a47b880290d648658de94a51288705ae82581dbf748bfed9fa4cca800df",
+    "src/domain/solver/search.ts": "7ffcede4a462066f03f917f42f74261f9e0a2b1fd3b509eb46861c048f54f29c",
+    "src/domain/solver/types.ts": "93da18624d5568e849d8ded156b7d19fd9dcbc2356bfcf36f05aabb4e49ab128",
+    "src/research/episode.ts": "f41437244a4d3cc08dcfc80a1179ea5dd13649bc3ee02936b2f2c2b3a9427678",
+    "src/research/fixture.ts": "b2f0d9891d6124fee9a49090f0d31cc321094a82d16d80a38b9910e90e31ef79",
+    "src/research/types.ts": "f2727ed83a18036122a14c402e13776247c9be2da48cb3559e263803e4762657",
+    "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+    "src/research/permutation-teacher.ts": "360cbf6b69de469dd50ae7b23c7aac5121f5d007a11a5f84f93dc27df650594c",
+    "src/research/item-coverage.ts": "da6bc1a56db9dd39f4134254d07759d442b9f89e7ebffb3d1aa20c1ef7fc5a13",
+    "src/research/teacher-audit.ts": "d8288aad50594faaddba34e88c1bcb768f76bee58d6ebff58fb7c7f486193b94",
+    "src/research/teacher-matrix.ts": "23693f3b469379befebe81bd6ab03ff9a8d72477a3b7ee1e216f2e951bf0d82c",
+    "src/research/teacher-quality.ts": "5b5b2a1b35a4601f86ebf4b3796edc9e43c977871082356501f5ad46eb44ec2e",
+    "research/cnn/paired.py": "b241aa6a30cff77b556ec7ecb37e6146eede8a0dc8f3ba0e6c788af7aed2021d",
+    "research/cnn/model.py": "5d9809c50d8e8be1a79bb7c2a4252a8e39a7d7244276c4d479b421cf2306e3ac",
+    "research/cnn/train.py": "4c3ec66f95420d0cbedcfcd3ec503125742cde8db2497185cdc4901c5fca7f12",
+    "research/cnn/data.py": "c976d6dc81ced3d89dd45ff1f2b6657117178b5e3e118e866d55f00f0eb4b2e7",
+    "research/cnn/paired-protocol.json": "b5231b8d42b69752c9e82ecbe61d717bac8e8957943a74aea844b826888dd6cb",
+    "research/cnn/protocol.json": "dd43c9a946d8e7ca251a2a5012bb13bd722357c22286d58569c7ab81c3c8242d",
+    "research/cnn/requirements-lock.txt": "42d790804f8b14a228274e790186a7e6f31fc97104cefd050af1edf1e2d2bed0",
+    "scripts/research/paired-cnn.mjs": "d224288df37fb67a98ad8208432789d298140113e3a4e3ce58284061df14e123",
+    "package.json": "dfc2795c1270cabdea6132144768ac796d5edd65c909b3a270f65935ae99f6ef",
+    "pnpm-lock.yaml": "675927278665763fd682571ed41e9d64ed8e130fa8e11a5a65776ca558d441bb"
+  },
+  "trainDevDataSha256": "fa72eb460151763e664ecdd0a2438e1ae69172b98dbb5ab4b3f6f44b9e4c29fb",
+  "testDataSha256": "52784fb4079c46d45f0bb10c1067f1835070dc2841f1dac936498530b6603a1f",
+  "freezeSha256": "d3d0c72074f7ad23bfb2c13549dda4bf952c02496cc9dc6696e1a0f7375baf61",
+  "training": {
+    "A512": {
+      "selectedEpoch": 11,
+      "dev": {
+        "examples": 89,
+        "correct": 29,
+        "top1": 0.3258426966292135,
+        "firstLegalTop1": 0.5280898876404494,
+        "fixtures": 16,
+        "fixtureMacroTop1": 0.32291666666666663
+      },
+      "checkpointSha256": "33a6499dc3dfdae82ea72938c2c8fd932d13ba8b631f5b55d6b4e8b2cfe422ab",
+      "audit": {
+        "initialWeightsSha256": "be02d2dc369ff7e0cc10cfe9570d6c10a7dc3ee69953ad8099da0ce971aad259",
+        "sampleOrderSha256": "3b7004c010abe29d717269abbd81b03bbefa3c50100977cda34cd9dd5220fd38",
+        "trainingIdsSha256": "eacd380a0c7ee3558bc026fb69388a004797941edbc2ea192d7b72372627a911"
+      },
+      "timings": {
+        "trainMs": 9406.283099902794,
+        "totalMs": 14471.19880001992
+      }
+    },
+    "A1024": {
+      "selectedEpoch": 12,
+      "dev": {
+        "examples": 89,
+        "correct": 26,
+        "top1": 0.29213483146067415,
+        "firstLegalTop1": 0.48314606741573035,
+        "fixtures": 16,
+        "fixtureMacroTop1": 0.29166666666666663
+      },
+      "checkpointSha256": "164e0ae46780fe6b377e58bc35dc3df3dcd390421f062cafcf40b0ebd3b4fc6e",
+      "audit": {
+        "initialWeightsSha256": "be02d2dc369ff7e0cc10cfe9570d6c10a7dc3ee69953ad8099da0ce971aad259",
+        "sampleOrderSha256": "3b7004c010abe29d717269abbd81b03bbefa3c50100977cda34cd9dd5220fd38",
+        "trainingIdsSha256": "eacd380a0c7ee3558bc026fb69388a004797941edbc2ea192d7b72372627a911"
+      },
+      "timings": {
+        "trainMs": 9033.671599929221,
+        "totalMs": 14124.020599992946
+      }
+    }
+  },
+  "counts": {
+    "train": 339,
+    "dev": 89,
+    "test": 44,
+    "episodes": 88,
+    "duplicates": 0,
+    "skips": 2
+  },
+  "teacherComparison": {
+    "train": {
+      "examples": 339,
+      "labelsChanged": 22,
+      "better": 35,
+      "worse": 2,
+      "equal": 302,
+      "incomplete": {
+        "A512": 254,
+        "A1024": 243
+      }
+    },
+    "dev": {
+      "examples": 89,
+      "labelsChanged": 12,
+      "better": 20,
+      "worse": 0,
+      "equal": 69,
+      "incomplete": {
+        "A512": 66,
+        "A1024": 64
+      }
+    },
+    "test": {
+      "examples": 44,
+      "labelsChanged": 1,
+      "better": 1,
+      "worse": 0,
+      "equal": 43,
+      "incomplete": {
+        "A512": 33,
+        "A1024": 31
+      }
+    }
+  },
+  "crossTeacher": {
+    "A512": {
+      "A512": {
+        "examples": 44,
+        "correct": 19,
+        "top1": 0.4318181818181818,
+        "firstLegalTop1": 0.5454545454545454,
+        "fixtures": 8,
+        "fixtureMacroTop1": 0.4375
+      },
+      "A1024": {
+        "examples": 44,
+        "correct": 19,
+        "top1": 0.4318181818181818,
+        "firstLegalTop1": 0.5454545454545454,
+        "fixtures": 8,
+        "fixtureMacroTop1": 0.4375
+      }
+    },
+    "A1024": {
+      "A512": {
+        "examples": 44,
+        "correct": 19,
+        "top1": 0.4318181818181818,
+        "firstLegalTop1": 0.5454545454545454,
+        "fixtures": 8,
+        "fixtureMacroTop1": 0.4375
+      },
+      "A1024": {
+        "examples": 44,
+        "correct": 19,
+        "top1": 0.4318181818181818,
+        "firstLegalTop1": 0.5454545454545454,
+        "fixtures": 8,
+        "fixtureMacroTop1": 0.4375
+      }
+    }
+  },
+  "firstLegal": {
+    "A512": {
+      "examples": 44,
+      "correct": 24,
+      "top1": 0.5454545454545454,
+      "firstLegalTop1": 0.5454545454545454,
+      "fixtures": 8,
+      "fixtureMacroTop1": 0.5
+    },
+    "A1024": {
+      "examples": 44,
+      "correct": 24,
+      "top1": 0.5454545454545454,
+      "firstLegalTop1": 0.5454545454545454,
+      "fixtures": 8,
+      "fixtureMacroTop1": 0.5
+    }
+  },
+  "policySummary": [
+    {
+      "policy": "A512",
+      "episodes": 8,
+      "totals": {
+        "actions": 45,
+        "placements": 37,
+        "clearedRows": 9,
+        "acquiredItems": 0,
+        "singleCellUses": 6,
+        "rerollUses": 2,
+        "completedSets": 9,
+        "suppliedSets": 7
+      },
+      "endings": [
+        {
+          "fixtureId": "sparse-6000",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6000",
+          "kind": "gameover",
+          "detail": "No domain-legal action"
+        },
+        {
+          "fixtureId": "sparse-6001",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6001",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "sparse-6002",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6002",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "sparse-6003",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6003",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        }
+      ],
+      "retainedItems": 0
+    },
+    {
+      "policy": "A1024",
+      "episodes": 8,
+      "totals": {
+        "actions": 42,
+        "placements": 36,
+        "clearedRows": 9,
+        "acquiredItems": 0,
+        "singleCellUses": 5,
+        "rerollUses": 1,
+        "completedSets": 9,
+        "suppliedSets": 7
+      },
+      "endings": [
+        {
+          "fixtureId": "sparse-6000",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6000",
+          "kind": "policy-abstention",
+          "detail": "Legal actions remain; policy returned no action"
+        },
+        {
+          "fixtureId": "sparse-6001",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6001",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "sparse-6002",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6002",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "sparse-6003",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6003",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        }
+      ],
+      "retainedItems": 0
+    },
+    {
+      "policy": "first-legal",
+      "episodes": 8,
+      "totals": {
+        "actions": 42,
+        "placements": 34,
+        "clearedRows": 1,
+        "acquiredItems": 0,
+        "singleCellUses": 4,
+        "rerollUses": 4,
+        "completedSets": 9,
+        "suppliedSets": 5
+      },
+      "endings": [
+        {
+          "fixtureId": "sparse-6000",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6000",
+          "kind": "gameover",
+          "detail": "No domain-legal action"
+        },
+        {
+          "fixtureId": "sparse-6001",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6001",
+          "kind": "gameover",
+          "detail": "No domain-legal action"
+        },
+        {
+          "fixtureId": "sparse-6002",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6002",
+          "kind": "gameover",
+          "detail": "No domain-legal action"
+        },
+        {
+          "fixtureId": "sparse-6003",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6003",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        }
+      ],
+      "retainedItems": 0
+    },
+    {
+      "policy": "CNN-A512",
+      "episodes": 8,
+      "totals": {
+        "actions": 41,
+        "placements": 34,
+        "clearedRows": 3,
+        "acquiredItems": 0,
+        "singleCellUses": 3,
+        "rerollUses": 4,
+        "completedSets": 9,
+        "suppliedSets": 5
+      },
+      "endings": [
+        {
+          "fixtureId": "pressure-6000",
+          "kind": "gameover",
+          "detail": "No domain-legal action"
+        },
+        {
+          "fixtureId": "pressure-6001",
+          "kind": "gameover",
+          "detail": "No domain-legal action"
+        },
+        {
+          "fixtureId": "pressure-6002",
+          "kind": "gameover",
+          "detail": "No domain-legal action"
+        },
+        {
+          "fixtureId": "sparse-6000",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "sparse-6001",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "sparse-6002",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "sparse-6003",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6003",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        }
+      ],
+      "retainedItems": 0
+    },
+    {
+      "policy": "CNN-A1024",
+      "episodes": 8,
+      "totals": {
+        "actions": 41,
+        "placements": 34,
+        "clearedRows": 3,
+        "acquiredItems": 0,
+        "singleCellUses": 3,
+        "rerollUses": 4,
+        "completedSets": 9,
+        "suppliedSets": 5
+      },
+      "endings": [
+        {
+          "fixtureId": "pressure-6000",
+          "kind": "gameover",
+          "detail": "No domain-legal action"
+        },
+        {
+          "fixtureId": "pressure-6001",
+          "kind": "gameover",
+          "detail": "No domain-legal action"
+        },
+        {
+          "fixtureId": "pressure-6002",
+          "kind": "gameover",
+          "detail": "No domain-legal action"
+        },
+        {
+          "fixtureId": "sparse-6000",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "sparse-6001",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "sparse-6002",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "sparse-6003",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        },
+        {
+          "fixtureId": "pressure-6003",
+          "kind": "horizon",
+          "detail": "Action horizon reached"
+        }
+      ],
+      "retainedItems": 0
+    }
+  ],
+  "accounting": {
+    "collectionAndLabelNominalNodes": 728064,
+    "collectionA512Reused": true,
+    "rolloutNominalNodes": 67072,
+    "actualVisitedNodes": 622511,
+    "policyDecisions": 211
+  },
+  "checks": {
+    "bothCheckpointsFrozenBeforeTest": true,
+    "sameInitializationAndSampleOrder": true,
+    "domainPredictionKeys": true,
+    "domainRolloutReplay": true,
+    "finitePredictions": true,
+    "postTestTuning": false
+  },
+  "limits": [
+    "88 synthetic episodes, two shared generator families; not real-game distribution or independent action samples",
+    "Bounded teachers and single hard labels; evaluation gains are not label quality or future value guarantees",
+    "Six-action rollouts truncate play; not long-term survival or application acceptance",
+    "Two fixed training runs only; no test-driven tuning or statistical superiority claim",
+    "Original dataset/checkpoint and application solver remain unchanged"
+  ],
+  "coverage": [
+    {
+      "split": "train",
+      "family": "sparse",
+      "episodes": 32,
+      "examples": 192,
+      "pieces": {
+        "BRANCH_4": 16,
+        "CROWN_6": 28,
+        "CROWN_7": 33,
+        "C_5": 13,
+        "DIAGONAL_3": 19,
+        "DIAMOND_4": 20,
+        "DOT": 6,
+        "DOUBLE_ARM_LEFT_6": 18,
+        "DOUBLE_ARM_RIGHT_6": 16,
+        "DOUBLE_BRANCH_7": 12,
+        "GRID_10": 28,
+        "HOOK_4": 13,
+        "LINE_3": 33,
+        "LINE_5": 28,
+        "L_3": 16,
+        "MIEUM": 26,
+        "PI_10": 25,
+        "STAR_9": 19,
+        "ZIGZAG_6": 11
+      },
+      "pieceKinds": 19,
+      "duplicatePieceObservations": 10,
+      "hiddenItemObservations": 192,
+      "abilityObservations": 192,
+      "pendingInputObservations": 0,
+      "collection": {
+        "acquired": 0,
+        "retained": 0,
+        "singleCellUses": 18,
+        "rerollUses": 0,
+        "endings": {
+          "horizon": 32
+        }
+      },
+      "selectedTeachers": {
+        "A512": {
+          "selectedPaths": 192,
+          "complete": 4,
+          "incomplete": 188,
+          "acquired": 0,
+          "retained": 0,
+          "singleCellUses": 46,
+          "rerollUses": 0,
+          "pendingEndPaths": 0
+        },
+        "A1024": {
+          "selectedPaths": 192,
+          "complete": 4,
+          "incomplete": 188,
+          "acquired": 0,
+          "retained": 0,
+          "singleCellUses": 44,
+          "rerollUses": 0,
+          "pendingEndPaths": 0
+        }
+      }
+    },
+    {
+      "split": "train",
+      "family": "pressure",
+      "episodes": 32,
+      "examples": 147,
+      "pieces": {
+        "BRANCH_4": 5,
+        "CROWN_6": 29,
+        "CROWN_7": 30,
+        "C_5": 13,
+        "DIAGONAL_3": 15,
+        "DIAMOND_4": 13,
+        "DOT": 6,
+        "DOUBLE_ARM_LEFT_6": 13,
+        "DOUBLE_ARM_RIGHT_6": 8,
+        "DOUBLE_BRANCH_7": 13,
+        "GRID_10": 25,
+        "HOOK_4": 9,
+        "LINE_3": 25,
+        "LINE_5": 22,
+        "L_3": 13,
+        "MIEUM": 21,
+        "PI_10": 22,
+        "STAR_9": 14,
+        "ZIGZAG_6": 7
+      },
+      "pieceKinds": 19,
+      "duplicatePieceObservations": 8,
+      "hiddenItemObservations": 144,
+      "abilityObservations": 136,
+      "pendingInputObservations": 0,
+      "collection": {
+        "acquired": 5,
+        "retained": 0,
+        "singleCellUses": 34,
+        "rerollUses": 28,
+        "endings": {
+          "gameover": 18,
+          "horizon": 14
+        }
+      },
+      "selectedTeachers": {
+        "A512": {
+          "selectedPaths": 147,
+          "complete": 81,
+          "incomplete": 66,
+          "acquired": 11,
+          "retained": 0,
+          "singleCellUses": 66,
+          "rerollUses": 68,
+          "pendingEndPaths": 68
+        },
+        "A1024": {
+          "selectedPaths": 147,
+          "complete": 92,
+          "incomplete": 55,
+          "acquired": 9,
+          "retained": 0,
+          "singleCellUses": 69,
+          "rerollUses": 68,
+          "pendingEndPaths": 68
+        }
+      }
+    },
+    {
+      "split": "dev",
+      "family": "sparse",
+      "episodes": 8,
+      "examples": 48,
+      "pieces": {
+        "BRANCH_4": 11,
+        "CROWN_6": 3,
+        "CROWN_7": 6,
+        "C_5": 8,
+        "DIAGONAL_3": 6,
+        "DIAMOND_4": 1,
+        "DOUBLE_ARM_LEFT_6": 4,
+        "DOUBLE_ARM_RIGHT_6": 6,
+        "DOUBLE_BRANCH_7": 7,
+        "GRID_10": 8,
+        "HOOK_4": 7,
+        "LINE_3": 4,
+        "L_3": 1,
+        "MIEUM": 8,
+        "PI_10": 9,
+        "STAR_9": 4,
+        "ZIGZAG_6": 3
+      },
+      "pieceKinds": 17,
+      "duplicatePieceObservations": 0,
+      "hiddenItemObservations": 48,
+      "abilityObservations": 48,
+      "pendingInputObservations": 0,
+      "collection": {
+        "acquired": 0,
+        "retained": 0,
+        "singleCellUses": 5,
+        "rerollUses": 0,
+        "endings": {
+          "horizon": 8
+        }
+      },
+      "selectedTeachers": {
+        "A512": {
+          "selectedPaths": 48,
+          "complete": 0,
+          "incomplete": 48,
+          "acquired": 0,
+          "retained": 0,
+          "singleCellUses": 15,
+          "rerollUses": 0,
+          "pendingEndPaths": 0
+        },
+        "A1024": {
+          "selectedPaths": 48,
+          "complete": 0,
+          "incomplete": 48,
+          "acquired": 0,
+          "retained": 0,
+          "singleCellUses": 15,
+          "rerollUses": 0,
+          "pendingEndPaths": 0
+        }
+      }
+    },
+    {
+      "split": "dev",
+      "family": "pressure",
+      "episodes": 8,
+      "examples": 41,
+      "pieces": {
+        "BRANCH_4": 7,
+        "CROWN_6": 2,
+        "CROWN_7": 5,
+        "C_5": 4,
+        "DIAGONAL_3": 1,
+        "DIAMOND_4": 1,
+        "DOUBLE_ARM_LEFT_6": 3,
+        "DOUBLE_ARM_RIGHT_6": 9,
+        "DOUBLE_BRANCH_7": 7,
+        "GRID_10": 9,
+        "HOOK_4": 9,
+        "LINE_3": 4,
+        "LINE_5": 1,
+        "MIEUM": 7,
+        "PI_10": 11,
+        "STAR_9": 4,
+        "ZIGZAG_6": 1
+      },
+      "pieceKinds": 17,
+      "duplicatePieceObservations": 0,
+      "hiddenItemObservations": 41,
+      "abilityObservations": 36,
+      "pendingInputObservations": 0,
+      "collection": {
+        "acquired": 1,
+        "retained": 0,
+        "singleCellUses": 8,
+        "rerollUses": 8,
+        "endings": {
+          "gameover": 6,
+          "horizon": 2
+        }
+      },
+      "selectedTeachers": {
+        "A512": {
+          "selectedPaths": 41,
+          "complete": 23,
+          "incomplete": 18,
+          "acquired": 3,
+          "retained": 0,
+          "singleCellUses": 14,
+          "rerollUses": 19,
+          "pendingEndPaths": 19
+        },
+        "A1024": {
+          "selectedPaths": 41,
+          "complete": 25,
+          "incomplete": 16,
+          "acquired": 4,
+          "retained": 0,
+          "singleCellUses": 17,
+          "rerollUses": 17,
+          "pendingEndPaths": 17
+        }
+      }
+    },
+    {
+      "split": "test",
+      "family": "sparse",
+      "episodes": 4,
+      "examples": 24,
+      "pieces": {
+        "CROWN_6": 2,
+        "CROWN_7": 3,
+        "C_5": 7,
+        "DIAGONAL_3": 1,
+        "DIAMOND_4": 5,
+        "DOT": 3,
+        "DOUBLE_ARM_LEFT_6": 4,
+        "DOUBLE_ARM_RIGHT_6": 5,
+        "DOUBLE_BRANCH_7": 1,
+        "GRID_10": 3,
+        "HOOK_4": 5,
+        "LINE_3": 2,
+        "LINE_5": 1,
+        "L_3": 2,
+        "MIEUM": 2,
+        "PI_10": 1,
+        "STAR_9": 1
+      },
+      "pieceKinds": 17,
+      "duplicatePieceObservations": 0,
+      "hiddenItemObservations": 24,
+      "abilityObservations": 24,
+      "pendingInputObservations": 0,
+      "collection": {
+        "acquired": 0,
+        "retained": 0,
+        "singleCellUses": 2,
+        "rerollUses": 0,
+        "endings": {
+          "horizon": 4
+        }
+      },
+      "selectedTeachers": {
+        "A512": {
+          "selectedPaths": 24,
+          "complete": 0,
+          "incomplete": 24,
+          "acquired": 0,
+          "retained": 0,
+          "singleCellUses": 6,
+          "rerollUses": 0,
+          "pendingEndPaths": 0
+        },
+        "A1024": {
+          "selectedPaths": 24,
+          "complete": 0,
+          "incomplete": 24,
+          "acquired": 0,
+          "retained": 0,
+          "singleCellUses": 6,
+          "rerollUses": 0,
+          "pendingEndPaths": 0
+        }
+      }
+    },
+    {
+      "split": "test",
+      "family": "pressure",
+      "episodes": 4,
+      "examples": 20,
+      "pieces": {
+        "CROWN_6": 1,
+        "CROWN_7": 2,
+        "C_5": 6,
+        "DIAGONAL_3": 1,
+        "DIAMOND_4": 4,
+        "DOT": 2,
+        "DOUBLE_ARM_LEFT_6": 4,
+        "DOUBLE_ARM_RIGHT_6": 3,
+        "DOUBLE_BRANCH_7": 1,
+        "GRID_10": 2,
+        "HOOK_4": 3,
+        "LINE_3": 1,
+        "LINE_5": 1,
+        "L_3": 2,
+        "MIEUM": 1,
+        "PI_10": 3,
+        "STAR_9": 3
+      },
+      "pieceKinds": 17,
+      "duplicatePieceObservations": 1,
+      "hiddenItemObservations": 20,
+      "abilityObservations": 20,
+      "pendingInputObservations": 0,
+      "collection": {
+        "acquired": 0,
+        "retained": 0,
+        "singleCellUses": 4,
+        "rerollUses": 2,
+        "endings": {
+          "gameover": 1,
+          "horizon": 3
+        }
+      },
+      "selectedTeachers": {
+        "A512": {
+          "selectedPaths": 20,
+          "complete": 11,
+          "incomplete": 9,
+          "acquired": 0,
+          "retained": 0,
+          "singleCellUses": 9,
+          "rerollUses": 6,
+          "pendingEndPaths": 6
+        },
+        "A1024": {
+          "selectedPaths": 20,
+          "complete": 13,
+          "incomplete": 7,
+          "acquired": 0,
+          "retained": 0,
+          "singleCellUses": 9,
+          "rerollUses": 6,
+          "pendingEndPaths": 6
+        }
+      }
+    }
+  ],
+  "stratifiedTest": [
+    {
+      "family": "sparse",
+      "examples": 24,
+      "crossTeacher": {
+        "A512": {
+          "A512": {
+            "examples": 24,
+            "correct": 12,
+            "top1": 0.5
+          },
+          "A1024": {
+            "examples": 24,
+            "correct": 12,
+            "top1": 0.5
+          }
+        },
+        "A1024": {
+          "A512": {
+            "examples": 24,
+            "correct": 12,
+            "top1": 0.5
+          },
+          "A1024": {
+            "examples": 24,
+            "correct": 12,
+            "top1": 0.5
+          }
+        }
+      },
+      "firstLegal": {
+        "A512": {
+          "examples": 24,
+          "correct": 17,
+          "top1": 0.7083333333333334
+        },
+        "A1024": {
+          "examples": 24,
+          "correct": 17,
+          "top1": 0.7083333333333334
+        }
+      }
+    },
+    {
+      "family": "pressure",
+      "examples": 20,
+      "crossTeacher": {
+        "A512": {
+          "A512": {
+            "examples": 20,
+            "correct": 7,
+            "top1": 0.35
+          },
+          "A1024": {
+            "examples": 20,
+            "correct": 7,
+            "top1": 0.35
+          }
+        },
+        "A1024": {
+          "A512": {
+            "examples": 20,
+            "correct": 7,
+            "top1": 0.35
+          },
+          "A1024": {
+            "examples": 20,
+            "correct": 7,
+            "top1": 0.35
+          }
+        }
+      },
+      "firstLegal": {
+        "A512": {
+          "examples": 20,
+          "correct": 7,
+          "top1": 0.35
+        },
+        "A1024": {
+          "examples": 20,
+          "correct": 7,
+          "top1": 0.35
+        }
+      }
+    }
+  ],
+  "pairedRollouts": [
+    {
+      "fixtureId": "sparse-6000",
+      "policies": {
+        "A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "first-legal": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        }
+      }
+    },
+    {
+      "fixtureId": "pressure-6000",
+      "policies": {
+        "A512": {
+          "totals": {
+            "actions": 3,
+            "placements": 1,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "gameover",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "A1024": {
+          "totals": {
+            "actions": 0,
+            "placements": 0,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "policy-abstention",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "first-legal": {
+          "totals": {
+            "actions": 4,
+            "placements": 2,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "gameover",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A512": {
+          "totals": {
+            "actions": 3,
+            "placements": 1,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "gameover",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A1024": {
+          "totals": {
+            "actions": 3,
+            "placements": 1,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "gameover",
+          "retainedItems": 0,
+          "pendingFinal": false
+        }
+      }
+    },
+    {
+      "fixtureId": "sparse-6001",
+      "policies": {
+        "A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "first-legal": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        }
+      }
+    },
+    {
+      "fixtureId": "pressure-6001",
+      "policies": {
+        "A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 5,
+            "clearedRows": 2,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 0,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 5,
+            "clearedRows": 2,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 0,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "first-legal": {
+          "totals": {
+            "actions": 4,
+            "placements": 2,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "gameover",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A512": {
+          "totals": {
+            "actions": 4,
+            "placements": 2,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "gameover",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A1024": {
+          "totals": {
+            "actions": 4,
+            "placements": 2,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "gameover",
+          "retainedItems": 0,
+          "pendingFinal": false
+        }
+      }
+    },
+    {
+      "fixtureId": "sparse-6002",
+      "policies": {
+        "A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 5,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 0,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 5,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 0,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "first-legal": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        }
+      }
+    },
+    {
+      "fixtureId": "pressure-6002",
+      "policies": {
+        "A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 5,
+            "clearedRows": 3,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 0,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 5,
+            "clearedRows": 3,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 0,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "first-legal": {
+          "totals": {
+            "actions": 4,
+            "placements": 2,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "gameover",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A512": {
+          "totals": {
+            "actions": 4,
+            "placements": 2,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "gameover",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A1024": {
+          "totals": {
+            "actions": 4,
+            "placements": 2,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 0,
+            "suppliedSets": 0
+          },
+          "ending": "gameover",
+          "retainedItems": 0,
+          "pendingFinal": false
+        }
+      }
+    },
+    {
+      "fixtureId": "sparse-6003",
+      "policies": {
+        "A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 5,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 0,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 5,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 0,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "first-legal": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 6,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 0,
+            "completedSets": 2,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        }
+      }
+    },
+    {
+      "fixtureId": "pressure-6003",
+      "policies": {
+        "A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 4,
+            "clearedRows": 2,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": true
+        },
+        "A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 4,
+            "clearedRows": 2,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": true
+        },
+        "first-legal": {
+          "totals": {
+            "actions": 6,
+            "placements": 4,
+            "clearedRows": 0,
+            "acquiredItems": 0,
+            "singleCellUses": 1,
+            "rerollUses": 1,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": true
+        },
+        "CNN-A512": {
+          "totals": {
+            "actions": 6,
+            "placements": 5,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 1,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        },
+        "CNN-A1024": {
+          "totals": {
+            "actions": 6,
+            "placements": 5,
+            "clearedRows": 1,
+            "acquiredItems": 0,
+            "singleCellUses": 0,
+            "rerollUses": 1,
+            "completedSets": 1,
+            "suppliedSets": 1
+          },
+          "ending": "horizon",
+          "retainedItems": 0,
+          "pendingFinal": false
+        }
+      }
+    }
+  ],
+  "execution": {
+    "sourceHead": "ff64a479c9a2d90c2bfe7325c313985177f06f74",
+    "protocolSha256": "b5231b8d42b69752c9e82ecbe61d717bac8e8957943a74aea844b826888dd6cb",
+    "elapsedMs": 1665841,
+    "actualTrainingRuns": 2,
+    "memory": {
+      "nodeBefore": {
+        "rss": 198119424,
+        "heapTotal": 67768320,
+        "heapUsed": 49287328,
+        "external": 20968112,
+        "arrayBuffers": 416267
+      },
+      "nodeAfter": {
+        "rss": 465670144,
+        "heapTotal": 314097664,
+        "heapUsed": 210606496,
+        "external": 21820513,
+        "arrayBuffers": 1271182
+      },
+      "training": {
+        "A512": {
+          "beforeBytes": 193839104,
+          "afterBytes": 449036288,
+          "peak": false
+        },
+        "A1024": {
+          "beforeBytes": 194109440,
+          "afterBytes": 448626688,
+          "peak": false
+        }
+      },
+      "peak": false
+    },
+    "peakMemoryMeasured": false,
+    "rawAndCheckpoints": "Local ignored retention; not distributed",
+    "host": {
+      "physicalMemoryBytes": 34290872320,
+      "timezone": "Asia/Seoul",
+      "cpu": {
+        "Name": "Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz",
+        "NumberOfCores": 6,
+        "NumberOfLogicalProcessors": 6
+      },
+      "timing": "Whole pipeline elapsed; training perf_counter; no performance acceptance or machine normalization"
+    }
+  },
+  "audit": {
+    "rawPairs": 472,
+    "keptPairs": 472,
+    "teacherPathsVerified": 2776,
+    "crossSplitLeak": 0,
+    "freezeBeforeTest": true,
+    "sameInitializationAndOrder": true,
+    "domainReplay": true,
+    "postTestTuning": false,
+    "skipReplayVerification": {
+      "status": "PASS",
+      "observations": 2,
+      "additionalSolveCalls": 4,
+      "nominalNodes": 3072,
+      "visitedNodes": 3072,
+      "sha256": "2288314a31477a842aa0733959106a84b20d73466a7fe96a9779d984d60ff37d",
+      "provenance": "Supplementary same-source replay, not original timing/diagnostics; dataset/checkpoints unchanged"
+    }
+  },
+  "modelAgreement": {
+    "testPredictions": {
+      "equal": 44,
+      "total": 44
+    },
+    "rolloutEpisodes": {
+      "equal": 8,
+      "total": 8
+    },
+    "comparison": "Exact keys and domain events/state/totals/ending; no timing fields in CNN results"
+  }
+}

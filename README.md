@@ -2,7 +2,7 @@
 
 ### Budgeted Search and a Research Agenda for a Hangul Block Puzzle
 
-**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN imitation pilot · **Application policy:** DFS · **RL:** FUTURE
+**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN pilot and paired teacher experiment · **Application policy:** DFS · **RL:** FUTURE
 
 ## Abstract
 
@@ -12,7 +12,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 장기 연구 질문은 **같은 의사결정 시간 안에서 탐색과 학습이 장기 생존 및 줄 삭제를 얼마나 개선할 수 있는가**이다. 현재 seeded simulator를 통한 DFS 비교와 오프라인 CPU CNN의 supervised imitation pilot을 구현했다.
 
-작은 합성 실험에서 CNN의 teacher 선택 일치율은 53.3%로, first-legal baseline의 64.4%보다 낮았다. 학습 절차는 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. 이후 탐색 개선과 learned policy/value model을 비교하며, reinforcement learning (RL)은 향후 연구로 남는다.
+초기 합성 pilot에서 CNN의 teacher 선택 일치율은 53.3%로, first-legal baseline의 64.4%보다 낮았다. 같은 입력에서 DFS512/1024 teacher와 CNN을 비교한 추가 고정 실험은 5.12에 기록했다. 학습 절차는 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. 이후 탐색 개선과 learned policy/value model을 비교하며, reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -189,18 +189,18 @@ reward 후보는 생존·삭제·획득과 mobility, 능력 잔여, 고립, 불�
 
 ### 5.4 Technology Briefing
 
-| 역할                      | 현재 채택                                              | 다음 제안                                            |
-| ------------------------- | ------------------------------------------------------ | ---------------------------------------------------- |
-| 게임 규칙·탐색·시뮬레이션 | TypeScript / Node.js, pure domain, 예산 제한 DFS       | 현재 전이를 학습 자료 생성·합법 행동 검증에도 재사용 |
-| 화면 입력·검토            | React / Next.js, 브라우저 Canvas의 로컬 판별           | 이번 CNN 실험에서 변경 없음                          |
-| 신경망 학습               | 연구 전용 Python 3.13.13 / PyTorch 2.14.1+cpu          | 소형 CNN의 오프라인 imitation pilot 완료             |
-| 학습 목표                 | 합성 상태에서 DFS 512 첫 action의 supervised imitation | 장기 생존·RL은 별도 후속 연구                        |
+| 역할                      | 현재 채택                                        | 다음 제안                                            |
+| ------------------------- | ------------------------------------------------ | ---------------------------------------------------- |
+| 게임 규칙·탐색·시뮬레이션 | TypeScript / Node.js, pure domain, 예산 제한 DFS | 현재 전이를 학습 자료 생성·합법 행동 검증에도 재사용 |
+| 화면 입력·검토            | React / Next.js, 브라우저 Canvas의 로컬 판별     | 이번 CNN 실험에서 변경 없음                          |
+| 신경망 학습               | 연구 전용 Python 3.13.13 / PyTorch 2.14.1+cpu    | 소형 CNN pilot과 paired teacher 실험 완료            |
+| 학습 목표                 | 합성 상태의 bounded DFS hard-label imitation     | 장기 생존·RL은 별도 후속 연구                        |
 
 PyTorch의 [공식 학습 경로](https://docs.pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html)를 참고해 연구 전용 CPU 실행을 채택했다.
 
 모델은 보드의 3개 input plane에 3 × 3 convolution (채널 8/8)과 4 × 5 pooling을 적용한다. 조각·능력 metadata 140개 값과 legal candidate feature 52개 값을 32차원 embedding에서 함께 점수화한다. 총 12,189개 parameter를 사용하며, 전체 domain의 legal candidate에만 softmax를 적용한다.
 
-미래 조각, seed, instance 이름, teacher 결과는 forward 입력에서 제외한다. bounded DFS 512의 teacher 선택은 최적 정답이 아니다. 각 선택의 search scope와 incomplete 여부를 함께 보관한다.
+미래 조각, seed, instance 이름, teacher 결과는 forward 입력에서 제외한다. 아래 초기 pilot은 DFS 512를 teacher로 사용하며, 5.12의 paired 실험은 DFS 512와 1024를 비교한다. 두 bounded teacher의 선택은 최적 정답이 아니다. 각 선택의 search scope와 incomplete 여부를 함께 보관한다.
 
 **실행된 CNN pilot — 2026-10-08.** seed 범위는 train 1000–1015, dev 2000–2003, test 3000–3003이다. 각 seed에 sparse/pressure를 적용하고 horizon을 6으로 고정했다. 총 48개 episode에서 train/dev/test 각각 168/45/45개 선택을 얻었다.
 
@@ -390,9 +390,45 @@ Passive trace를 포함한 **60회 호출·176개 반환 경로**를 검증했�
 
 Portfolio는 유지한 A512 대비 현재 평가 저하를 막지만 A1024와의 우열은 섞였다. 같은 wall time이나 미래 턴 가치를 비교한 결과는 아니다. 노드 예산을 늘리면 ordinary probe와 reroll 조건도 달라질 수 있어 탐색 후보의 포함 관계를 가정하지 않는다.
 
-**평가가 향상된 A1024의 네 사례 중 첫 행동 변경은 두 사례였다.** 전체 경로 평가 개선과 single hard label 개선을 구분해야 한다. 다음 제안은 같은 관측을 DFS512/1024가 각각 labeling하고 같은 CNN 설정으로 학습·교차 평가하는 실험이다. 아직 제안이며 새 자료·학습·held-out test·앱 모델 적용은 실행하지 않았다.
+**평가가 향상된 A1024의 네 사례 중 첫 행동 변경은 두 사례였다.** 전체 경로 평가 개선과 single hard label 개선을 구분해야 한다. 이 관측을 바탕으로 같은 입력의 DFS512/1024 label과 CNN을 비교하는 별도 고정 실험을 실행했다. 결과는 5.12에 기록하며 앱 모델 적용은 하지 않았다.
 
 60회 중 54회는 incomplete였다. 고정 초기 상태의 관측이며 teacher 채택이나 장기 정책 개선을 보장하지 않는다. 입력·source·파생 trace hash와 표본별 결과는 [root cause summary](assets/research/teacher-root-cause-20261011-v1.json)에 있다.
+
+### 5.12 Paired Teachers and Frozen CNN Comparison
+
+**실행 — 2026-10-11.** 같은 A512 rollout 관측에 A512와 A1024가 각각 label을 부여했다. train 8000–8031, dev 9000–9007, test 6000–6003에 sparse/pressure를 적용하고 horizon을 6으로 고정했다. train/dev/test의 kept 관측은 **339/89/44개**다. Cross-split forward·semantic 중복은 0건이며 내부 중복 0건과 paired abstention 2건은 기록 후 제외했다.
+
+두 CNN은 같은 구조·입력·초기 weights·sample order로 각각 12 epoch 학습했다. Label만 다르며 own-teacher dev top1 최고값의 최초 epoch를 선택했다. A512는 epoch 11, A1024는 epoch 12였다. **두 checkpoint와 source·protocol·data hash를 모두 고정한 뒤 reserved test를 처음 생성했다.** Test 점수에 따른 재선택이나 추가 학습은 하지 않았다.
+
+| Split | 관측 | A1024 평가: 향상 / 저하 / 동일 | 첫 label 변경 | Incomplete A512 / A1024 |
+| ----- | ---- | ------------------------------ | ------------- | ----------------------- |
+| train | 339  | 35 / 2 / 302                   | 22            | 254 / 243               |
+| dev   | 89   | 20 / 0 / 69                    | 12            | 66 / 64                 |
+| test  | 44   | 1 / 0 / 43                     | 1             | 33 / 31                 |
+
+Train 관측 중 2개는 A1024의 반환 평가가 더 낮았다. 더 큰 node budget에서 평가가 항상 좋아진다고 가정하지 않는다. 경로 평가 개선과 첫 행동 label 변화도 구분한다. 같은 test 관측에서 두 모델을 두 teacher label 모두에 대조했다.
+
+| 예측        | A512 label top1 | A1024 label top1 |
+| ----------- | --------------- | ---------------- |
+| CNN-A512    | 19/44 (43.2%)   | 19/44 (43.2%)    |
+| CNN-A1024   | 19/44 (43.2%)   | 19/44 (43.2%)    |
+| first-legal | 24/44 (54.5%)   | 24/44 (54.5%)    |
+
+같은 8개 초기 상태와 미래 조각 tape에서 각 policy를 최대 6 action 진행했다. 미래 tape는 환경에만 있으며 solver/model 입력에는 없다. 모든 40개 rollout과 CNN의 각 행동을 기존 domain으로 검증했다.
+
+| Policy      | Actions | Cleared rows | Acquired / retained items | Single-cell / reroll uses | Horizon / gameover / abstention |
+| ----------- | ------- | ------------ | ------------------------- | ------------------------- | ------------------------------- |
+| A512        | 45      | 9            | 0 / 0                     | 6 / 2                     | 7 / 1 / 0                       |
+| A1024       | 42      | 9            | 0 / 0                     | 5 / 1                     | 7 / 0 / 1                       |
+| first-legal | 42      | 1            | 0 / 0                     | 4 / 4                     | 5 / 3 / 0                       |
+| CNN-A512    | 41      | 3            | 0 / 0                     | 3 / 4                     | 5 / 3 / 0                       |
+| CNN-A1024   | 41      | 3            | 0 / 0                     | 3 / 4                     | 5 / 3 / 0                       |
+
+두 CNN의 test 예측은 44/44개에서 같았고, rollout의 행동과 결과도 8/8개 episode에서 같았다. Teacher 예산 확대로 이번 CNN의 예측이나 rollout이 개선되지는 않았다. 두 CNN은 first-legal보다 top1이 낮았으며 삭제 행 합계는 CNN 3행, first-legal 1행, 각 DFS 9행이었다.
+
+Top1은 해당 bounded teacher와의 일치율이며 최적 행동의 정확도가 아니다. 8개 test episode와 6 action horizon으로 장기 생존이나 policy 우월성을 주장하지 않는다. 같은 episode의 관측은 독립적이지 않고 sparse/pressure 두 family를 모든 split에서 공유한다. Split/family별 도형·능력·획득/잔류·pending coverage와 episode별 결과는 [paired experiment summary](assets/research/paired-teacher-cnn-20261011-v1.json)에 있다. Test의 아이템 획득·상한 잔류는 모두 0건이었다. 두 family 각각 test에 나타난 도형은 19종 중 17종이었다. Coverage가 0인 기능의 개선을 추정하지 않는다.
+
+실제 visited nodes는 622,511개, policy 결정은 211개였고 전체 실행은 27.76분이었다. 실행 환경은 Windows, Intel Core i5-9400F(6 cores), RAM 약 32 GiB, 기존 CPU PyTorch 2.14.1이다. 시간과 전후 memory는 해당 PC의 관측값이며 peak memory·동일 wall-time 우열을 측정한 결과가 아니다. 기존 pilot 자료·checkpoint와 앱 DFS는 유지하고 이번 두 모델도 offline 연구에만 사용한다. 각 teacher당 한 번, 공통 seed 한 개로 학습했으므로 학습 seed 변동성은 평가하지 않았다. 새 runtime·dependency·service·RL은 도입하지 않았다.
 
 ## 6. Reproduction and Usage
 
@@ -529,6 +565,14 @@ pnpm research:teacher-root-cause --output .research-output/root-cause/replay --p
 ```
 
 세 output 폴더는 새 경로여야 한다. 원본 보고서와 입력/source hash가 맞지 않으면 탐색을 시작하지 않는다. 파생 trace를 포함한 결과는 원래 solver 결과와 대조하고, timing은 trace/replay overhead를 포함한 관측으로 남긴다.
+
+Paired teacher/CNN 실험은 별도 [frozen protocol](research/cnn/paired-protocol.json)을 사용한다. 위에서 준비한 기존 CPU Python 환경으로 실행하며 출력 폴더는 새 경로여야 한다. Runner는 두 dev-only 학습과 checkpoint freeze를 끝내고 test·교차 평가·paired rollout을 순서대로 수행한다. 기존 pilot 데이터나 모델을 덮어쓰지 않는다.
+
+```powershell
+pnpm research:paired-cnn --python .research-output/venv-cnn/Scripts/python.exe --output .research-output/paired-teacher/reproduction-v1
+```
+
+Raw data와 checkpoint는 로컬 출력 폴더에 보관하고 공개 저장소에는 코드와 비민감 집계만 포함한다. 동일 Windows CPU 환경의 재현 절차이며 다른 PyTorch/OS의 bitwise 결과를 보장하지 않는다.
 
 ## References
 
