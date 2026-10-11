@@ -3,12 +3,15 @@ import {
   writeFileSync,
   mkdirSync,
   appendFileSync,
+  existsSync,
+  copyFileSync,
 } from "node:fs";
 import { resolve, relative, isAbsolute } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { spawn, execFileSync } from "node:child_process";
 import { compileResearch } from "./runtime.mjs";
+import { validatePretrainingReuse } from "./outcome-recovery.mjs";
 
 const root = resolve(fileURLToPath(new URL("../../", import.meta.url)));
 const json = (path) => JSON.parse(readFileSync(path, "utf8"));
@@ -29,13 +32,14 @@ if (argv.length === 1 && argv[0] === "--help") {
 }
 for (let i = 0; i < argv.length; i += 2) {
   const key = argv[i];
-  require(["--source", "--python", "--output"].includes(key) &&
+  require(["--source", "--python", "--output", "--encoded"].includes(key) &&
     argv[i + 1] &&
     !options[key], "Unknown, duplicate or missing argument");
   options[key] = argv[i + 1];
 }
-require(Object.keys(options).length ===
-  3, "source/python/output required; no extra training options");
+require(["--source", "--python", "--output"].every(
+  (key) => options[key],
+), "source/python/output required; no extra training options");
 const output = resolve(root, options["--output"]);
 const inside = relative(resolve(root, ".research-output"), output);
 require(inside &&
@@ -152,31 +156,69 @@ try {
     pack.stage === "train-dev" &&
     pack.examples.test.length === 0, "Train/dev stage only");
   let transitions = 0;
+  let recovery = null;
   const examples = {};
-  for (const split of ["train", "dev"]) {
-    require(pack.examples[split].length ===
-      config.source.examples[split], "Fixed observation count");
-    examples[split] = pack.examples[split].map((e, i) => {
-      const result = extendOutcome(
-        e,
-        config.limits.additionalDomainTransitions - transitions,
-      );
-      transitions += result.transitions;
-      if ((i + 1) % 50 === 0)
-        progress("encoding", { split, observations: i + 1, transitions });
-      return { id: e.id, candidateFeatures: result.candidateFeatures };
+  if (options["--encoded"]) {
+    const prior = resolve(root, options["--encoded"]);
+    const oldExecution = json(resolve(prior, "execution.json"));
+    const currentSources = Object.fromEntries(
+      Object.keys(oldExecution.sourceHashes).map((p) => [
+        p,
+        hash(resolve(root, p)),
+      ]),
+    );
+    recovery = validatePretrainingReuse({
+      execution: oldExecution,
+      configSha256: hash(configPath),
+      originalHashes,
+      currentSources,
+      augmentedSha256: hash(resolve(prior, "dataset.json")),
+      progress: readFileSync(resolve(prior, "progress.jsonl"), "utf8")
+        .trim()
+        .split("\n")
+        .map((line) => JSON.parse(line)),
+      failure: json(resolve(prior, "failure.json")),
+      hasTrainingOutput: ["baseline", "outcome", "report.json"].some((p) =>
+        existsSync(resolve(prior, p)),
+      ),
     });
-  }
+    recovery.priorExecutionSha256 = hash(resolve(prior, "execution.json"));
+    recovery.priorFailureSha256 = hash(
+      resolve(prior, "preflight/failure.json"),
+    );
+    copyFileSync(
+      resolve(prior, "dataset.json"),
+      resolve(output, "dataset.json"),
+    );
+    transitions = recovery.totalDomainTransitions;
+    progress("encoded-reuse", recovery);
+  } else
+    for (const split of ["train", "dev"]) {
+      require(pack.examples[split].length ===
+        config.source.examples[split], "Fixed observation count");
+      examples[split] = pack.examples[split].map((e, i) => {
+        const result = extendOutcome(
+          e,
+          config.limits.additionalDomainTransitions - transitions,
+        );
+        transitions += result.transitions;
+        if ((i + 1) % 50 === 0)
+          progress("encoding", { split, observations: i + 1, transitions });
+        return { id: e.id, candidateFeatures: result.candidateFeatures };
+      });
+    }
   require(transitions === 149597, "Exact transition count");
-  write(resolve(output, "dataset.json"), {
-    schema: OUTCOME_SCHEMA,
-    sourceDataSha256: config.source.dataSha256,
-    examples,
-    transitions,
-  });
+  if (!recovery)
+    write(resolve(output, "dataset.json"), {
+      schema: OUTCOME_SCHEMA,
+      sourceDataSha256: config.source.dataSha256,
+      examples,
+      transitions,
+    });
   const paths = [
     "scripts/research/outcome-cnn.mjs",
     "scripts/research/runtime.mjs",
+    "scripts/research/outcome-recovery.mjs",
     "research/cnn/outcome.py",
     "research/cnn/diagnose.py",
     "research/experiments/outcome-features-v1.json",
@@ -197,6 +239,7 @@ try {
     teacherCalls: 0,
     testLoaded: false,
     newEpisodes: 0,
+    recovery,
   };
   write(resolve(output, "execution.json"), execution);
   progress("preflight", { transitions });
@@ -270,6 +313,7 @@ try {
       testScored: false,
       policyRollouts: 0,
       extraTuning: false,
+      additionalTransitionsThisExecution: recovery ? 0 : transitions,
     },
     preservation: {
       originalFilesExact: originalFiles.length,

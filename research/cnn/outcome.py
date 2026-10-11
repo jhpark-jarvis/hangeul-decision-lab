@@ -17,6 +17,18 @@ ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "research/experiments/outcome-features-v1.json"
 
 
+def validate_training_contract(original, extended):
+    # The original protocol also has descriptive fields, not model parameters.
+    for key in ("seed", "epochs", "batchSize", "threads", "convChannels", "embedding",
+                "poolRows", "poolCols", "learningRate", "weightDecay"):
+        require(original[key] == extended[key], "Fixed training contract: " + key)
+    require(original["loss"] == "single-hard-label-cross-entropy" and
+            original["sampleOrder"] == "same-paired-example-indices" and
+            original["checkpointSelection"] == "own-teacher-highest-dev-top1-first-tie" and
+            original["additionalTuning"] is False and original["runs"] == extended["runs"] == 2,
+            "Original objective/order/selection contract")
+
+
 class OutcomeCandidateCNN(CandidateCNN):
     def __init__(self, config, common):
         super().__init__(config)
@@ -70,8 +82,7 @@ def load_inputs(source, augmented, execution):
             config["source"]["dataSha256"], "Original source identity")
     require(sha256((Path(source) / "models/A512/report.json").read_bytes()) ==
             freeze["models"]["A512"]["reportSha256"], "Original baseline history hash")
-    for key, value in protocol["training"].items():
-        require(config["training"][key] == value, "Fixed training contract: " + key)
+    validate_training_contract(protocol["training"], config["training"])
     body = Path(augmented).read_bytes()
     require(sha256(body) == frozen_execution["augmentedSha256"], "Augmented hash")
     augmented = json.loads(body)

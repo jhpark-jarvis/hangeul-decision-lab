@@ -7,7 +7,7 @@ import sys
 import tempfile
 import torch
 from model import CandidateCNN, configure, tensors
-from outcome import OutcomeCandidateCNN, gate, verify_baseline
+from outcome import OutcomeCandidateCNN, gate, verify_baseline, validate_training_contract
 
 CONFIG = {"seed": 20261008, "epochs": 12, "batchSize": 8, "threads": 2,
           "convChannels": 8, "embedding": 32, "poolRows": 4, "poolCols": 5,
@@ -84,6 +84,15 @@ class OutcomeTests(unittest.TestCase):
         saved["state_dict"]["bias.bias"][0] += 1
         with self.assertRaisesRegex(ValueError, "STOP"):
             verify_baseline(self.baseline, history, 11, audit, original, saved)
+
+    def test_original_protocol_descriptions_are_not_extended_hyperparameters(self):
+        directory = Path(__file__).parent
+        original = json.loads((directory / "paired-protocol.json").read_bytes())["training"]
+        extended = json.loads((directory.parent / "experiments/outcome-features-v1.json").read_bytes())["training"]
+        validate_training_contract(original, extended)
+        for key, bad in (("epochs", 13), ("seed", 7)):
+            with self.assertRaises(ValueError): validate_training_contract(original, {**extended, key: bad})
+        with self.assertRaises(ValueError): validate_training_contract({**original, "loss": "different"}, extended)
 
 
 if __name__ == "__main__": unittest.main()
