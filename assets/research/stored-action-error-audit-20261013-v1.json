@@ -1,0 +1,3642 @@
+{
+  "schemaVersion": 1,
+  "id": "stored-action-error-audit-20261013-v1",
+  "status": "PASS",
+  "method": {
+    "errors": [
+      "exact-label",
+      "wrong-kind",
+      "different-target",
+      "different-shape",
+      "different-position"
+    ],
+    "groups": [
+      "teacher-kind",
+      "family",
+      "search-complete",
+      "legal-kinds",
+      "teacher-final-phase"
+    ],
+    "confusion": "A512 teacher kind vs stored selected kind; denominator every observation",
+    "singleCell": "Same-kind coordinate error vs wrong-kind; Manhattan distance conditional on same-kind only",
+    "ties": "Original compareEvaluations on stored best/at-most-three alternatives; distinct first action indices; no relabel",
+    "tieMeaning": "Returned full-path comparator tie only; not an optimal-action set or equal future value",
+    "repeat": "Two separate CLI processes; raw and summary byte exact; repeats do not increase observations"
+  },
+  "identity": {
+    "inputHashes": {
+      "dataset": "fa72eb460151763e664ecdd0a2438e1ae69172b98dbb5ab4b3f6f44b9e4c29fb",
+      "execution": "c3609e686821ef222c586e2b9ce428c7837cb74607bf0367b6a70aff41ef4a5e",
+      "report": "bd8794afe73c70d39059f22ab90b9809be2c3b4da40cd6b23db009557adf61a4",
+      "pairedFreeze": "d3d0c72074f7ad23bfb2c13549dda4bf952c02496cc9dc6696e1a0f7375baf61",
+      "outcomeFreeze": "505c2b38b71a567cd27004027e7928a5a8671ba83b5c5353ca3084d616c32488",
+      "baselinePredictions": "8df1d6706c666beb5dc3d34623e8228042d61e5b179507826348b2e5a2c39e60",
+      "baselineCheckpoint": "33a6499dc3dfdae82ea72938c2c8fd932d13ba8b631f5b55d6b4e8b2cfe422ab",
+      "outcomePredictions": "34feaf2409e7489d62cb149ce7d92a22b85d2c7b3b168161c4eb86f211d813d1",
+      "outcomeCheckpoint": "837fc1fb1db09cd16ba2af2ab28fc95ee7d618fb2f834a2a2f97853e27c1284e"
+    },
+    "configSha256": "e9bb0fa2a9820e641973a1956adb7c80ffda3adecacc398fea6f78d5c4a71d0e",
+    "sourceHashes": {
+      "src/research/action-errors.ts": "4f774680a2298010d57de852de0fbb1458dd9bad69fc368ea62a8cc397df16f5",
+      "src/domain/solver/evaluator.ts": "6561674cf06a31e1761213de852eaa0739e672276538a507fe65a46d9a9ce752",
+      "src/domain/board/board-metrics.ts": "98d86a47b880290d648658de94a51288705ae82581dbf748bfed9fa4cca800df",
+      "src/domain/board/board.ts": "33e848d71ba6ea797e67a0e7b1d3ad59a55fa603873695881cb04edded4db44a",
+      "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+      "src/domain/board/line-clear.ts": "9e25faa546ce2c3244236e14471157832be2efbe813d10c58af41b5bf281682f",
+      "src/domain/pieces/placement.ts": "8ef4b72415c4fa05ebe7abd0c38ebef8693756007e0c4d1afe1a918352e9aeaf",
+      "src/domain/pieces/transforms.ts": "45daa497f748823e546ebf6504c9b9f573d4ae553f12a2406a58ff41e52d58a6",
+      "src/domain/game/game-state.ts": "fe651495fcf0009fe5dfa9a34b53b323e6a6f29da1bb726b1570fe42463720c3",
+      "src/domain/game/abilities.ts": "7cfc2424c8289d9a5e9f7f1f7cd4f2f6bdd2dd6cb3944b0015a974f21e5e3b08",
+      "src/domain/game/types.ts": "49fb99c0f3343e1dc47d35e0ddb6e63d9d27da3752905f538e4d7cef3e4029a9",
+      "src/domain/game/hidden-items.ts": "c165d20964b844b8d11b2f3a424b944d0bc67085a5b513903ed3b770cdcf6783",
+      "src/domain/solver/mobility.ts": "4de627ea8117efe9822ac0c446d7950a2f798781d8b7d887be79466efc6a6b04",
+      "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+      "src/domain/pieces/catalog.ts": "a0b998e5fde9c8f081557263dcf4cad01394907aae7d075d5b2efff71b2bce3e",
+      "src/domain/solver/solver.ts": "cbbbae7e84de558600679e9951996b2e19f25166610f2ec5b4f5a189642d4007",
+      "src/domain/solver/ability-candidates.ts": "9d2804ce9448a30b58fd32103f458eb5c0ece0481d60c7e84574a914608b179d",
+      "src/domain/solver/search.ts": "7ffcede4a462066f03f917f42f74261f9e0a2b1fd3b509eb46861c048f54f29c",
+      "src/domain/solver/types.ts": "93da18624d5568e849d8ded156b7d19fd9dcbc2356bfcf36f05aabb4e49ab128",
+      "src/research/episode.ts": "f41437244a4d3cc08dcfc80a1179ea5dd13649bc3ee02936b2f2c2b3a9427678",
+      "src/research/fixture.ts": "b2f0d9891d6124fee9a49090f0d31cc321094a82d16d80a38b9910e90e31ef79",
+      "src/research/types.ts": "f2727ed83a18036122a14c402e13776247c9be2da48cb3559e263803e4762657",
+      "scripts/research/action-errors.mjs": "e0ccc22f12cd65948d05136b5123b243d40171f52d427371a9173b4269359e5c",
+      "scripts/research/runtime.mjs": "103d72746f5dbce58b646d96d403fed060874f8d9043e5a7c1c0c7c9bba04192",
+      "research/experiments/action-error-audit-v1.json": "e9bb0fa2a9820e641973a1956adb7c80ffda3adecacc398fea6f78d5c4a71d0e"
+    }
+  },
+  "summary": {
+    "baseline": {
+      "train": {
+        "overall": {
+          "examples": 339,
+          "fixtures": 64,
+          "correct": 123,
+          "confusion": {
+            "place-piece": {
+              "place-piece": 235,
+              "single-cell": 3,
+              "reroll": 21
+            },
+            "single-cell": {
+              "place-piece": 27,
+              "single-cell": 10,
+              "reroll": 15
+            },
+            "reroll": {
+              "place-piece": 3,
+              "single-cell": 0,
+              "reroll": 25
+            }
+          },
+          "errors": {
+            "exact-label": 123,
+            "wrong-kind": 69,
+            "different-target": 6,
+            "different-shape": 92,
+            "different-position": 49
+          },
+          "singleCell": {
+            "examples": 52,
+            "exact": 0,
+            "wrongKind": 42,
+            "wrongPosition": 10,
+            "sameKindDistanceSamples": 10,
+            "meanManhattanDistance": 13.7,
+            "maxManhattanDistance": 21,
+            "storedEqualFirstHits": 0
+          },
+          "storedTies": {
+            "examplesWithDistinctEqualFirst": 37,
+            "returnedEqualAlternativePaths": 86,
+            "selectedInReturnedEqualFirstSet": 123,
+            "additionalStoredTieHits": 0,
+            "omissionFlagExamples": 339
+          }
+        },
+        "groups": {
+          "teacherKind": {
+            "place-piece": {
+              "examples": 259,
+              "fixtures": 62,
+              "correct": 98,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 235,
+                  "single-cell": 3,
+                  "reroll": 21
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 98,
+                "wrong-kind": 24,
+                "different-target": 6,
+                "different-shape": 92,
+                "different-position": 39
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 9,
+                "returnedEqualAlternativePaths": 34,
+                "selectedInReturnedEqualFirstSet": 98,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 259
+              }
+            },
+            "reroll": {
+              "examples": 28,
+              "fixtures": 27,
+              "correct": 25,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 3,
+                  "single-cell": 0,
+                  "reroll": 25
+                }
+              },
+              "errors": {
+                "exact-label": 25,
+                "wrong-kind": 3,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 20,
+                "returnedEqualAlternativePaths": 24,
+                "selectedInReturnedEqualFirstSet": 25,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 28
+              }
+            },
+            "single-cell": {
+              "examples": 52,
+              "fixtures": 49,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 27,
+                  "single-cell": 10,
+                  "reroll": 15
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 42,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 10
+              },
+              "singleCell": {
+                "examples": 52,
+                "exact": 0,
+                "wrongKind": 42,
+                "wrongPosition": 10,
+                "sameKindDistanceSamples": 10,
+                "meanManhattanDistance": 13.7,
+                "maxManhattanDistance": 21,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 8,
+                "returnedEqualAlternativePaths": 28,
+                "selectedInReturnedEqualFirstSet": 0,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 52
+              }
+            }
+          },
+          "family": {
+            "pressure": {
+              "examples": 147,
+              "fixtures": 32,
+              "correct": 44,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 62,
+                  "single-cell": 2,
+                  "reroll": 21
+                },
+                "single-cell": {
+                  "place-piece": 9,
+                  "single-cell": 10,
+                  "reroll": 15
+                },
+                "reroll": {
+                  "place-piece": 3,
+                  "single-cell": 0,
+                  "reroll": 25
+                }
+              },
+              "errors": {
+                "exact-label": 44,
+                "wrong-kind": 50,
+                "different-target": 4,
+                "different-shape": 21,
+                "different-position": 28
+              },
+              "singleCell": {
+                "examples": 34,
+                "exact": 0,
+                "wrongKind": 24,
+                "wrongPosition": 10,
+                "sameKindDistanceSamples": 10,
+                "meanManhattanDistance": 13.7,
+                "maxManhattanDistance": 21,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 36,
+                "returnedEqualAlternativePaths": 85,
+                "selectedInReturnedEqualFirstSet": 44,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 147
+              }
+            },
+            "sparse": {
+              "examples": 192,
+              "fixtures": 32,
+              "correct": 79,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 173,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 18,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 79,
+                "wrong-kind": 19,
+                "different-target": 2,
+                "different-shape": 71,
+                "different-position": 21
+              },
+              "singleCell": {
+                "examples": 18,
+                "exact": 0,
+                "wrongKind": 18,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 1,
+                "returnedEqualAlternativePaths": 1,
+                "selectedInReturnedEqualFirstSet": 79,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 192
+              }
+            }
+          },
+          "searchComplete": {
+            "false": {
+              "examples": 254,
+              "fixtures": 62,
+              "correct": 86,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 204,
+                  "single-cell": 2,
+                  "reroll": 16
+                },
+                "single-cell": {
+                  "place-piece": 24,
+                  "single-cell": 0,
+                  "reroll": 6
+                },
+                "reroll": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 1
+                }
+              },
+              "errors": {
+                "exact-label": 86,
+                "wrong-kind": 49,
+                "different-target": 3,
+                "different-shape": 83,
+                "different-position": 33
+              },
+              "singleCell": {
+                "examples": 30,
+                "exact": 0,
+                "wrongKind": 30,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 5,
+                "returnedEqualAlternativePaths": 30,
+                "selectedInReturnedEqualFirstSet": 86,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 254
+              }
+            },
+            "true": {
+              "examples": 85,
+              "fixtures": 36,
+              "correct": 37,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 31,
+                  "single-cell": 1,
+                  "reroll": 5
+                },
+                "single-cell": {
+                  "place-piece": 3,
+                  "single-cell": 10,
+                  "reroll": 9
+                },
+                "reroll": {
+                  "place-piece": 2,
+                  "single-cell": 0,
+                  "reroll": 24
+                }
+              },
+              "errors": {
+                "exact-label": 37,
+                "wrong-kind": 20,
+                "different-target": 3,
+                "different-shape": 9,
+                "different-position": 16
+              },
+              "singleCell": {
+                "examples": 22,
+                "exact": 0,
+                "wrongKind": 12,
+                "wrongPosition": 10,
+                "sameKindDistanceSamples": 10,
+                "meanManhattanDistance": 13.7,
+                "maxManhattanDistance": 21,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 32,
+                "returnedEqualAlternativePaths": 56,
+                "selectedInReturnedEqualFirstSet": 37,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 85
+              }
+            }
+          },
+          "legalKinds": {
+            "place-piece": {
+              "examples": 11,
+              "fixtures": 6,
+              "correct": 3,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 11,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 3,
+                "wrong-kind": 0,
+                "different-target": 1,
+                "different-shape": 4,
+                "different-position": 3
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 1,
+                "returnedEqualAlternativePaths": 3,
+                "selectedInReturnedEqualFirstSet": 3,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 11
+              }
+            },
+            "place-piece+reroll": {
+              "examples": 57,
+              "fixtures": 24,
+              "correct": 21,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 42,
+                  "single-cell": 0,
+                  "reroll": 7
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 2,
+                  "single-cell": 0,
+                  "reroll": 6
+                }
+              },
+              "errors": {
+                "exact-label": 21,
+                "wrong-kind": 9,
+                "different-target": 3,
+                "different-shape": 14,
+                "different-position": 10
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 15,
+                "returnedEqualAlternativePaths": 23,
+                "selectedInReturnedEqualFirstSet": 21,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 57
+              }
+            },
+            "place-piece+reroll+single-cell": {
+              "examples": 224,
+              "fixtures": 61,
+              "correct": 79,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 176,
+                  "single-cell": 1,
+                  "reroll": 14
+                },
+                "single-cell": {
+                  "place-piece": 25,
+                  "single-cell": 0,
+                  "reroll": 6
+                },
+                "reroll": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 1
+                }
+              },
+              "errors": {
+                "exact-label": 79,
+                "wrong-kind": 47,
+                "different-target": 2,
+                "different-shape": 72,
+                "different-position": 24
+              },
+              "singleCell": {
+                "examples": 31,
+                "exact": 0,
+                "wrongKind": 31,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 3,
+                "returnedEqualAlternativePaths": 24,
+                "selectedInReturnedEqualFirstSet": 79,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 224
+              }
+            },
+            "place-piece+single-cell": {
+              "examples": 10,
+              "fixtures": 8,
+              "correct": 2,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 6,
+                  "single-cell": 2,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 2,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 2,
+                "wrong-kind": 4,
+                "different-target": 0,
+                "different-shape": 2,
+                "different-position": 2
+              },
+              "singleCell": {
+                "examples": 2,
+                "exact": 0,
+                "wrongKind": 2,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 1,
+                "returnedEqualAlternativePaths": 5,
+                "selectedInReturnedEqualFirstSet": 2,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 10
+              }
+            },
+            "reroll": {
+              "examples": 8,
+              "fixtures": 7,
+              "correct": 8,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 8
+                }
+              },
+              "errors": {
+                "exact-label": 8,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 2,
+                "returnedEqualAlternativePaths": 2,
+                "selectedInReturnedEqualFirstSet": 8,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 8
+              }
+            },
+            "reroll+single-cell": {
+              "examples": 20,
+              "fixtures": 19,
+              "correct": 10,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 1,
+                  "reroll": 9
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 10
+                }
+              },
+              "errors": {
+                "exact-label": 10,
+                "wrong-kind": 9,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 1
+              },
+              "singleCell": {
+                "examples": 10,
+                "exact": 0,
+                "wrongKind": 9,
+                "wrongPosition": 1,
+                "sameKindDistanceSamples": 1,
+                "meanManhattanDistance": 14,
+                "maxManhattanDistance": 14,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 8,
+                "returnedEqualAlternativePaths": 15,
+                "selectedInReturnedEqualFirstSet": 10,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 20
+              }
+            },
+            "single-cell": {
+              "examples": 9,
+              "fixtures": 9,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 9,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 9
+              },
+              "singleCell": {
+                "examples": 9,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 9,
+                "sameKindDistanceSamples": 9,
+                "meanManhattanDistance": 13.666666666666666,
+                "maxManhattanDistance": 21,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 7,
+                "returnedEqualAlternativePaths": 14,
+                "selectedInReturnedEqualFirstSet": 0,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 9
+              }
+            }
+          },
+          "teacherFinalPhase": {
+            "await-next-pieces": {
+              "examples": 246,
+              "fixtures": 46,
+              "correct": 91,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 211,
+                  "single-cell": 2,
+                  "reroll": 5
+                },
+                "single-cell": {
+                  "place-piece": 23,
+                  "single-cell": 1,
+                  "reroll": 4
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 91,
+                "wrong-kind": 34,
+                "different-target": 5,
+                "different-shape": 82,
+                "different-position": 34
+              },
+              "singleCell": {
+                "examples": 28,
+                "exact": 0,
+                "wrongKind": 27,
+                "wrongPosition": 1,
+                "sameKindDistanceSamples": 1,
+                "meanManhattanDistance": 14,
+                "maxManhattanDistance": 14,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 9,
+                "returnedEqualAlternativePaths": 21,
+                "selectedInReturnedEqualFirstSet": 91,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 246
+              }
+            },
+            "await-reroll-result": {
+              "examples": 68,
+              "fixtures": 27,
+              "correct": 29,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 12,
+                  "single-cell": 0,
+                  "reroll": 15
+                },
+                "single-cell": {
+                  "place-piece": 2,
+                  "single-cell": 0,
+                  "reroll": 11
+                },
+                "reroll": {
+                  "place-piece": 3,
+                  "single-cell": 0,
+                  "reroll": 25
+                }
+              },
+              "errors": {
+                "exact-label": 29,
+                "wrong-kind": 31,
+                "different-target": 1,
+                "different-shape": 4,
+                "different-position": 3
+              },
+              "singleCell": {
+                "examples": 13,
+                "exact": 0,
+                "wrongKind": 13,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 20,
+                "returnedEqualAlternativePaths": 46,
+                "selectedInReturnedEqualFirstSet": 29,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 68
+              }
+            },
+            "gameover": {
+              "examples": 17,
+              "fixtures": 15,
+              "correct": 3,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 6,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 2,
+                  "single-cell": 9,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 3,
+                "wrong-kind": 2,
+                "different-target": 0,
+                "different-shape": 3,
+                "different-position": 9
+              },
+              "singleCell": {
+                "examples": 11,
+                "exact": 0,
+                "wrongKind": 2,
+                "wrongPosition": 9,
+                "sameKindDistanceSamples": 9,
+                "meanManhattanDistance": 13.666666666666666,
+                "maxManhattanDistance": 21,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 8,
+                "returnedEqualAlternativePaths": 19,
+                "selectedInReturnedEqualFirstSet": 3,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 17
+              }
+            },
+            "playing": {
+              "examples": 8,
+              "fixtures": 5,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 6,
+                  "single-cell": 1,
+                  "reroll": 1
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 2,
+                "different-target": 0,
+                "different-shape": 3,
+                "different-position": 3
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 0,
+                "returnedEqualAlternativePaths": 0,
+                "selectedInReturnedEqualFirstSet": 0,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 8
+              }
+            }
+          }
+        }
+      },
+      "dev": {
+        "overall": {
+          "examples": 89,
+          "fixtures": 16,
+          "correct": 29,
+          "confusion": {
+            "place-piece": {
+              "place-piece": 62,
+              "single-cell": 1,
+              "reroll": 5
+            },
+            "single-cell": {
+              "place-piece": 7,
+              "single-cell": 5,
+              "reroll": 1
+            },
+            "reroll": {
+              "place-piece": 1,
+              "single-cell": 0,
+              "reroll": 7
+            }
+          },
+          "errors": {
+            "exact-label": 29,
+            "wrong-kind": 15,
+            "different-target": 0,
+            "different-shape": 32,
+            "different-position": 13
+          },
+          "singleCell": {
+            "examples": 13,
+            "exact": 0,
+            "wrongKind": 8,
+            "wrongPosition": 5,
+            "sameKindDistanceSamples": 5,
+            "meanManhattanDistance": 9.2,
+            "maxManhattanDistance": 20,
+            "storedEqualFirstHits": 1
+          },
+          "storedTies": {
+            "examplesWithDistinctEqualFirst": 11,
+            "returnedEqualAlternativePaths": 23,
+            "selectedInReturnedEqualFirstSet": 30,
+            "additionalStoredTieHits": 1,
+            "omissionFlagExamples": 89
+          }
+        },
+        "groups": {
+          "teacherKind": {
+            "place-piece": {
+              "examples": 68,
+              "fixtures": 16,
+              "correct": 22,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 62,
+                  "single-cell": 1,
+                  "reroll": 5
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 22,
+                "wrong-kind": 6,
+                "different-target": 0,
+                "different-shape": 32,
+                "different-position": 8
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 2,
+                "returnedEqualAlternativePaths": 10,
+                "selectedInReturnedEqualFirstSet": 22,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 68
+              }
+            },
+            "reroll": {
+              "examples": 8,
+              "fixtures": 8,
+              "correct": 7,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 7
+                }
+              },
+              "errors": {
+                "exact-label": 7,
+                "wrong-kind": 1,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 6,
+                "returnedEqualAlternativePaths": 7,
+                "selectedInReturnedEqualFirstSet": 7,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 8
+              }
+            },
+            "single-cell": {
+              "examples": 13,
+              "fixtures": 13,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 7,
+                  "single-cell": 5,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 8,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 5
+              },
+              "singleCell": {
+                "examples": 13,
+                "exact": 0,
+                "wrongKind": 8,
+                "wrongPosition": 5,
+                "sameKindDistanceSamples": 5,
+                "meanManhattanDistance": 9.2,
+                "maxManhattanDistance": 20,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 3,
+                "returnedEqualAlternativePaths": 6,
+                "selectedInReturnedEqualFirstSet": 1,
+                "additionalStoredTieHits": 1,
+                "omissionFlagExamples": 13
+              }
+            }
+          },
+          "family": {
+            "pressure": {
+              "examples": 41,
+              "fixtures": 8,
+              "correct": 13,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 19,
+                  "single-cell": 1,
+                  "reroll": 5
+                },
+                "single-cell": {
+                  "place-piece": 2,
+                  "single-cell": 5,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 7
+                }
+              },
+              "errors": {
+                "exact-label": 13,
+                "wrong-kind": 10,
+                "different-target": 0,
+                "different-shape": 9,
+                "different-position": 9
+              },
+              "singleCell": {
+                "examples": 8,
+                "exact": 0,
+                "wrongKind": 3,
+                "wrongPosition": 5,
+                "sameKindDistanceSamples": 5,
+                "meanManhattanDistance": 9.2,
+                "maxManhattanDistance": 20,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 10,
+                "returnedEqualAlternativePaths": 20,
+                "selectedInReturnedEqualFirstSet": 14,
+                "additionalStoredTieHits": 1,
+                "omissionFlagExamples": 41
+              }
+            },
+            "sparse": {
+              "examples": 48,
+              "fixtures": 8,
+              "correct": 16,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 43,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 5,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 16,
+                "wrong-kind": 5,
+                "different-target": 0,
+                "different-shape": 23,
+                "different-position": 4
+              },
+              "singleCell": {
+                "examples": 5,
+                "exact": 0,
+                "wrongKind": 5,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 1,
+                "returnedEqualAlternativePaths": 3,
+                "selectedInReturnedEqualFirstSet": 16,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 48
+              }
+            }
+          },
+          "searchComplete": {
+            "false": {
+              "examples": 66,
+              "fixtures": 16,
+              "correct": 19,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 53,
+                  "single-cell": 0,
+                  "reroll": 5
+                },
+                "single-cell": {
+                  "place-piece": 7,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 19,
+                "wrong-kind": 12,
+                "different-target": 0,
+                "different-shape": 28,
+                "different-position": 7
+              },
+              "singleCell": {
+                "examples": 8,
+                "exact": 0,
+                "wrongKind": 7,
+                "wrongPosition": 1,
+                "sameKindDistanceSamples": 1,
+                "meanManhattanDistance": 6,
+                "maxManhattanDistance": 6,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 2,
+                "returnedEqualAlternativePaths": 9,
+                "selectedInReturnedEqualFirstSet": 19,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 66
+              }
+            },
+            "true": {
+              "examples": 23,
+              "fixtures": 8,
+              "correct": 10,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 9,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 4,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 7
+                }
+              },
+              "errors": {
+                "exact-label": 10,
+                "wrong-kind": 3,
+                "different-target": 0,
+                "different-shape": 4,
+                "different-position": 6
+              },
+              "singleCell": {
+                "examples": 5,
+                "exact": 0,
+                "wrongKind": 1,
+                "wrongPosition": 4,
+                "sameKindDistanceSamples": 4,
+                "meanManhattanDistance": 10,
+                "maxManhattanDistance": 20,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 9,
+                "returnedEqualAlternativePaths": 14,
+                "selectedInReturnedEqualFirstSet": 11,
+                "additionalStoredTieHits": 1,
+                "omissionFlagExamples": 23
+              }
+            }
+          },
+          "legalKinds": {
+            "place-piece": {
+              "examples": 5,
+              "fixtures": 3,
+              "correct": 3,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 5,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 3,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 1,
+                "different-position": 1
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 0,
+                "returnedEqualAlternativePaths": 0,
+                "selectedInReturnedEqualFirstSet": 3,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 5
+              }
+            },
+            "place-piece+reroll": {
+              "examples": 7,
+              "fixtures": 3,
+              "correct": 1,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 5,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 1
+                }
+              },
+              "errors": {
+                "exact-label": 1,
+                "wrong-kind": 1,
+                "different-target": 0,
+                "different-shape": 3,
+                "different-position": 2
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 2,
+                "returnedEqualAlternativePaths": 4,
+                "selectedInReturnedEqualFirstSet": 1,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 7
+              }
+            },
+            "place-piece+reroll+single-cell": {
+              "examples": 61,
+              "fixtures": 16,
+              "correct": 19,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 48,
+                  "single-cell": 0,
+                  "reroll": 5
+                },
+                "single-cell": {
+                  "place-piece": 7,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 19,
+                "wrong-kind": 12,
+                "different-target": 0,
+                "different-shape": 24,
+                "different-position": 6
+              },
+              "singleCell": {
+                "examples": 8,
+                "exact": 0,
+                "wrongKind": 7,
+                "wrongPosition": 1,
+                "sameKindDistanceSamples": 1,
+                "meanManhattanDistance": 6,
+                "maxManhattanDistance": 6,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 2,
+                "returnedEqualAlternativePaths": 8,
+                "selectedInReturnedEqualFirstSet": 19,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 61
+              }
+            },
+            "place-piece+single-cell": {
+              "examples": 5,
+              "fixtures": 4,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 4,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 1,
+                "different-target": 0,
+                "different-shape": 4,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 0,
+                "returnedEqualAlternativePaths": 1,
+                "selectedInReturnedEqualFirstSet": 0,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 5
+              }
+            },
+            "reroll": {
+              "examples": 1,
+              "fixtures": 1,
+              "correct": 1,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 1
+                }
+              },
+              "errors": {
+                "exact-label": 1,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 0,
+                "returnedEqualAlternativePaths": 0,
+                "selectedInReturnedEqualFirstSet": 1,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 1
+              }
+            },
+            "reroll+single-cell": {
+              "examples": 6,
+              "fixtures": 6,
+              "correct": 5,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 5
+                }
+              },
+              "errors": {
+                "exact-label": 5,
+                "wrong-kind": 1,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 1,
+                "exact": 0,
+                "wrongKind": 1,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 4,
+                "returnedEqualAlternativePaths": 4,
+                "selectedInReturnedEqualFirstSet": 5,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 6
+              }
+            },
+            "single-cell": {
+              "examples": 4,
+              "fixtures": 4,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 4,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 4
+              },
+              "singleCell": {
+                "examples": 4,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 4,
+                "sameKindDistanceSamples": 4,
+                "meanManhattanDistance": 10,
+                "maxManhattanDistance": 20,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 3,
+                "returnedEqualAlternativePaths": 6,
+                "selectedInReturnedEqualFirstSet": 1,
+                "additionalStoredTieHits": 1,
+                "omissionFlagExamples": 4
+              }
+            }
+          },
+          "teacherFinalPhase": {
+            "await-next-pieces": {
+              "examples": 61,
+              "fixtures": 13,
+              "correct": 19,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 50,
+                  "single-cell": 1,
+                  "reroll": 2
+                },
+                "single-cell": {
+                  "place-piece": 5,
+                  "single-cell": 2,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 19,
+                "wrong-kind": 9,
+                "different-target": 0,
+                "different-shape": 27,
+                "different-position": 6
+              },
+              "singleCell": {
+                "examples": 8,
+                "exact": 0,
+                "wrongKind": 6,
+                "wrongPosition": 2,
+                "sameKindDistanceSamples": 2,
+                "meanManhattanDistance": 7,
+                "maxManhattanDistance": 8,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 1,
+                "returnedEqualAlternativePaths": 3,
+                "selectedInReturnedEqualFirstSet": 19,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 61
+              }
+            },
+            "await-reroll-result": {
+              "examples": 19,
+              "fixtures": 8,
+              "correct": 9,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 7,
+                  "single-cell": 0,
+                  "reroll": 3
+                },
+                "single-cell": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 7
+                }
+              },
+              "errors": {
+                "exact-label": 9,
+                "wrong-kind": 5,
+                "different-target": 0,
+                "different-shape": 2,
+                "different-position": 3
+              },
+              "singleCell": {
+                "examples": 1,
+                "exact": 0,
+                "wrongKind": 1,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 7,
+                "returnedEqualAlternativePaths": 14,
+                "selectedInReturnedEqualFirstSet": 9,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 19
+              }
+            },
+            "gameover": {
+              "examples": 6,
+              "fixtures": 6,
+              "correct": 1,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 3,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 3,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 1,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 1,
+                "different-position": 4
+              },
+              "singleCell": {
+                "examples": 3,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 3,
+                "sameKindDistanceSamples": 3,
+                "meanManhattanDistance": 10.666666666666666,
+                "maxManhattanDistance": 20,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 3,
+                "returnedEqualAlternativePaths": 6,
+                "selectedInReturnedEqualFirstSet": 2,
+                "additionalStoredTieHits": 1,
+                "omissionFlagExamples": 6
+              }
+            },
+            "playing": {
+              "examples": 3,
+              "fixtures": 3,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 2,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 1,
+                "different-target": 0,
+                "different-shape": 2,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 1,
+                "exact": 0,
+                "wrongKind": 1,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 0,
+                "returnedEqualAlternativePaths": 0,
+                "selectedInReturnedEqualFirstSet": 0,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 3
+              }
+            }
+          }
+        }
+      }
+    },
+    "outcome": {
+      "train": {
+        "overall": {
+          "examples": 339,
+          "fixtures": 64,
+          "correct": 123,
+          "confusion": {
+            "place-piece": {
+              "place-piece": 224,
+              "single-cell": 3,
+              "reroll": 32
+            },
+            "single-cell": {
+              "place-piece": 26,
+              "single-cell": 10,
+              "reroll": 16
+            },
+            "reroll": {
+              "place-piece": 3,
+              "single-cell": 0,
+              "reroll": 25
+            }
+          },
+          "errors": {
+            "exact-label": 123,
+            "wrong-kind": 80,
+            "different-target": 11,
+            "different-shape": 81,
+            "different-position": 44
+          },
+          "singleCell": {
+            "examples": 52,
+            "exact": 1,
+            "wrongKind": 42,
+            "wrongPosition": 9,
+            "sameKindDistanceSamples": 10,
+            "meanManhattanDistance": 12.3,
+            "maxManhattanDistance": 21,
+            "storedEqualFirstHits": 1
+          },
+          "storedTies": {
+            "examplesWithDistinctEqualFirst": 37,
+            "returnedEqualAlternativePaths": 86,
+            "selectedInReturnedEqualFirstSet": 123,
+            "additionalStoredTieHits": 0,
+            "omissionFlagExamples": 339
+          }
+        },
+        "groups": {
+          "teacherKind": {
+            "place-piece": {
+              "examples": 259,
+              "fixtures": 62,
+              "correct": 97,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 224,
+                  "single-cell": 3,
+                  "reroll": 32
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 97,
+                "wrong-kind": 35,
+                "different-target": 11,
+                "different-shape": 81,
+                "different-position": 35
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 9,
+                "returnedEqualAlternativePaths": 34,
+                "selectedInReturnedEqualFirstSet": 97,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 259
+              }
+            },
+            "reroll": {
+              "examples": 28,
+              "fixtures": 27,
+              "correct": 25,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 3,
+                  "single-cell": 0,
+                  "reroll": 25
+                }
+              },
+              "errors": {
+                "exact-label": 25,
+                "wrong-kind": 3,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 20,
+                "returnedEqualAlternativePaths": 24,
+                "selectedInReturnedEqualFirstSet": 25,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 28
+              }
+            },
+            "single-cell": {
+              "examples": 52,
+              "fixtures": 49,
+              "correct": 1,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 26,
+                  "single-cell": 10,
+                  "reroll": 16
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 1,
+                "wrong-kind": 42,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 9
+              },
+              "singleCell": {
+                "examples": 52,
+                "exact": 1,
+                "wrongKind": 42,
+                "wrongPosition": 9,
+                "sameKindDistanceSamples": 10,
+                "meanManhattanDistance": 12.3,
+                "maxManhattanDistance": 21,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 8,
+                "returnedEqualAlternativePaths": 28,
+                "selectedInReturnedEqualFirstSet": 1,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 52
+              }
+            }
+          },
+          "family": {
+            "pressure": {
+              "examples": 147,
+              "fixtures": 32,
+              "correct": 41,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 55,
+                  "single-cell": 1,
+                  "reroll": 29
+                },
+                "single-cell": {
+                  "place-piece": 9,
+                  "single-cell": 10,
+                  "reroll": 15
+                },
+                "reroll": {
+                  "place-piece": 3,
+                  "single-cell": 0,
+                  "reroll": 25
+                }
+              },
+              "errors": {
+                "exact-label": 41,
+                "wrong-kind": 57,
+                "different-target": 4,
+                "different-shape": 19,
+                "different-position": 26
+              },
+              "singleCell": {
+                "examples": 34,
+                "exact": 1,
+                "wrongKind": 24,
+                "wrongPosition": 9,
+                "sameKindDistanceSamples": 10,
+                "meanManhattanDistance": 12.3,
+                "maxManhattanDistance": 21,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 36,
+                "returnedEqualAlternativePaths": 85,
+                "selectedInReturnedEqualFirstSet": 41,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 147
+              }
+            },
+            "sparse": {
+              "examples": 192,
+              "fixtures": 32,
+              "correct": 82,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 169,
+                  "single-cell": 2,
+                  "reroll": 3
+                },
+                "single-cell": {
+                  "place-piece": 17,
+                  "single-cell": 0,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 82,
+                "wrong-kind": 23,
+                "different-target": 7,
+                "different-shape": 62,
+                "different-position": 18
+              },
+              "singleCell": {
+                "examples": 18,
+                "exact": 0,
+                "wrongKind": 18,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 1,
+                "returnedEqualAlternativePaths": 1,
+                "selectedInReturnedEqualFirstSet": 82,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 192
+              }
+            }
+          },
+          "searchComplete": {
+            "false": {
+              "examples": 254,
+              "fixtures": 62,
+              "correct": 87,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 196,
+                  "single-cell": 3,
+                  "reroll": 23
+                },
+                "single-cell": {
+                  "place-piece": 23,
+                  "single-cell": 0,
+                  "reroll": 7
+                },
+                "reroll": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 1
+                }
+              },
+              "errors": {
+                "exact-label": 87,
+                "wrong-kind": 57,
+                "different-target": 9,
+                "different-shape": 74,
+                "different-position": 27
+              },
+              "singleCell": {
+                "examples": 30,
+                "exact": 0,
+                "wrongKind": 30,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 5,
+                "returnedEqualAlternativePaths": 30,
+                "selectedInReturnedEqualFirstSet": 87,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 254
+              }
+            },
+            "true": {
+              "examples": 85,
+              "fixtures": 36,
+              "correct": 36,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 28,
+                  "single-cell": 0,
+                  "reroll": 9
+                },
+                "single-cell": {
+                  "place-piece": 3,
+                  "single-cell": 10,
+                  "reroll": 9
+                },
+                "reroll": {
+                  "place-piece": 2,
+                  "single-cell": 0,
+                  "reroll": 24
+                }
+              },
+              "errors": {
+                "exact-label": 36,
+                "wrong-kind": 23,
+                "different-target": 2,
+                "different-shape": 7,
+                "different-position": 17
+              },
+              "singleCell": {
+                "examples": 22,
+                "exact": 1,
+                "wrongKind": 12,
+                "wrongPosition": 9,
+                "sameKindDistanceSamples": 10,
+                "meanManhattanDistance": 12.3,
+                "maxManhattanDistance": 21,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 32,
+                "returnedEqualAlternativePaths": 56,
+                "selectedInReturnedEqualFirstSet": 36,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 85
+              }
+            }
+          },
+          "legalKinds": {
+            "place-piece": {
+              "examples": 11,
+              "fixtures": 6,
+              "correct": 4,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 11,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 4,
+                "wrong-kind": 0,
+                "different-target": 1,
+                "different-shape": 3,
+                "different-position": 3
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 1,
+                "returnedEqualAlternativePaths": 3,
+                "selectedInReturnedEqualFirstSet": 4,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 11
+              }
+            },
+            "place-piece+reroll": {
+              "examples": 57,
+              "fixtures": 24,
+              "correct": 17,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 34,
+                  "single-cell": 0,
+                  "reroll": 15
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 2,
+                  "single-cell": 0,
+                  "reroll": 6
+                }
+              },
+              "errors": {
+                "exact-label": 17,
+                "wrong-kind": 17,
+                "different-target": 3,
+                "different-shape": 8,
+                "different-position": 12
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 15,
+                "returnedEqualAlternativePaths": 23,
+                "selectedInReturnedEqualFirstSet": 17,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 57
+              }
+            },
+            "place-piece+reroll+single-cell": {
+              "examples": 224,
+              "fixtures": 61,
+              "correct": 80,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 172,
+                  "single-cell": 2,
+                  "reroll": 17
+                },
+                "single-cell": {
+                  "place-piece": 24,
+                  "single-cell": 0,
+                  "reroll": 7
+                },
+                "reroll": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 1
+                }
+              },
+              "errors": {
+                "exact-label": 80,
+                "wrong-kind": 51,
+                "different-target": 7,
+                "different-shape": 68,
+                "different-position": 18
+              },
+              "singleCell": {
+                "examples": 31,
+                "exact": 0,
+                "wrongKind": 31,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 3,
+                "returnedEqualAlternativePaths": 24,
+                "selectedInReturnedEqualFirstSet": 80,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 224
+              }
+            },
+            "place-piece+single-cell": {
+              "examples": 10,
+              "fixtures": 8,
+              "correct": 3,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 7,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 2,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 3,
+                "wrong-kind": 3,
+                "different-target": 0,
+                "different-shape": 2,
+                "different-position": 2
+              },
+              "singleCell": {
+                "examples": 2,
+                "exact": 0,
+                "wrongKind": 2,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 1,
+                "returnedEqualAlternativePaths": 5,
+                "selectedInReturnedEqualFirstSet": 3,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 10
+              }
+            },
+            "reroll": {
+              "examples": 8,
+              "fixtures": 7,
+              "correct": 8,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 8
+                }
+              },
+              "errors": {
+                "exact-label": 8,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 2,
+                "returnedEqualAlternativePaths": 2,
+                "selectedInReturnedEqualFirstSet": 8,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 8
+              }
+            },
+            "reroll+single-cell": {
+              "examples": 20,
+              "fixtures": 19,
+              "correct": 11,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 1,
+                  "reroll": 9
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 10
+                }
+              },
+              "errors": {
+                "exact-label": 11,
+                "wrong-kind": 9,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 10,
+                "exact": 1,
+                "wrongKind": 9,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 1,
+                "meanManhattanDistance": 0,
+                "maxManhattanDistance": 0,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 8,
+                "returnedEqualAlternativePaths": 15,
+                "selectedInReturnedEqualFirstSet": 11,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 20
+              }
+            },
+            "single-cell": {
+              "examples": 9,
+              "fixtures": 9,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 9,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 9
+              },
+              "singleCell": {
+                "examples": 9,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 9,
+                "sameKindDistanceSamples": 9,
+                "meanManhattanDistance": 13.666666666666666,
+                "maxManhattanDistance": 21,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 7,
+                "returnedEqualAlternativePaths": 14,
+                "selectedInReturnedEqualFirstSet": 0,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 9
+              }
+            }
+          },
+          "teacherFinalPhase": {
+            "await-next-pieces": {
+              "examples": 246,
+              "fixtures": 46,
+              "correct": 92,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 201,
+                  "single-cell": 2,
+                  "reroll": 15
+                },
+                "single-cell": {
+                  "place-piece": 22,
+                  "single-cell": 1,
+                  "reroll": 5
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 92,
+                "wrong-kind": 44,
+                "different-target": 9,
+                "different-shape": 72,
+                "different-position": 29
+              },
+              "singleCell": {
+                "examples": 28,
+                "exact": 1,
+                "wrongKind": 27,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 1,
+                "meanManhattanDistance": 0,
+                "maxManhattanDistance": 0,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 9,
+                "returnedEqualAlternativePaths": 21,
+                "selectedInReturnedEqualFirstSet": 92,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 246
+              }
+            },
+            "await-reroll-result": {
+              "examples": 68,
+              "fixtures": 27,
+              "correct": 27,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 11,
+                  "single-cell": 0,
+                  "reroll": 16
+                },
+                "single-cell": {
+                  "place-piece": 2,
+                  "single-cell": 0,
+                  "reroll": 11
+                },
+                "reroll": {
+                  "place-piece": 3,
+                  "single-cell": 0,
+                  "reroll": 25
+                }
+              },
+              "errors": {
+                "exact-label": 27,
+                "wrong-kind": 32,
+                "different-target": 2,
+                "different-shape": 4,
+                "different-position": 3
+              },
+              "singleCell": {
+                "examples": 13,
+                "exact": 0,
+                "wrongKind": 13,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 20,
+                "returnedEqualAlternativePaths": 46,
+                "selectedInReturnedEqualFirstSet": 27,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 68
+              }
+            },
+            "gameover": {
+              "examples": 17,
+              "fixtures": 15,
+              "correct": 4,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 6,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 2,
+                  "single-cell": 9,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 4,
+                "wrong-kind": 2,
+                "different-target": 0,
+                "different-shape": 2,
+                "different-position": 9
+              },
+              "singleCell": {
+                "examples": 11,
+                "exact": 0,
+                "wrongKind": 2,
+                "wrongPosition": 9,
+                "sameKindDistanceSamples": 9,
+                "meanManhattanDistance": 13.666666666666666,
+                "maxManhattanDistance": 21,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 8,
+                "returnedEqualAlternativePaths": 19,
+                "selectedInReturnedEqualFirstSet": 4,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 17
+              }
+            },
+            "playing": {
+              "examples": 8,
+              "fixtures": 5,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 6,
+                  "single-cell": 1,
+                  "reroll": 1
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 2,
+                "different-target": 0,
+                "different-shape": 3,
+                "different-position": 3
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 0,
+                "returnedEqualAlternativePaths": 0,
+                "selectedInReturnedEqualFirstSet": 0,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 8
+              }
+            }
+          }
+        }
+      },
+      "dev": {
+        "overall": {
+          "examples": 89,
+          "fixtures": 16,
+          "correct": 29,
+          "confusion": {
+            "place-piece": {
+              "place-piece": 61,
+              "single-cell": 2,
+              "reroll": 5
+            },
+            "single-cell": {
+              "place-piece": 7,
+              "single-cell": 5,
+              "reroll": 1
+            },
+            "reroll": {
+              "place-piece": 0,
+              "single-cell": 0,
+              "reroll": 8
+            }
+          },
+          "errors": {
+            "exact-label": 29,
+            "wrong-kind": 15,
+            "different-target": 2,
+            "different-shape": 30,
+            "different-position": 13
+          },
+          "singleCell": {
+            "examples": 13,
+            "exact": 0,
+            "wrongKind": 8,
+            "wrongPosition": 5,
+            "sameKindDistanceSamples": 5,
+            "meanManhattanDistance": 9.2,
+            "maxManhattanDistance": 20,
+            "storedEqualFirstHits": 1
+          },
+          "storedTies": {
+            "examplesWithDistinctEqualFirst": 11,
+            "returnedEqualAlternativePaths": 23,
+            "selectedInReturnedEqualFirstSet": 30,
+            "additionalStoredTieHits": 1,
+            "omissionFlagExamples": 89
+          }
+        },
+        "groups": {
+          "teacherKind": {
+            "place-piece": {
+              "examples": 68,
+              "fixtures": 16,
+              "correct": 21,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 61,
+                  "single-cell": 2,
+                  "reroll": 5
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 21,
+                "wrong-kind": 7,
+                "different-target": 2,
+                "different-shape": 30,
+                "different-position": 8
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 2,
+                "returnedEqualAlternativePaths": 10,
+                "selectedInReturnedEqualFirstSet": 21,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 68
+              }
+            },
+            "reroll": {
+              "examples": 8,
+              "fixtures": 8,
+              "correct": 8,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 8
+                }
+              },
+              "errors": {
+                "exact-label": 8,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 6,
+                "returnedEqualAlternativePaths": 7,
+                "selectedInReturnedEqualFirstSet": 8,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 8
+              }
+            },
+            "single-cell": {
+              "examples": 13,
+              "fixtures": 13,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 7,
+                  "single-cell": 5,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 8,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 5
+              },
+              "singleCell": {
+                "examples": 13,
+                "exact": 0,
+                "wrongKind": 8,
+                "wrongPosition": 5,
+                "sameKindDistanceSamples": 5,
+                "meanManhattanDistance": 9.2,
+                "maxManhattanDistance": 20,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 3,
+                "returnedEqualAlternativePaths": 6,
+                "selectedInReturnedEqualFirstSet": 1,
+                "additionalStoredTieHits": 1,
+                "omissionFlagExamples": 13
+              }
+            }
+          },
+          "family": {
+            "pressure": {
+              "examples": 41,
+              "fixtures": 8,
+              "correct": 14,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 19,
+                  "single-cell": 1,
+                  "reroll": 5
+                },
+                "single-cell": {
+                  "place-piece": 2,
+                  "single-cell": 5,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 8
+                }
+              },
+              "errors": {
+                "exact-label": 14,
+                "wrong-kind": 9,
+                "different-target": 0,
+                "different-shape": 9,
+                "different-position": 9
+              },
+              "singleCell": {
+                "examples": 8,
+                "exact": 0,
+                "wrongKind": 3,
+                "wrongPosition": 5,
+                "sameKindDistanceSamples": 5,
+                "meanManhattanDistance": 9.2,
+                "maxManhattanDistance": 20,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 10,
+                "returnedEqualAlternativePaths": 20,
+                "selectedInReturnedEqualFirstSet": 15,
+                "additionalStoredTieHits": 1,
+                "omissionFlagExamples": 41
+              }
+            },
+            "sparse": {
+              "examples": 48,
+              "fixtures": 8,
+              "correct": 15,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 42,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 5,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 15,
+                "wrong-kind": 6,
+                "different-target": 2,
+                "different-shape": 21,
+                "different-position": 4
+              },
+              "singleCell": {
+                "examples": 5,
+                "exact": 0,
+                "wrongKind": 5,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 1,
+                "returnedEqualAlternativePaths": 3,
+                "selectedInReturnedEqualFirstSet": 15,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 48
+              }
+            }
+          },
+          "searchComplete": {
+            "false": {
+              "examples": 66,
+              "fixtures": 16,
+              "correct": 17,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 52,
+                  "single-cell": 1,
+                  "reroll": 5
+                },
+                "single-cell": {
+                  "place-piece": 7,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 17,
+                "wrong-kind": 13,
+                "different-target": 2,
+                "different-shape": 27,
+                "different-position": 7
+              },
+              "singleCell": {
+                "examples": 8,
+                "exact": 0,
+                "wrongKind": 7,
+                "wrongPosition": 1,
+                "sameKindDistanceSamples": 1,
+                "meanManhattanDistance": 6,
+                "maxManhattanDistance": 6,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 2,
+                "returnedEqualAlternativePaths": 9,
+                "selectedInReturnedEqualFirstSet": 17,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 66
+              }
+            },
+            "true": {
+              "examples": 23,
+              "fixtures": 8,
+              "correct": 12,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 9,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 4,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 8
+                }
+              },
+              "errors": {
+                "exact-label": 12,
+                "wrong-kind": 2,
+                "different-target": 0,
+                "different-shape": 3,
+                "different-position": 6
+              },
+              "singleCell": {
+                "examples": 5,
+                "exact": 0,
+                "wrongKind": 1,
+                "wrongPosition": 4,
+                "sameKindDistanceSamples": 4,
+                "meanManhattanDistance": 10,
+                "maxManhattanDistance": 20,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 9,
+                "returnedEqualAlternativePaths": 14,
+                "selectedInReturnedEqualFirstSet": 13,
+                "additionalStoredTieHits": 1,
+                "omissionFlagExamples": 23
+              }
+            }
+          },
+          "legalKinds": {
+            "place-piece": {
+              "examples": 5,
+              "fixtures": 3,
+              "correct": 3,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 5,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 3,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 1,
+                "different-position": 1
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 0,
+                "returnedEqualAlternativePaths": 0,
+                "selectedInReturnedEqualFirstSet": 3,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 5
+              }
+            },
+            "place-piece+reroll": {
+              "examples": 7,
+              "fixtures": 3,
+              "correct": 3,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 5,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 2
+                }
+              },
+              "errors": {
+                "exact-label": 3,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 2,
+                "different-position": 2
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 2,
+                "returnedEqualAlternativePaths": 4,
+                "selectedInReturnedEqualFirstSet": 3,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 7
+              }
+            },
+            "place-piece+reroll+single-cell": {
+              "examples": 61,
+              "fixtures": 16,
+              "correct": 17,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 47,
+                  "single-cell": 1,
+                  "reroll": 5
+                },
+                "single-cell": {
+                  "place-piece": 7,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 17,
+                "wrong-kind": 13,
+                "different-target": 2,
+                "different-shape": 23,
+                "different-position": 6
+              },
+              "singleCell": {
+                "examples": 8,
+                "exact": 0,
+                "wrongKind": 7,
+                "wrongPosition": 1,
+                "sameKindDistanceSamples": 1,
+                "meanManhattanDistance": 6,
+                "maxManhattanDistance": 6,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 2,
+                "returnedEqualAlternativePaths": 8,
+                "selectedInReturnedEqualFirstSet": 17,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 61
+              }
+            },
+            "place-piece+single-cell": {
+              "examples": 5,
+              "fixtures": 4,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 4,
+                  "single-cell": 1,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 1,
+                "different-target": 0,
+                "different-shape": 4,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 0,
+                "returnedEqualAlternativePaths": 1,
+                "selectedInReturnedEqualFirstSet": 0,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 5
+              }
+            },
+            "reroll": {
+              "examples": 1,
+              "fixtures": 1,
+              "correct": 1,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 1
+                }
+              },
+              "errors": {
+                "exact-label": 1,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 0,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 0,
+                "returnedEqualAlternativePaths": 0,
+                "selectedInReturnedEqualFirstSet": 1,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 1
+              }
+            },
+            "reroll+single-cell": {
+              "examples": 6,
+              "fixtures": 6,
+              "correct": 5,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 5
+                }
+              },
+              "errors": {
+                "exact-label": 5,
+                "wrong-kind": 1,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 1,
+                "exact": 0,
+                "wrongKind": 1,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 4,
+                "returnedEqualAlternativePaths": 4,
+                "selectedInReturnedEqualFirstSet": 5,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 6
+              }
+            },
+            "single-cell": {
+              "examples": 4,
+              "fixtures": 4,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 4,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 0,
+                "different-position": 4
+              },
+              "singleCell": {
+                "examples": 4,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 4,
+                "sameKindDistanceSamples": 4,
+                "meanManhattanDistance": 10,
+                "maxManhattanDistance": 20,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 3,
+                "returnedEqualAlternativePaths": 6,
+                "selectedInReturnedEqualFirstSet": 1,
+                "additionalStoredTieHits": 1,
+                "omissionFlagExamples": 4
+              }
+            }
+          },
+          "teacherFinalPhase": {
+            "await-next-pieces": {
+              "examples": 61,
+              "fixtures": 13,
+              "correct": 19,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 49,
+                  "single-cell": 2,
+                  "reroll": 2
+                },
+                "single-cell": {
+                  "place-piece": 5,
+                  "single-cell": 2,
+                  "reroll": 1
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 19,
+                "wrong-kind": 10,
+                "different-target": 2,
+                "different-shape": 24,
+                "different-position": 6
+              },
+              "singleCell": {
+                "examples": 8,
+                "exact": 0,
+                "wrongKind": 6,
+                "wrongPosition": 2,
+                "sameKindDistanceSamples": 2,
+                "meanManhattanDistance": 7,
+                "maxManhattanDistance": 8,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 1,
+                "returnedEqualAlternativePaths": 3,
+                "selectedInReturnedEqualFirstSet": 19,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 61
+              }
+            },
+            "await-reroll-result": {
+              "examples": 19,
+              "fixtures": 8,
+              "correct": 9,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 7,
+                  "single-cell": 0,
+                  "reroll": 3
+                },
+                "single-cell": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 8
+                }
+              },
+              "errors": {
+                "exact-label": 9,
+                "wrong-kind": 4,
+                "different-target": 0,
+                "different-shape": 3,
+                "different-position": 3
+              },
+              "singleCell": {
+                "examples": 1,
+                "exact": 0,
+                "wrongKind": 1,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 7,
+                "returnedEqualAlternativePaths": 14,
+                "selectedInReturnedEqualFirstSet": 9,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 19
+              }
+            },
+            "gameover": {
+              "examples": 6,
+              "fixtures": 6,
+              "correct": 1,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 3,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 0,
+                  "single-cell": 3,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 1,
+                "wrong-kind": 0,
+                "different-target": 0,
+                "different-shape": 1,
+                "different-position": 4
+              },
+              "singleCell": {
+                "examples": 3,
+                "exact": 0,
+                "wrongKind": 0,
+                "wrongPosition": 3,
+                "sameKindDistanceSamples": 3,
+                "meanManhattanDistance": 10.666666666666666,
+                "maxManhattanDistance": 20,
+                "storedEqualFirstHits": 1
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 3,
+                "returnedEqualAlternativePaths": 6,
+                "selectedInReturnedEqualFirstSet": 2,
+                "additionalStoredTieHits": 1,
+                "omissionFlagExamples": 6
+              }
+            },
+            "playing": {
+              "examples": 3,
+              "fixtures": 3,
+              "correct": 0,
+              "confusion": {
+                "place-piece": {
+                  "place-piece": 2,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "single-cell": {
+                  "place-piece": 1,
+                  "single-cell": 0,
+                  "reroll": 0
+                },
+                "reroll": {
+                  "place-piece": 0,
+                  "single-cell": 0,
+                  "reroll": 0
+                }
+              },
+              "errors": {
+                "exact-label": 0,
+                "wrong-kind": 1,
+                "different-target": 0,
+                "different-shape": 2,
+                "different-position": 0
+              },
+              "singleCell": {
+                "examples": 1,
+                "exact": 0,
+                "wrongKind": 1,
+                "wrongPosition": 0,
+                "sameKindDistanceSamples": 0,
+                "meanManhattanDistance": null,
+                "maxManhattanDistance": null,
+                "storedEqualFirstHits": 0
+              },
+              "storedTies": {
+                "examplesWithDistinctEqualFirst": 0,
+                "returnedEqualAlternativePaths": 0,
+                "selectedInReturnedEqualFirstSet": 0,
+                "additionalStoredTieHits": 0,
+                "omissionFlagExamples": 3
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "accounting": {
+    "observationsPerModel": 428,
+    "models": 2,
+    "trainingRuns": 0,
+    "inferenceCalls": 0,
+    "teacherCalls": 0,
+    "domainTransitions": 0,
+    "newEpisodes": 0,
+    "testParsedOrScored": 0,
+    "labelsOrModelSelectionChanged": false
+  },
+  "limits": [
+    "Stored at-most-three alternative full paths; not a complete equal-action set",
+    "Full-path comparator equality does not establish equal long-term value",
+    "No relabeling, relaxed accuracy adoption, new training or generalization claim",
+    "Model predictions reused; no all-candidate logits or within-kind ranking available"
+  ]
+}

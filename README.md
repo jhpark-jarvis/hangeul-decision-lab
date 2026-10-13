@@ -2,7 +2,7 @@
 
 ### Budgeted Search and a Research Agenda for a Hangul Block Puzzle
 
-**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN experiments and action-outcome contrast · **Application policy:** DFS · **RL:** FUTURE
+**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN experiments and stored action-error audit · **Application policy:** DFS · **RL:** FUTURE
 
 ## Abstract
 
@@ -14,7 +14,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 초기 합성 pilot에서 CNN의 teacher 선택 일치율은 53.3%로, first-legal baseline의 64.4%보다 낮았다. 이후 paired teacher 비교와 train/dev 오류 분석을 거쳐, 행동 직후 결과 22개를 추가한 고정 대조 실험을 수행했다. 확장 모델의 dev top1은 기존 모델과 같은 **29/89 (32.6%)**였으며, 점 찍기 정답은 **0/13**이었다. 사전에 정한 개선 gate를 통과하지 못했다.
 
-5.12–5.14는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+후속 readonly 분석에서 dev 점 찍기 실패 13개는 다른 행동 종류를 고른 8개와 같은 종류의 다른 좌표를 고른 5개로 나뉘었다. 저장된 동점 대안의 첫 행동에 포함된 실패는 1개였다. Hard label과 점수는 변경하지 않았다.
+
+5.12–5.15는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -498,6 +500,39 @@ First-legal dev top1은 47/89 (52.8%)였다. NLL은 자연로그이며 같은 �
 
 [Fixed config](research/experiments/outcome-features-v1.json)와 [결과·그룹별 분모·hash](assets/research/action-outcome-train-dev-20261012-v1.json)를 공개한다. Raw 관측·checkpoint·게임 원본은 공개 저장소에 포함하지 않는다.
 
+### 5.15 Stored Action Errors and Returned-Path Ties
+
+**실행 — 2026-10-13.** 5.14의 frozen baseline/outcome 예측을 기존 A512 train 339개 / dev 89개 관측에 조인했다. 새 forward·학습·teacher 탐색·domain 전이·test 평가는 0회다. 두 독립 CLI의 raw와 집계가 byte 단위로 일치했으며, 반복을 표본 수에 더하지 않았다.
+
+종류·target·shape·좌표 오류를 구분하고, 기존 hard label에 대한 top1을 유지했다. 점 찍기 결과는 다음과 같다.
+
+| Split / 모델     | Teacher 점 찍기 표본 | Exact label | 다른 행동 종류 | 같은 종류·다른 좌표 |
+| ---------------- | -------------------- | ----------- | -------------- | ------------------- |
+| Train / baseline | 52                   | 0           | 42             | 10                  |
+| Train / outcome  | 52                   | 1           | 42             | 9                   |
+| Dev / baseline   | 13                   | 0           | 8              | 5                   |
+| Dev / outcome    | 13                   | 0           | 8              | 5                   |
+
+Dev의 종류 오류 8개는 일반 조각 7개와 reroll 1개였다. 같은 종류를 고른 5개에서만 좌표의 Manhattan 거리를 계산했다. 평균 9.2칸·최대 20칸이며, 전체 13개를 분모로 한 거리가 아니다. **Single-cell만 합법인 4개 관측에서도 모두 좌표가 달랐다.** 종류 구분만 해결하면 전체 실패가 해소된다고 가정할 수 없다.
+
+Teacher 탐색이 incomplete인 점 찍기 8개는 종류 오류 7개·좌표 오류 1개였다. Complete인 5개는 각각 1개·4개였다. 이는 표본의 층화 관측이며 탐색 미완료가 모델 오류의 확정 원인이라는 뜻은 아니다. Teacher 반환 경로의 최종 phase가 gameover인 점 찍기 표본도 3개 있었다. 이 label을 삭제하거나 바꾸지 않았다.
+
+일반 조각에서도 같은 종류를 고르고 shape가 달라진 dev 오류가 baseline 32개 / outcome 30개였다. Teacher 종류뿐 아니라 회전·반전 shape와 좌표의 후보 내부 순위도 후속 진단 대상이다.
+
+동점은 기존 solver의 `compareEvaluations`를 **저장된 best와 최대 3개 대안의 전체 경로 값**에 적용했다. 같은 값의 경로가 서로 다른 첫 행동을 반환했는지 확인했다.
+
+| Dev 지표 — 89개 관측                               | Baseline | Outcome |
+| -------------------------------------------------- | -------- | ------- |
+| 원래 hard-label 정답                               | 29       | 29      |
+| 서로 다른 동점 first action이 저장된 관측          | 11       | 11      |
+| Hard-label 실패 중 저장된 동점 first action에 포함 | 1        | 1       |
+
+추가 일치 1개는 점 찍기 표본이었다. **이를 새 정답이나 개선된 정확도로 채택하지 않았다.** 모든 dev 관측에 `alternativesMayOmitEquivalentPaths`가 표시되어 있다. 저장된 대안은 전체 동점 집합이 아니며, 전체 경로의 comparator 동점도 동일한 장기 가치나 최적 행동을 보장하지 않는다. 저장 대안에 없는 예측이 더 나쁜지도 이 분석만으로 판단하지 않는다.
+
+[Fixed audit config](research/experiments/action-error-audit-v1.json)와 [전체 오류·confusion·조건별 분모·hash](assets/research/stored-action-error-audit-20261013-v1.json)를 공개한다. Kind 오류와 좌표 오류를 구분했지만 label noise·loss·표현력 중 원인을 확정한 결과는 아니다. 기존 앱·모델·feature·teacher와 5.14의 gate FAIL을 유지한다.
+
+**후속 제안 — 미실행.** 같은 frozen 모델에서 전체 후보 logits를 다시 얻어, teacher 종류 내부의 정답 rank와 종류별 probability mass를 확인한다. 동일 428개 관측 × 2개 모델 × 2회 exact 반복, 최대 1,712 forward로 한정하는 readonly 계약이다. 새 학습·teacher·domain 전이·test는 포함하지 않는다. 정답 종류를 알고 계산한 conditional top1은 oracle 진단이며 실제 policy 정확도가 아니다. 현재 저장 raw에는 전체 후보 logits가 없어 이 통계는 아직 계산하지 않았다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
@@ -661,6 +696,17 @@ node scripts/research/outcome-cnn.mjs `
 ```
 
 대조 실행에는 학습 전 clean Git 상태와 **새 출력 폴더**가 필요하다. `progress.jsonl`, `execution.json`, 확장 feature 파일, 단계별 checkpoint/report, 최종 report/freeze를 로컬에 남긴다. Hash·schema·초기 출력·baseline 재현 검사에 실패하면 학습을 중단한다. 기존 결과를 덮어쓰지 않으며 실패 기록도 보존한다. 같은 Windows CPU/PyTorch 환경의 재현 범위이고, 역사적 freeze의 원본 source byte hash도 일치해야 한다. Checkout의 LF/CRLF 차이가 있으면 원본 보관 자료와 내용을 먼저 대조하며 hash identity를 임의로 바꾸지 않는다.
+
+5.15는 기존 outcome 실험의 raw 예측과 paired train/dev를 읽기만 한다. Python 환경이나 새 inference가 필요하지 않다. 원래 config에 고정된 dataset·실험·raw hash가 맞아야 하며, 학습을 다시 실행하는 명령이 아니다.
+
+```powershell
+node scripts/research/action-errors.mjs `
+  --source .research-output/paired-teacher/paired-teacher-cnn-20261011-v1 `
+  --experiment .research-output/action-outcome-train-dev-20261012-recovered `
+  --output .research-output/my-stored-action-error-audit
+```
+
+Clean source/config와 새 output을 확인하고, 시작 identity·private `raw.json`·비민감 `summary.json`·`report.json`을 남긴다. 잘못된 hash나 record는 실패로 기록하고 기존 output 재사용은 거절한다. 공개 저장소에는 원본 raw와 model이 없으므로 해당 로컬 산출물 없이 실행 결과를 재현할 수는 없다.
 
 ## References
 
