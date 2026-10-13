@@ -232,7 +232,8 @@ try {
   write(resolve(output, "failure.json"), {
     status: "FAIL",
     error: String(error),
-    originalInputsPreserved: true,
+    originalInputsPreserved:
+      "NOT_VERIFIED_ON_FAILURE; separate hash audit required",
   });
   throw error;
 }
