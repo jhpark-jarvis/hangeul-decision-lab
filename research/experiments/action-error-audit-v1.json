@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "id": "stored-action-error-audit-20261013-v1",
+  "status": "FROZEN_READONLY_AUDIT",
+  "source": {
+    "label": "A512",
+    "splits": ["train", "dev"],
+    "examples": { "train": 339, "dev": 89 },
+    "models": ["baseline", "outcome"],
+    "datasetSha256": "fa72eb460151763e664ecdd0a2438e1ae69172b98dbb5ab4b3f6f44b9e4c29fb",
+    "executionSha256": "c3609e686821ef222c586e2b9ce428c7837cb74607bf0367b6a70aff41ef4a5e",
+    "reportSha256": "bd8794afe73c70d39059f22ab90b9809be2c3b4da40cd6b23db009557adf61a4",
+    "predictionSha256": {
+      "baseline": "8df1d6706c666beb5dc3d34623e8228042d61e5b179507826348b2e5a2c39e60",
+      "outcome": "34feaf2409e7489d62cb149ce7d92a22b85d2c7b3b168161c4eb86f211d813d1"
+    }
+  },
+  "method": {
+    "errors": [
+      "exact-label",
+      "wrong-kind",
+      "different-target",
+      "different-shape",
+      "different-position"
+    ],
+    "groups": [
+      "teacher-kind",
+      "family",
+      "search-complete",
+      "legal-kinds",
+      "teacher-final-phase"
+    ],
+    "confusion": "A512 teacher kind vs stored selected kind; denominator every observation",
+    "singleCell": "Same-kind coordinate error vs wrong-kind; Manhattan distance conditional on same-kind only",
+    "ties": "Original compareEvaluations on stored best/at-most-three alternatives; distinct first action indices; no relabel",
+    "tieMeaning": "Returned full-path comparator tie only; not an optimal-action set or equal future value",
+    "repeat": "Two separate CLI processes; raw and summary byte exact; repeats do not increase observations"
+  },
+  "limits": {
+    "inferenceCalls": 0,
+    "trainingRuns": 0,
+    "teacherCalls": 0,
+    "domainTransitions": 0,
+    "newEpisodes": 0,
+    "testParsedOrScored": 0,
+    "modelSelectionOrLabelsChanged": false,
+    "dependenciesServicesPorts": 0
+  }
+}
