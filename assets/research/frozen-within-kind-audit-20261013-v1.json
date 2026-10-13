@@ -1,0 +1,3352 @@
+{
+  "schemaVersion": 1,
+  "id": "frozen-within-kind-audit-20261013-v1",
+  "status": "PASS",
+  "method": {
+    "forwardRepeats": 2,
+    "forwardInput": "Original full ordered legal list; three tensor inputs only",
+    "control": "Exact repeated logits and original argmax/rank/NLL/probability/margin",
+    "oracle": "After forward only, use A512 teacher action kind to compute within-kind rank/top1/top5/NLL",
+    "kindMass": "Float64 logsumexp probability mass; candidate count and count/full-list uniform mass; row-weighted means",
+    "groups": [
+      "teacher-kind",
+      "error",
+      "family",
+      "search-complete",
+      "teacher-final-phase",
+      "legal-kinds"
+    ],
+    "meaning": "Teacher-kind oracle diagnostic, not a deployable policy or adopted accuracy",
+    "publicationVerification": "Replay saved float32 logits through independent public scoring; zero extra model forwards"
+  },
+  "identity": {
+    "inputHashes": {
+      "dataset": "fa72eb460151763e664ecdd0a2438e1ae69172b98dbb5ab4b3f6f44b9e4c29fb",
+      "execution": "c3609e686821ef222c586e2b9ce428c7837cb74607bf0367b6a70aff41ef4a5e",
+      "report": "bd8794afe73c70d39059f22ab90b9809be2c3b4da40cd6b23db009557adf61a4",
+      "augmented": "98e37f090604d8ac7510371139fe66155b2ad57c863aa8a1966bab4374fdd1f4",
+      "storedAuditRaw": "dba1b19077649ee37c11a2337b1d330a9470b79f19f0ace88c7a5e68a5721964",
+      "baselinePredictions": "8df1d6706c666beb5dc3d34623e8228042d61e5b179507826348b2e5a2c39e60",
+      "baselineCheckpoint": "33a6499dc3dfdae82ea72938c2c8fd932d13ba8b631f5b55d6b4e8b2cfe422ab",
+      "outcomePredictions": "34feaf2409e7489d62cb149ce7d92a22b85d2c7b3b168161c4eb86f211d813d1",
+      "outcomeCheckpoint": "837fc1fb1db09cd16ba2af2ab28fc95ee7d618fb2f834a2a2f97853e27c1284e"
+    },
+    "sourceHashes": {
+      "research/cnn/within_kind.py": "bae225aa61041f3d496d6201f3ec0423543a65bf80ffd2efd9f3250b99fc52b6",
+      "research/experiments/within-kind-audit-v1.json": "cae321918b6e9074fbe679f2a62799e8ff62d9705e55931b1f7c59a854c1b248"
+    },
+    "configSha256": "cae321918b6e9074fbe679f2a62799e8ff62d9705e55931b1f7c59a854c1b248"
+  },
+  "summary": {
+    "baseline": {
+      "train": {
+        "overall": {
+          "examples": 339,
+          "fixtures": 64,
+          "globalHardCorrect": 123,
+          "teacherKindOracleCorrect": 141,
+          "teacherKindOracleTop1": 0.415929203539823,
+          "teacherKindOracleTop5": 0.6489675516224189,
+          "meanOracleRank": 14.625368731563421,
+          "meanOracleNll": 3.4915722228564694,
+          "fixtureMacroOracleTop1": 0.42057291666666663,
+          "oracleRecoveredHardErrors": 18,
+          "wrongKindExamples": 69,
+          "wrongKindOracleRecoveries": 18,
+          "kindMass": {
+            "place-piece": {
+              "presentExamples": 302,
+              "meanCandidates": 260.3185840707965,
+              "meanProbabilityMass": 0.732163552846227,
+              "meanUniformMass": 0.57720980100145
+            },
+            "single-cell": {
+              "presentExamples": 263,
+              "meanCandidates": 86.55457227138643,
+              "meanProbabilityMass": 0.16516499145884084,
+              "meanUniformMass": 0.3741485566318188
+            },
+            "reroll": {
+              "presentExamples": 309,
+              "meanCandidates": 1.896755162241888,
+              "meanProbabilityMass": 0.10267145569493209,
+              "meanUniformMass": 0.048641642366731234
+            }
+          }
+        },
+        "groups": {
+          "teacherKind": {
+            "place-piece": {
+              "examples": 259,
+              "fixtures": 62,
+              "globalHardCorrect": 98,
+              "teacherKindOracleCorrect": 109,
+              "teacherKindOracleTop1": 0.42084942084942084,
+              "teacherKindOracleTop5": 0.6911196911196911,
+              "meanOracleRank": 14.266409266409266,
+              "meanOracleNll": 3.7143803676985865,
+              "fixtureMacroOracleTop1": 0.41666666666666663,
+              "oracleRecoveredHardErrors": 11,
+              "wrongKindExamples": 24,
+              "wrongKindOracleRecoveries": 11,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 259,
+                  "meanCandidates": 323.984555984556,
+                  "meanProbabilityMass": 0.865744862343502,
+                  "meanUniformMass": 0.6845009534705712
+                },
+                "single-cell": {
+                  "presentExamples": 199,
+                  "meanCandidates": 93.35907335907336,
+                  "meanProbabilityMass": 0.08858604020975294,
+                  "meanUniformMass": 0.2939241906505917
+                },
+                "reroll": {
+                  "presentExamples": 240,
+                  "meanCandidates": 2.027027027027027,
+                  "meanProbabilityMass": 0.04566909744674507,
+                  "meanUniformMass": 0.0215748558788371
+                }
+              }
+            },
+            "reroll": {
+              "examples": 28,
+              "fixtures": 27,
+              "globalHardCorrect": 25,
+              "teacherKindOracleCorrect": 28,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 0.08391829154321126,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 3,
+              "wrongKindExamples": 3,
+              "wrongKindOracleRecoveries": 3,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 10,
+                  "meanCandidates": 4.142857142857143,
+                  "meanProbabilityMass": 0.18447285047261316,
+                  "meanUniformMass": 0.2207055396767197
+                },
+                "single-cell": {
+                  "presentExamples": 12,
+                  "meanCandidates": 28.357142857142858,
+                  "meanProbabilityMass": 0.24275929854537687,
+                  "meanUniformMass": 0.4135885748323581
+                },
+                "reroll": {
+                  "presentExamples": 28,
+                  "meanCandidates": 1.8571428571428572,
+                  "meanProbabilityMass": 0.5727678509820099,
+                  "meanUniformMass": 0.3657058854909222
+                }
+              }
+            },
+            "single-cell": {
+              "examples": 52,
+              "fixtures": 49,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 4,
+              "teacherKindOracleTop1": 0.07692307692307693,
+              "teacherKindOracleTop5": 0.25,
+              "meanOracleRank": 23.75,
+              "meanOracleNll": 4.216706849061525,
+              "fixtureMacroOracleTop1": 0.08163265306122448,
+              "oracleRecoveredHardErrors": 4,
+              "wrongKindExamples": 42,
+              "wrongKindOracleRecoveries": 4,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 33,
+                  "meanCandidates": 81.15384615384616,
+                  "meanProbabilityMass": 0.36173625489751526,
+                  "meanUniformMass": 0.2347811630704895
+                },
+                "single-cell": {
+                  "presentExamples": 52,
+                  "meanCandidates": 84,
+                  "meanProbabilityMass": 0.5048055255952015,
+                  "meanUniformMass": 0.7524906773918709
+                },
+                "reroll": {
+                  "presentExamples": 41,
+                  "meanCandidates": 1.2692307692307692,
+                  "meanProbabilityMass": 0.1334582195072832,
+                  "meanUniformMass": 0.012728159537639585
+                }
+              }
+            }
+          },
+          "error": {
+            "different-position": {
+              "examples": 49,
+              "fixtures": 39,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.4897959183673469,
+              "meanOracleRank": 14.551020408163266,
+              "meanOracleNll": 3.7766272851399014,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 39,
+                  "meanCandidates": 123.65306122448979,
+                  "meanProbabilityMass": 0.6904525141385294,
+                  "meanUniformMass": 0.514044671236909
+                },
+                "single-cell": {
+                  "presentExamples": 36,
+                  "meanCandidates": 73.46938775510205,
+                  "meanProbabilityMass": 0.28852476595065546,
+                  "meanUniformMass": 0.46789148701039135
+                },
+                "reroll": {
+                  "presentExamples": 35,
+                  "meanCandidates": 1.2653061224489797,
+                  "meanProbabilityMass": 0.021022719910815117,
+                  "meanUniformMass": 0.018063841752699695
+                }
+              }
+            },
+            "different-shape": {
+              "examples": 92,
+              "fixtures": 47,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.3804347826086957,
+              "meanOracleRank": 32.46739130434783,
+              "meanOracleNll": 4.494262445232143,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 92,
+                  "meanCandidates": 392.2717391304348,
+                  "meanProbabilityMass": 0.915777766697803,
+                  "meanUniformMass": 0.7304332212493243
+                },
+                "single-cell": {
+                  "presentExamples": 74,
+                  "meanCandidates": 103.69565217391305,
+                  "meanProbabilityMass": 0.07113757669572289,
+                  "meanUniformMass": 0.25699046639491885
+                },
+                "reroll": {
+                  "presentExamples": 86,
+                  "meanCandidates": 1.923913043478261,
+                  "meanProbabilityMass": 0.01308465660647411,
+                  "meanUniformMass": 0.012576312355756864
+                }
+              }
+            },
+            "different-target": {
+              "examples": 6,
+              "fixtures": 6,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.6666666666666666,
+              "meanOracleRank": 9.333333333333334,
+              "meanOracleNll": 3.551448921362559,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 6,
+                  "meanCandidates": 232,
+                  "meanProbabilityMass": 0.8953460122971646,
+                  "meanUniformMass": 0.8364904524359593
+                },
+                "single-cell": {
+                  "presentExamples": 2,
+                  "meanCandidates": 49.166666666666664,
+                  "meanProbabilityMass": 0.002849712067343288,
+                  "meanUniformMass": 0.0619769745748111
+                },
+                "reroll": {
+                  "presentExamples": 5,
+                  "meanCandidates": 2.3333333333333335,
+                  "meanProbabilityMass": 0.10180427563549206,
+                  "meanUniformMass": 0.10153257298922956
+                }
+              }
+            },
+            "exact-label": {
+              "examples": 123,
+              "fixtures": 62,
+              "globalHardCorrect": 123,
+              "teacherKindOracleCorrect": 123,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 2.735468972656058,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 105,
+                  "meanCandidates": 323.7235772357724,
+                  "meanProbabilityMass": 0.7555548540459968,
+                  "meanUniformMass": 0.6103118921666267
+                },
+                "single-cell": {
+                  "presentExamples": 91,
+                  "meanCandidates": 89.10569105691057,
+                  "meanProbabilityMass": 0.09760563415855825,
+                  "meanUniformMass": 0.2995080571671701
+                },
+                "reroll": {
+                  "presentExamples": 118,
+                  "meanCandidates": 2.154471544715447,
+                  "meanProbabilityMass": 0.14683951179544494,
+                  "meanUniformMass": 0.0901800506662032
+                }
+              }
+            },
+            "wrong-kind": {
+              "examples": 69,
+              "fixtures": 45,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 18,
+              "teacherKindOracleTop1": 0.2608695652173913,
+              "teacherKindOracleTop5": 0.4927536231884058,
+              "meanOracleRank": 15.63768115942029,
+              "meanOracleNll": 3.2948510789892813,
+              "fixtureMacroOracleTop1": 0.23148148148148145,
+              "oracleRecoveredHardErrors": 18,
+              "wrongKindExamples": 69,
+              "wrongKindOracleRecoveries": 18,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 60,
+                  "meanCandidates": 70.8695652173913,
+                  "meanProbabilityMass": 0.4610781676006458,
+                  "meanUniformMass": 0.3362140846787583
+                },
+                "single-cell": {
+                  "presentExamples": 60,
+                  "meanCandidates": 71.69565217391305,
+                  "meanProbabilityMass": 0.3374778296094449,
+                  "meanUniformMass": 0.6239884354686098
+                },
+                "reroll": {
+                  "presentExamples": 65,
+                  "meanCandidates": 1.8115942028985508,
+                  "meanProbabilityMass": 0.2014440027899093,
+                  "meanUniformMass": 0.039797479852631906
+                }
+              }
+            }
+          },
+          "family": {
+            "pressure": {
+              "examples": 147,
+              "fixtures": 32,
+              "globalHardCorrect": 44,
+              "teacherKindOracleCorrect": 58,
+              "teacherKindOracleTop1": 0.3945578231292517,
+              "teacherKindOracleTop5": 0.6190476190476191,
+              "meanOracleRank": 11.986394557823129,
+              "meanOracleNll": 2.363480041576486,
+              "fixtureMacroOracleTop1": 0.40885416666666663,
+              "oracleRecoveredHardErrors": 14,
+              "wrongKindExamples": 50,
+              "wrongKindOracleRecoveries": 14,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 110,
+                  "meanCandidates": 18.843537414965986,
+                  "meanProbabilityMass": 0.5076782571224101,
+                  "meanUniformMass": 0.39362307937755336
+                },
+                "single-cell": {
+                  "presentExamples": 89,
+                  "meanCandidates": 39.40136054421769,
+                  "meanProbabilityMass": 0.26280384011817953,
+                  "meanUniformMass": 0.4994980429660952
+                },
+                "reroll": {
+                  "presentExamples": 117,
+                  "meanCandidates": 1.7210884353741496,
+                  "meanProbabilityMass": 0.22951790275941034,
+                  "meanUniformMass": 0.10687887765635151
+                }
+              }
+            },
+            "sparse": {
+              "examples": 192,
+              "fixtures": 32,
+              "globalHardCorrect": 79,
+              "teacherKindOracleCorrect": 83,
+              "teacherKindOracleTop1": 0.4322916666666667,
+              "teacherKindOracleTop5": 0.671875,
+              "meanOracleRank": 16.645833333333332,
+              "meanOracleNll": 4.355267799148957,
+              "fixtureMacroOracleTop1": 0.4322916666666667,
+              "oracleRecoveredHardErrors": 4,
+              "wrongKindExamples": 19,
+              "wrongKindOracleRecoveries": 4,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 192,
+                  "meanCandidates": 445.1979166666667,
+                  "meanProbabilityMass": 0.9040351073847744,
+                  "meanUniformMass": 0.7177683847447458
+                },
+                "single-cell": {
+                  "presentExamples": 174,
+                  "meanCandidates": 122.65625,
+                  "meanProbabilityMass": 0.09041024795403464,
+                  "meanUniformMass": 0.27817785615713847
+                },
+                "reroll": {
+                  "presentExamples": 192,
+                  "meanCandidates": 2.03125,
+                  "meanProbabilityMass": 0.005554644661190912,
+                  "meanUniformMass": 0.004053759098115711
+                }
+              }
+            }
+          },
+          "searchComplete": {
+            "false": {
+              "examples": 254,
+              "fixtures": 62,
+              "globalHardCorrect": 86,
+              "teacherKindOracleCorrect": 97,
+              "teacherKindOracleTop1": 0.38188976377952755,
+              "teacherKindOracleTop5": 0.6377952755905512,
+              "meanOracleRank": 15.708661417322835,
+              "meanOracleNll": 3.9667828639485236,
+              "fixtureMacroOracleTop1": 0.3478494623655914,
+              "oracleRecoveredHardErrors": 11,
+              "wrongKindExamples": 49,
+              "wrongKindOracleRecoveries": 11,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 253,
+                  "meanCandidates": 342.33858267716533,
+                  "meanProbabilityMass": 0.8360685029836107,
+                  "meanUniformMass": 0.6320930804723385
+                },
+                "single-cell": {
+                  "presentExamples": 226,
+                  "meanCandidates": 106.24803149606299,
+                  "meanProbabilityMass": 0.11776931193475963,
+                  "meanUniformMass": 0.3572189629783904
+                },
+                "reroll": {
+                  "presentExamples": 247,
+                  "meanCandidates": 2.12992125984252,
+                  "meanProbabilityMass": 0.04616218508162961,
+                  "meanUniformMass": 0.010687956549271117
+                }
+              }
+            },
+            "true": {
+              "examples": 85,
+              "fixtures": 36,
+              "globalHardCorrect": 37,
+              "teacherKindOracleCorrect": 44,
+              "teacherKindOracleTop1": 0.5176470588235295,
+              "teacherKindOracleTop5": 0.6823529411764706,
+              "meanOracleRank": 11.388235294117647,
+              "meanOracleNll": 2.07153101300492,
+              "fixtureMacroOracleTop1": 0.4972222222222222,
+              "oracleRecoveredHardErrors": 7,
+              "wrongKindExamples": 20,
+              "wrongKindOracleRecoveries": 7,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 49,
+                  "meanCandidates": 15.223529411764705,
+                  "meanProbabilityMass": 0.42167111361216286,
+                  "meanUniformMass": 0.4132056482296184
+                },
+                "single-cell": {
+                  "presentExamples": 37,
+                  "meanCandidates": 27.705882352941178,
+                  "meanProbabilityMass": 0.3067944338013894,
+                  "meanUniformMass": 0.4247381659020637
+                },
+                "reroll": {
+                  "presentExamples": 62,
+                  "meanCandidates": 1.2,
+                  "meanProbabilityMass": 0.27153445258644776,
+                  "meanUniformMass": 0.16205618586831796
+                }
+              }
+            }
+          },
+          "teacherFinalPhase": {
+            "await-next-pieces": {
+              "examples": 246,
+              "fixtures": 46,
+              "globalHardCorrect": 91,
+              "teacherKindOracleCorrect": 99,
+              "teacherKindOracleTop1": 0.4024390243902439,
+              "teacherKindOracleTop5": 0.6463414634146342,
+              "meanOracleRank": 15.410569105691057,
+              "meanOracleNll": 4.0189799172122305,
+              "fixtureMacroOracleTop1": 0.40652173913043477,
+              "oracleRecoveredHardErrors": 8,
+              "wrongKindExamples": 34,
+              "wrongKindOracleRecoveries": 8,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 245,
+                  "meanCandidates": 354.0325203252033,
+                  "meanProbabilityMass": 0.8711520280542813,
+                  "meanUniformMass": 0.7027844021515078
+                },
+                "single-cell": {
+                  "presentExamples": 196,
+                  "meanCandidates": 101.89430894308943,
+                  "meanProbabilityMass": 0.10240365189452334,
+                  "meanUniformMass": 0.2804165935828876
+                },
+                "reroll": {
+                  "presentExamples": 238,
+                  "meanCandidates": 1.967479674796748,
+                  "meanProbabilityMass": 0.026444320051195357,
+                  "meanUniformMass": 0.016799004265604506
+                }
+              }
+            },
+            "await-reroll-result": {
+              "examples": 68,
+              "fixtures": 27,
+              "globalHardCorrect": 29,
+              "teacherKindOracleCorrect": 39,
+              "teacherKindOracleTop1": 0.5735294117647058,
+              "teacherKindOracleTop5": 0.8088235294117647,
+              "meanOracleRank": 8.308823529411764,
+              "meanOracleNll": 1.615293085903806,
+              "fixtureMacroOracleTop1": 0.6574074074074074,
+              "oracleRecoveredHardErrors": 10,
+              "wrongKindExamples": 31,
+              "wrongKindOracleRecoveries": 10,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 41,
+                  "meanCandidates": 11.661764705882353,
+                  "meanProbabilityMass": 0.3256318199997694,
+                  "meanUniformMass": 0.23573454009889155
+                },
+                "single-cell": {
+                  "presentExamples": 46,
+                  "meanCandidates": 42.86764705882353,
+                  "meanProbabilityMass": 0.2631862262777177,
+                  "meanUniformMass": 0.5839227267221462
+                },
+                "reroll": {
+                  "presentExamples": 68,
+                  "meanCandidates": 2.2058823529411766,
+                  "meanProbabilityMass": 0.41118195372251287,
+                  "meanUniformMass": 0.1803427331789622
+                }
+              }
+            },
+            "gameover": {
+              "examples": 17,
+              "fixtures": 15,
+              "globalHardCorrect": 3,
+              "teacherKindOracleCorrect": 3,
+              "teacherKindOracleTop1": 0.17647058823529413,
+              "teacherKindOracleTop5": 0.29411764705882354,
+              "meanOracleRank": 30.764705882352942,
+              "meanOracleNll": 3.516010324744617,
+              "fixtureMacroOracleTop1": 0.13333333333333333,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 2,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 8,
+                  "meanCandidates": 4.294117647058823,
+                  "meanProbabilityMass": 0.313765897188532,
+                  "meanUniformMass": 0.24144334981240417
+                },
+                "single-cell": {
+                  "presentExamples": 13,
+                  "meanCandidates": 49.294117647058826,
+                  "meanProbabilityMass": 0.6862341028114679,
+                  "meanUniformMass": 0.7585566501875958
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "playing": {
+              "examples": 8,
+              "fixtures": 5,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.125,
+              "meanOracleRank": 9.875,
+              "meanOracleNll": 3.1702273190021515,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 2,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 8,
+                  "meanCandidates": 36.25,
+                  "meanProbabilityMass": 0.8028826876660515,
+                  "meanUniformMass": 0.3318342420856376
+                },
+                "single-cell": {
+                  "presentExamples": 8,
+                  "meanCandidates": 65.375,
+                  "meanProbabilityMass": 0.1546238254768179,
+                  "meanUniformMass": 0.6564587758126434
+                },
+                "reroll": {
+                  "presentExamples": 3,
+                  "meanCandidates": 1.125,
+                  "meanProbabilityMass": 0.04249348685713061,
+                  "meanUniformMass": 0.011706982101718943
+                }
+              }
+            }
+          },
+          "legalKinds": {
+            "place-piece": {
+              "examples": 11,
+              "fixtures": 6,
+              "globalHardCorrect": 3,
+              "teacherKindOracleCorrect": 3,
+              "teacherKindOracleTop1": 0.2727272727272727,
+              "teacherKindOracleTop5": 0.45454545454545453,
+              "meanOracleRank": 13.454545454545455,
+              "meanOracleNll": 2.5817266811024058,
+              "fixtureMacroOracleTop1": 0.19444444444444442,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 11,
+                  "meanCandidates": 20.181818181818183,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "place-piece+reroll": {
+              "examples": 57,
+              "fixtures": 24,
+              "globalHardCorrect": 21,
+              "teacherKindOracleCorrect": 27,
+              "teacherKindOracleTop1": 0.47368421052631576,
+              "teacherKindOracleTop5": 0.7719298245614035,
+              "meanOracleRank": 6.578947368421052,
+              "meanOracleNll": 2.6829014007459606,
+              "fixtureMacroOracleTop1": 0.5465277777777778,
+              "oracleRecoveredHardErrors": 6,
+              "wrongKindExamples": 9,
+              "wrongKindOracleRecoveries": 6,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 57,
+                  "meanCandidates": 170.6315789473684,
+                  "meanProbabilityMass": 0.8580083408891992,
+                  "meanUniformMass": 0.8972974250874516
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 57,
+                  "meanCandidates": 2.087719298245614,
+                  "meanProbabilityMass": 0.14199165911080083,
+                  "meanUniformMass": 0.10270257491254838
+                }
+              }
+            },
+            "place-piece+reroll+single-cell": {
+              "examples": 224,
+              "fixtures": 61,
+              "globalHardCorrect": 79,
+              "teacherKindOracleCorrect": 90,
+              "teacherKindOracleTop1": 0.4017857142857143,
+              "teacherKindOracleTop5": 0.6517857142857143,
+              "meanOracleRank": 16.223214285714285,
+              "meanOracleNll": 3.9698584673460573,
+              "fixtureMacroOracleTop1": 0.37568306010928965,
+              "oracleRecoveredHardErrors": 11,
+              "wrongKindExamples": 47,
+              "wrongKindOracleRecoveries": 11,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 224,
+                  "meanCandidates": 348.5580357142857,
+                  "meanProbabilityMass": 0.8156788846391633,
+                  "meanUniformMass": 0.5869173346861307
+                },
+                "single-cell": {
+                  "presentExamples": 224,
+                  "meanCandidates": 119.99553571428571,
+                  "meanProbabilityMass": 0.13895996892174037,
+                  "meanUniformMass": 0.40383531665331934
+                },
+                "reroll": {
+                  "presentExamples": 224,
+                  "meanCandidates": 2.1339285714285716,
+                  "meanProbabilityMass": 0.04536114643909633,
+                  "meanUniformMass": 0.009247348660550074
+                }
+              }
+            },
+            "place-piece+single-cell": {
+              "examples": 10,
+              "fixtures": 8,
+              "globalHardCorrect": 2,
+              "teacherKindOracleCorrect": 3,
+              "teacherKindOracleTop1": 0.3,
+              "teacherKindOracleTop5": 0.4,
+              "meanOracleRank": 13.8,
+              "meanOracleNll": 2.8512142270803453,
+              "fixtureMacroOracleTop1": 0.2916666666666667,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 4,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 10,
+                  "meanCandidates": 22.3,
+                  "meanProbabilityMass": 0.5584898825014044,
+                  "meanUniformMass": 0.20586863398135336
+                },
+                "single-cell": {
+                  "presentExamples": 10,
+                  "meanCandidates": 65,
+                  "meanProbabilityMass": 0.4415101174985955,
+                  "meanUniformMass": 0.7941313660186466
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "reroll": {
+              "examples": 8,
+              "fixtures": 7,
+              "globalHardCorrect": 8,
+              "teacherKindOracleCorrect": 8,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 0.008603952825069427,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 8,
+                  "meanCandidates": 1.25,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                }
+              }
+            },
+            "reroll+single-cell": {
+              "examples": 20,
+              "fixtures": 19,
+              "globalHardCorrect": 10,
+              "teacherKindOracleCorrect": 10,
+              "teacherKindOracleTop1": 0.5,
+              "teacherKindOracleTop5": 0.65,
+              "meanOracleRank": 13.45,
+              "meanOracleNll": 2.117295279353857,
+              "fixtureMacroOracleTop1": 0.5263157894736842,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 9,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 20,
+                  "meanCandidates": 61.9,
+                  "meanProbabilityMass": 0.5724398945545623,
+                  "meanUniformMass": 0.9717968053828292
+                },
+                "reroll": {
+                  "presentExamples": 20,
+                  "meanCandidates": 1.8,
+                  "meanProbabilityMass": 0.4275601054454376,
+                  "meanUniformMass": 0.028203194617170784
+                }
+              }
+            },
+            "single-cell": {
+              "examples": 9,
+              "fixtures": 9,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0,
+              "meanOracleRank": 42.888888888888886,
+              "meanOracleNll": 4.6826037830776635,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 9,
+                  "meanCandidates": 63.888888888888886,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "dev": {
+        "overall": {
+          "examples": 89,
+          "fixtures": 16,
+          "globalHardCorrect": 29,
+          "teacherKindOracleCorrect": 33,
+          "teacherKindOracleTop1": 0.3707865168539326,
+          "teacherKindOracleTop5": 0.5730337078651685,
+          "meanOracleRank": 18.258426966292134,
+          "meanOracleNll": 3.414926429603542,
+          "fixtureMacroOracleTop1": 0.3645833333333333,
+          "oracleRecoveredHardErrors": 4,
+          "wrongKindExamples": 15,
+          "wrongKindOracleRecoveries": 4,
+          "kindMass": {
+            "place-piece": {
+              "presentExamples": 78,
+              "meanCandidates": 259.5168539325843,
+              "meanProbabilityMass": 0.7172123037209795,
+              "meanUniformMass": 0.5311946588262002
+            },
+            "single-cell": {
+              "presentExamples": 76,
+              "meanCandidates": 91.14606741573034,
+              "meanProbabilityMass": 0.1864195642095099,
+              "meanUniformMass": 0.42605020701703195
+            },
+            "reroll": {
+              "presentExamples": 75,
+              "meanCandidates": 1.7415730337078652,
+              "meanProbabilityMass": 0.09636813206951059,
+              "meanUniformMass": 0.04275513415676792
+            }
+          }
+        },
+        "groups": {
+          "teacherKind": {
+            "place-piece": {
+              "examples": 68,
+              "fixtures": 16,
+              "globalHardCorrect": 22,
+              "teacherKindOracleCorrect": 24,
+              "teacherKindOracleTop1": 0.35294117647058826,
+              "teacherKindOracleTop5": 0.5882352941176471,
+              "meanOracleRank": 20.205882352941178,
+              "meanOracleNll": 3.6852262473719963,
+              "fixtureMacroOracleTop1": 0.30833333333333335,
+              "oracleRecoveredHardErrors": 2,
+              "wrongKindExamples": 6,
+              "wrongKindOracleRecoveries": 2,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 68,
+                  "meanCandidates": 328.72058823529414,
+                  "meanProbabilityMass": 0.8485883903574292,
+                  "meanUniformMass": 0.6385012813500384
+                },
+                "single-cell": {
+                  "presentExamples": 58,
+                  "meanCandidates": 99.32352941176471,
+                  "meanProbabilityMass": 0.10258315545696142,
+                  "meanUniformMass": 0.34017453575250206
+                },
+                "reroll": {
+                  "presentExamples": 58,
+                  "meanCandidates": 1.8823529411764706,
+                  "meanProbabilityMass": 0.048828454185609396,
+                  "meanUniformMass": 0.021324182897459604
+                }
+              }
+            },
+            "reroll": {
+              "examples": 8,
+              "fixtures": 8,
+              "globalHardCorrect": 7,
+              "teacherKindOracleCorrect": 8,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 0.13563770009204745,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 1,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 2,
+                  "meanCandidates": 0.625,
+                  "meanProbabilityMass": 0.10192210466986756,
+                  "meanUniformMass": 0.11309523809523808
+                },
+                "single-cell": {
+                  "presentExamples": 5,
+                  "meanCandidates": 38.375,
+                  "meanProbabilityMass": 0.3451249631268699,
+                  "meanUniformMass": 0.6070273130312138
+                },
+                "reroll": {
+                  "presentExamples": 8,
+                  "meanCandidates": 1.875,
+                  "meanProbabilityMass": 0.5529529322032626,
+                  "meanUniformMass": 0.27987744887354804
+                }
+              }
+            },
+            "single-cell": {
+              "examples": 13,
+              "fixtures": 13,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 1,
+              "teacherKindOracleTop1": 0.07692307692307693,
+              "teacherKindOracleTop5": 0.23076923076923078,
+              "meanOracleRank": 18.692307692307693,
+              "meanOracleNll": 4.019074293283316,
+              "fixtureMacroOracleTop1": 0.07692307692307693,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 8,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 8,
+                  "meanCandidates": 56.84615384615385,
+                  "meanProbabilityMass": 0.408654434577158,
+                  "meanUniformMass": 0.22719043068979244
+                },
+                "single-cell": {
+                  "presentExamples": 13,
+                  "meanCandidates": 80.84615384615384,
+                  "meanProbabilityMass": 0.5272836106583111,
+                  "meanUniformMass": 0.7638754991612301
+                },
+                "reroll": {
+                  "presentExamples": 9,
+                  "meanCandidates": 0.9230769230769231,
+                  "meanProbabilityMass": 0.06406195476453094,
+                  "meanUniformMass": 0.008934070148977537
+                }
+              }
+            }
+          },
+          "error": {
+            "different-position": {
+              "examples": 13,
+              "fixtures": 11,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.38461538461538464,
+              "meanOracleRank": 16.53846153846154,
+              "meanOracleNll": 3.808552072598384,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 9,
+                  "meanCandidates": 58.15384615384615,
+                  "meanProbabilityMass": 0.5252671619045745,
+                  "meanUniformMass": 0.3922123527395143
+                },
+                "single-cell": {
+                  "presentExamples": 10,
+                  "meanCandidates": 67.23076923076923,
+                  "meanProbabilityMass": 0.4527785936243751,
+                  "meanUniformMass": 0.5886265989015339
+                },
+                "reroll": {
+                  "presentExamples": 8,
+                  "meanCandidates": 1,
+                  "meanProbabilityMass": 0.02195424447105044,
+                  "meanUniformMass": 0.019161048358951802
+                }
+              }
+            },
+            "different-shape": {
+              "examples": 32,
+              "fixtures": 14,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.25,
+              "meanOracleRank": 38.5,
+              "meanOracleNll": 4.3461601585149765,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 32,
+                  "meanCandidates": 402.0625,
+                  "meanProbabilityMass": 0.8965660734752038,
+                  "meanUniformMass": 0.6786499779756695
+                },
+                "single-cell": {
+                  "presentExamples": 28,
+                  "meanCandidates": 105.9375,
+                  "meanProbabilityMass": 0.0805949137877832,
+                  "meanUniformMass": 0.2934610400487303
+                },
+                "reroll": {
+                  "presentExamples": 27,
+                  "meanCandidates": 1.71875,
+                  "meanProbabilityMass": 0.02283901273701304,
+                  "meanUniformMass": 0.027888981975600156
+                }
+              }
+            },
+            "exact-label": {
+              "examples": 29,
+              "fixtures": 16,
+              "globalHardCorrect": 29,
+              "teacherKindOracleCorrect": 29,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 2.4311225870303037,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 23,
+                  "meanCandidates": 298.2068965517241,
+                  "meanProbabilityMass": 0.7076716333477799,
+                  "meanUniformMass": 0.5536031248387733
+                },
+                "single-cell": {
+                  "presentExamples": 24,
+                  "meanCandidates": 92.58620689655173,
+                  "meanProbabilityMass": 0.13102943547673648,
+                  "meanUniformMass": 0.37823380697916004
+                },
+                "reroll": {
+                  "presentExamples": 26,
+                  "meanCandidates": 2.0344827586206895,
+                  "meanProbabilityMass": 0.16129893117548366,
+                  "meanUniformMass": 0.06816306818206672
+                }
+              }
+            },
+            "wrong-kind": {
+              "examples": 15,
+              "fixtures": 12,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 4,
+              "teacherKindOracleTop1": 0.26666666666666666,
+              "teacherKindOracleTop5": 0.6,
+              "meanOracleRank": 9.933333333333334,
+              "meanOracleNll": 2.989173012971878,
+              "fixtureMacroOracleTop1": 0.23611111111111113,
+              "oracleRecoveredHardErrors": 4,
+              "wrongKindExamples": 15,
+              "wrongKindOracleRecoveries": 4,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 14,
+                  "meanCandidates": 55.13333333333333,
+                  "meanProbabilityMass": 0.5193886805410383,
+                  "meanUniformMass": 0.29375160895815194
+                },
+                "single-cell": {
+                  "presentExamples": 14,
+                  "meanCandidates": 77.53333333333333,
+                  "meanProbabilityMass": 0.28842190849967214,
+                  "meanUniformMass": 0.6604525969893926
+                },
+                "reroll": {
+                  "presentExamples": 14,
+                  "meanCandidates": 1.8666666666666667,
+                  "meanProbabilityMass": 0.19218941095928957,
+                  "meanUniformMass": 0.045795794052455464
+                }
+              }
+            }
+          },
+          "family": {
+            "pressure": {
+              "examples": 41,
+              "fixtures": 8,
+              "globalHardCorrect": 13,
+              "teacherKindOracleCorrect": 16,
+              "teacherKindOracleTop1": 0.3902439024390244,
+              "teacherKindOracleTop5": 0.6585365853658537,
+              "meanOracleRank": 8.75609756097561,
+              "meanOracleNll": 2.1798508220874684,
+              "fixtureMacroOracleTop1": 0.375,
+              "oracleRecoveredHardErrors": 3,
+              "wrongKindExamples": 10,
+              "wrongKindOracleRecoveries": 3,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 30,
+                  "meanCandidates": 10.146341463414634,
+                  "meanProbabilityMass": 0.49712360153036833,
+                  "meanUniformMass": 0.32353269975130805
+                },
+                "single-cell": {
+                  "presentExamples": 28,
+                  "meanCandidates": 42.146341463414636,
+                  "meanProbabilityMass": 0.29968406353324134,
+                  "meanUniformMass": 0.5879928294329795
+                },
+                "reroll": {
+                  "presentExamples": 27,
+                  "meanCandidates": 1.4390243902439024,
+                  "meanProbabilityMass": 0.20319233493639033,
+                  "meanUniformMass": 0.08847447081571246
+                }
+              }
+            },
+            "sparse": {
+              "examples": 48,
+              "fixtures": 8,
+              "globalHardCorrect": 16,
+              "teacherKindOracleCorrect": 17,
+              "teacherKindOracleTop1": 0.3541666666666667,
+              "teacherKindOracleTop5": 0.5,
+              "meanOracleRank": 26.375,
+              "meanOracleNll": 4.4698868443568545,
+              "fixtureMacroOracleTop1": 0.35416666666666663,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 5,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 48,
+                  "meanCandidates": 472.5208333333333,
+                  "meanProbabilityMass": 0.9052047368421267,
+                  "meanUniformMass": 0.7085725822026706
+                },
+                "single-cell": {
+                  "presentExamples": 48,
+                  "meanCandidates": 133,
+                  "meanProbabilityMass": 0.0896728043704892,
+                  "meanUniformMass": 0.28772421703674333
+                },
+                "reroll": {
+                  "presentExamples": 48,
+                  "meanCandidates": 2,
+                  "meanProbabilityMass": 0.005122458787384129,
+                  "meanUniformMass": 0.003703200760586136
+                }
+              }
+            }
+          },
+          "searchComplete": {
+            "false": {
+              "examples": 66,
+              "fixtures": 16,
+              "globalHardCorrect": 19,
+              "teacherKindOracleCorrect": 21,
+              "teacherKindOracleTop1": 0.3181818181818182,
+              "teacherKindOracleTop5": 0.5151515151515151,
+              "meanOracleRank": 22.136363636363637,
+              "meanOracleNll": 4.0231245808077585,
+              "fixtureMacroOracleTop1": 0.2760416666666667,
+              "oracleRecoveredHardErrors": 2,
+              "wrongKindExamples": 12,
+              "wrongKindOracleRecoveries": 2,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 66,
+                  "meanCandidates": 348.6969696969697,
+                  "meanProbabilityMass": 0.8268203472685905,
+                  "meanUniformMass": 0.579677507705268
+                },
+                "single-cell": {
+                  "presentExamples": 65,
+                  "meanCandidates": 112.86363636363636,
+                  "meanProbabilityMass": 0.1281607041390147,
+                  "meanUniformMass": 0.41051521140188174
+                },
+                "reroll": {
+                  "presentExamples": 62,
+                  "meanCandidates": 2,
+                  "meanProbabilityMass": 0.04501894859239471,
+                  "meanUniformMass": 0.009807280892850283
+                }
+              }
+            },
+            "true": {
+              "examples": 23,
+              "fixtures": 8,
+              "globalHardCorrect": 10,
+              "teacherKindOracleCorrect": 12,
+              "teacherKindOracleTop1": 0.5217391304347826,
+              "teacherKindOracleTop5": 0.7391304347826086,
+              "meanOracleRank": 7.130434782608695,
+              "meanOracleNll": 1.6696621696262255,
+              "fixtureMacroOracleTop1": 0.5520833333333334,
+              "oracleRecoveredHardErrors": 2,
+              "wrongKindExamples": 3,
+              "wrongKindOracleRecoveries": 2,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 12,
+                  "meanCandidates": 3.608695652173913,
+                  "meanProbabilityMass": 0.4026848744104436,
+                  "meanUniformMass": 0.3920699620427881
+                },
+                "single-cell": {
+                  "presentExamples": 11,
+                  "meanCandidates": 28.82608695652174,
+                  "meanProbabilityMass": 0.3535971626726699,
+                  "meanUniformMass": 0.4706288900865933
+                },
+                "reroll": {
+                  "presentExamples": 13,
+                  "meanCandidates": 1,
+                  "meanProbabilityMass": 0.24371796291688658,
+                  "meanUniformMass": 0.13730114787061853
+                }
+              }
+            }
+          },
+          "teacherFinalPhase": {
+            "await-next-pieces": {
+              "examples": 61,
+              "fixtures": 13,
+              "globalHardCorrect": 19,
+              "teacherKindOracleCorrect": 22,
+              "teacherKindOracleTop1": 0.36065573770491804,
+              "teacherKindOracleTop5": 0.5245901639344263,
+              "meanOracleRank": 22.081967213114755,
+              "meanOracleNll": 3.962195605528159,
+              "fixtureMacroOracleTop1": 0.4358974358974359,
+              "oracleRecoveredHardErrors": 3,
+              "wrongKindExamples": 9,
+              "wrongKindOracleRecoveries": 3,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 59,
+                  "meanCandidates": 374.08196721311475,
+                  "meanProbabilityMass": 0.8229724003180391,
+                  "meanUniformMass": 0.6392684451296101
+                },
+                "single-cell": {
+                  "presentExamples": 57,
+                  "meanCandidates": 113.45901639344262,
+                  "meanProbabilityMass": 0.1412720864679231,
+                  "meanUniformMass": 0.34864613413316187
+                },
+                "reroll": {
+                  "presentExamples": 56,
+                  "meanCandidates": 1.8032786885245902,
+                  "meanProbabilityMass": 0.035755513214037846,
+                  "meanUniformMass": 0.012085420737227993
+                }
+              }
+            },
+            "await-reroll-result": {
+              "examples": 19,
+              "fixtures": 8,
+              "globalHardCorrect": 9,
+              "teacherKindOracleCorrect": 10,
+              "teacherKindOracleTop1": 0.5263157894736842,
+              "teacherKindOracleTop5": 0.7894736842105263,
+              "meanOracleRank": 7.315789473684211,
+              "meanOracleNll": 1.6914098378466933,
+              "fixtureMacroOracleTop1": 0.5916666666666667,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 5,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 13,
+                  "meanCandidates": 8.105263157894736,
+                  "meanProbabilityMass": 0.4141320930221233,
+                  "meanUniformMass": 0.23077215750511082
+                },
+                "single-cell": {
+                  "presentExamples": 13,
+                  "meanCandidates": 42.94736842105263,
+                  "meanProbabilityMass": 0.2514245056268507,
+                  "meanUniformMass": 0.6093990911800767
+                },
+                "reroll": {
+                  "presentExamples": 18,
+                  "meanCandidates": 2.210526315789474,
+                  "meanProbabilityMass": 0.334443401351026,
+                  "meanUniformMass": 0.1598287513148125
+                }
+              }
+            },
+            "gameover": {
+              "examples": 6,
+              "fixtures": 6,
+              "globalHardCorrect": 1,
+              "teacherKindOracleCorrect": 1,
+              "teacherKindOracleTop1": 0.16666666666666666,
+              "teacherKindOracleTop5": 0.5,
+              "meanOracleRank": 14.833333333333334,
+              "meanOracleNll": 3.0803370277086892,
+              "fixtureMacroOracleTop1": 0.16666666666666666,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 3,
+                  "meanCandidates": 6.333333333333333,
+                  "meanProbabilityMass": 0.5,
+                  "meanUniformMass": 0.5
+                },
+                "single-cell": {
+                  "presentExamples": 3,
+                  "meanCandidates": 30.333333333333332,
+                  "meanProbabilityMass": 0.5,
+                  "meanUniformMass": 0.5
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "playing": {
+              "examples": 3,
+              "fixtures": 3,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.3333333333333333,
+              "meanOracleRank": 16.666666666666668,
+              "meanOracleNll": 3.871903737386068,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 1,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 3,
+                  "meanCandidates": 28.666666666666668,
+                  "meanProbabilityMass": 0.9206896147821512,
+                  "meanUniformMass": 0.29875949667616336
+                },
+                "single-cell": {
+                  "presentExamples": 3,
+                  "meanCandidates": 64.33333333333333,
+                  "meanProbabilityMass": 0.06555944439763534,
+                  "meanUniformMass": 0.6908238366571701
+                },
+                "reroll": {
+                  "presentExamples": 1,
+                  "meanCandidates": 1,
+                  "meanProbabilityMass": 0.013750940820213413,
+                  "meanUniformMass": 0.010416666666666666
+                }
+              }
+            }
+          },
+          "legalKinds": {
+            "place-piece": {
+              "examples": 5,
+              "fixtures": 3,
+              "globalHardCorrect": 3,
+              "teacherKindOracleCorrect": 3,
+              "teacherKindOracleTop1": 0.6,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 2,
+              "meanOracleNll": 1.369448733329773,
+              "fixtureMacroOracleTop1": 0.6666666666666666,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 5,
+                  "meanCandidates": 8.6,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "place-piece+reroll": {
+              "examples": 7,
+              "fixtures": 3,
+              "globalHardCorrect": 1,
+              "teacherKindOracleCorrect": 2,
+              "teacherKindOracleTop1": 0.2857142857142857,
+              "teacherKindOracleTop5": 0.7142857142857143,
+              "meanOracleRank": 7.285714285714286,
+              "meanOracleNll": 2.1946677416563034,
+              "fixtureMacroOracleTop1": 0.27777777777777773,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 1,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 7,
+                  "meanCandidates": 11.714285714285714,
+                  "meanProbabilityMass": 0.7434750339543861,
+                  "meanUniformMass": 0.705252390811397
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 7,
+                  "meanCandidates": 2.142857142857143,
+                  "meanProbabilityMass": 0.2565249660456139,
+                  "meanUniformMass": 0.29474760918860293
+                }
+              }
+            },
+            "place-piece+reroll+single-cell": {
+              "examples": 61,
+              "fixtures": 16,
+              "globalHardCorrect": 19,
+              "teacherKindOracleCorrect": 21,
+              "teacherKindOracleTop1": 0.3442622950819672,
+              "teacherKindOracleTop5": 0.5573770491803278,
+              "meanOracleRank": 22.34426229508197,
+              "meanOracleNll": 4.0225717413132305,
+              "fixtureMacroOracleTop1": 0.3125,
+              "oracleRecoveredHardErrors": 2,
+              "wrongKindExamples": 12,
+              "wrongKindOracleRecoveries": 2,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 61,
+                  "meanCandidates": 375.1803278688525,
+                  "meanProbabilityMass": 0.8241269239980247,
+                  "meanUniformMass": 0.5954091473144864
+                },
+                "single-cell": {
+                  "presentExamples": 61,
+                  "meanCandidates": 118.18032786885246,
+                  "meanProbabilityMass": 0.1275433770623476,
+                  "meanUniformMass": 0.39504883387200923
+                },
+                "reroll": {
+                  "presentExamples": 61,
+                  "meanCandidates": 2.1147540983606556,
+                  "meanProbabilityMass": 0.04832969893962767,
+                  "meanUniformMass": 0.009542018813504438
+                }
+              }
+            },
+            "place-piece+single-cell": {
+              "examples": 5,
+              "fixtures": 4,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 1,
+              "teacherKindOracleTop1": 0.2,
+              "teacherKindOracleTop5": 0.2,
+              "meanOracleRank": 14.4,
+              "meanOracleNll": 3.142684984207153,
+              "fixtureMacroOracleTop1": 0.125,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 1,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 5,
+                  "meanCandidates": 17.2,
+                  "meanProbabilityMass": 0.6711654859213938,
+                  "meanUniformMass": 0.20391998273367368
+                },
+                "single-cell": {
+                  "presentExamples": 5,
+                  "meanCandidates": 60.6,
+                  "meanProbabilityMass": 0.3288345140786061,
+                  "meanUniformMass": 0.7960800172663263
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "reroll": {
+              "examples": 1,
+              "fixtures": 1,
+              "globalHardCorrect": 1,
+              "teacherKindOracleCorrect": 1,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 0,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 1,
+                  "meanCandidates": 1,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                }
+              }
+            },
+            "reroll+single-cell": {
+              "examples": 6,
+              "fixtures": 6,
+              "globalHardCorrect": 5,
+              "teacherKindOracleCorrect": 5,
+              "teacherKindOracleTop1": 0.8333333333333334,
+              "teacherKindOracleTop5": 0.8333333333333334,
+              "meanOracleRank": 4.166666666666667,
+              "meanOracleNll": 0.7140670685718457,
+              "fixtureMacroOracleTop1": 0.8333333333333334,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 1,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 6,
+                  "meanCandidates": 61.333333333333336,
+                  "meanProbabilityMass": 0.5278371072416906,
+                  "meanUniformMass": 0.9733482453319411
+                },
+                "reroll": {
+                  "presentExamples": 6,
+                  "meanCandidates": 1.6666666666666667,
+                  "meanProbabilityMass": 0.47216289275830947,
+                  "meanUniformMass": 0.026651754668058917
+                }
+              }
+            },
+            "single-cell": {
+              "examples": 4,
+              "fixtures": 4,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0,
+              "meanOracleRank": 25.75,
+              "meanOracleNll": 4.085957705974579,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 4,
+                  "meanCandidates": 58,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "outcome": {
+      "train": {
+        "overall": {
+          "examples": 339,
+          "fixtures": 64,
+          "globalHardCorrect": 123,
+          "teacherKindOracleCorrect": 146,
+          "teacherKindOracleTop1": 0.4306784660766962,
+          "teacherKindOracleTop5": 0.6696165191740413,
+          "meanOracleRank": 12.761061946902656,
+          "meanOracleNll": 3.163608048495817,
+          "fixtureMacroOracleTop1": 0.42838541666666663,
+          "oracleRecoveredHardErrors": 23,
+          "wrongKindExamples": 80,
+          "wrongKindOracleRecoveries": 23,
+          "kindMass": {
+            "place-piece": {
+              "presentExamples": 302,
+              "meanCandidates": 260.3185840707965,
+              "meanProbabilityMass": 0.7183097795083127,
+              "meanUniformMass": 0.57720980100145
+            },
+            "single-cell": {
+              "presentExamples": 263,
+              "meanCandidates": 86.55457227138643,
+              "meanProbabilityMass": 0.18849240759367417,
+              "meanUniformMass": 0.3741485566318188
+            },
+            "reroll": {
+              "presentExamples": 309,
+              "meanCandidates": 1.896755162241888,
+              "meanProbabilityMass": 0.09319781289801325,
+              "meanUniformMass": 0.048641642366731234
+            }
+          }
+        },
+        "groups": {
+          "teacherKind": {
+            "place-piece": {
+              "examples": 259,
+              "fixtures": 62,
+              "globalHardCorrect": 97,
+              "teacherKindOracleCorrect": 113,
+              "teacherKindOracleTop1": 0.4362934362934363,
+              "teacherKindOracleTop5": 0.7335907335907336,
+              "meanOracleRank": 12.1003861003861,
+              "meanOracleNll": 3.307591178472438,
+              "fixtureMacroOracleTop1": 0.403494623655914,
+              "oracleRecoveredHardErrors": 16,
+              "wrongKindExamples": 35,
+              "wrongKindOracleRecoveries": 16,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 259,
+                  "meanCandidates": 323.984555984556,
+                  "meanProbabilityMass": 0.851229200121911,
+                  "meanUniformMass": 0.6845009534705712
+                },
+                "single-cell": {
+                  "presentExamples": 199,
+                  "meanCandidates": 93.35907335907336,
+                  "meanProbabilityMass": 0.10260664979341393,
+                  "meanUniformMass": 0.2939241906505917
+                },
+                "reroll": {
+                  "presentExamples": 240,
+                  "meanCandidates": 2.027027027027027,
+                  "meanProbabilityMass": 0.04616415008467522,
+                  "meanUniformMass": 0.0215748558788371
+                }
+              }
+            },
+            "reroll": {
+              "examples": 28,
+              "fixtures": 27,
+              "globalHardCorrect": 25,
+              "teacherKindOracleCorrect": 28,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 0.1280774279896702,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 3,
+              "wrongKindExamples": 3,
+              "wrongKindOracleRecoveries": 3,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 10,
+                  "meanCandidates": 4.142857142857143,
+                  "meanProbabilityMass": 0.18205864851983108,
+                  "meanUniformMass": 0.2207055396767197
+                },
+                "single-cell": {
+                  "presentExamples": 12,
+                  "meanCandidates": 28.357142857142858,
+                  "meanProbabilityMass": 0.29486633617950625,
+                  "meanUniformMass": 0.4135885748323581
+                },
+                "reroll": {
+                  "presentExamples": 28,
+                  "meanCandidates": 1.8571428571428572,
+                  "meanProbabilityMass": 0.5230750153006626,
+                  "meanUniformMass": 0.3657058854909222
+                }
+              }
+            },
+            "single-cell": {
+              "examples": 52,
+              "fixtures": 49,
+              "globalHardCorrect": 1,
+              "teacherKindOracleCorrect": 5,
+              "teacherKindOracleTop1": 0.09615384615384616,
+              "teacherKindOracleTop5": 0.17307692307692307,
+              "meanOracleRank": 22.384615384615383,
+              "meanOracleNll": 4.080977792923267,
+              "fixtureMacroOracleTop1": 0.09183673469387756,
+              "oracleRecoveredHardErrors": 4,
+              "wrongKindExamples": 42,
+              "wrongKindOracleRecoveries": 4,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 33,
+                  "meanCandidates": 81.15384615384616,
+                  "meanProbabilityMass": 0.3450194281382266,
+                  "meanUniformMass": 0.2347811630704895
+                },
+                "single-cell": {
+                  "presentExamples": 52,
+                  "meanCandidates": 84,
+                  "meanProbabilityMass": 0.5589912781679839,
+                  "meanUniformMass": 0.7524906773918709
+                },
+                "reroll": {
+                  "presentExamples": 41,
+                  "meanCandidates": 1.2692307692307692,
+                  "meanProbabilityMass": 0.09598929369378949,
+                  "meanUniformMass": 0.012728159537639585
+                }
+              }
+            }
+          },
+          "error": {
+            "different-position": {
+              "examples": 44,
+              "fixtures": 37,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.4090909090909091,
+              "meanOracleRank": 17.068181818181817,
+              "meanOracleNll": 3.645836897871711,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 35,
+                  "meanCandidates": 81.0909090909091,
+                  "meanProbabilityMass": 0.6897771708391994,
+                  "meanUniformMass": 0.5381354425690822
+                },
+                "single-cell": {
+                  "presentExamples": 29,
+                  "meanCandidates": 64.77272727272727,
+                  "meanProbabilityMass": 0.2900805000498989,
+                  "meanUniformMass": 0.44206488071696587
+                },
+                "reroll": {
+                  "presentExamples": 30,
+                  "meanCandidates": 1.0909090909090908,
+                  "meanProbabilityMass": 0.020142329110901715,
+                  "meanUniformMass": 0.019799676713951987
+                }
+              }
+            },
+            "different-shape": {
+              "examples": 81,
+              "fixtures": 43,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.49382716049382713,
+              "meanOracleRank": 29.061728395061728,
+              "meanOracleNll": 4.080850592365971,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 81,
+                  "meanCandidates": 394.60493827160496,
+                  "meanProbabilityMass": 0.911572645759489,
+                  "meanUniformMass": 0.7057524254515448
+                },
+                "single-cell": {
+                  "presentExamples": 70,
+                  "meanCandidates": 109.61728395061728,
+                  "meanProbabilityMass": 0.0758229308759942,
+                  "meanUniformMass": 0.2857894365979811
+                },
+                "reroll": {
+                  "presentExamples": 76,
+                  "meanCandidates": 1.9382716049382716,
+                  "meanProbabilityMass": 0.01260442336451667,
+                  "meanUniformMass": 0.00845813795047402
+                }
+              }
+            },
+            "different-target": {
+              "examples": 11,
+              "fixtures": 11,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.7272727272727273,
+              "meanOracleRank": 6.2727272727272725,
+              "meanOracleNll": 3.581082214008678,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 11,
+                  "meanCandidates": 363.1818181818182,
+                  "meanProbabilityMass": 0.9240383154322432,
+                  "meanUniformMass": 0.7655318715246465
+                },
+                "single-cell": {
+                  "presentExamples": 7,
+                  "meanCandidates": 86.27272727272727,
+                  "meanProbabilityMass": 0.031131338064546654,
+                  "meanUniformMass": 0.2036161063604858
+                },
+                "reroll": {
+                  "presentExamples": 10,
+                  "meanCandidates": 2.6363636363636362,
+                  "meanProbabilityMass": 0.04483034650321021,
+                  "meanUniformMass": 0.03085202211486778
+                }
+              }
+            },
+            "exact-label": {
+              "examples": 123,
+              "fixtures": 59,
+              "globalHardCorrect": 123,
+              "teacherKindOracleCorrect": 123,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 2.360970869963247,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 104,
+                  "meanCandidates": 348.3008130081301,
+                  "meanProbabilityMass": 0.7417527189953121,
+                  "meanUniformMass": 0.6083187635039565
+                },
+                "single-cell": {
+                  "presentExamples": 94,
+                  "meanCandidates": 92.8048780487805,
+                  "meanProbabilityMass": 0.12932316742954103,
+                  "meanUniformMass": 0.30431933766741476
+                },
+                "reroll": {
+                  "presentExamples": 116,
+                  "meanCandidates": 2.089430894308943,
+                  "meanProbabilityMass": 0.12892411357514677,
+                  "meanUniformMass": 0.08736189882862874
+                }
+              }
+            },
+            "wrong-kind": {
+              "examples": 80,
+              "fixtures": 47,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 23,
+              "teacherKindOracleTop1": 0.2875,
+              "teacherKindOracleTop5": 0.475,
+              "meanOracleRank": 12.8625,
+              "meanOracleNll": 3.1463260699063538,
+              "fixtureMacroOracleTop1": 0.22163120567375885,
+              "oracleRecoveredHardErrors": 23,
+              "wrongKindExamples": 80,
+              "wrongKindOracleRecoveries": 23,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 71,
+                  "meanCandidates": 73.5125,
+                  "meanProbabilityMass": 0.47399286904620624,
+                  "meanUniformMass": 0.3948269763389878
+                },
+                "single-cell": {
+                  "presentExamples": 63,
+                  "meanCandidates": 65.6125,
+                  "meanProbabilityMass": 0.35930665573201126,
+                  "meanUniformMass": 0.5570688234893282
+                },
+                "reroll": {
+                  "presentExamples": 77,
+                  "meanCandidates": 1.9,
+                  "meanProbabilityMass": 0.1667004752217825,
+                  "meanUniformMass": 0.04810420017168407
+                }
+              }
+            }
+          },
+          "family": {
+            "pressure": {
+              "examples": 147,
+              "fixtures": 32,
+              "globalHardCorrect": 41,
+              "teacherKindOracleCorrect": 61,
+              "teacherKindOracleTop1": 0.41496598639455784,
+              "teacherKindOracleTop5": 0.6258503401360545,
+              "meanOracleRank": 9.92517006802721,
+              "meanOracleNll": 2.3043027742683484,
+              "fixtureMacroOracleTop1": 0.4140625,
+              "oracleRecoveredHardErrors": 20,
+              "wrongKindExamples": 57,
+              "wrongKindOracleRecoveries": 20,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 110,
+                  "meanCandidates": 18.843537414965986,
+                  "meanProbabilityMass": 0.4746009190184104,
+                  "meanUniformMass": 0.39362307937755336
+                },
+                "single-cell": {
+                  "presentExamples": 89,
+                  "meanCandidates": 39.40136054421769,
+                  "meanProbabilityMass": 0.3219667746186655,
+                  "meanUniformMass": 0.4994980429660952
+                },
+                "reroll": {
+                  "presentExamples": 117,
+                  "meanCandidates": 1.7210884353741496,
+                  "meanProbabilityMass": 0.2034323063629241,
+                  "meanUniformMass": 0.10687887765635151
+                }
+              }
+            },
+            "sparse": {
+              "examples": 192,
+              "fixtures": 32,
+              "globalHardCorrect": 82,
+              "teacherKindOracleCorrect": 85,
+              "teacherKindOracleTop1": 0.4427083333333333,
+              "teacherKindOracleTop5": 0.703125,
+              "meanOracleRank": 14.932291666666666,
+              "meanOracleNll": 3.8215136490762234,
+              "fixtureMacroOracleTop1": 0.4427083333333333,
+              "oracleRecoveredHardErrors": 3,
+              "wrongKindExamples": 23,
+              "wrongKindOracleRecoveries": 3,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 192,
+                  "meanCandidates": 445.1979166666667,
+                  "meanProbabilityMass": 0.904899375820894,
+                  "meanUniformMass": 0.7177683847447458
+                },
+                "single-cell": {
+                  "presentExamples": 174,
+                  "meanCandidates": 122.65625,
+                  "meanProbabilityMass": 0.08630109534016515,
+                  "meanUniformMass": 0.27817785615713847
+                },
+                "reroll": {
+                  "presentExamples": 192,
+                  "meanCandidates": 2.03125,
+                  "meanProbabilityMass": 0.008799528838940878,
+                  "meanUniformMass": 0.004053759098115711
+                }
+              }
+            }
+          },
+          "searchComplete": {
+            "false": {
+              "examples": 254,
+              "fixtures": 62,
+              "globalHardCorrect": 87,
+              "teacherKindOracleCorrect": 101,
+              "teacherKindOracleTop1": 0.39763779527559057,
+              "teacherKindOracleTop5": 0.6732283464566929,
+              "meanOracleRank": 13.405511811023622,
+              "meanOracleNll": 3.56359687987275,
+              "fixtureMacroOracleTop1": 0.3456989247311828,
+              "oracleRecoveredHardErrors": 14,
+              "wrongKindExamples": 57,
+              "wrongKindOracleRecoveries": 14,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 253,
+                  "meanCandidates": 342.33858267716533,
+                  "meanProbabilityMass": 0.824132676856804,
+                  "meanUniformMass": 0.6320930804723385
+                },
+                "single-cell": {
+                  "presentExamples": 226,
+                  "meanCandidates": 106.24803149606299,
+                  "meanProbabilityMass": 0.13474006998696147,
+                  "meanUniformMass": 0.3572189629783904
+                },
+                "reroll": {
+                  "presentExamples": 247,
+                  "meanCandidates": 2.12992125984252,
+                  "meanProbabilityMass": 0.04112725315623449,
+                  "meanUniformMass": 0.010687956549271117
+                }
+              }
+            },
+            "true": {
+              "examples": 85,
+              "fixtures": 36,
+              "globalHardCorrect": 36,
+              "teacherKindOracleCorrect": 45,
+              "teacherKindOracleTop1": 0.5294117647058824,
+              "teacherKindOracleTop5": 0.6588235294117647,
+              "meanOracleRank": 10.83529411764706,
+              "meanOracleNll": 1.9683473053223945,
+              "fixtureMacroOracleTop1": 0.4532407407407407,
+              "oracleRecoveredHardErrors": 9,
+              "wrongKindExamples": 23,
+              "wrongKindOracleRecoveries": 9,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 49,
+                  "meanCandidates": 15.223529411764705,
+                  "meanProbabilityMass": 0.40208606272576175,
+                  "meanUniformMass": 0.4132056482296184
+                },
+                "single-cell": {
+                  "presentExamples": 37,
+                  "meanCandidates": 27.705882352941178,
+                  "meanProbabilityMass": 0.3491170399713803,
+                  "meanUniformMass": 0.4247381659020637
+                },
+                "reroll": {
+                  "presentExamples": 62,
+                  "meanCandidates": 1.2,
+                  "meanProbabilityMass": 0.24879689730285798,
+                  "meanUniformMass": 0.16205618586831796
+                }
+              }
+            }
+          },
+          "teacherFinalPhase": {
+            "await-next-pieces": {
+              "examples": 246,
+              "fixtures": 46,
+              "globalHardCorrect": 92,
+              "teacherKindOracleCorrect": 106,
+              "teacherKindOracleTop1": 0.43089430894308944,
+              "teacherKindOracleTop5": 0.6869918699186992,
+              "meanOracleRank": 13.44308943089431,
+              "meanOracleNll": 3.5827939684798076,
+              "fixtureMacroOracleTop1": 0.43550724637681154,
+              "oracleRecoveredHardErrors": 14,
+              "wrongKindExamples": 44,
+              "wrongKindOracleRecoveries": 14,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 245,
+                  "meanCandidates": 354.0325203252033,
+                  "meanProbabilityMass": 0.8628413878504858,
+                  "meanUniformMass": 0.7027844021515078
+                },
+                "single-cell": {
+                  "presentExamples": 196,
+                  "meanCandidates": 101.89430894308943,
+                  "meanProbabilityMass": 0.10711692709002353,
+                  "meanUniformMass": 0.2804165935828876
+                },
+                "reroll": {
+                  "presentExamples": 238,
+                  "meanCandidates": 1.967479674796748,
+                  "meanProbabilityMass": 0.03004168505949065,
+                  "meanUniformMass": 0.016799004265604506
+                }
+              }
+            },
+            "await-reroll-result": {
+              "examples": 68,
+              "fixtures": 27,
+              "globalHardCorrect": 27,
+              "teacherKindOracleCorrect": 36,
+              "teacherKindOracleTop1": 0.5294117647058824,
+              "teacherKindOracleTop5": 0.75,
+              "meanOracleRank": 6.3088235294117645,
+              "meanOracleNll": 1.6165862286134678,
+              "fixtureMacroOracleTop1": 0.6111111111111112,
+              "oracleRecoveredHardErrors": 9,
+              "wrongKindExamples": 32,
+              "wrongKindOracleRecoveries": 9,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 41,
+                  "meanCandidates": 11.661764705882353,
+                  "meanProbabilityMass": 0.3032811910256235,
+                  "meanUniformMass": 0.23573454009889155
+                },
+                "single-cell": {
+                  "presentExamples": 46,
+                  "meanCandidates": 42.86764705882353,
+                  "meanProbabilityMass": 0.3456292867603405,
+                  "meanUniformMass": 0.5839227267221462
+                },
+                "reroll": {
+                  "presentExamples": 68,
+                  "meanCandidates": 2.2058823529411766,
+                  "meanProbabilityMass": 0.351089522214036,
+                  "meanUniformMass": 0.1803427331789622
+                }
+              }
+            },
+            "gameover": {
+              "examples": 17,
+              "fixtures": 15,
+              "globalHardCorrect": 4,
+              "teacherKindOracleCorrect": 4,
+              "teacherKindOracleTop1": 0.23529411764705882,
+              "teacherKindOracleTop5": 0.29411764705882354,
+              "meanOracleRank": 30.352941176470587,
+              "meanOracleNll": 3.2808831255225575,
+              "fixtureMacroOracleTop1": 0.2,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 2,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 8,
+                  "meanCandidates": 4.294117647058823,
+                  "meanProbabilityMass": 0.28000931141557595,
+                  "meanUniformMass": 0.24144334981240417
+                },
+                "single-cell": {
+                  "presentExamples": 13,
+                  "meanCandidates": 49.294117647058826,
+                  "meanProbabilityMass": 0.719990688584424,
+                  "meanUniformMass": 0.7585566501875958
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "playing": {
+              "examples": 8,
+              "fixtures": 5,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.25,
+              "meanOracleRank": 9.25,
+              "meanOracleNll": 3.174116939306259,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 2,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 8,
+                  "meanCandidates": 36.25,
+                  "meanProbabilityMass": 0.7330943197864084,
+                  "meanUniformMass": 0.3318342420856376
+                },
+                "single-cell": {
+                  "presentExamples": 8,
+                  "meanCandidates": 65.375,
+                  "meanProbabilityMass": 0.2256911130589238,
+                  "meanUniformMass": 0.6564587758126434
+                },
+                "reroll": {
+                  "presentExamples": 3,
+                  "meanCandidates": 1.125,
+                  "meanProbabilityMass": 0.04121456715466787,
+                  "meanUniformMass": 0.011706982101718943
+                }
+              }
+            }
+          },
+          "legalKinds": {
+            "place-piece": {
+              "examples": 11,
+              "fixtures": 6,
+              "globalHardCorrect": 4,
+              "teacherKindOracleCorrect": 4,
+              "teacherKindOracleTop1": 0.36363636363636365,
+              "teacherKindOracleTop5": 0.5454545454545454,
+              "meanOracleRank": 12.363636363636363,
+              "meanOracleNll": 2.3254121975465254,
+              "fixtureMacroOracleTop1": 0.27777777777777773,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 11,
+                  "meanCandidates": 20.181818181818183,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "place-piece+reroll": {
+              "examples": 57,
+              "fixtures": 24,
+              "globalHardCorrect": 17,
+              "teacherKindOracleCorrect": 26,
+              "teacherKindOracleTop1": 0.45614035087719296,
+              "teacherKindOracleTop5": 0.7192982456140351,
+              "meanOracleRank": 7.631578947368421,
+              "meanOracleNll": 2.538703181503112,
+              "fixtureMacroOracleTop1": 0.5270833333333333,
+              "oracleRecoveredHardErrors": 9,
+              "wrongKindExamples": 17,
+              "wrongKindOracleRecoveries": 9,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 57,
+                  "meanCandidates": 170.6315789473684,
+                  "meanProbabilityMass": 0.8438225679565946,
+                  "meanUniformMass": 0.8972974250874516
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 57,
+                  "meanCandidates": 2.087719298245614,
+                  "meanProbabilityMass": 0.15617743204340534,
+                  "meanUniformMass": 0.10270257491254838
+                }
+              }
+            },
+            "place-piece+reroll+single-cell": {
+              "examples": 224,
+              "fixtures": 61,
+              "globalHardCorrect": 80,
+              "teacherKindOracleCorrect": 94,
+              "teacherKindOracleTop1": 0.41964285714285715,
+              "teacherKindOracleTop5": 0.6964285714285714,
+              "meanOracleRank": 13.602678571428571,
+              "meanOracleNll": 3.543937617114612,
+              "fixtureMacroOracleTop1": 0.3879781420765028,
+              "oracleRecoveredHardErrors": 14,
+              "wrongKindExamples": 51,
+              "wrongKindOracleRecoveries": 14,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 224,
+                  "meanCandidates": 348.5580357142857,
+                  "meanProbabilityMass": 0.8020752542319488,
+                  "meanUniformMass": 0.5869173346861307
+                },
+                "single-cell": {
+                  "presentExamples": 224,
+                  "meanCandidates": 119.99553571428571,
+                  "meanProbabilityMass": 0.1588939583597924,
+                  "meanUniformMass": 0.40383531665331934
+                },
+                "reroll": {
+                  "presentExamples": 224,
+                  "meanCandidates": 2.1339285714285716,
+                  "meanProbabilityMass": 0.03903078740825874,
+                  "meanUniformMass": 0.009247348660550074
+                }
+              }
+            },
+            "place-piece+single-cell": {
+              "examples": 10,
+              "fixtures": 8,
+              "globalHardCorrect": 3,
+              "teacherKindOracleCorrect": 3,
+              "teacherKindOracleTop1": 0.3,
+              "teacherKindOracleTop5": 0.4,
+              "meanOracleRank": 13.4,
+              "meanOracleNll": 2.800696484744549,
+              "fixtureMacroOracleTop1": 0.2916666666666667,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 3,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 10,
+                  "meanCandidates": 22.3,
+                  "meanProbabilityMass": 0.4744271931835528,
+                  "meanUniformMass": 0.20586863398135336
+                },
+                "single-cell": {
+                  "presentExamples": 10,
+                  "meanCandidates": 65,
+                  "meanProbabilityMass": 0.5255728068164471,
+                  "meanUniformMass": 0.7941313660186466
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "reroll": {
+              "examples": 8,
+              "fixtures": 7,
+              "globalHardCorrect": 8,
+              "teacherKindOracleCorrect": 8,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 0.019431485794484615,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 8,
+                  "meanCandidates": 1.25,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                }
+              }
+            },
+            "reroll+single-cell": {
+              "examples": 20,
+              "fixtures": 19,
+              "globalHardCorrect": 11,
+              "teacherKindOracleCorrect": 11,
+              "teacherKindOracleTop1": 0.55,
+              "teacherKindOracleTop5": 0.6,
+              "meanOracleRank": 9.25,
+              "meanOracleNll": 2.0185880422592164,
+              "fixtureMacroOracleTop1": 0.5789473684210527,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 9,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 20,
+                  "meanCandidates": 61.9,
+                  "meanProbabilityMass": 0.7025475716748787,
+                  "meanUniformMass": 0.9717968053828292
+                },
+                "reroll": {
+                  "presentExamples": 20,
+                  "meanCandidates": 1.8,
+                  "meanProbabilityMass": 0.2974524283251213,
+                  "meanUniformMass": 0.028203194617170784
+                }
+              }
+            },
+            "single-cell": {
+              "examples": 9,
+              "fixtures": 9,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0,
+              "meanOracleRank": 42.333333333333336,
+              "meanOracleNll": 4.422367678748237,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 9,
+                  "meanCandidates": 63.888888888888886,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "dev": {
+        "overall": {
+          "examples": 89,
+          "fixtures": 16,
+          "globalHardCorrect": 29,
+          "teacherKindOracleCorrect": 34,
+          "teacherKindOracleTop1": 0.38202247191011235,
+          "teacherKindOracleTop5": 0.6404494382022472,
+          "meanOracleRank": 15.876404494382022,
+          "meanOracleNll": 3.1129518270157694,
+          "fixtureMacroOracleTop1": 0.3802083333333333,
+          "oracleRecoveredHardErrors": 5,
+          "wrongKindExamples": 15,
+          "wrongKindOracleRecoveries": 5,
+          "kindMass": {
+            "place-piece": {
+              "presentExamples": 78,
+              "meanCandidates": 259.5168539325843,
+              "meanProbabilityMass": 0.6935285233916786,
+              "meanUniformMass": 0.5311946588262002
+            },
+            "single-cell": {
+              "presentExamples": 76,
+              "meanCandidates": 91.14606741573034,
+              "meanProbabilityMass": 0.21919258556348598,
+              "meanUniformMass": 0.42605020701703195
+            },
+            "reroll": {
+              "presentExamples": 75,
+              "meanCandidates": 1.7415730337078652,
+              "meanProbabilityMass": 0.08727889104483547,
+              "meanUniformMass": 0.04275513415676792
+            }
+          }
+        },
+        "groups": {
+          "teacherKind": {
+            "place-piece": {
+              "examples": 68,
+              "fixtures": 16,
+              "globalHardCorrect": 21,
+              "teacherKindOracleCorrect": 25,
+              "teacherKindOracleTop1": 0.36764705882352944,
+              "teacherKindOracleTop5": 0.6911764705882353,
+              "meanOracleRank": 16.647058823529413,
+              "meanOracleNll": 3.2862931205069317,
+              "fixtureMacroOracleTop1": 0.34479166666666666,
+              "oracleRecoveredHardErrors": 4,
+              "wrongKindExamples": 7,
+              "wrongKindOracleRecoveries": 4,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 68,
+                  "meanCandidates": 328.72058823529414,
+                  "meanProbabilityMass": 0.824362279189834,
+                  "meanUniformMass": 0.6385012813500384
+                },
+                "single-cell": {
+                  "presentExamples": 58,
+                  "meanCandidates": 99.32352941176471,
+                  "meanProbabilityMass": 0.1290902022209513,
+                  "meanUniformMass": 0.34017453575250206
+                },
+                "reroll": {
+                  "presentExamples": 58,
+                  "meanCandidates": 1.8823529411764706,
+                  "meanProbabilityMass": 0.04654751858921471,
+                  "meanUniformMass": 0.021324182897459604
+                }
+              }
+            },
+            "reroll": {
+              "examples": 8,
+              "fixtures": 8,
+              "globalHardCorrect": 8,
+              "teacherKindOracleCorrect": 8,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 0.17501809634268284,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 2,
+                  "meanCandidates": 0.625,
+                  "meanProbabilityMass": 0.07630093170656801,
+                  "meanUniformMass": 0.11309523809523808
+                },
+                "single-cell": {
+                  "presentExamples": 5,
+                  "meanCandidates": 38.375,
+                  "meanProbabilityMass": 0.4246040341012557,
+                  "meanUniformMass": 0.6070273130312138
+                },
+                "reroll": {
+                  "presentExamples": 8,
+                  "meanCandidates": 1.875,
+                  "meanProbabilityMass": 0.49909503419217627,
+                  "meanUniformMass": 0.27987744887354804
+                }
+              }
+            },
+            "single-cell": {
+              "examples": 13,
+              "fixtures": 13,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 1,
+              "teacherKindOracleTop1": 0.07692307692307693,
+              "teacherKindOracleTop5": 0.15384615384615385,
+              "meanOracleRank": 21,
+              "meanOracleNll": 4.014202741476206,
+              "fixtureMacroOracleTop1": 0.07692307692307693,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 8,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 8,
+                  "meanCandidates": 56.84615384615385,
+                  "meanProbabilityMass": 0.3889997033306258,
+                  "meanUniformMass": 0.22719043068979244
+                },
+                "single-cell": {
+                  "presentExamples": 13,
+                  "meanCandidates": 80.84615384615384,
+                  "meanProbabilityMass": 0.5640903147165784,
+                  "meanUniformMass": 0.7638754991612301
+                },
+                "reroll": {
+                  "presentExamples": 9,
+                  "meanCandidates": 0.9230769230769231,
+                  "meanProbabilityMass": 0.0469099819527959,
+                  "meanUniformMass": 0.008934070148977537
+                }
+              }
+            }
+          },
+          "error": {
+            "different-position": {
+              "examples": 13,
+              "fixtures": 11,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.38461538461538464,
+              "meanOracleRank": 12.76923076923077,
+              "meanOracleNll": 3.571934406573956,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 9,
+                  "meanCandidates": 58.15384615384615,
+                  "meanProbabilityMass": 0.4991570159805176,
+                  "meanUniformMass": 0.3922123527395143
+                },
+                "single-cell": {
+                  "presentExamples": 10,
+                  "meanCandidates": 67.23076923076923,
+                  "meanProbabilityMass": 0.47766645883544434,
+                  "meanUniformMass": 0.5886265989015339
+                },
+                "reroll": {
+                  "presentExamples": 8,
+                  "meanCandidates": 1,
+                  "meanProbabilityMass": 0.023176525184038108,
+                  "meanUniformMass": 0.019161048358951802
+                }
+              }
+            },
+            "different-shape": {
+              "examples": 30,
+              "fixtures": 14,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.5333333333333333,
+              "meanOracleRank": 32.43333333333333,
+              "meanOracleNll": 3.8223707477251687,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 30,
+                  "meanCandidates": 392.96666666666664,
+                  "meanProbabilityMass": 0.8634202623022259,
+                  "meanUniformMass": 0.6427255721478172
+                },
+                "single-cell": {
+                  "presentExamples": 27,
+                  "meanCandidates": 107.13333333333334,
+                  "meanProbabilityMass": 0.1025422898447777,
+                  "meanUniformMass": 0.3294042538330935
+                },
+                "reroll": {
+                  "presentExamples": 25,
+                  "meanCandidates": 1.7333333333333334,
+                  "meanProbabilityMass": 0.03403744785299634,
+                  "meanUniformMass": 0.027870174019089266
+                }
+              }
+            },
+            "different-target": {
+              "examples": 2,
+              "fixtures": 2,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.5,
+              "meanOracleRank": 13,
+              "meanOracleNll": 4.245012283325195,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 2,
+                  "meanCandidates": 357.5,
+                  "meanProbabilityMass": 0.9754652148819984,
+                  "meanUniformMass": 0.7116996298431637
+                },
+                "single-cell": {
+                  "presentExamples": 2,
+                  "meanCandidates": 135.5,
+                  "meanProbabilityMass": 0.021558762512544186,
+                  "meanUniformMass": 0.28328904820394557
+                },
+                "reroll": {
+                  "presentExamples": 2,
+                  "meanCandidates": 2.5,
+                  "meanProbabilityMass": 0.0029760226054570313,
+                  "meanUniformMass": 0.005011321952890649
+                }
+              }
+            },
+            "exact-label": {
+              "examples": 29,
+              "fixtures": 16,
+              "globalHardCorrect": 29,
+              "teacherKindOracleCorrect": 29,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 2.0079859531131286,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 23,
+                  "meanCandidates": 304.9655172413793,
+                  "meanProbabilityMass": 0.6969054558729959,
+                  "meanUniformMass": 0.5906028840226248
+                },
+                "single-cell": {
+                  "presentExamples": 22,
+                  "meanCandidates": 85.79310344827586,
+                  "meanProbabilityMass": 0.15209847910133154,
+                  "meanUniformMass": 0.3254284901042594
+                },
+                "reroll": {
+                  "presentExamples": 26,
+                  "meanCandidates": 2.0344827586206895,
+                  "meanProbabilityMass": 0.1509960650256725,
+                  "meanUniformMass": 0.08396862587311583
+                }
+              }
+            },
+            "wrong-kind": {
+              "examples": 15,
+              "fixtures": 12,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 5,
+              "teacherKindOracleTop1": 0.3333333333333333,
+              "teacherKindOracleTop5": 0.4,
+              "meanOracleRank": 14.6,
+              "meanOracleNll": 3.2816550453503925,
+              "fixtureMacroOracleTop1": 0.3194444444444445,
+              "oracleRecoveredHardErrors": 5,
+              "wrongKindExamples": 15,
+              "wrongKindOracleRecoveries": 5,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 14,
+                  "meanCandidates": 66.2,
+                  "meanProbabilityMass": 0.4780800569976668,
+                  "meanUniformMass": 0.2896609326094111
+                },
+                "single-cell": {
+                  "presentExamples": 15,
+                  "meanCandidates": 84.33333333333333,
+                  "meanProbabilityMass": 0.3845489357321628,
+                  "meanUniformMass": 0.6920127142914454
+                },
+                "reroll": {
+                  "presentExamples": 14,
+                  "meanCandidates": 1.7333333333333334,
+                  "meanProbabilityMass": 0.1373710072701703,
+                  "meanUniformMass": 0.018326353099143544
+                }
+              }
+            }
+          },
+          "family": {
+            "pressure": {
+              "examples": 41,
+              "fixtures": 8,
+              "globalHardCorrect": 14,
+              "teacherKindOracleCorrect": 18,
+              "teacherKindOracleTop1": 0.43902439024390244,
+              "teacherKindOracleTop5": 0.6585365853658537,
+              "meanOracleRank": 8.146341463414634,
+              "meanOracleNll": 2.1239966223152673,
+              "fixtureMacroOracleTop1": 0.4270833333333333,
+              "oracleRecoveredHardErrors": 4,
+              "wrongKindExamples": 9,
+              "wrongKindOracleRecoveries": 4,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 30,
+                  "meanCandidates": 10.146341463414634,
+                  "meanProbabilityMass": 0.44639494104338107,
+                  "meanUniformMass": 0.32353269975130805
+                },
+                "single-cell": {
+                  "presentExamples": 28,
+                  "meanCandidates": 42.146341463414636,
+                  "meanProbabilityMass": 0.3737550181187492,
+                  "meanUniformMass": 0.5879928294329795
+                },
+                "reroll": {
+                  "presentExamples": 27,
+                  "meanCandidates": 1.4390243902439024,
+                  "meanProbabilityMass": 0.17985004083786973,
+                  "meanUniformMass": 0.08847447081571246
+                }
+              }
+            },
+            "sparse": {
+              "examples": 48,
+              "fixtures": 8,
+              "globalHardCorrect": 15,
+              "teacherKindOracleCorrect": 16,
+              "teacherKindOracleTop1": 0.3333333333333333,
+              "teacherKindOracleTop5": 0.625,
+              "meanOracleRank": 22.479166666666668,
+              "meanOracleNll": 3.9576843976974487,
+              "fixtureMacroOracleTop1": 0.3333333333333333,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 6,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 48,
+                  "meanCandidates": 472.5208333333333,
+                  "meanProbabilityMass": 0.904621791647516,
+                  "meanUniformMass": 0.7085725822026706
+                },
+                "single-cell": {
+                  "presentExamples": 48,
+                  "meanCandidates": 133,
+                  "meanProbabilityMass": 0.08717050775586532,
+                  "meanUniformMass": 0.28772421703674333
+                },
+                "reroll": {
+                  "presentExamples": 48,
+                  "meanCandidates": 2,
+                  "meanProbabilityMass": 0.00820770059661871,
+                  "meanUniformMass": 0.003703200760586136
+                }
+              }
+            }
+          },
+          "searchComplete": {
+            "false": {
+              "examples": 66,
+              "fixtures": 16,
+              "globalHardCorrect": 17,
+              "teacherKindOracleCorrect": 21,
+              "teacherKindOracleTop1": 0.3181818181818182,
+              "teacherKindOracleTop5": 0.5909090909090909,
+              "meanOracleRank": 19.484848484848484,
+              "meanOracleNll": 3.662364179889361,
+              "fixtureMacroOracleTop1": 0.296875,
+              "oracleRecoveredHardErrors": 4,
+              "wrongKindExamples": 13,
+              "wrongKindOracleRecoveries": 4,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 66,
+                  "meanCandidates": 348.6969696969697,
+                  "meanProbabilityMass": 0.7995337703998189,
+                  "meanUniformMass": 0.579677507705268
+                },
+                "single-cell": {
+                  "presentExamples": 65,
+                  "meanCandidates": 112.86363636363636,
+                  "meanProbabilityMass": 0.15932085071759172,
+                  "meanUniformMass": 0.41051521140188174
+                },
+                "reroll": {
+                  "presentExamples": 62,
+                  "meanCandidates": 2,
+                  "meanProbabilityMass": 0.04114537888258939,
+                  "meanUniformMass": 0.009807280892850283
+                }
+              }
+            },
+            "true": {
+              "examples": 23,
+              "fixtures": 8,
+              "globalHardCorrect": 12,
+              "teacherKindOracleCorrect": 13,
+              "teacherKindOracleTop1": 0.5652173913043478,
+              "teacherKindOracleTop5": 0.782608695652174,
+              "meanOracleRank": 5.521739130434782,
+              "meanOracleNll": 1.5363772492045942,
+              "fixtureMacroOracleTop1": 0.59375,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 2,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 12,
+                  "meanCandidates": 3.608695652173913,
+                  "meanProbabilityMass": 0.38933955371614537,
+                  "meanUniformMass": 0.3920699620427881
+                },
+                "single-cell": {
+                  "presentExamples": 11,
+                  "meanCandidates": 28.82608695652174,
+                  "meanProbabilityMass": 0.39099843338213913,
+                  "meanUniformMass": 0.4706288900865933
+                },
+                "reroll": {
+                  "presentExamples": 13,
+                  "meanCandidates": 1,
+                  "meanProbabilityMass": 0.21966201290171555,
+                  "meanUniformMass": 0.13730114787061853
+                }
+              }
+            }
+          },
+          "teacherFinalPhase": {
+            "await-next-pieces": {
+              "examples": 61,
+              "fixtures": 13,
+              "globalHardCorrect": 19,
+              "teacherKindOracleCorrect": 22,
+              "teacherKindOracleTop1": 0.36065573770491804,
+              "teacherKindOracleTop5": 0.639344262295082,
+              "meanOracleRank": 18.540983606557376,
+              "meanOracleNll": 3.543574787554194,
+              "fixtureMacroOracleTop1": 0.4423076923076923,
+              "oracleRecoveredHardErrors": 3,
+              "wrongKindExamples": 10,
+              "wrongKindOracleRecoveries": 3,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 59,
+                  "meanCandidates": 374.08196721311475,
+                  "meanProbabilityMass": 0.8138923270708295,
+                  "meanUniformMass": 0.6392684451296101
+                },
+                "single-cell": {
+                  "presentExamples": 57,
+                  "meanCandidates": 113.45901639344262,
+                  "meanProbabilityMass": 0.1547672114743158,
+                  "meanUniformMass": 0.34864613413316187
+                },
+                "reroll": {
+                  "presentExamples": 56,
+                  "meanCandidates": 1.8032786885245902,
+                  "meanProbabilityMass": 0.031340461454854654,
+                  "meanUniformMass": 0.012085420737227993
+                }
+              }
+            },
+            "await-reroll-result": {
+              "examples": 19,
+              "fixtures": 8,
+              "globalHardCorrect": 9,
+              "teacherKindOracleCorrect": 11,
+              "teacherKindOracleTop1": 0.5789473684210527,
+              "teacherKindOracleTop5": 0.7894736842105263,
+              "meanOracleRank": 6.315789473684211,
+              "meanOracleNll": 1.5873327310148038,
+              "fixtureMacroOracleTop1": 0.6541666666666667,
+              "oracleRecoveredHardErrors": 2,
+              "wrongKindExamples": 4,
+              "wrongKindOracleRecoveries": 2,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 13,
+                  "meanCandidates": 8.105263157894736,
+                  "meanProbabilityMass": 0.34748554692132094,
+                  "meanUniformMass": 0.23077215750511082
+                },
+                "single-cell": {
+                  "presentExamples": 13,
+                  "meanCandidates": 42.94736842105263,
+                  "meanProbabilityMass": 0.34694450873260263,
+                  "meanUniformMass": 0.6093990911800767
+                },
+                "reroll": {
+                  "presentExamples": 18,
+                  "meanCandidates": 2.210526315789474,
+                  "meanProbabilityMass": 0.30556994434607637,
+                  "meanUniformMass": 0.1598287513148125
+                }
+              }
+            },
+            "gameover": {
+              "examples": 6,
+              "fixtures": 6,
+              "globalHardCorrect": 1,
+              "teacherKindOracleCorrect": 1,
+              "teacherKindOracleTop1": 0.16666666666666666,
+              "teacherKindOracleTop5": 0.5,
+              "meanOracleRank": 14.5,
+              "meanOracleNll": 3.0325284401575723,
+              "fixtureMacroOracleTop1": 0.16666666666666666,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 3,
+                  "meanCandidates": 6.333333333333333,
+                  "meanProbabilityMass": 0.5,
+                  "meanUniformMass": 0.5
+                },
+                "single-cell": {
+                  "presentExamples": 3,
+                  "meanCandidates": 30.333333333333332,
+                  "meanProbabilityMass": 0.5,
+                  "meanUniformMass": 0.5
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "playing": {
+              "examples": 3,
+              "fixtures": 3,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0,
+              "meanOracleRank": 25,
+              "meanOracleNll": 4.180052677790324,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 1,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 3,
+                  "meanCandidates": 28.666666666666668,
+                  "meanProbabilityMass": 0.824793746344563,
+                  "meanUniformMass": 0.29875949667616336
+                },
+                "single-cell": {
+                  "presentExamples": 3,
+                  "meanCandidates": 64.33333333333333,
+                  "meanProbabilityMass": 0.15846484976584618,
+                  "meanUniformMass": 0.6908238366571701
+                },
+                "reroll": {
+                  "presentExamples": 1,
+                  "meanCandidates": 1,
+                  "meanProbabilityMass": 0.016741403889590712,
+                  "meanUniformMass": 0.010416666666666666
+                }
+              }
+            }
+          },
+          "legalKinds": {
+            "place-piece": {
+              "examples": 5,
+              "fixtures": 3,
+              "globalHardCorrect": 3,
+              "teacherKindOracleCorrect": 3,
+              "teacherKindOracleTop1": 0.6,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 2.2,
+              "meanOracleNll": 1.398250687122345,
+              "fixtureMacroOracleTop1": 0.6666666666666666,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 5,
+                  "meanCandidates": 8.6,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "place-piece+reroll": {
+              "examples": 7,
+              "fixtures": 3,
+              "globalHardCorrect": 3,
+              "teacherKindOracleCorrect": 3,
+              "teacherKindOracleTop1": 0.42857142857142855,
+              "teacherKindOracleTop5": 0.7142857142857143,
+              "meanOracleRank": 6.714285714285714,
+              "meanOracleNll": 1.8990990221500397,
+              "fixtureMacroOracleTop1": 0.4444444444444444,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 7,
+                  "meanCandidates": 11.714285714285714,
+                  "meanProbabilityMass": 0.6995841157364493,
+                  "meanUniformMass": 0.705252390811397
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 7,
+                  "meanCandidates": 2.142857142857143,
+                  "meanProbabilityMass": 0.30041588426355065,
+                  "meanUniformMass": 0.29474760918860293
+                }
+              }
+            },
+            "place-piece+reroll+single-cell": {
+              "examples": 61,
+              "fixtures": 16,
+              "globalHardCorrect": 17,
+              "teacherKindOracleCorrect": 21,
+              "teacherKindOracleTop1": 0.3442622950819672,
+              "teacherKindOracleTop5": 0.639344262295082,
+              "meanOracleRank": 19.508196721311474,
+              "meanOracleNll": 3.639134857009669,
+              "fixtureMacroOracleTop1": 0.3645833333333333,
+              "oracleRecoveredHardErrors": 4,
+              "wrongKindExamples": 13,
+              "wrongKindOracleRecoveries": 4,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 61,
+                  "meanCandidates": 375.1803278688525,
+                  "meanProbabilityMass": 0.802527214904147,
+                  "meanUniformMass": 0.5954091473144864
+                },
+                "single-cell": {
+                  "presentExamples": 61,
+                  "meanCandidates": 118.18032786885246,
+                  "meanProbabilityMass": 0.15340390277181262,
+                  "meanUniformMass": 0.39504883387200923
+                },
+                "reroll": {
+                  "presentExamples": 61,
+                  "meanCandidates": 2.1147540983606556,
+                  "meanProbabilityMass": 0.04406888232404036,
+                  "meanUniformMass": 0.009542018813504438
+                }
+              }
+            },
+            "place-piece+single-cell": {
+              "examples": 5,
+              "fixtures": 4,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 1,
+              "teacherKindOracleTop1": 0.2,
+              "teacherKindOracleTop5": 0.2,
+              "meanOracleRank": 14,
+              "meanOracleNll": 3.033270311355591,
+              "fixtureMacroOracleTop1": 0.125,
+              "oracleRecoveredHardErrors": 1,
+              "wrongKindExamples": 1,
+              "wrongKindOracleRecoveries": 1,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 5,
+                  "meanCandidates": 17.2,
+                  "meanProbabilityMass": 0.5745579325102554,
+                  "meanUniformMass": 0.20391998273367368
+                },
+                "single-cell": {
+                  "presentExamples": 5,
+                  "meanCandidates": 60.6,
+                  "meanProbabilityMass": 0.42544206748974434,
+                  "meanUniformMass": 0.7960800172663263
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            },
+            "reroll": {
+              "examples": 1,
+              "fixtures": 1,
+              "globalHardCorrect": 1,
+              "teacherKindOracleCorrect": 1,
+              "teacherKindOracleTop1": 1,
+              "teacherKindOracleTop5": 1,
+              "meanOracleRank": 1,
+              "meanOracleNll": 0,
+              "fixtureMacroOracleTop1": 1,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "reroll": {
+                  "presentExamples": 1,
+                  "meanCandidates": 1,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                }
+              }
+            },
+            "reroll+single-cell": {
+              "examples": 6,
+              "fixtures": 6,
+              "globalHardCorrect": 5,
+              "teacherKindOracleCorrect": 5,
+              "teacherKindOracleTop1": 0.8333333333333334,
+              "teacherKindOracleTop5": 0.8333333333333334,
+              "meanOracleRank": 2.3333333333333335,
+              "meanOracleNll": 0.711169995367527,
+              "fixtureMacroOracleTop1": 0.8333333333333334,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 1,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 6,
+                  "meanCandidates": 61.333333333333336,
+                  "meanProbabilityMass": 0.6705486181034933,
+                  "meanUniformMass": 0.9733482453319411
+                },
+                "reroll": {
+                  "presentExamples": 6,
+                  "meanCandidates": 1.6666666666666667,
+                  "meanProbabilityMass": 0.32945138189650675,
+                  "meanUniformMass": 0.026651754668058917
+                }
+              }
+            },
+            "single-cell": {
+              "examples": 4,
+              "fixtures": 4,
+              "globalHardCorrect": 0,
+              "teacherKindOracleCorrect": 0,
+              "teacherKindOracleTop1": 0,
+              "teacherKindOracleTop5": 0.25,
+              "meanOracleRank": 20,
+              "meanOracleNll": 3.8367920517921448,
+              "fixtureMacroOracleTop1": 0,
+              "oracleRecoveredHardErrors": 0,
+              "wrongKindExamples": 0,
+              "wrongKindOracleRecoveries": 0,
+              "kindMass": {
+                "place-piece": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                },
+                "single-cell": {
+                  "presentExamples": 4,
+                  "meanCandidates": 58,
+                  "meanProbabilityMass": 1,
+                  "meanUniformMass": 1
+                },
+                "reroll": {
+                  "presentExamples": 0,
+                  "meanCandidates": 0,
+                  "meanProbabilityMass": 0,
+                  "meanUniformMass": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "limits": [
+    "Teacher action kind is ground truth used after inference: oracle diagnostic only",
+    "Same previously examined train/dev; no held-out generalization or policy claim",
+    "No new labels/loss/model/selection/training or test evaluation"
+  ],
+  "experimentalAccounting": {
+    "modelForwards": 1712,
+    "scoredObservations": 856,
+    "trainingTeacherDomainTest": 0,
+    "selectionLabelsChanged": false
+  },
+  "logitsSha256": "31cbab87d7fc6ec9ffd248f9a650dc7ae4c8e4c8dedea6bafc58bce3b4a45132"
+}

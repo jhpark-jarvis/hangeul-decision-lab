@@ -16,7 +16,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 후속 readonly 분석에서 dev 점 찍기 실패 13개는 다른 행동 종류를 고른 8개와 같은 종류의 다른 좌표를 고른 5개로 나뉘었다. 저장된 동점 대안의 첫 행동에 포함된 실패는 1개였다. Hard label과 점수는 변경하지 않았다.
 
-5.12–5.15는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.17는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -531,7 +531,38 @@ Teacher 탐색이 incomplete인 점 찍기 8개는 종류 오류 7개·좌표 �
 
 [Fixed audit config](research/experiments/action-error-audit-v1.json)와 [전체 오류·confusion·조건별 분모·hash](assets/research/stored-action-error-audit-20261013-v1.json)를 공개한다. Kind 오류와 좌표 오류를 구분했지만 label noise·loss·표현력 중 원인을 확정한 결과는 아니다. 기존 앱·모델·feature·teacher와 5.14의 gate FAIL을 유지한다.
 
-**후속 제안 — 미실행.** 같은 frozen 모델에서 전체 후보 logits를 다시 얻어, teacher 종류 내부의 정답 rank와 종류별 probability mass를 확인한다. 동일 428개 관측 × 2개 모델 × 2회 exact 반복, 최대 1,712 forward로 한정하는 readonly 계약이다. 새 학습·teacher·domain 전이·test는 포함하지 않는다. 정답 종류를 알고 계산한 conditional top1은 oracle 진단이며 실제 policy 정확도가 아니다. 현재 저장 raw에는 전체 후보 logits가 없어 이 통계는 아직 계산하지 않았다.
+이 분석에서 남았던 종류별 내부 순위와 probability mass는 아래 5.16의 고정 진단으로 확인했다. 원래 hard label과 full-list score는 유지했다.
+
+### 5.16 Frozen Within-Kind Ranking Diagnostic
+
+같은 frozen checkpoint와 train 339개 / dev 89개를 전체 후보 목록 그대로 입력했다. 두 모델 × 428개 관측 × 두 반복으로 **정확히 1,712회 forward**를 실행했다. 반복 logits와 기존 full-list argmax, rank, NLL, probability, margin이 모두 일치했다. 학습·teacher 호출·domain 전이·test 평가는 0이다.
+
+Forward 이후 **정답 행동 종류를 알고 있는 oracle**로 해당 종류 안의 순위를 계산했다. 이는 배포 가능한 policy나 개선된 정확도가 아니다.
+
+| Model      | Split           | Actual top1 | Teacher-kind oracle top1 |
+| ---------- | --------------- | ----------- | ------------------------ |
+| Baseline52 | Train           | 123/339     | 141/339                  |
+| Outcome74  | Train           | 123/339     | 146/339                  |
+| Baseline52 | Dev             | 29/89       | 33/89                    |
+| Outcome74  | Dev             | 29/89       | 34/89                    |
+| Baseline52 | Dev single-cell | 0/13        | 1/13                     |
+| Outcome74  | Dev single-cell | 0/13        | 1/13                     |
+
+현재 내부 순위를 유지한 채 정답 종류만 강제해도 dev에서 4개 / 5개만 회복한다. 점 찍기 13개는 두 모델 모두 oracle가 1개만 맞혔다. 단순 종류 분리로 좌표·shape 순위 문제가 해결되지는 않았다. 이 관측을 학습된 새 모델의 성능 상한으로 일반화할 수는 없다.
+
+점 찍기 정답 13개의 해당 종류 평균 probability mass는 baseline 52.7%, outcome 56.4%였다. 후보 개수에 따른 uniform mass는 두 모델 모두 76.4%였다. 평균 oracle rank는 18.7 / 21.0, oracle top5는 3/13 / 2/13이다. Max-centered float64 logsumexp로 mass를 계산하고 관측별 값을 같은 가중치로 평균했다. 후보 개수 효과를 함께 제시하지만 오류 원인을 확정한 결과는 아니다.
+
+[Fixed config](research/experiments/within-kind-audit-v1.json)와 [분모·조건별 집계·hash](assets/research/frozen-within-kind-audit-20261013-v1.json)를 공개한다. 독립 공개본 검증은 저장된 float32 logits를 replay하며 추가 모델 forward를 차단한다. 기존 모델·정답·앱 DFS와 5.14의 gate FAIL은 유지한다.
+
+### 5.17 Proposed Spatial Residual Contrast
+
+**Proposed / NOT_RUN.** 다음 대조안은 새 teacher나 label 대신 후보의 공간 위치를 모델에 직접 연결한다. 같은 A512 train/dev, 원본 74개 candidate feature와 전체 후보 순서를 유지하고, 후보가 차지하는 1 × 16 × 10 binary footprint를 추가한다. 일반 배치는 실제 shape cells, 점 찍기는 한 칸, reroll은 0 mask로 표현한다. Mask 생성에는 게임 상태 전이나 DFS가 필요하지 않다.
+
+기존 OutcomeCandidateCNN의 12,915 parameters에 작은 residual branch를 더한다. 원본 3개 board plane과 footprint를 받아 Conv 4→4 두 층, ReLU, adaptive pooling 4×5, Linear 80→1로 처리한다. 추가 parameters는 377개, 총 13,292개다. 마지막 Linear를 0으로 초기화해 모든 초기 logits가 기존 모델과 정확히 같도록 검사한다. Candidate chunk는 32개이며 정답 종류를 이용한 masking은 하지 않는다.
+
+비교안은 동일 seed·optimizer·loss·12 epochs의 baseline 재현과 spatial 모델 학습, 총 두 CPU 실행이다. 기존 baseline history·선택 epoch·weights의 exact 재현을 선행 조건으로 둔다. Dev screening gate는 actual top1 ≥48/89, baseline 대비 ≥5개 향상, 점 찍기 ≥3/13, reroll ≥7/8을 모두 요구한다. 반복해서 살펴본 dev이므로 통과해도 held-out 일반화나 앱 채택 근거가 되지는 않는다.
+
+학습 프로세스는 data preparation을 포함해 600초 한도와 batch별 sampled working set 2 GiB 중단 조건을 제안한다. 순간 peak 보장은 아니다. 아직 모델/input 변경과 두 학습은 채택하지 않았으며 test·rollout·앱 적용·RL도 실행하지 않았다.
 
 ## 6. Reproduction and Usage
 
@@ -707,6 +738,25 @@ node scripts/research/action-errors.mjs `
 ```
 
 Clean source/config와 새 output을 확인하고, 시작 identity·private `raw.json`·비민감 `summary.json`·`report.json`을 남긴다. 잘못된 hash나 record는 실패로 기록하고 기존 output 재사용은 거절한다. 공개 저장소에는 원본 raw와 model이 없으므로 해당 로컬 산출물 없이 실행 결과를 재현할 수는 없다.
+
+5.16은 원본 frozen 자료와 새 출력 폴더를 요구한다. 아래 infer 명령은 단일 재현 실행에서 1,712회 forward를 사용한다. Replay는 같은 실행의 private logits를 읽으며 forward를 추가하지 않는다. Raw/logits/data/checkpoint는 공개 저장소에 포함하지 않는다.
+
+```powershell
+$experiment = '.research-output/action-outcome-train-dev-20261012-recovered'
+$auditRaw = '.research-output/stored-action-error-audit-20261013-v1/raw.json'
+$recorded = '.research-output/my-within-kind-infer'
+
+.research-output/venv-cnn/Scripts/python.exe research/cnn/within_kind.py `
+  --mode infer --source $pairedSource --experiment $experiment `
+  --audit-raw $auditRaw --output $recorded
+
+.research-output/venv-cnn/Scripts/python.exe research/cnn/within_kind.py `
+  --mode replay --source $pairedSource --experiment $experiment `
+  --audit-raw $auditRaw --recorded $recorded `
+  --output .research-output/my-within-kind-replay
+```
+
+Clean Git와 원본 source byte hash를 검사한다. Identity나 기존 score가 다르면 중단하며, 기록된 logits의 hash·model/split/id 순서를 확인한다. 같은 output을 재사용하거나 고정 hash를 새 자료에 맞춰 바꾸지 않는다.
 
 ## References
 
