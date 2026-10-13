@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "frozen-within-kind-audit-20261013-v1",
+  "status": "FROZEN_READONLY_DIAGNOSTIC",
+  "source": {
+    "label": "A512",
+    "splits": ["train", "dev"],
+    "examples": { "train": 339, "dev": 89 },
+    "datasetSha256": "fa72eb460151763e664ecdd0a2438e1ae69172b98dbb5ab4b3f6f44b9e4c29fb",
+    "executionSha256": "c3609e686821ef222c586e2b9ce428c7837cb74607bf0367b6a70aff41ef4a5e",
+    "reportSha256": "bd8794afe73c70d39059f22ab90b9809be2c3b4da40cd6b23db009557adf61a4",
+    "augmentedSha256": "98e37f090604d8ac7510371139fe66155b2ad57c863aa8a1966bab4374fdd1f4",
+    "models": ["baseline", "outcome"],
+    "selectedEpochs": { "baseline": 11, "outcome": 12 },
+    "predictionSha256": {
+      "baseline": "8df1d6706c666beb5dc3d34623e8228042d61e5b179507826348b2e5a2c39e60",
+      "outcome": "34feaf2409e7489d62cb149ce7d92a22b85d2c7b3b168161c4eb86f211d813d1"
+    },
+    "storedAuditRawSha256": "dba1b19077649ee37c11a2337b1d330a9470b79f19f0ace88c7a5e68a5721964"
+  },
+  "method": {
+    "forwardRepeats": 2,
+    "forwardInput": "Original full ordered legal list; three tensor inputs only",
+    "control": "Exact repeated logits and original argmax/rank/NLL/probability/margin",
+    "oracle": "After forward only, use A512 teacher action kind to compute within-kind rank/top1/top5/NLL",
+    "kindMass": "Float64 logsumexp probability mass; candidate count and count/full-list uniform mass; row-weighted means",
+    "groups": [
+      "teacher-kind",
+      "error",
+      "family",
+      "search-complete",
+      "teacher-final-phase",
+      "legal-kinds"
+    ],
+    "meaning": "Teacher-kind oracle diagnostic, not a deployable policy or adopted accuracy",
+    "publicationVerification": "Replay saved float32 logits through independent public scoring; zero extra model forwards"
+  },
+  "limits": {
+    "modelForwards": 1712,
+    "trainingRuns": 0,
+    "teacherCalls": 0,
+    "domainTransitions": 0,
+    "newEpisodes": 0,
+    "testParsedOrScored": 0,
+    "modelSelectionOrLabelsChanged": false,
+    "dependenciesServicesPorts": 0
+  }
+}
