@@ -2,7 +2,7 @@
 
 ### Budgeted Search and a Research Agenda for a Hangul Block Puzzle
 
-**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN experiments and stored action-error audit · **Application policy:** DFS · **RL:** FUTURE
+**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN experiments, spatial residual contrast and frozen ranking diagnostics · **Application policy:** DFS · **RL:** FUTURE
 
 ## Abstract
 
@@ -554,15 +554,28 @@ Forward 이후 **정답 행동 종류를 알고 있는 oracle**로 해당 종류
 
 [Fixed config](research/experiments/within-kind-audit-v1.json)와 [분모·조건별 집계·hash](assets/research/frozen-within-kind-audit-20261013-v1.json)를 공개한다. 독립 공개본 검증은 저장된 float32 logits를 replay하며 추가 모델 forward를 차단한다. 기존 모델·정답·앱 DFS와 5.14의 gate FAIL은 유지한다.
 
-### 5.17 Proposed Spatial Residual Contrast
+### 5.17 Fixed Spatial Residual Contrast
 
-**Proposed / NOT_RUN.** 다음 대조안은 새 teacher나 label 대신 후보의 공간 위치를 모델에 직접 연결한다. 같은 A512 train/dev, 원본 74개 candidate feature와 전체 후보 순서를 유지하고, 후보가 차지하는 1 × 16 × 10 binary footprint를 추가한다. 일반 배치는 실제 shape cells, 점 찍기는 한 칸, reroll은 0 mask로 표현한다. Mask 생성에는 게임 상태 전이나 DFS가 필요하지 않다.
+**실행 — 2026-10-13.** 같은 A512 train 339개 / dev 89개와 원본 74개 candidate feature를 유지하고, 후보의 공간 위치를 current board에 직접 연결하는 작은 residual branch를 대조했다. Teacher·hard label·후보 순서·loss·seed·optimizer·12 epochs를 함께 고정했다.
 
-기존 OutcomeCandidateCNN의 12,915 parameters에 작은 residual branch를 더한다. 원본 3개 board plane과 footprint를 받아 Conv 4→4 두 층, ReLU, adaptive pooling 4×5, Linear 80→1로 처리한다. 추가 parameters는 377개, 총 13,292개다. 마지막 Linear를 0으로 초기화해 모든 초기 logits가 기존 모델과 정확히 같도록 검사한다. Candidate chunk는 32개이며 정답 종류를 이용한 masking은 하지 않는다.
+Footprint는 일반 배치의 실제 shape cells, 점 찍기의 한 칸, reroll의 0 mask를 표현하는 1 × 16 × 10 binary plane이다. 저장된 합법 key의 geometry에서 149,597개를 변환했으며 새로운 게임 전이·DFS·teacher 호출은 0이다. Private storage는 160 binary characters이고, forward에서는 float32 tensor만 사용한다. Key·label·teacher path·future tape를 모델에 넣지 않았다.
 
-비교안은 동일 seed·optimizer·loss·12 epochs의 baseline 재현과 spatial 모델 학습, 총 두 CPU 실행이다. 기존 baseline history·선택 epoch·weights의 exact 재현을 선행 조건으로 둔다. Dev screening gate는 actual top1 ≥48/89, baseline 대비 ≥5개 향상, 점 찍기 ≥3/13, reroll ≥7/8을 모두 요구한다. 반복해서 살펴본 dev이므로 통과해도 held-out 일반화나 앱 채택 근거가 되지는 않는다.
+기존 OutcomeCandidateCNN의 12,915 parameters와 계산 경로를 유지했다. 현재 3개 board plane과 footprint를 함께 받는 Conv 4→4 두 층, ReLU, adaptive pooling 4×5, Linear 80→1 branch를 추가했다. 추가 parameters는 377개, 총 13,292개다. 마지막 Linear weight/bias를 0으로 초기화했고 **428개 관측의 초기 logits가 모두 exact**였다. Candidate chunk는 32개이지만 전체 후보 목록과 순서를 유지한다.
 
-학습 프로세스는 data preparation을 포함해 600초 한도와 batch별 sampled working set 2 GiB 중단 조건을 제안한다. 순간 peak 보장은 아니다. 아직 모델/input 변경과 두 학습은 채택하지 않았으며 test·rollout·앱 적용·RL도 실행하지 않았다.
+두 모델을 같은 CPU 환경에서 각각 12 epoch 학습했다. Baseline의 원본 history·epoch 12·weights·shuffle audit·예측 score와 checkpoint bytes가 정확히 재현된 뒤 spatial 학습을 시작했다. 선택 기준은 가장 높은 dev top1의 최초 epoch다.
+
+| Model              | Selected epoch | Train top1 | Dev top1 | Dev single-cell | Dev reroll |
+| ------------------ | -------------- | ---------- | -------- | --------------- | ---------- |
+| Outcome74 baseline | 12             | 123/339    | 29/89    | 0/13            | 8/8        |
+| Spatial residual   | 11             | 110/339    | 29/89    | 0/13            | 7/8        |
+
+**실행 PASS / 개선 gate FAIL.** 고정 gate는 actual dev ≥48/89, baseline 대비 ≥5개 향상, single-cell ≥3/13, reroll ≥7/8을 모두 요구한다. 결과를 본 뒤 추가 epoch·seed·구조·loss·feature·label 튜닝을 하지 않았다. 전체 epoch history와 gate별 판정은 [비민감 결과 집계](assets/research/spatial-residual-train-dev-20261013-v1.json)에 있다.
+
+공통 mask preparation을 포함한 프로세스 시간은 baseline 39.00초, spatial 191.53초였다. 매 batch와 전처리·평가 단계에서 측정한 최대 working set는 각각 644.7 MiB / 767.8 MiB였다. 600초·2 GiB 중단 한도 안에서 완료했으며, 이는 sampled 값으로 순간 peak나 앱 성능 수락을 뜻하지 않는다.
+
+[Fixed config](research/experiments/spatial-residual-v1.json)를 실행 전에 고정했다. 실제 학습은 두 번이고 test·rollout·새 episode·teacher/domain 전이는 0이다. 같은 dev를 반복해서 살펴본 screening이므로 held-out 일반화·장기 생존·앱 채택이나 공간 입력의 인과적 효과를 주장하지 않는다. 기존 앱 DFS와 원본 데이터·모델을 유지한다. 공개 검증은 frozen weights의 train/dev 추론만 재현하고 optimizer/fit을 차단해 추가 학습을 방지한다.
+
+**후속 분석안 — NOT_RUN.** 저장된 두 모델의 predictions와 full-list logits를 같은 관측에서 대조해 개선·퇴행과 행동 종류/shape/좌표 오류, 정답 종류 내부 순위를 분해한다. 추가 forward·학습·teacher·domain 전이·test 없이 분석할 수 있는 범위다. 새 label/모델/학습이나 test·앱 적용은 별도 계약으로 남긴다.
 
 ## 6. Reproduction and Usage
 
@@ -757,6 +770,23 @@ $recorded = '.research-output/my-within-kind-infer'
 ```
 
 Clean Git와 원본 source byte hash를 검사한다. Identity나 기존 score가 다르면 중단하며, 기록된 logits의 hash·model/split/id 순서를 확인한다. 같은 output을 재사용하거나 고정 hash를 새 자료에 맞춰 바꾸지 않는다.
+
+5.17의 고정 두 학습은 아래 명령으로 수행한다. 원래 paired/outcome 자료와 source byte hash가 모두 일치해야 하고, 기존 output을 재사용하지 않는다. **학습 두 번이 실행되는 명령**이며 test나 앱 적용은 포함하지 않는다.
+
+```powershell
+node scripts/research/spatial-cnn.mjs `
+  --source .research-output/paired-teacher/paired-teacher-cnn-20261011-v1 `
+  --original .research-output/action-outcome-train-dev-20261012-recovered `
+  --python .research-output/venv-cnn/Scripts/python.exe `
+  --output .research-output/my-spatial-residual
+
+.research-output/venv-cnn/Scripts/python.exe research/cnn/spatial.py `
+  --mode reproduce --source $pairedSource --original $experiment `
+  --execution .research-output/my-spatial-residual/execution.json `
+  --output .research-output/my-spatial-frozen-reproduction
+```
+
+Reproduce는 해당 실행의 frozen checkpoint와 train/dev만 사용한다. 동일 logits 반복, predictions/logits byte hash와 집계를 확인하며 추가 학습은 하지 않는다. Footprint 자료·raw·logits·checkpoint는 로컬 ignored output에 보관하고 공개하지 않는다. 타임아웃·메모리 초과·원본 drift·baseline 재현 실패는 STOP이며, 실패를 숨기고 seed/epoch/input을 바꿔 재시작하지 않는다.
 
 ## References
 
