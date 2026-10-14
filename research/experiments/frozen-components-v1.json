@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "frozen-components-v1",
+  "status": "FROZEN_COMPONENT_DIAGNOSTIC",
+  "approval": "USER_APPROVED",
+  "source": {
+    "datasetSha256": "fa72eb460151763e664ecdd0a2438e1ae69172b98dbb5ab4b3f6f44b9e4c29fb",
+    "p056Hashes": {
+      "execution.json": "76db2e7d5684edb5bb617261cc86ae3c3db4def8ca8cddb3cc10e3ae565a1207",
+      "report.json": "ed4eb6bfb0129ade8f6892c3378882dc617b3a62c54138ea6d9ef65686281b88",
+      "freeze.json": "3df93574f3bd8de2b9534d57f849692887bdf49cb77f53e6f9fcfe6cee47dee7",
+      "footprints.json": "5ef450e9c6e07502eed5b8f9f373d20cc68d9d18627cc3c526395f05abe70c54",
+      "baseline/report.json": "7de95283525c08b3b69b43d0fe5020c7d05e82d43f9d8f993c4ae07397a97556",
+      "baseline/checkpoint.pt": "837fc1fb1db09cd16ba2af2ab28fc95ee7d618fb2f834a2a2f97853e27c1284e",
+      "baseline/predictions.json": "34feaf2409e7489d62cb149ce7d92a22b85d2c7b3b168161c4eb86f211d813d1",
+      "baseline/logits.json": "6eac2a4188fe5a64fe9e419e9ad7c49e3bab883d4a4fb4cc277cf86f4ce45679",
+      "spatial/report.json": "445c0ee204e683f438b031dbdc6247d68d9181d0cedcfd770aff02296393208a",
+      "spatial/checkpoint.pt": "b7c8357a5a95445c83f61f3f2640cf331f145faa0f095ee177b3dab8abaef502",
+      "spatial/predictions.json": "5c9780571e396cfb0cfdfcc0dd345cec2d5deb826afc3f499f63f41ae8dafb00",
+      "spatial/logits.json": "c03654a4d942cb1c5170c417ed013f41ce22c2f5cfec1d6b5855ed8094bef13b"
+    },
+    "outcomeDatasetSha256": "98e37f090604d8ac7510371139fe66155b2ad57c863aa8a1966bab4374fdd1f4",
+    "selectedEpoch": 11,
+    "examples": {
+      "train": 339,
+      "dev": 89
+    }
+  },
+  "method": {
+    "capture": "Unmodified SpatialCandidateCNN forward hooks on common and chunk32 spatial outputs; full ordered legal mask",
+    "control": "Repeated all component tensors exact; float32 common+residual exact full; original P056 full logits/score exact",
+    "comparison": "Original baseline stored logits vs jointly-trained common-only vs full spatial; paired hard-label/errors and teacher-kind oracle",
+    "residualStatistics": "Per-observation span/mean abs and teacher-vs-common-winner residual difference, row-weighted; no residual-only policy",
+    "publication": "Saved float32 components replay only; zero extra model creation/load/forward/training"
+  },
+  "limits": {
+    "topLevelForwards": 856,
+    "repeats": 2,
+    "chunk": 32,
+    "childSeconds": 600,
+    "workingSetBytes": 2147483648,
+    "trainingTeacherDomainTestRolloutGeometry": 0
+  },
+  "boundaries": {
+    "originalModelInputLabelLossGateImmutable": true,
+    "residualScalingOrSelection": false,
+    "newDependenciesServicesPorts": 0,
+    "rawDataComponentsWeightsPrivate": true
+  }
+}
