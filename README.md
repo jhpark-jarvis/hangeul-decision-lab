@@ -16,7 +16,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 후속 readonly 분석에서 dev 점 찍기 실패 13개는 다른 행동 종류를 고른 8개와 같은 종류의 다른 좌표를 고른 5개로 나뉘었다. 저장된 동점 대안의 첫 행동에 포함된 실패는 1개였다. Hard label과 점수는 변경하지 않았다.
 
-5.12–5.18는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.19는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -606,7 +606,41 @@ Dev에서 선택 index가 바뀐 관측은 **28/89개**였다. 5개 개선과 5�
 
 [Fixed audit config](research/experiments/stored-spatial-audit-v1.json)와 [paired 표·오류 transition·confusion·조건별 분모·oracle 집계·hash](assets/research/stored-spatial-audit-20261014-v1.json)를 공개한다. 같은 알려진 dev의 분석이며 5.17의 gate FAIL·hard label·model·feature·loss와 앱 DFS를 유지한다. 공동학습한 common/residual의 인과적 기여는 저장된 total logits만으로 분리할 수 없다.
 
-**후속 제안 — NOT_RUN.** Frozen spatial checkpoint에서 common과 residual 출력을 함께 관측하고 baseline 저장 logits와 대조한다. 원래 428개 관측 × 두 반복, 최대 856회 spatial forward가 필요한 별도 진단안이다. 추가 학습·label/feature 변경·teacher/domain/test는 포함하지 않으며, 이번 readonly 작업에서는 실행하지 않았다.
+위 frozen component 진단은 아래 5.19에서 완료했다.
+
+### 5.19 Frozen Common/Residual Diagnostic
+
+**실행 — 2026-10-14.** 같은 428개 train/dev 관측과 spatial epoch 11의 frozen checkpoint에서 원래 forward를 두 번씩 실행했다. **정확히 856회 top-level spatial forward**만 사용했고, 같은 graph 안의 common·chunk 32 residual 출력을 hook으로 관측했다. 두 반복의 모든 component와 float32 합산이 exact였고, 기존 full logits·argmax·rank·NLL·probability·margin과 weights가 그대로 재현됐다.
+
+Original baseline은 저장 logits만 읽었다. **Common-only는 residual과 함께 학습된 weights에서 residual 출력을 제외한 counterfactual scoring**이다. 독립학습 baseline이나 인과적 training effect로 해석하지 않는다. Residual 단독 policy는 만들지 않았다.
+
+| Split       | Model/output                | Actual top1 | Actual single-cell | Teacher-kind oracle single-cell |
+| ----------- | --------------------------- | ----------- | ------------------ | ------------------------------- |
+| Train (339) | Original baseline           | 123/339     | 1/52               | 5/52                            |
+| Train (339) | Jointly trained common-only | 117/339     | 1/52               | 19/52                           |
+| Train (339) | Full spatial                | 110/339     | 0/52               | 12/52                           |
+| Dev (89)    | Original baseline           | 29/89       | 0/13               | 1/13                            |
+| Dev (89)    | Jointly trained common-only | 26/89       | 0/13               | 2/13                            |
+| Dev (89)    | Full spatial                | 29/89       | 0/13               | 2/13                            |
+
+같은 관측의 hard-label 정답 변화는 다음과 같다.
+
+| Split | Comparison             | Both correct | Improvement | Regression | Both wrong | Net gain |
+| ----- | ---------------------- | ------------ | ----------- | ---------- | ---------- | -------- |
+| Train | Baseline → common-only | 96           | 21          | 27         | 195        | −6       |
+| Train | Common-only → full     | 87           | 23          | 30         | 199        | −7       |
+| Dev   | Baseline → common-only | 24           | 2           | 5          | 58         | −3       |
+| Dev   | Common-only → full     | 23           | 6           | 3          | 57         | +3       |
+
+현재 frozen weights에서 residual을 포함하면 dev에서는 6개 회복·3개 손실로 +3개지만, train에서는 23개 회복·30개 손실로 −7개다. Original baseline과 full spatial의 dev 정답은 29/89로 같고, 세 출력의 실제 점 찍기 dev top1은 모두 0/13이다. Oracle 수치는 정답 행동 종류를 알려준 진단이다.
+
+Residual span의 관측별 평균은 train 4.912 / dev 4.761, common span은 4.621 / 4.487이다. 이는 logits의 범위 비교이며 parameter 수가 작다는 이유로 residual의 점수 영향도 작다고 가정할 수 없다. 평균 절댓값에는 ranking에 영향 없는 공통 offset도 포함된다. 두 개 이상 reroll 후보가 있는 관측은 train 223개 / dev 53개였고, 해당 후보 안의 최대 residual span은 1.192×10⁻⁷ / 0이었다. 동일한 0 mask와 float32·chunk 계산의 미세한 차이를 구분한다.
+
+소유 child의 전체 시간은 41.12초, 최대 sampled working set는 573.3 MiB였다. 600초·2 GiB 한도 안에서 완료했고 순간 peak나 앱 성능 수락은 아니다. 학습·teacher/domain 전이·새 episode·test·rollout·새 footprint geometry는 0이다. Replay는 저장 component만 읽어 raw/summary를 byte 단위로 재현하며 **추가 model forward 0회**다.
+
+[Fixed config](research/experiments/frozen-components-v1.json)와 [모델별 순위·paired/오류·oracle·residual 관측·hash](assets/research/frozen-components-20261014-v1.json)를 공개한다. 같은 알려진 dev의 진단이며 5.17의 gate FAIL·기존 label/모델/feature/loss·앱 DFS를 유지한다. 현재 component의 점수 기여를 관측한 것으로, residual 구조의 causal training 효과나 장기 정책 가치를 입증한 것은 아니다.
+
+**후속 제안 — NOT_RUN.** 저장 component에 고정 scale 0, 0.25, 0.5, 0.75, 1을 적용하는 별도 score screening을 제안한다. 추가 forward·학습 없이 가능하지만, 새로운 inference score를 살펴보는 튜닝 계약이므로 이번 진단에서는 실행하지 않았다. 기존 모델·앱에 scale을 채택하지 않는다.
 
 ## 6. Reproduction and Usage
 
@@ -829,6 +863,25 @@ Reproduce는 해당 실행의 frozen checkpoint와 train/dev만 사용한다. �
 ```
 
 모델 생성·호출·checkpoint deserialization·optimizer는 CLI에서 차단한다. Source/config와 원본 자료가 맞지 않거나 logits·score·metadata가 다르면 STOP이다. Private logits/raw/weights는 공개 저장소에 포함하지 않으므로 해당 로컬 산출물 없이 원래 결과를 재현할 수는 없다.
+
+5.19의 infer 명령은 원래 856회 forward 예산을 한 번 사용한다. 기존 자료·checkpoint·source hash가 모두 같아야 하고 새 output이 필요하다. 완료 후 같은 진단을 검증할 때는 저장 component의 replay를 사용한다.
+
+```powershell
+node scripts/research/component-audit.mjs `
+  --python .research-output/venv-cnn/Scripts/python.exe `
+  --source .research-output/paired-teacher/paired-teacher-cnn-20261011-v1 `
+  --experiment .research-output/spatial-residual-train-dev-20261013-v1 `
+  --original .research-output/action-outcome-train-dev-20261012-recovered `
+  --output .research-output/my-frozen-components
+
+.research-output/venv-cnn/Scripts/python.exe research/cnn/component_audit.py `
+  --mode replay --source $pairedSource `
+  --experiment .research-output/spatial-residual-train-dev-20261013-v1 `
+  --original $experiment --recorded .research-output/my-frozen-components `
+  --output .research-output/my-component-replay
+```
+
+Forward 직전 ledger, supervisor의 child PID·시간·로그, memory 관측과 private components/raw/summary/report를 보관한다. Budget·hash·nonfinite·반복/sum/원래 logits 불일치는 STOP이며, 같은 output을 다시 쓰거나 예산을 조용히 재시작하지 않는다. Replay는 module 생성·호출·checkpoint load·optimizer를 차단한다. Component 자료와 weights는 공개 저장소에 포함하지 않는다.
 
 ## References
 
