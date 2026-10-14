@@ -16,7 +16,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 후속 readonly 분석에서 dev 점 찍기 실패 13개는 다른 행동 종류를 고른 8개와 같은 종류의 다른 좌표를 고른 5개로 나뉘었다. 저장된 동점 대안의 첫 행동에 포함된 실패는 1개였다. Hard label과 점수는 변경하지 않았다.
 
-5.12–5.17는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.18는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -575,7 +575,38 @@ Footprint는 일반 배치의 실제 shape cells, 점 찍기의 한 칸, reroll�
 
 [Fixed config](research/experiments/spatial-residual-v1.json)를 실행 전에 고정했다. 실제 학습은 두 번이고 test·rollout·새 episode·teacher/domain 전이는 0이다. 같은 dev를 반복해서 살펴본 screening이므로 held-out 일반화·장기 생존·앱 채택이나 공간 입력의 인과적 효과를 주장하지 않는다. 기존 앱 DFS와 원본 데이터·모델을 유지한다. 공개 검증은 frozen weights의 train/dev 추론만 재현하고 optimizer/fit을 차단해 추가 학습을 방지한다.
 
-**후속 분석안 — NOT_RUN.** 저장된 두 모델의 predictions와 full-list logits를 같은 관측에서 대조해 개선·퇴행과 행동 종류/shape/좌표 오류, 정답 종류 내부 순위를 분해한다. 추가 forward·학습·teacher·domain 전이·test 없이 분석할 수 있는 범위다. 새 label/모델/학습이나 test·앱 적용은 별도 계약으로 남긴다.
+위 저장 결과의 개선·퇴행과 오류 분석은 아래 5.18에서 완료했다.
+
+### 5.18 Stored Spatial Errors and Paired Changes
+
+**실행 — 2026-10-14.** 5.17의 선택 checkpoint에 저장된 predictions와 full-list float32 logits를 같은 A512 train 339개 / dev 89개 관측에 조인했다. 원래 argmax·rank·NLL·probability·margin과 metadata를 재현하고 두 readonly CLI의 raw·summary byte 일치를 확인했다. **추가 모델 생성·checkpoint 로드·forward·학습·teacher/domain 전이·test는 모두 0**이다.
+
+같은 관측에서 baseline 실패→spatial 정답을 improvement, 반대 방향을 regression으로 세었다.
+
+| Split       | Both correct | Improvement | Regression | Both wrong | Net correct gain |
+| ----------- | ------------ | ----------- | ---------- | ---------- | ---------------- |
+| Train (339) | 87           | 23          | 36         | 193        | −13              |
+| Dev (89)    | 24           | 5           | 5          | 55         | 0                |
+
+Dev에서 선택 index가 바뀐 관측은 **28/89개**였다. 5개 개선과 5개 퇴행이 상쇄됐고, 나머지 18개는 양쪽 모두 틀린 상태에서 다른 행동을 선택했다. 동일한 29/89라는 수치가 같은 예측이나 퇴행이 없다는 뜻은 아니다.
+
+| Dev error — 89 observations | Baseline | Spatial |
+| --------------------------- | -------- | ------- |
+| Exact label                 | 29       | 29      |
+| Wrong kind                  | 15       | 16      |
+| Different target            | 2        | 7       |
+| Different shape             | 30       | 24      |
+| Different position          | 13       | 13      |
+
+오류는 kind → target → shape → position의 우선순위로 상호 배타적으로 분류했다. 다른 shape 오류 30→24의 감소만으로 개선을 판단할 수는 없다. 해당 오류에서 정답으로 회복한 관측은 4개였지만, 다른 target 오류로 바뀐 관측도 4개였다. Baseline 정답의 퇴행 5개는 wrong kind 2개·target 1개·position 2개로 나뉜다.
+
+점 찍기 정답 13개는 두 모델 모두 실제 top1 **0/13**이다. Wrong kind는 8→9, 같은 종류의 다른 좌표는 5→4였다. 정답 종류를 알려준 oracle top1은 1/13→2/13이지만 실제 선택 정확도는 아니다. 전체 dev oracle는 두 모델 모두 34/89다.
+
+점 찍기 13개의 mean oracle rank는 21.0→17.69, 해당 종류의 평균 probability mass는 56.41%→53.54%였다. 후보 개수 기반 uniform mass는 76.39%로 같았다. 기존 max-centered float64 logsumexp와 row-weighted 평균을 사용했다. 내부 순위의 일부 변화가 실제 kind 선택이나 정책 개선을 보장하지 않는다.
+
+[Fixed audit config](research/experiments/stored-spatial-audit-v1.json)와 [paired 표·오류 transition·confusion·조건별 분모·oracle 집계·hash](assets/research/stored-spatial-audit-20261014-v1.json)를 공개한다. 같은 알려진 dev의 분석이며 5.17의 gate FAIL·hard label·model·feature·loss와 앱 DFS를 유지한다. 공동학습한 common/residual의 인과적 기여는 저장된 total logits만으로 분리할 수 없다.
+
+**후속 제안 — NOT_RUN.** Frozen spatial checkpoint에서 common과 residual 출력을 함께 관측하고 baseline 저장 logits와 대조한다. 원래 428개 관측 × 두 반복, 최대 856회 spatial forward가 필요한 별도 진단안이다. 추가 학습·label/feature 변경·teacher/domain/test는 포함하지 않으며, 이번 readonly 작업에서는 실행하지 않았다.
 
 ## 6. Reproduction and Usage
 
@@ -787,6 +818,17 @@ node scripts/research/spatial-cnn.mjs `
 ```
 
 Reproduce는 해당 실행의 frozen checkpoint와 train/dev만 사용한다. 동일 logits 반복, predictions/logits byte hash와 집계를 확인하며 추가 학습은 하지 않는다. Footprint 자료·raw·logits·checkpoint는 로컬 ignored output에 보관하고 공개하지 않는다. 타임아웃·메모리 초과·원본 drift·baseline 재현 실패는 STOP이며, 실패를 숨기고 seed/epoch/input을 바꿔 재시작하지 않는다.
+
+5.18은 저장 logits와 예측만 분석한다. 추가 inference나 학습이 없으며 원래 자료의 hash·순서·score를 검사한다. 같은 명령을 서로 다른 새 output으로 두 번 실행해 raw/summary byte 일치를 확인할 수 있다.
+
+```powershell
+.research-output/venv-cnn/Scripts/python.exe research/cnn/spatial_audit.py `
+  --source .research-output/paired-teacher/paired-teacher-cnn-20261011-v1 `
+  --experiment .research-output/spatial-residual-train-dev-20261013-v1 `
+  --output .research-output/my-stored-spatial-audit
+```
+
+모델 생성·호출·checkpoint deserialization·optimizer는 CLI에서 차단한다. Source/config와 원본 자료가 맞지 않거나 logits·score·metadata가 다르면 STOP이다. Private logits/raw/weights는 공개 저장소에 포함하지 않으므로 해당 로컬 산출물 없이 원래 결과를 재현할 수는 없다.
 
 ## References
 
