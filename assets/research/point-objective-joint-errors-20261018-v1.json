@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "sourceRawSha256": "d172b303fc4b1270a4e88071935b7a1f65478b766359a4884642f28f2000fa8b",
+  "method": "For teacher-point observations, partition actual raw-argmax selected kind vs teacher-kind oracle coordinate correctness; verify intersection equals actual hard correctness. Stored rows only, no forward/training/label changes.",
+  "models": {
+    "control": {
+      "train": {
+        "examples": 52,
+        "bothCorrect": 0,
+        "kindOnly": 10,
+        "coordinateOnly": 12,
+        "neither": 30
+      },
+      "dev": {
+        "examples": 13,
+        "bothCorrect": 0,
+        "kindOnly": 4,
+        "coordinateOnly": 2,
+        "neither": 7
+      }
+    },
+    "candidate": {
+      "train": {
+        "examples": 52,
+        "bothCorrect": 2,
+        "kindOnly": 10,
+        "coordinateOnly": 12,
+        "neither": 28
+      },
+      "dev": {
+        "examples": 13,
+        "bothCorrect": 0,
+        "kindOnly": 5,
+        "coordinateOnly": 1,
+        "neither": 7
+      }
+    }
+  }
+}

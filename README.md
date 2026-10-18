@@ -668,9 +668,9 @@ Original baseline의 actual top1은 train **123/339**, dev **29/89**, mean full-
 
 ### 5.21 Proposed Kind and Point Objective Contrast — NOT_RUN
 
-**설계 — 2026-10-18. 실행·학습은 하지 않았다.** 5.20의 dev 점 찍기13개는 모든 scale에서 wrong-kind9개·different-position4개, actual0/13·teacher-kind oracle2/13이었다. 즉 점 찍기 관측에서 실제 종류 선택 정답은4/13이며, 정답 종류를 알려줘도 좌표 top1은2/13이다. 두 지표의 성공 관측이 같다는 뜻은 아니며 후보 수·표현·최적화·teacher 중 원인은 확정하지 않았다.
+**설계 원본 — 2026-10-18.** 이 절은 당시 미실행 제안이며, 고정 계약의 실제 실행·결과는5.22에서 구별한다. 5.20의 dev 점 찍기13개는 모든 scale에서 wrong-kind9개·different-position4개, actual0/13·teacher-kind oracle2/13이었다. 즉 점 찍기 관측에서 실제 종류 선택 정답은4/13이며, 정답 종류를 알려줘도 좌표 top1은2/13이다. 두 지표의 성공 관측이 같다는 뜻은 아니며 후보 수·표현·최적화·teacher 중 원인은 확정하지 않았다.
 
-제안은 **기존 13,292-parameter SpatialCandidateCNN과 입력·후보·A512 label을 그대로 둔 loss 대조**다. 새 head/parameter나 inference routing을 추가하지 않는다. 두 arm은 원래 flat CE 재현과 아래 auxiliary objective이며, 아직 runner를 구현하거나 학습하지 않았다.
+제안은 **기존 13,292-parameter SpatialCandidateCNN과 입력·후보·A512 label을 그대로 둔 loss 대조**다. 새 head/parameter나 inference routing을 추가하지 않는다. 두 arm은 원래 flat CE 재현과 아래 auxiliary objective이며, 당시에는 runner를 구현하거나 학습하지 않았으며 실행 결과는5.22에서 별도로 보고한다.
 
 관측의 전체 합법 후보 logit을 s, 정답 index를 y, 존재하는 종류 g의 후보 집합을 G_g와 개수 n_g, 정답 종류를 k_y라 한다.
 
@@ -702,7 +702,39 @@ L_aux = L_flat + 0.5 * L_kind + 0.5 * L_point
 
 기술 계약 PASS와 성능 screening은 구별한다. 기존 네 gate인 **dev actual48/89 이상·동시 control보다+5 이상·actual point3/13 이상·actual reroll7/8 이상**을 모두 유지한다. 종류와 좌표가 모두 개선됐다는 주장은 별도로 **teacher-point 종류 선택 정답7/13 이상**과 **teacher-kind oracle point top1 5/13 이상**도 요구한다. Oracle가 actual 성공을 대체하지 않는다. 모든 arm의 종류 confusion·conditional rank/NLL·full NLL·오류·paired 회복/퇴행과 group/fixture 분모를 보고한다.
 
-이미 살펴본 dev의 single-seed screening이므로 통과해도 held-out·장기 생존·앱/RL 채택의 증거가 아니다. 기존5.17 gate FAIL과 원래 model/data/label/loss·앱 DFS는 그대로다. 새 loss 채택·두 학습·test/rollout·새 서비스·배포는 승인/실행되지 않았다. [고정 미실행 proposal](research/experiments/point-objective-proposal-v1.json)에 수식·상수·예산·STOP·한계와 별도 실행 결정 경계를 함께 기록했다.
+이미 살펴본 dev의 single-seed screening이므로 통과해도 held-out·장기 생존·앱/RL 채택의 증거가 아니다. 기존5.17 gate FAIL과 원래 model/data/label/loss·앱 DFS는 그대로다. 당시에는 실행 전 제안이었다. 이후 승인된 고정 loss·두 학습의 결과만5.22에 보고하며 앱 채택·새 test/rollout·서비스/배포는 여전히 제외한다. [고정 미실행 proposal](research/experiments/point-objective-proposal-v1.json)에 수식·상수·예산·STOP·한계와 별도 실행 결정 경계를 함께 기록했다.
+
+### 5.22 Fixed Kind and Point Objective Contrast
+
+**실행 — 2026-10-18.** 5.21의 고정 loss 대조를 같은 train 339개/dev 89개와 원래 13,292-parameter spatial 모델에서 완료했다. Architecture·74 features·저장 footprint·후보 순서·A512 hard label·raw full-list argmax를 유지하고, 후보만 flat CE + 0.5×kind log-mean-exp CE + 0.5×정답 point conditional CE를 최적화했다. 기존 CPU에서 seed/초기값/shuffle/Adam을 맞춰 12 epoch씩 두 번 학습했다.
+
+초기 두 모델의 428개 관측×2 = 856 full-list logits와 weights가 exact였다. 원래 loss control은 기존 history·선택 epoch 11·shuffle·logical weights·train/dev 전체 logits와 prediction score를 exact 재현했고, 이 검증 후에만 후보를 학습했다. Checkpoint는 arm별 dev actual top1 최고, 동점은 첫 epoch를 유지했다. 지표별 epoch 재선택이나 tuning은 없다.
+
+| Arm       | Split | Epoch | Actual top1 | Actual point | Point kind recall | Oracle point top1 | Actual reroll | Full NLL |
+| --------- | ----- | ----- | ----------- | ------------ | ----------------- | ----------------- | ------------- | -------- |
+| control   | train | 11    | 110/339     | 0/52         | 10/52             | 12/52             | 25/28         | 3.0484   |
+| control   | dev   | 11    | 29/89       | 0/13         | 4/13              | 2/13              | 7/8           | 3.1109   |
+| candidate | train | 12    | 105/339     | 2/52         | 12/52             | 14/52             | 20/28         | 3.1138   |
+| candidate | dev   | 12    | 29/89       | 0/13         | 5/13              | 1/13              | 6/8           | 3.2180   |
+
+Dev의 actual 정답은 control 29/89 → candidate 29/89이며, 같은 관측에서 회복 2개·퇴행 2개(net 0)다. 종류 선택 정답은 teacher가 point인 13개 관측에서 실제 선택이 point인 수이고, oracle point top1은 정답 종류를 알려준 좌표 순위 진단이다. Oracle를 실제 policy 성공으로 세지 않는다.
+
+추가로 점 찍기 13개 관측을 **종류와 oracle 좌표가 같은 관측에서 함께 맞는지** 분해했다. 둘 다 맞는 경우가 실제 point 정답임을 저장된 행별로 확인했다.
+
+| Dev arm   | Both correct | Kind only | Oracle coordinate only | Neither |
+| --------- | ------------ | --------- | ---------------------- | ------- |
+| Control   | 0            | 4         | 2                      | 7       |
+| Candidate | 0            | 5         | 1                      | 7       |
+
+종류 선택이 한 건 늘었지만 좌표가 함께 맞는 관측은 생기지 않았다. Oracle point는2→1, actual reroll은7→6/8로 줄어 tradeoff가 나타났다. 이 [교집합 집계](assets/research/point-objective-joint-errors-20261018-v1.json)는 저장 결과만 계산했으며 추가 forward·학습·label 변경은 없다.
+
+기존 네 screening gate는 **FAIL**, 별도 종류·좌표 기전 조건은 **FAIL**입니다. 네 gate(전체 48/89·control +5·actual point 3/13·reroll 7/8)와 두 기전 조건(kind 7/13·oracle point 5/13)은 각각 모두 미충족이다. 실행·재현 PASS를 개선 성공으로 확대하지 않는다. 두 보조항의 개별 causal 기여, held-out·장기 생존·앱 policy 우월성을 검증한 것은 아니다. 원래 P056 판정과 앱 DFS는 유지한다.
+
+실제 top-level forward는 **정확히 12,840회**(preflight 856 + control 5992 + candidate 5992)였다. 각 arm의 train 4068·epoch-dev 1068·freeze 856은 호출 전에 phase ledger에 기록했다. 세 owned child는 각 600초·전체 1860초·sampled 2GiB 안에서 종료했다. 전체 owner 시간은 324.14초이며 RSS는 순간 peak가 아니다. 새 teacher/domain/episode/test/rollout/geometry·추가학습/tuning·dependency/GPU/service/install은 0이다.
+
+[고정 실행 config](research/experiments/point-objective-v1.json)와 [모델별 actual/oracle·loss history·오류/분모·paired 변화·gate/기전/hash](assets/research/point-objective-train-dev-20261018-v1.json)를 공개한다. 원래 5.21 proposal JSON은 당시 미실행 설계로 보존했다. 이번 결과 검증은 저장 logits/loss-history/report만 replay하여 raw/summary를 byte 단위로 재현하며 **추가 model 생성·checkpoint load·forward·학습 0**이다. Data/weights/raw/logits/trace/ledger는 공개하지 않는다.
+
+같은 known-dev의 single-seed screening이며 결과에 따라 추가 tuning/학습·test를 실행하거나 앱 모델을 교체하지 않는다. 후속은 개별 auxiliary 항의 효과를 분리하는 계약 검토로 남기며, 자동 계수 sweep·추가 학습을 진행하지 않는다.
 
 ## 6. Reproduction and Usage
 
@@ -957,6 +989,20 @@ Forward 직전 ledger, supervisor의 child PID·시간·로그, memory 관측과
 ```
 
 Source/config·원본 report/component/856-call ledger·label/후보 순서·float32·endpoint drift는 STOP이다. 모델 생성/call·checkpoint load·optimizer와 학습을 차단하고 새 output만 허용한다. 원래 private 산출물은 공개 저장소에 포함되지 않아 해당 로컬 자료 없이는 원래 수치를 재현할 수 없다.
+
+5.22의 결과 검증은 학습을 반복하지 않고 저장 산출물만 replay한다. CLI와 자료 hash가 같아야 하며 새 output만 허용한다. 실제 run의12840회 예산은 한 번 사용했다.
+
+```powershell
+$pointRun = ".research-output/point-objective-train-dev-20261018-v1"
+.research-output/venv-cnn/Scripts/python.exe research/cnn/point_objective_replay.py `
+  --source .research-output/paired-teacher/paired-teacher-cnn-20261011-v1 `
+  --original .research-output/action-outcome-train-dev-20261012-recovered `
+  --experiment .research-output/spatial-residual-train-dev-20261013-v1 `
+  --execution "$pointRun/execution.json" --recorded $pointRun `
+  --output .research-output/my-point-objective-replay
+```
+
+첫 replay에서 기존 입력 loader의 불필요한 paired checkpoint 로드를 guard가 차단했다. 학습 당시 source/manifest는 그대로 보존했고, 지원 재현 entry는 위의 별도 data-only reader다. Guard를 완화하거나 모델을 다시 학습하지 않았다. Source/config·checkpoint byte hash·원래 control·전체후보/label·phase ledger·최고dev/첫epoch·score drift는 STOP이다. Private data/weights/logits는 공개 저장소에 포함하지 않으므로 해당 로컬 산출물 없이 원래 수치를 재현할 수는 없다. Replay는 모델 생성·호출·checkpoint deserialization·optimizer·학습을 차단한다.
 
 ## References
 
