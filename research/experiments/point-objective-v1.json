@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "id": "point-objective-v1",
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "approval": "USER_APPROVED",
+  "proposalSha256": "589728b27ac0559dc43621919dcf3a99679043202fd65061d36a6268d2a76142",
+  "source": {
+    "datasetSha256": "fa72eb460151763e664ecdd0a2438e1ae69172b98dbb5ab4b3f6f44b9e4c29fb",
+    "outcomeDatasetSha256": "98e37f090604d8ac7510371139fe66155b2ad57c863aa8a1966bab4374fdd1f4",
+    "spatialHashes": {
+      "execution.json": "76db2e7d5684edb5bb617261cc86ae3c3db4def8ca8cddb3cc10e3ae565a1207",
+      "report.json": "ed4eb6bfb0129ade8f6892c3378882dc617b3a62c54138ea6d9ef65686281b88",
+      "freeze.json": "3df93574f3bd8de2b9534d57f849692887bdf49cb77f53e6f9fcfe6cee47dee7",
+      "footprints.json": "5ef450e9c6e07502eed5b8f9f373d20cc68d9d18627cc3c526395f05abe70c54",
+      "baseline/report.json": "7de95283525c08b3b69b43d0fe5020c7d05e82d43f9d8f993c4ae07397a97556",
+      "baseline/checkpoint.pt": "837fc1fb1db09cd16ba2af2ab28fc95ee7d618fb2f834a2a2f97853e27c1284e",
+      "baseline/predictions.json": "34feaf2409e7489d62cb149ce7d92a22b85d2c7b3b168161c4eb86f211d813d1",
+      "baseline/logits.json": "6eac2a4188fe5a64fe9e419e9ad7c49e3bab883d4a4fb4cc277cf86f4ce45679",
+      "spatial/report.json": "445c0ee204e683f438b031dbdc6247d68d9181d0cedcfd770aff02296393208a",
+      "spatial/checkpoint.pt": "b7c8357a5a95445c83f61f3f2640cf331f145faa0f095ee177b3dab8abaef502",
+      "spatial/predictions.json": "5c9780571e396cfb0cfdfcc0dd345cec2d5deb826afc3f499f63f41ae8dafb00",
+      "spatial/logits.json": "c03654a4d942cb1c5170c417ed013f41ce22c2f5cfec1d6b5855ed8094bef13b"
+    },
+    "existingComponentHashes": {
+      "report.json": "f8d59d20301779f6b2e6c6691c20ddc65936696f84d0d91cd31f9e57ca29fcaf",
+      "summary.json": "8706578ccce20e08d441fd137343157f2b803b7397dc1e68bdb64cb72e9ed89b",
+      "raw.json": "6f5a32eb434070938f406442a6ebc54d4e61e043777b1f8c7dd448d0fa466113",
+      "components.jsonl": "54f1bc1fd9062a2f7391f837f4b346a17ad4ea11934ebf575ec16c2aa890a5e6",
+      "forward-count.jsonl": "1b1c95584e7b962ffbbce30b4b4927ecc85dd8f44d4da2f6a37eaf68c6739c0b"
+    },
+    "examples": {
+      "train": 339,
+      "dev": 89
+    },
+    "candidateCount": 149597,
+    "label": "Unchanged A512 hard index and teacher kind derived from that existing label; A1024 audit only",
+    "testAccess": false
+  },
+  "model": {
+    "architecture": "Unmodified SpatialCandidateCNN v3",
+    "parameters": 13292,
+    "candidateFeatures": 74,
+    "planes": [3, 16, 10],
+    "metadata": 140,
+    "footprint": [1, 16, 10],
+    "chunk": 32,
+    "extraParameters": 0,
+    "residualScale": 1,
+    "kindMask": "Read-only first three one-hot candidate features; verify against stored legal keys before fit; no key/teacher input to forward"
+  },
+  "objective": {
+    "baseline": "L_flat = logsumexp(s) - s[y]",
+    "kind": "For present legal kinds g: a[g] = logsumexp(s[G_g]) - log(n_g); L_kind = logsumexp(a) - a[k_y]",
+    "point": "L_point = logsumexp(s[G_point]) - s[y] when k_y is single-cell, else exactly 0",
+    "candidate": "L_flat + 0.5 * L_kind + 0.5 * L_point",
+    "kindWeight": 0.5,
+    "pointWeight": 0.5,
+    "normalization": "Mean per observation in the actual batch (including point-term zeros); final batch uses actual length. No class reweighting, oversampling or separate point-only denominator",
+    "absentKinds": "Exclude absent kinds; never log(0). One present kind gives L_kind=0; one point candidate gives L_point=0; missing teacher candidate/kind is STOP",
+    "numeric": "CPU float32; all CE terms use original torch.nn.functional.cross_entropy, with logsumexp minus log(n_g) for kind logits; mathematical identities do not authorize a differently rounded flat-loss rewrite; full legal mask; finite losses/gradients required",
+    "reason": "Kind log-mean-exp reduces direct candidate-count dependence; point conditional term targets coordinate ranking. The two-term bundle does not isolate individual causal effects"
+  },
+  "inference": {
+    "selection": "Unchanged raw full-list s argmax, first original index tie; no teacher-kind or balanced-kind routing",
+    "probabilities": "Global sum-softmax kind mass and auxiliary log-mean-exp kind softmax are different diagnostics; never substitute for actual selection"
+  },
+  "training": {
+    "runs": 2,
+    "arms": [
+      "original-spatial-flat-reproduction",
+      "same-spatial-kind-and-point-aux"
+    ],
+    "seed": 20261008,
+    "epochs": 12,
+    "batchSize": 8,
+    "threads": 2,
+    "interopThreads": 1,
+    "optimizer": "Adam",
+    "learningRate": 0.001,
+    "weightDecay": 0.0001,
+    "order": "Identical cold initialization and explicit train shuffle audit; no pretrained warm start",
+    "selection": "Per arm highest original A512 dev actual top1, earliest epoch tie; no point/oracle/NLL-based reselection",
+    "baselineControl": "Before candidate training: reproduce original spatial history, epoch11, shuffle, logical weights, all train/dev full-list logits and prediction scores exactly; original checkpoint bytes read-only",
+    "initialControl": "Two fresh same-seed original spatial models, one full-list call each per 428 observations; logits and initial logical weights exact"
+  },
+  "forwardBudget": {
+    "preflight": 856,
+    "perArmTraining": 4068,
+    "perArmEpochDev": 1068,
+    "perArmFrozenTwoRepeats": 856,
+    "perArmTotal": 5992,
+    "totalTopLevelMax": 12840,
+    "scope": "Only successful approved future run. Count actual calls before each top-level forward, including train/dev and chunk32 graph; no extra warmups/telemetry/common-only calls",
+    "failure": "STOP with partial ledger/output preserved; no silent restart, retry or extra epoch/seed/weight sweep"
+  },
+  "resources": {
+    "runtime": "Existing CPU PyTorch; no new dependencies, install, GPU or service",
+    "children": 3,
+    "sequential": true,
+    "perChildWallSeconds": 600,
+    "totalSupervisorWallSeconds": 1860,
+    "sampledWorkingSetBytes": 2147483648,
+    "scope": "Owned preflight then baseline then candidate; child timer covers preparation/load/train/eval, total owner timer covers orchestration. RSS samples at load/batch-before-after/eval; not instantaneous peak"
+  },
+  "screening": {
+    "originalFourGate": {
+      "devExamples": 89,
+      "minimumCorrect": 48,
+      "minimumGainVsConcurrentBaseline": 5,
+      "pointExamples": 13,
+      "minimumActualPointCorrect": 3,
+      "rerollExamples": 8,
+      "minimumActualRerollCorrect": 7,
+      "allRequired": true
+    },
+    "mechanismChecks": {
+      "pointCorrectKindAtLeast": 7,
+      "pointTeacherKindOracleCorrectAtLeast": 5,
+      "pointExamples": 13,
+      "allRequiredForClaimingBothObjectivesImprove": true
+    },
+    "decision": "Technical PASS is separate. Original-four-gate screening PASS only when all four pass. Claim of both kind and coordinate improvement additionally requires both mechanism checks. All are known-dev screens, never held-out validation",
+    "metrics": "For train/dev: actual top1/point/reroll, teacher-point selected-kind recall and confusion, oracle point top1/top5/rank/NLL, full NLL/errors, per-fixture and teacher-kind/family/completeness/phase/legal-kind denominators, paired gain/regression vs concurrent baseline and stored original. Report each loss separately",
+    "missingDenominator": "STOP if original split counts, action kinds, teacher labels or full candidate order drift"
+  },
+  "boundaries": {
+    "originalFilesImmutable": true,
+    "trainingRuns": 2,
+    "epochs": 12,
+    "maxTopLevelForwards": 12840,
+    "teacherDomainEpisodeTestRolloutGeometry": 0,
+    "newDependenciesServicesPorts": 0,
+    "appUsesDfs": true,
+    "rawWeightsLogitsPrivate": true,
+    "publicVerification": "Stored logits/loss-history/report replay only; no model creation/load/forward/training"
+  }
+}
