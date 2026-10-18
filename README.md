@@ -640,7 +640,31 @@ Residual span의 관측별 평균은 train 4.912 / dev 4.761, common span은 4.6
 
 [Fixed config](research/experiments/frozen-components-v1.json)와 [모델별 순위·paired/오류·oracle·residual 관측·hash](assets/research/frozen-components-20261014-v1.json)를 공개한다. 같은 알려진 dev의 진단이며 5.17의 gate FAIL·기존 label/모델/feature/loss·앱 DFS를 유지한다. 현재 component의 점수 기여를 관측한 것으로, residual 구조의 causal training 효과나 장기 정책 가치를 입증한 것은 아니다.
 
-**후속 제안 — NOT_RUN.** 저장 component에 고정 scale 0, 0.25, 0.5, 0.75, 1을 적용하는 별도 score screening을 제안한다. 추가 forward·학습 없이 가능하지만, 새로운 inference score를 살펴보는 튜닝 계약이므로 이번 진단에서는 실행하지 않았다. 기존 모델·앱에 scale을 채택하지 않는다.
+고정 5개 scale의 저장값 screening은 아래 5.20에서 완료했다. 기존 모델·앱에 scale을 채택하지 않았다.
+
+### 5.20 Stored Residual Scale Screening
+
+**실행 — 2026-10-18.** 5.19의 저장 float32 common/residual에 사전 고정한 scale **0, 0.25, 0.5, 0.75, 1**만 적용했다. CPU FP32에서 multiply와 add를 분리해 common + scale × residual을 계산했으며 후보 순서와 기존 A512 hard label을 유지했다. 모델 생성·checkpoint load·forward·학습·teacher/domain·새 episode/test/rollout·footprint geometry는 모두 **0회**다.
+
+Scale 0과 1은 원래 common-only/full logits, argmax·rank·NLL·probability·margin, 오류와 조건부/paired 집계까지 exact였다. 같은 428개 관측 × 5개 scale의 2,140회 score 평가와 747,985개 candidate-scale score를 계산했다. 두 독립 CLI의 raw/summary는 byte 단위로 일치했다. 반복을 새 관측으로 세지 않는다.
+
+| Scale | Train actual top1 | Dev actual top1 | Train mean NLL | Dev mean NLL | Dev actual single-cell |
+| ----- | ----------------- | --------------- | -------------- | ------------ | ---------------------- |
+| 0     | 117/339           | 26/89           | 3.9464         | 3.8786       | 0/13                   |
+| 0.25  | 121/339           | 30/89           | 3.5244         | 3.5018       | 0/13                   |
+| 0.5   | 117/339           | 29/89           | 3.2531         | 3.2658       | 0/13                   |
+| 0.75  | 113/339           | 28/89           | 3.1065         | 3.1467       | 0/13                   |
+| 1     | 110/339           | 29/89           | 3.0484         | 3.1109       | 0/13                   |
+
+Original baseline의 actual top1은 train **123/339**, dev **29/89**, mean full-list A512 NLL은 **3.5602 / 3.5337**이다. Scale 0.25는 이 5개 지점에서 dev top1이 30/89였지만 baseline/full 대비 **4개 회복·3개 손실(net +1)**에 그쳤다. Train 121/339는 baseline보다 2개 적다. Common-only 대비 dev는 5개 회복·1개 손실(+4), train은 14개 회복·10개 손실(+4)이다.
+
+이 지점들에서 scale을 키울수록 full-list NLL은 낮아졌지만 top1은 같은 방향으로 개선되지 않았다. **Dev 점 찍기 정답은 모든 scale에서 0/13**이며, 오류 구성도 wrong-kind 9개·different-position 4개로 같았다. Teacher-kind oracle 점 찍기는 2/13, actual reroll은 7/8로 모두 같았다. Oracle는 정답 행동 종류를 알려준 진단이며 실제 policy의 성능이 아니다.
+
+이 비교는 이미 살펴본 train/dev에서 수행한 **post-hoc score screening**이다. 0.25를 최적 scale로 확정하거나 모델·앱에 채택하지 않는다. 기존 5.17의 gate FAIL, model/label/feature/loss, 앱 DFS를 유지했다. 단순 residual scale 조절이 실제 점 찍기 실패를 해결했다는 증거는 없으며 held-out·장기 생존·causal training 효과도 검증하지 않았다.
+
+첫 실행은 17.07초, 최대 sampled working set 539.6MiB였다. 이는 기존 CPU 환경의 관측값이며 순간 peak나 앱 성능 수락이 아니다. [Fixed config](research/experiments/residual-scale-screen-v1.json)와 [scale별 actual/oracle·NLL·오류·paired 변화 및 hash](assets/research/residual-scale-screen-20261018-v1.json)를 공개한다. Raw/component/weights/data는 공개하지 않는다.
+
+**후속 방향 — NOT_RUN.** 점 찍기의 종류 선택과 종류 안 좌표 순위를 나누어 다루는 loss/후보 종류 처리 대조의 계약을 검토한다. 새 loss·모델·학습·test나 앱 policy 채택은 이번 screening에 포함하지 않았다.
 
 ## 6. Reproduction and Usage
 
@@ -882,6 +906,19 @@ node scripts/research/component-audit.mjs `
 ```
 
 Forward 직전 ledger, supervisor의 child PID·시간·로그, memory 관측과 private components/raw/summary/report를 보관한다. Budget·hash·nonfinite·반복/sum/원래 logits 불일치는 STOP이며, 같은 output을 다시 쓰거나 예산을 조용히 재시작하지 않는다. Replay는 module 생성·호출·checkpoint load·optimizer를 차단한다. Component 자료와 weights는 공개 저장소에 포함하지 않는다.
+
+5.20은 저장 component만 사용한다. 기존 5.19 infer를 반복하지 않고, 서로 다른 새 output으로 아래 CLI를 두 번 실행해 raw/summary byte 일치를 검사한다. 새로운 scale이나 모델 선택 옵션은 제공하지 않는다.
+
+```powershell
+.research-output/venv-cnn/Scripts/python.exe research/cnn/scale_screen.py `
+  --source .research-output/paired-teacher/paired-teacher-cnn-20261011-v1 `
+  --experiment .research-output/spatial-residual-train-dev-20261013-v1 `
+  --original .research-output/action-outcome-train-dev-20261012-recovered `
+  --recorded .research-output/frozen-components-20261014-v1 `
+  --output .research-output/my-residual-scale-screen
+```
+
+Source/config·원본 report/component/856-call ledger·label/후보 순서·float32·endpoint drift는 STOP이다. 모델 생성/call·checkpoint load·optimizer와 학습을 차단하고 새 output만 허용한다. 원래 private 산출물은 공개 저장소에 포함되지 않아 해당 로컬 자료 없이는 원래 수치를 재현할 수 없다.
 
 ## References
 
