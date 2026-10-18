@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "residual-scale-screen-v1",
+  "approval": "USER_APPROVED",
+  "status": "FIXED_STORED_SCALE_SCREEN",
+  "scales": [0, 0.25, 0.5, 0.75, 1],
+  "source": {
+    "primaryHashes": {
+      "report.json": "f8d59d20301779f6b2e6c6691c20ddc65936696f84d0d91cd31f9e57ca29fcaf",
+      "summary.json": "8706578ccce20e08d441fd137343157f2b803b7397dc1e68bdb64cb72e9ed89b",
+      "raw.json": "6f5a32eb434070938f406442a6ebc54d4e61e043777b1f8c7dd448d0fa466113",
+      "components.jsonl": "54f1bc1fd9062a2f7391f837f4b346a17ad4ea11934ebf575ec16c2aa890a5e6",
+      "forward-count.jsonl": "1b1c95584e7b962ffbbce30b4b4927ecc85dd8f44d4da2f6a37eaf68c6739c0b"
+    },
+    "examples": {
+      "train": 339,
+      "dev": 89
+    },
+    "candidates": 149597
+  },
+  "method": {
+    "score": "CPU float32 common + (float32 scale * residual), separate multiply then add; ordered full legal list, first-index ties",
+    "endpoints": "Scale 0/1 exact original common/full scores, errors, conditional and paired aggregates",
+    "comparison": "All five scales vs stored original baseline and endpoint common/full; fixed hard labels, grouped denominators",
+    "nll": "Mean full-list A512 NLL; teacher-kind oracle reported separately",
+    "selection": "Post-hoc known train/dev screen; no selected scale, no held-out claim or model/app policy adoption"
+  },
+  "limits": {
+    "modelCreationCheckpointLoadForwardTraining": 0,
+    "teacherDomainEpisodeTestRolloutGeometry": 0,
+    "seconds": 600,
+    "workingSetBytes": 2147483648
+  }
+}
