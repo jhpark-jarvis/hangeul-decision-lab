@@ -664,7 +664,45 @@ Original baseline의 actual top1은 train **123/339**, dev **29/89**, mean full-
 
 첫 실행은 17.07초, 최대 sampled working set 539.6MiB였다. 이는 기존 CPU 환경의 관측값이며 순간 peak나 앱 성능 수락이 아니다. [Fixed config](research/experiments/residual-scale-screen-v1.json)와 [scale별 actual/oracle·NLL·오류·paired 변화 및 hash](assets/research/residual-scale-screen-20261018-v1.json)를 공개한다. Raw/component/weights/data는 공개하지 않는다.
 
-**후속 방향 — NOT_RUN.** 점 찍기의 종류 선택과 종류 안 좌표 순위를 나누어 다루는 loss/후보 종류 처리 대조의 계약을 검토한다. 새 loss·모델·학습·test나 앱 policy 채택은 이번 screening에 포함하지 않았다.
+종류 선택과 좌표 순위를 나눠 다루는 다음 대조의 구체적인 미실행 계약은 아래5.21에 정리했다.
+
+### 5.21 Proposed Kind and Point Objective Contrast — NOT_RUN
+
+**설계 — 2026-10-18. 실행·학습은 하지 않았다.** 5.20의 dev 점 찍기13개는 모든 scale에서 wrong-kind9개·different-position4개, actual0/13·teacher-kind oracle2/13이었다. 즉 점 찍기 관측에서 실제 종류 선택 정답은4/13이며, 정답 종류를 알려줘도 좌표 top1은2/13이다. 두 지표의 성공 관측이 같다는 뜻은 아니며 후보 수·표현·최적화·teacher 중 원인은 확정하지 않았다.
+
+제안은 **기존 13,292-parameter SpatialCandidateCNN과 입력·후보·A512 label을 그대로 둔 loss 대조**다. 새 head/parameter나 inference routing을 추가하지 않는다. 두 arm은 원래 flat CE 재현과 아래 auxiliary objective이며, 아직 runner를 구현하거나 학습하지 않았다.
+
+관측의 전체 합법 후보 logit을 s, 정답 index를 y, 존재하는 종류 g의 후보 집합을 G_g와 개수 n_g, 정답 종류를 k_y라 한다.
+
+```text
+L_flat = logsumexp(s) - s[y]
+a[g]   = logsumexp(s[G_g]) - log(n_g)
+L_kind = logsumexp(a) - a[k_y]
+L_point = logsumexp(s[G_point]) - s[y]  if k_y == single-cell
+          0                            otherwise
+
+L_aux = L_flat + 0.5 * L_kind + 0.5 * L_point
+```
+
+종류별 logsumexp CE와 내부 CE의 단순 합은 flat CE의 분해다. 이번 종류 보조항은 **log-mean-exp**로 후보 수의 직접적인 영향을 보정하고, 점 찍기 보조항은 정답이 점 찍기인 관측의 좌표 ranking을 직접 다루려는 가설이다. 계수0.5/0.5는 사전 고정이며 sweep하지 않는다. 두 항을 묶은 대조이므로 개별 항의 causal 기여를 분리하지는 못한다.
+
+모든 항은 실제 batch의 관측 수로 평균하며 point 항의0도 분모에 포함한다. Point-only 평균·oversampling·class weighting은 없다. 없는 종류는 제외하고, 종류가 하나면 L_kind=0, point 후보가 하나면 L_point=0이다. 세 CE 항은 기존 cross_entropy를 사용하며, 위 수학적 식을 이유로 flat loss의 반올림 순서를 바꾸지 않는다. Kind mask는 기존 candidate feature의 one-hot에서 읽고 target은 기존 정답 index에서만 파생한다. **실제 선택은 기존 raw full-list s의 argmax**와 원래 index 동점을 유지한다. Auxiliary 종류 확률이나 teacher 종류를 실제 routing에 쓰지 않는다.
+
+| 제안 항목           | 고정 계약                                                                                                      |
+| ------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Data/input/model    | 같은 train339/dev89·149,597후보·기존74features/저장 footprint·spatial13,292 parameters·scale1·A512 hard label  |
+| Arms                | 원래 spatial flat CE 재현 vs 같은 spatial의 L_aux; 동일 cold initialization·shuffle                            |
+| Training            | 기존 CPU 환경, seed20261008·12epoch×2·batch8·threads2/interop1·Adam lr0.001/weight_decay0.0001                 |
+| Control             | 후보 학습 전에 원래 spatial history·epoch11·logical weights·train/dev 전체 logits/예측 score exact 재현        |
+| Checkpoint          | Arm별 원래 A512 dev actual top1 최고, 동점은 첫 epoch. Point/oracle/NLL 기반 재선택 없음                       |
+| Future forward cap  | 초기 두 모델×428 =856, arm당 train4068+epoch-dev1068+freeze856 =5992, 총 **12,840회**                          |
+| Future resource cap | 순차 CPU child3개, 각600초·전체 supervisor1860초, batch 전후/eval sampled working set2GiB; 순간 peak 보장 아님 |
+
+이는 **향후 별도 승인이 필요한 비용 상한**이다. 이번 설계의 모델 생성·checkpoint load·forward·학습은0이며 새 설치/GPU/service는 없다. 호출 전 ledger, source/input hash·초기/control exact·finite loss/gradient·새 output을 요구하고 불일치/실패/취소 시 STOP한다. 조용한 재시작·추가 seed/epoch/lambda/scale sweep·새 data/teacher/label/feature는 하지 않는다.
+
+기술 계약 PASS와 성능 screening은 구별한다. 기존 네 gate인 **dev actual48/89 이상·동시 control보다+5 이상·actual point3/13 이상·actual reroll7/8 이상**을 모두 유지한다. 종류와 좌표가 모두 개선됐다는 주장은 별도로 **teacher-point 종류 선택 정답7/13 이상**과 **teacher-kind oracle point top1 5/13 이상**도 요구한다. Oracle가 actual 성공을 대체하지 않는다. 모든 arm의 종류 confusion·conditional rank/NLL·full NLL·오류·paired 회복/퇴행과 group/fixture 분모를 보고한다.
+
+이미 살펴본 dev의 single-seed screening이므로 통과해도 held-out·장기 생존·앱/RL 채택의 증거가 아니다. 기존5.17 gate FAIL과 원래 model/data/label/loss·앱 DFS는 그대로다. 새 loss 채택·두 학습·test/rollout·새 서비스·배포는 승인/실행되지 않았다. [고정 미실행 proposal](research/experiments/point-objective-proposal-v1.json)에 수식·상수·예산·STOP·한계와 별도 실행 결정 경계를 함께 기록했다.
 
 ## 6. Reproduction and Usage
 
