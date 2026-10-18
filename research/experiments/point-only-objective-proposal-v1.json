@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "id": "point-only-objective-proposal-v1",
+  "status": "PROPOSED_NOT_RUN",
+  "approval": "DESIGN_AND_PUBLICATION_ONLY",
+  "executionRequiresSeparateUserDecision": true,
+  "evidence": {
+    "summary": {
+      "path": "assets/research/point-objective-train-dev-20261018-v1.json",
+      "sha256": "82721f6eb8de49aec912d7e4c0ceb99c6020519849ebb2b8a4c9fa304cd4a8fa"
+    },
+    "joint": {
+      "path": "assets/research/point-objective-joint-errors-20261018-v1.json",
+      "sha256": "5387872a96690e20aaaa0c16b8efa68f6722f06bd2453e72bd2096743b9c6a10"
+    },
+    "observedDev": {
+      "control": {
+        "actual": 29,
+        "pointActual": 0,
+        "pointKind": 4,
+        "pointOracle": 2,
+        "reroll": 7
+      },
+      "combined": {
+        "actual": 29,
+        "pointActual": 0,
+        "pointKind": 5,
+        "pointOracle": 1,
+        "reroll": 6
+      },
+      "denominators": {
+        "all": 89,
+        "point": 13,
+        "reroll": 8
+      }
+    },
+    "reason": "The combined auxiliary loss did not improve actual point selection. Isolate the coordinate term against flat CE first; this is a hypothesis, not an identified cause. Kind-only and the interaction remain unmeasured."
+  },
+  "source": {
+    "datasetSha256": "fa72eb460151763e664ecdd0a2438e1ae69172b98dbb5ab4b3f6f44b9e4c29fb",
+    "outcomeDatasetSha256": "98e37f090604d8ac7510371139fe66155b2ad57c863aa8a1966bab4374fdd1f4",
+    "spatialHashes": {
+      "execution.json": "76db2e7d5684edb5bb617261cc86ae3c3db4def8ca8cddb3cc10e3ae565a1207",
+      "report.json": "ed4eb6bfb0129ade8f6892c3378882dc617b3a62c54138ea6d9ef65686281b88",
+      "freeze.json": "3df93574f3bd8de2b9534d57f849692887bdf49cb77f53e6f9fcfe6cee47dee7",
+      "footprints.json": "5ef450e9c6e07502eed5b8f9f373d20cc68d9d18627cc3c526395f05abe70c54",
+      "baseline/report.json": "7de95283525c08b3b69b43d0fe5020c7d05e82d43f9d8f993c4ae07397a97556",
+      "baseline/checkpoint.pt": "837fc1fb1db09cd16ba2af2ab28fc95ee7d618fb2f834a2a2f97853e27c1284e",
+      "baseline/predictions.json": "34feaf2409e7489d62cb149ce7d92a22b85d2c7b3b168161c4eb86f211d813d1",
+      "baseline/logits.json": "6eac2a4188fe5a64fe9e419e9ad7c49e3bab883d4a4fb4cc277cf86f4ce45679",
+      "spatial/report.json": "445c0ee204e683f438b031dbdc6247d68d9181d0cedcfd770aff02296393208a",
+      "spatial/checkpoint.pt": "b7c8357a5a95445c83f61f3f2640cf331f145faa0f095ee177b3dab8abaef502",
+      "spatial/predictions.json": "5c9780571e396cfb0cfdfcc0dd345cec2d5deb826afc3f499f63f41ae8dafb00",
+      "spatial/logits.json": "c03654a4d942cb1c5170c417ed013f41ce22c2f5cfec1d6b5855ed8094bef13b"
+    },
+    "existingComponentHashes": {
+      "report.json": "f8d59d20301779f6b2e6c6691c20ddc65936696f84d0d91cd31f9e57ca29fcaf",
+      "summary.json": "8706578ccce20e08d441fd137343157f2b803b7397dc1e68bdb64cb72e9ed89b",
+      "raw.json": "6f5a32eb434070938f406442a6ebc54d4e61e043777b1f8c7dd448d0fa466113",
+      "components.jsonl": "54f1bc1fd9062a2f7391f837f4b346a17ad4ea11934ebf575ec16c2aa890a5e6",
+      "forward-count.jsonl": "1b1c95584e7b962ffbbce30b4b4927ecc85dd8f44d4da2f6a37eaf68c6739c0b"
+    },
+    "examples": {
+      "train": 339,
+      "dev": 89
+    },
+    "candidateCount": 149597,
+    "label": "Unchanged A512 hard index and teacher kind derived from that existing label; A1024 audit only",
+    "testAccess": false
+  },
+  "model": {
+    "architecture": "Unmodified SpatialCandidateCNN v3",
+    "parameters": 13292,
+    "candidateFeatures": 74,
+    "planes": [3, 16, 10],
+    "metadata": 140,
+    "footprint": [1, 16, 10],
+    "chunk": 32,
+    "extraParameters": 0,
+    "residualScale": 1,
+    "kindMask": "Read-only first three one-hot candidate features; verify against stored legal keys before fit; no key/teacher input to forward"
+  },
+  "objective": {
+    "baseline": "Original native cross_entropy(s, y)",
+    "candidate": "L_flat + 0.5 * L_point",
+    "kindWeight": 0,
+    "pointWeight": 0.5,
+    "point": "Original native cross_entropy(s[G_point], local_y) only when the original A512 target kind is single-cell; scalar zero otherwise",
+    "normalization": "Mean per observation in the actual batch (including point-term zeros); final batch uses actual length. No class reweighting, oversampling or separate point-only denominator",
+    "numeric": "CPU float32; all CE terms use original torch.nn.functional.cross_entropy, with logsumexp minus log(n_g) for kind logits; mathematical identities do not authorize a differently rounded flat-loss rewrite; full legal mask; finite losses/gradients required",
+    "absentKinds": "Do not evaluate a conditional CE when target is not point, including when no point candidates exist. For a point target, missing target/point group is STOP; singleton group gives zero conditional loss.",
+    "kindTerm": "No kind objective or kind-head routing. Preserve original full-list CE, which still contains competition between kinds.",
+    "gradientScope": "The additional point loss has zero derivative on non-point logits of this observation; shared network parameters can still affect every kind on other observations. It is not a point-only dataset reweighting."
+  },
+  "inference": {
+    "selection": "Unchanged raw full-list s argmax, first original index tie; no teacher-kind or balanced-kind routing",
+    "probabilities": "Global sum-softmax kind mass and auxiliary log-mean-exp kind softmax are different diagnostics; never substitute for actual selection"
+  },
+  "training": {
+    "runs": 2,
+    "arms": [
+      "original-spatial-flat-reproduction",
+      "same-spatial-point-only-aux"
+    ],
+    "seed": 20261008,
+    "epochs": 12,
+    "batchSize": 8,
+    "threads": 2,
+    "interopThreads": 1,
+    "optimizer": "Adam",
+    "learningRate": 0.001,
+    "weightDecay": 0.0001,
+    "order": "Identical cold initialization and explicit train shuffle audit; no pretrained warm start",
+    "selection": "Per arm highest original A512 dev actual top1, earliest epoch tie; no point/oracle/NLL-based reselection",
+    "baselineControl": "Before candidate training: exact original spatial and completed flat control history, shuffle, epoch11, logical weights, train/dev full logits and prediction scores. No warm start; STOP on any drift.",
+    "initialControl": "Two fresh same-seed original spatial models, one full-list call each per 428 observations; logits and initial logical weights exact",
+    "candidateControl": "No comparison of candidate weights to combined arm is required: objectives differ. The completed combined arm is historical context, not a concurrently retrained third arm."
+  },
+  "forwardBudget": {
+    "preflight": 856,
+    "perArmTraining": 4068,
+    "perArmEpochDev": 1068,
+    "perArmFrozenTwoRepeats": 856,
+    "perArmTotal": 5992,
+    "totalTopLevelMax": 12840,
+    "scope": "Only successful approved future run. Count actual calls before each top-level forward, including train/dev and chunk32 graph; no extra warmups/telemetry/common-only calls",
+    "failure": "STOP with partial ledger/output preserved; no silent restart, retry or extra epoch/seed/weight sweep"
+  },
+  "resources": {
+    "runtime": "Existing CPU PyTorch; no new dependencies, install, GPU or service",
+    "children": 3,
+    "sequential": true,
+    "perChildWallSeconds": 600,
+    "totalSupervisorWallSeconds": 1860,
+    "sampledWorkingSetBytes": 2147483648,
+    "scope": "Owned preflight then baseline then candidate; child timer covers preparation/load/train/eval, total owner timer covers orchestration. RSS samples at load/batch-before-after/eval; not instantaneous peak"
+  },
+  "screening": {
+    "originalFourGate": {
+      "devExamples": 89,
+      "minimumCorrect": 48,
+      "minimumGainVsConcurrentBaseline": 5,
+      "pointExamples": 13,
+      "minimumActualPointCorrect": 3,
+      "rerollExamples": 8,
+      "minimumActualRerollCorrect": 7,
+      "allRequired": true
+    },
+    "coordinateMechanism": {
+      "pointTeacherKindOracleCorrectAtLeast": 5,
+      "minimumGainVsConcurrentControl": 3,
+      "pointExamples": 13,
+      "claim": "Coordinate screening only. Actual point, kind selection and original four gates must still be reported separately."
+    },
+    "historicalCombinedMechanism": {
+      "pointCorrectKindAtLeast": 7,
+      "pointTeacherKindOracleCorrectAtLeast": 5,
+      "pointExamples": 13,
+      "requiredForClaimingBothImprove": true
+    },
+    "metrics": "For train/dev: actual top1/point/reroll, teacher-point selected-kind recall and confusion, oracle point top1/top5/rank/NLL, full NLL/errors, per-fixture and teacher-kind/family/completeness/phase/legal-kind denominators, paired gain/regression vs concurrent baseline and stored original. Report each loss separately",
+    "jointPartition": "For teacher-point observations, report bothCorrect/kindOnly/coordinateOnly/neither per arm/split; verify bothCorrect equals actual point correctness. Report paired recovery/regression at full action, kind and oracle-coordinate levels with fixed denominators.",
+    "decision": "Report technical compliance, all-four-gate screening and coordinate mechanism separately. Do not relax the existing four gates, select another epoch by point/oracle/NLL, infer an interaction, or adopt a model.",
+    "missingDenominator": "STOP if original split counts, action kinds, teacher labels or full candidate order drift"
+  },
+  "boundaries": {
+    "designActualModelCreationLoadForwardTraining": 0,
+    "teacherDomainEpisodeTestRolloutGeometry": 0,
+    "originalFilesImmutable": true,
+    "newDataLabelsFeaturesArchitecture": false,
+    "scalePolicyAdoption": false,
+    "appUsesDfs": true,
+    "weightsRawComponentsPrivate": true,
+    "publicVerification": "Existing Node stdlib only: static schema, published aggregate hashes and synthetic double-precision scalar identities/finite differences. No Python/torch import, model, checkpoint or logits read.",
+    "futurePublication": "This authorization covers the proposal/validator/README only; future execution and its publication require explicit scope.",
+    "implementation": "Training runner is not implemented by this proposal. Do not pass this JSON to the completed combined-loss CLI or edit its frozen execution config.",
+    "interpretation": "Known-dev, single-seed, selected-epoch screening. Only point-only versus concurrent flat is the planned contrast. No kind-only measurement, factorial interaction estimate, held-out generalization, survival or product superiority claim."
+  }
+}

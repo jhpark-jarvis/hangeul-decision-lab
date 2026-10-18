@@ -736,6 +736,34 @@ Dev의 actual 정답은 control 29/89 → candidate 29/89이며, 같은 관측�
 
 같은 known-dev의 single-seed screening이며 결과에 따라 추가 tuning/학습·test를 실행하거나 앱 모델을 교체하지 않는다. 후속은 개별 auxiliary 항의 효과를 분리하는 계약 검토로 남기며, 자동 계수 sweep·추가 학습을 진행하지 않는다.
 
+### 5.23 Proposed Point-only Auxiliary Contrast — NOT_RUN
+
+**설계 — 2026-10-19.** 5.22의 combined loss는 dev actual point 0/13을 회복하지 못했다. Kind 선택은 4→5/13, oracle coordinate는 2→1/13으로 움직였지만, 두 항을 함께 바꿨으므로 어느 항의 영향인지 분리할 수 없다.
+
+다음 권장 실험은 **좌표 보조항 하나만 추가하는 단일 대조**다. 아직 학습 runner를 구현하거나 실행하지 않았다.
+
+| Arm                  | Objective                                | 실행 상태                                |
+| -------------------- | ---------------------------------------- | ---------------------------------------- |
+| Concurrent control   | 기존 flat CE                             | NOT_RUN                                  |
+| Point-only candidate | flat CE + 0.5 × point conditional CE     | NOT_RUN                                  |
+| 기존 combined 결과   | flat CE + 0.5 × kind CE + 0.5 × point CE | 완료된 참고 결과, 이번에 재학습하지 않음 |
+
+Point conditional CE는 원래 A512 정답이 점 찍기인 관측에서만, 전체 point 후보 중 정답 좌표를 맞히는 CE다. 그 외 관측은 정확히 0이며 **실제 batch 길이로 평균**할 때 이 0도 포함한다. Point 관측만 따로 평균하거나 dataset을 reweight하지 않는다. 추가항의 해당 관측 non-point logit에 대한 직접 미분은 0이지만, 공유 parameters의 업데이트는 다른 종류의 예측에도 영향을 줄 수 있다.
+
+같은 SpatialCandidateCNN 13,292 parameters, candidate 74 features, 저장 footprint, train 339개/dev 89개, 원래 label·후보 순서·raw full-list argmax를 유지한다. Kind 보조항은 0이며 새 head·routing·teacher 입력은 없다. 두 arm의 seed·cold initialization·shuffle·Adam·12 epoch와 기존 dev actual top1 최고/첫 동점 epoch 선택도 유지한다.
+
+후보 학습의 선행 조건은 control의 원래 history·epoch 11·logical weights·전체 logits/score exact 재현이다. 제안 예산은 **새 CPU 학습 2회, 최대 12,840 forward**다. Preflight 856 + arm당 train 4068·epoch-dev 1068·freeze 반복 856 = 856 + 2 × 5992다. 순차 child 3개 각각 600초·전체 1860초·sampled working set 2 GiB, 호출 전 ledger·새 output·실패 STOP/자동 재시작 0을 제안한다. 5.22에서 이미 사용한 예산을 재사용할 수 없다.
+
+기존 네 gate(전체 48/89·concurrent control +5·actual point 3/13·reroll 7/8)는 그대로다. 좌표 기전 screening은 teacher-kind oracle point **5/13 이상이면서 control 대비 3개 이상 증가**를 요구한다. 기술 PASS, 네 gate, 좌표 기전을 별도로 판정한다. 종류 선택과 좌표가 함께 맞는 교집합·각각만 맞는 수·둘 다 틀린 수와 paired 회복/퇴행도 보고한다. Oracle 개선을 actual 성공으로 세거나 point 지표로 epoch를 다시 고르지 않는다. 종류와 좌표 모두 개선됐다는 주장은 기존 kind 7/13·oracle 5/13 조건도 필요하다.
+
+이 대조는 point-only와 flat의 차이만 다룬다. Kind-only 학습과 두 보조항의 interaction은 측정하지 않는다. Known-dev·single-seed·선택된 epoch의 screening이므로 held-out·장기 생존·앱 우월성의 증거가 될 수 없다. **새 학습·forward·loss 채택은 별도 실행 결정 전까지 NOT_RUN**이며, 기존 모델·label·앱 DFS를 유지한다.
+
+[고정 proposal](research/experiments/point-only-objective-proposal-v1.json)과 [Node 정적 검증 CLI](scripts/research/validate-point-only-proposal.mjs)를 제공한다. 아래 명령은 공개 집계 hash·계약·합성 산술만 검사하며 Python/torch·model·checkpoint·logits를 읽거나 학습하지 않는다. Double-precision finite difference 검사는 향후 CPU FP32 autograd 검증의 대체가 아니다.
+
+```sh
+node scripts/research/validate-point-only-proposal.mjs
+```
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
