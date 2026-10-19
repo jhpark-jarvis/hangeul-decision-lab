@@ -738,7 +738,7 @@ Dev의 actual 정답은 control 29/89 → candidate 29/89이며, 같은 관측�
 
 ### 5.23 Proposed Point-only Auxiliary Contrast — NOT_RUN
 
-**설계 — 2026-10-19.** 5.22의 combined loss는 dev actual point 0/13을 회복하지 못했다. Kind 선택은 4→5/13, oracle coordinate는 2→1/13으로 움직였지만, 두 항을 함께 바꿨으므로 어느 항의 영향인지 분리할 수 없다.
+**설계 원본 — 2026-10-19.** 이 절은 당시 실행 전 계약이며 실제 고정 실행은 5.24에서 보고한다. 5.22의 combined loss는 dev actual point 0/13을 회복하지 못했다. Kind 선택은 4→5/13, oracle coordinate는 2→1/13으로 움직였지만, 두 항을 함께 바꿨으므로 어느 항의 영향인지 분리할 수 없다.
 
 다음 권장 실험은 **좌표 보조항 하나만 추가하는 단일 대조**다. 아직 학습 runner를 구현하거나 실행하지 않았다.
 
@@ -756,13 +756,41 @@ Point conditional CE는 원래 A512 정답이 점 찍기인 관측에서만, 전
 
 기존 네 gate(전체 48/89·concurrent control +5·actual point 3/13·reroll 7/8)는 그대로다. 좌표 기전 screening은 teacher-kind oracle point **5/13 이상이면서 control 대비 3개 이상 증가**를 요구한다. 기술 PASS, 네 gate, 좌표 기전을 별도로 판정한다. 종류 선택과 좌표가 함께 맞는 교집합·각각만 맞는 수·둘 다 틀린 수와 paired 회복/퇴행도 보고한다. Oracle 개선을 actual 성공으로 세거나 point 지표로 epoch를 다시 고르지 않는다. 종류와 좌표 모두 개선됐다는 주장은 기존 kind 7/13·oracle 5/13 조건도 필요하다.
 
-이 대조는 point-only와 flat의 차이만 다룬다. Kind-only 학습과 두 보조항의 interaction은 측정하지 않는다. Known-dev·single-seed·선택된 epoch의 screening이므로 held-out·장기 생존·앱 우월성의 증거가 될 수 없다. **새 학습·forward·loss 채택은 별도 실행 결정 전까지 NOT_RUN**이며, 기존 모델·label·앱 DFS를 유지한다.
+이 대조는 point-only와 flat의 차이만 다룬다. Kind-only 학습과 두 보조항의 interaction은 측정하지 않는다. Known-dev·single-seed·선택된 epoch의 screening이므로 held-out·장기 생존·앱 우월성의 증거가 될 수 없다. 당시에는 새 실행 전 제안이었다. 이후 승인된 고정 대조의 결과를 5.24에 기록하며, 기존 원본 모델·label·앱 DFS는 유지한다.
 
 [고정 proposal](research/experiments/point-only-objective-proposal-v1.json)과 [Node 정적 검증 CLI](scripts/research/validate-point-only-proposal.mjs)를 제공한다. 아래 명령은 공개 집계 hash·계약·합성 산술만 검사하며 Python/torch·model·checkpoint·logits를 읽거나 학습하지 않는다. Double-precision finite difference 검사는 향후 CPU FP32 autograd 검증의 대체가 아니다.
 
 ```sh
 node scripts/research/validate-point-only-proposal.mjs
 ```
+
+### 5.24 Fixed Point-only Auxiliary Contrast
+
+**실행 — 2026-10-19.** 5.23의 고정 제안을 같은 spatial 모델과 train 339개/dev 89개에서 실행했다. 후보 objective는 **flat CE + 0.5 × point conditional CE**, kind 보조항은 0이다. 기존 architecture 13,292 parameters·74 features·저장 footprint·A512 label·원래 후보 순서와 raw full-list argmax를 유지했다. 두 arm의 seed·cold initialization·shuffle·Adam·12 epoch 및 dev actual top1 최고/첫 epoch 선택도 같다.
+
+초기 856 forward에서 logits/weights 동등성을 확인했다. Control은 원래 spatial과 완료된 combined 실험의 flat control에 대해 history·epoch 11·logical weights·full logits/예측·shuffle·최적화 flat loss trace를 exact 재현한 뒤 후보를 학습했다. 후보는 사전 선택 규칙으로 epoch **11**를 선택했다. Point/oracle 지표로 epoch를 다시 고르지 않았다.
+
+| Arm       | Split | Epoch | Actual top1 | Actual point | Point 종류 선택 정답 | Oracle point top1 | Actual reroll | Full NLL |
+| --------- | ----- | ----- | ----------- | ------------ | -------------------- | ----------------- | ------------- | -------- |
+| control   | train | 11    | 110/339     | 0/52         | 10/52                | 12/52             | 25/28         | 3.0484   |
+| control   | dev   | 11    | 29/89       | 0/13         | 4/13                 | 2/13              | 7/8           | 3.1109   |
+| candidate | train | 11    | 108/339     | 1/52         | 10/52                | 14/52             | 25/28         | 3.0484   |
+| candidate | dev   | 11    | 28/89       | 0/13         | 5/13                 | 2/13              | 7/8           | 3.1154   |
+
+Dev actual의 paired 회복은 **0개**, 퇴행은 **1개**, net은 **-1개**다. Teacher-point 13개에서 종류 선택과 oracle 좌표가 같은 관측에서 모두 맞은 경우를 따로 집계했다.
+
+| Arm       | 둘 다 정답 = actual point | 종류만 정답 | 좌표만 정답 | 둘 다 오답 |
+| --------- | ------------------------- | ----------- | ----------- | ---------- |
+| control   | 0                         | 4           | 2           | 7          |
+| candidate | 0                         | 5           | 2           | 6          |
+
+기존 네 gate는 **FAIL**, 좌표 기전 screening은 **FAIL**, 종류·좌표 모두 개선 조건은 **FAIL**다. Gate는 전체 48/89·동시 control +5·actual point 3/13·reroll 7/8을 모두 요구한다. 좌표 조건은 oracle 5/13 및 control +3, 두 기전의 공동 주장은 kind 7/13·oracle 5/13이다. 개별 통과/실패는 공개 집계의 checks에 남겼다. 실행·재현 PASS와 성능 판정을 구별하며, 이번 결과로 앱 모델을 교체하지 않는다.
+
+실제 top-level forward는 **12,840회**, 새 CPU 12epoch 학습은 **2회**다. Preflight 856 + control 5992 + candidate 5992를 호출 전 phase ledger로 확인했다. 각 arm은 train 4068·epoch-dev 1068·freeze 두 반복 856회다. 단일 owner는 380.45초, 순차 child 세 개는 각각 600초·전체 1860초·sampled working set 2 GiB 이내로 종료했다. RSS는 순간 peak가 아니다. 별도 fixture child에서 실패·timeout·취소·다음 단계 중단을 검증했으며 실제 학습의 재시작·추가 tuning은 0이다.
+
+[고정 실행 config](research/experiments/point-only-objective-v1.json)와 [모델별 지표·loss history·오류·paired 회복/퇴행·point 교집합·gate/hash](assets/research/point-only-train-dev-20261019-v1.json)를 공개한다. 검증은 별도 [data-only reader](research/cnn/point_only_replay.py)로 저장값만 replay해 raw/summary byte exact, **추가 model 생성·checkpoint load·forward·학습 0**을 확인했다. 원래 실행 source/manifest를 재바인딩하거나 guard를 완화하지 않았다. 원본 data/weights/footprints/raw/logits/ledger는 공개하지 않는다.
+
+이번 비교는 point-only 대 동시 flat의 known-dev·single-seed·선택 epoch screening이다. 5.22의 combined 결과는 참고이며 새 세 번째 arm으로 재학습하지 않았다. Kind-only 항과 두 항의 interaction, held-out·장기 생존·앱 우월성은 검증하지 않았다. 추가 seed/계수/epoch sweep·새 test/rollout·teacher/label/feature/model 구조 변경·앱/RL·새 dependency/GPU/service/install은 0이다.
 
 ## 6. Reproduction and Usage
 
@@ -1045,3 +1073,9 @@ $pointRun = ".research-output/point-objective-train-dev-20261018-v1"
 4. Schulman, J., et al. (2017). [Proximal Policy Optimization Algorithms][4]. arXiv:1707.06347.
 
 논문은 방법 참고이며 본 프로젝트의 성능 증거가 아니다. 모든 그림은 자체 생성 설명용 도식이다. 메이플스토리 상표/게임 저작물의 권리는 각 권리자에게 있으며 공식/제휴 프로젝트가 아니다.
+
+5.24의 결과 검증은 학습을 반복하지 않고 저장 산출물만 사용한다. 아래 명령의 경로는 권한 있는 로컬 자료이며 data/weights는 공개 저장소에 포함하지 않는다. 새 output만 허용한다.
+
+```sh
+python research/cnn/point_only_replay.py --source <paired-run> --original <outcome-run> --experiment <spatial-run> --execution <point-only-run>/execution.json --recorded <point-only-run> --output .research-output/point-only-readonly-replay
+```
