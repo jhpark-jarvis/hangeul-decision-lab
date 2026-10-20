@@ -792,6 +792,60 @@ Dev actual의 paired 회복은 **0개**, 퇴행은 **1개**, net은 **-1개**다
 
 이번 비교는 point-only 대 동시 flat의 known-dev·single-seed·선택 epoch screening이다. 5.22의 combined 결과는 참고이며 새 세 번째 arm으로 재학습하지 않았다. Kind-only 항과 두 항의 interaction, held-out·장기 생존·앱 우월성은 검증하지 않았다. 추가 seed/계수/epoch sweep·새 test/rollout·teacher/label/feature/model 구조 변경·앱/RL·새 dependency/GPU/service/install은 0이다.
 
+### 5.25 Stored Combined / Point-only Error Comparison
+
+**저장값 분석 — 2026-10-20.** 5.22와 5.24의 저장된 결과를 같은 관측 단위로 맞춰 비교했다. 두 실행의 공통 flat control은 row·학습 이력·logical weights·전체 logits/예측이 exact 일치했다. 같은 train 339개/dev 89개·원래 A512 label·후보 identity와 inference 계약을 확인했다. 선택 epoch는 control 11, combined 12, point-only 11을 그대로 사용했다. **추가 모델 생성·checkpoint 역직렬화·forward·학습은 모두 0회**다.
+
+| Split | 비교 방향            | 회복 | 퇴행 | Net | 선택이 바뀌었지만 둘 다 오답 |
+| ----- | -------------------- | ---- | ---- | --- | ---------------------------- |
+| train | control → combined   | 13   | 18   | -5  | 53                           |
+| train | control → pointOnly  | 4    | 6    | -2  | 4                            |
+| train | combined → pointOnly | 16   | 13   | 3   | 55                           |
+| dev   | control → combined   | 2    | 2    | 0   | 13                           |
+| dev   | control → pointOnly  | 0    | 1    | -1  | 4                            |
+| dev   | combined → pointOnly | 2    | 3    | -1  | 9                            |
+
+Dev에서는 두 후보의 회복 또는 퇴행이 겹친 관측이 없었다. Combined가 회복한 2건은 모두 일반 조각의 wrong-kind 오류였으며, point-only는 그 2건을 회복하지 못했다. 반대로 combined의 퇴행 2건은 point-only에서 control 수준으로 유지됐다. Point-only의 유일한 퇴행 1건은 control과 combined가 모두 맞힌 별개 관측이었다.
+
+| Dev 사례군 — control 대비     | 건수  | 저장된 오류 전이                  |
+| ----------------------------- | ----- | --------------------------------- |
+| Combined만 회복               | 2     | 일반 조각 wrong-kind → 정답       |
+| Combined만 퇴행               | 1     | 일반 조각 정답 → different-target |
+| Combined만 퇴행               | 1     | Reroll 정답 → wrong-kind          |
+| Point-only만 퇴행             | 1     | 일반 조각 정답 → different-shape  |
+| 두 후보 모두 회복 / 모두 퇴행 | 0 / 0 | 해당 없음                         |
+
+오류 이름은 원래 저장 분류를 유지했다. 저장된 행동 요약에는 orientation 등 일부 정보가 생략되므로 piece 이름이나 좌표만 보고 오류를 재분류하지 않았다. 상세 관측 ID·행동·좌표는 로컬 private cases에만 보관하며, 공개 표는 사례군별 집계다.
+
+세 모델이 모두 맞힌 관측은 **26/89**, 모두 틀린 관측은 **58/89**다. 공통 오답 58건은 일반 조각 44건·point 13건·reroll 1건이다. 아래 1은 정답, 0은 오답을 뜻하며 실제 정답을 참조한 사후 집계다. 모델 routing이나 ensemble 성능을 측정한 값이 아니다.
+
+| Control / Combined / Point-only | Dev 관측 수 |
+| ------------------------------- | ----------- |
+| 1 / 0 / 1                       | 2           |
+| 1 / 1 / 0                       | 1           |
+| 1 / 1 / 1                       | 26          |
+| 0 / 0 / 0                       | 58          |
+| 0 / 1 / 0                       | 2           |
+
+Point 종류 선택의 4→5/13 증가는 **두 후보에서 동일한 1건**이었다. 그 관측의 좌표는 세 모델 모두 틀렸다. Point-only는 control의 oracle 좌표 정답 2건을 그대로 유지했고, combined는 그중 1건을 잃었다. 이 좌표 정답 관측에서는 실제 종류 선택이 틀려 actual point 성공으로 연결되지 않았다.
+
+| Dev point | 종류·좌표 모두 정답 = actual point | 종류만 정답 | 좌표만 정답 | 둘 다 오답 |
+| --------- | ---------------------------------- | ----------- | ----------- | ---------- |
+| control   | 0                                  | 4           | 2           | 7          |
+| combined  | 0                                  | 5           | 1           | 7          |
+| pointOnly | 0                                  | 5           | 2           | 6          |
+
+Point-only는 combined보다 dev 평균 저장 NLL이 **0.1026 낮았지만**, actual top1은 29→28/89로 줄었다. 저장 rank/NLL의 평균 변화와 실제 정답 개선을 구별해야 한다. 원래 gate와 두 실험의 FAIL 판정은 유지하며 추가 epoch·계수·모델 선택은 하지 않았다.
+
+[비민감 집계·전이·중첩·point pattern·원본 hash](assets/research/objective-error-comparison-20261020-v1.json), [고정 분석 계약](research/experiments/objective-error-comparison-v1.json), [Node 분석기](scripts/research/compare-objective-errors.mjs)를 제공한다. Frozen archive의 hash chain·arm 산출물·공통 control을 검증한 뒤 저장된 controlled row의 오류/rank/NLL만 집계한다. Checkpoint는 byte hash만 확인하며 모델로 로드하지 않는다. 두 독립 실행의 private cases/공개 summary는 byte 단위로 일치했다.
+
+```sh
+node scripts/research/compare-objective-errors.mjs --combined <frozen-combined-run> --point-only <frozen-point-only-run> --output .research-output/objective-errors-new
+node --test scripts/research/test-objective-error-comparison.mjs
+```
+
+원본 archive는 로컬 private 입력이며 공개 저장소에 포함하지 않는다. 비교는 known-dev·single-seed·서로 다른 selected epoch의 사후 관측이다. Kind-only 실험과 interaction, kind 항의 독립 인과효과, held-out·장기 생존·앱 우월성을 검증한 것은 아니다. 다음 연구 선택은 이 사례군을 근거로 검토하며 새 학습·추론·routing·label·앱 변경을 자동으로 진행하지 않는다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.

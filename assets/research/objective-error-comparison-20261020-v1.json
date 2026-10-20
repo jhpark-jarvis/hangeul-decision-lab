@@ -1,0 +1,890 @@
+{
+  "schemaVersion": 1,
+  "id": "objective-error-comparison-v1",
+  "status": "PASS",
+  "method": "Stored controlled rows only; no scoring, model import or selection changes",
+  "inputIdentity": {
+    "combined": {
+      "freeze.json": "d4c8c2389bc64c86f58c0366e33dc744c29fcbc0fffba0050b98753a727cd7f5",
+      "execution.json": "97a765273f7b702b7251ea4ed2342df692896b81d92ae961685c29a5753a4c0a",
+      "report.json": "c67b1d2f2ecc696b65cfa71565b64eb600845fca0e80bd12e266b4067bb4aaa1",
+      "raw.json": "d172b303fc4b1270a4e88071935b7a1f65478b766359a4884642f28f2000fa8b",
+      "summary.json": "82721f6eb8de49aec912d7e4c0ceb99c6020519849ebb2b8a4c9fa304cd4a8fa",
+      "forward-count.jsonl": "7d73791b444fef0b2e24e7a601ec373e3d7c3939c8438bd518350a8ba6838532",
+      "control/report.json": "13953095774305b1ea464177d54b7b824e9f91ffd325d162c0badfb0e079d865",
+      "candidate/report.json": "61991a9ae5970973ee03101fae1da8bce81affc09919252ad803c3804ee75c7a"
+    },
+    "pointOnly": {
+      "freeze.json": "ee0f8919727e70248df225956dd0d63e5b201b1ec16c58101662c9c0d042a5e9",
+      "execution.json": "fde464b612305cc9ba2128e465180c0b20ae2e0d465835a398585aef6c2b4769",
+      "report.json": "2c0550a41351c6c3df3dbb2b127ba352743208ea621f5b8e40a4ed303ef524d6",
+      "raw.json": "041639e597485e56d54ce5464817af34ad251496f06d6f73b39f7a294425e18d",
+      "summary.json": "8cc658aa58f05fca636e1d3fc9479f1ee79f46abfe18c67e5e6fc63c503977b8",
+      "forward-count.jsonl": "7d73791b444fef0b2e24e7a601ec373e3d7c3939c8438bd518350a8ba6838532",
+      "control/report.json": "aa40d84db5af91e28bd9d91f98af4ff37b97704d98c53fca72d5d2af6ef256bb",
+      "candidate/report.json": "d884270d0ba7540ab42055e72948a743ea518bb05ca0c0e7d116b1cbe813c0a5"
+    },
+    "sharedControlExact": true,
+    "sourceModelLabelCandidatesEqual": true
+  },
+  "selectedEpochs": {
+    "control": 11,
+    "combined": 12,
+    "pointOnly": 11
+  },
+  "originalDecisions": {
+    "combined": {
+      "gate": {
+        "status": "FAIL",
+        "checks": {
+          "aboveFirstLegal": false,
+          "gainAtLeastFive": false,
+          "singleCellAtLeastThree": false,
+          "rerollAtLeastSeven": false
+        }
+      },
+      "mechanism": {
+        "status": "FAIL",
+        "checks": {
+          "pointKindAtLeastSeven": false,
+          "pointOracleAtLeastFive": false
+        }
+      }
+    },
+    "pointOnly": {
+      "gate": {
+        "status": "FAIL",
+        "checks": {
+          "aboveFirstLegal": false,
+          "gainAtLeastFive": false,
+          "singleCellAtLeastThree": false,
+          "rerollAtLeastSeven": true
+        }
+      },
+      "mechanism": {
+        "status": "FAIL",
+        "checks": {
+          "pointKindAtLeastSeven": false,
+          "pointOracleAtLeastFive": false
+        }
+      },
+      "coordinateMechanism": {
+        "status": "FAIL",
+        "checks": {
+          "oracleAtLeastFive": false,
+          "oracleGainAtLeastThree": false
+        }
+      }
+    }
+  },
+  "splits": {
+    "train": {
+      "examples": 339,
+      "modelOrder": ["control", "combined", "pointOnly"],
+      "correctnessPatterns": {
+        "100": 3,
+        "101": 15,
+        "110": 3,
+        "111": 89,
+        "000": 215,
+        "001": 1,
+        "010": 10,
+        "011": 3
+      },
+      "overlap": {
+        "gainsBoth": 3,
+        "gainsCombinedOnly": 10,
+        "gainsPointOnly": 1,
+        "regressionsBoth": 3,
+        "regressionsCombinedOnly": 15,
+        "regressionsPointOnly": 3
+      },
+      "byTeacherKind": {
+        "place-piece": {
+          "examples": 259,
+          "actual": {
+            "control": 85,
+            "combined": 83,
+            "pointOnly": 82
+          }
+        },
+        "single-cell": {
+          "examples": 52,
+          "actual": {
+            "control": 0,
+            "combined": 2,
+            "pointOnly": 1
+          }
+        },
+        "reroll": {
+          "examples": 28,
+          "actual": {
+            "control": 25,
+            "combined": 20,
+            "pointOnly": 25
+          }
+        }
+      },
+      "actualCorrect": {
+        "control": 110,
+        "combined": 105,
+        "pointOnly": 108
+      },
+      "errors": {
+        "control": {
+          "different-position": 46,
+          "different-shape": 79,
+          "different-target": 28,
+          "exact-label": 110,
+          "wrong-kind": 76
+        },
+        "combined": {
+          "different-position": 55,
+          "different-shape": 96,
+          "different-target": 30,
+          "exact-label": 105,
+          "wrong-kind": 53
+        },
+        "pointOnly": {
+          "different-position": 46,
+          "different-shape": 79,
+          "different-target": 28,
+          "exact-label": 108,
+          "wrong-kind": 78
+        }
+      },
+      "pairs": {
+        "control:combined": {
+          "actual": {
+            "examples": 339,
+            "bothCorrect": 92,
+            "gain": 13,
+            "regression": 18,
+            "bothWrong": 216,
+            "netGain": -5
+          },
+          "kind": {
+            "examples": 339,
+            "bothCorrect": 258,
+            "gain": 28,
+            "regression": 5,
+            "bothWrong": 48,
+            "netGain": 23
+          },
+          "oracle": {
+            "examples": 339,
+            "bothCorrect": 120,
+            "gain": 7,
+            "regression": 14,
+            "bothWrong": 198,
+            "netGain": -7
+          },
+          "changedSelection": 84,
+          "changedButBothWrong": 53,
+          "errorTransitions": {
+            "place-piece: different-position -> different-position": 34,
+            "place-piece: different-position -> exact-label": 2,
+            "place-piece: different-shape -> different-position": 1,
+            "place-piece: different-shape -> different-shape": 74,
+            "place-piece: different-shape -> different-target": 1,
+            "place-piece: different-shape -> exact-label": 3,
+            "place-piece: different-target -> different-shape": 3,
+            "place-piece: different-target -> different-target": 25,
+            "place-piece: exact-label -> different-position": 7,
+            "place-piece: exact-label -> different-shape": 5,
+            "place-piece: exact-label -> different-target": 1,
+            "place-piece: exact-label -> exact-label": 72,
+            "place-piece: wrong-kind -> different-position": 3,
+            "place-piece: wrong-kind -> different-shape": 14,
+            "place-piece: wrong-kind -> different-target": 3,
+            "place-piece: wrong-kind -> exact-label": 6,
+            "place-piece: wrong-kind -> wrong-kind": 5,
+            "reroll: exact-label -> exact-label": 20,
+            "reroll: exact-label -> wrong-kind": 5,
+            "reroll: wrong-kind -> wrong-kind": 3,
+            "single-cell: different-position -> different-position": 9,
+            "single-cell: different-position -> exact-label": 1,
+            "single-cell: wrong-kind -> different-position": 1,
+            "single-cell: wrong-kind -> exact-label": 1,
+            "single-cell: wrong-kind -> wrong-kind": 40
+          },
+          "savedDiagnosticDeltas": {
+            "fullNll": {
+              "mean": 0.06542244756863533,
+              "decreased": 135,
+              "unchanged": 8,
+              "increased": 196
+            },
+            "fullRank": {
+              "mean": 0.5103244837758112,
+              "decreased": 74,
+              "unchanged": 170,
+              "increased": 95
+            },
+            "oracleNll": {
+              "mean": 0.051649068758320225,
+              "decreased": 110,
+              "unchanged": 13,
+              "increased": 216
+            },
+            "oracleRank": {
+              "mean": 0.26548672566371684,
+              "decreased": 54,
+              "unchanged": 199,
+              "increased": 86
+            }
+          }
+        },
+        "control:pointOnly": {
+          "actual": {
+            "examples": 339,
+            "bothCorrect": 104,
+            "gain": 4,
+            "regression": 6,
+            "bothWrong": 225,
+            "netGain": -2
+          },
+          "kind": {
+            "examples": 339,
+            "bothCorrect": 261,
+            "gain": 0,
+            "regression": 2,
+            "bothWrong": 76,
+            "netGain": -2
+          },
+          "oracle": {
+            "examples": 339,
+            "bothCorrect": 129,
+            "gain": 5,
+            "regression": 5,
+            "bothWrong": 200,
+            "netGain": 0
+          },
+          "changedSelection": 14,
+          "changedButBothWrong": 4,
+          "errorTransitions": {
+            "place-piece: different-position -> different-position": 35,
+            "place-piece: different-position -> exact-label": 1,
+            "place-piece: different-shape -> different-shape": 77,
+            "place-piece: different-shape -> exact-label": 2,
+            "place-piece: different-target -> different-shape": 1,
+            "place-piece: different-target -> different-target": 27,
+            "place-piece: exact-label -> different-position": 2,
+            "place-piece: exact-label -> different-shape": 1,
+            "place-piece: exact-label -> different-target": 1,
+            "place-piece: exact-label -> exact-label": 79,
+            "place-piece: exact-label -> wrong-kind": 2,
+            "place-piece: wrong-kind -> wrong-kind": 31,
+            "reroll: exact-label -> exact-label": 25,
+            "reroll: wrong-kind -> wrong-kind": 3,
+            "single-cell: different-position -> different-position": 9,
+            "single-cell: different-position -> exact-label": 1,
+            "single-cell: wrong-kind -> wrong-kind": 42
+          },
+          "savedDiagnosticDeltas": {
+            "fullNll": {
+              "mean": 0.000022683743178668626,
+              "decreased": 140,
+              "unchanged": 8,
+              "increased": 191
+            },
+            "fullRank": {
+              "mean": -0.1415929203539823,
+              "decreased": 38,
+              "unchanged": 253,
+              "increased": 48
+            },
+            "oracleNll": {
+              "mean": -0.0008519735698283246,
+              "decreased": 140,
+              "unchanged": 13,
+              "increased": 186
+            },
+            "oracleRank": {
+              "mean": -0.0471976401179941,
+              "decreased": 31,
+              "unchanged": 271,
+              "increased": 37
+            }
+          }
+        },
+        "combined:pointOnly": {
+          "actual": {
+            "examples": 339,
+            "bothCorrect": 92,
+            "gain": 16,
+            "regression": 13,
+            "bothWrong": 218,
+            "netGain": 3
+          },
+          "kind": {
+            "examples": 339,
+            "bothCorrect": 256,
+            "gain": 5,
+            "regression": 30,
+            "bothWrong": 48,
+            "netGain": -25
+          },
+          "oracle": {
+            "examples": 339,
+            "bothCorrect": 123,
+            "gain": 11,
+            "regression": 4,
+            "bothWrong": 201,
+            "netGain": 7
+          },
+          "changedSelection": 84,
+          "changedButBothWrong": 55,
+          "errorTransitions": {
+            "place-piece: different-position -> different-position": 35,
+            "place-piece: different-position -> different-shape": 1,
+            "place-piece: different-position -> exact-label": 6,
+            "place-piece: different-position -> wrong-kind": 3,
+            "place-piece: different-shape -> different-shape": 75,
+            "place-piece: different-shape -> different-target": 3,
+            "place-piece: different-shape -> exact-label": 4,
+            "place-piece: different-shape -> wrong-kind": 14,
+            "place-piece: different-target -> different-shape": 1,
+            "place-piece: different-target -> different-target": 25,
+            "place-piece: different-target -> exact-label": 1,
+            "place-piece: different-target -> wrong-kind": 3,
+            "place-piece: exact-label -> different-position": 2,
+            "place-piece: exact-label -> different-shape": 2,
+            "place-piece: exact-label -> exact-label": 71,
+            "place-piece: exact-label -> wrong-kind": 8,
+            "place-piece: wrong-kind -> wrong-kind": 5,
+            "reroll: exact-label -> exact-label": 20,
+            "reroll: wrong-kind -> exact-label": 5,
+            "reroll: wrong-kind -> wrong-kind": 3,
+            "single-cell: different-position -> different-position": 9,
+            "single-cell: different-position -> wrong-kind": 1,
+            "single-cell: exact-label -> exact-label": 1,
+            "single-cell: exact-label -> wrong-kind": 1,
+            "single-cell: wrong-kind -> wrong-kind": 40
+          },
+          "savedDiagnosticDeltas": {
+            "fullNll": {
+              "mean": -0.06539976382545665,
+              "decreased": 206,
+              "unchanged": 8,
+              "increased": 125
+            },
+            "fullRank": {
+              "mean": -0.6519174041297935,
+              "decreased": 92,
+              "unchanged": 174,
+              "increased": 73
+            },
+            "oracleNll": {
+              "mean": -0.052501042328148555,
+              "decreased": 222,
+              "unchanged": 13,
+              "increased": 104
+            },
+            "oracleRank": {
+              "mean": -0.31268436578171094,
+              "decreased": 80,
+              "unchanged": 211,
+              "increased": 48
+            }
+          }
+        }
+      },
+      "failureCohorts": {
+        "control:combined": {
+          "gains": {
+            "place-piece: different-position -> exact-label": 2,
+            "place-piece: different-shape -> exact-label": 3,
+            "place-piece: wrong-kind -> exact-label": 6,
+            "single-cell: different-position -> exact-label": 1,
+            "single-cell: wrong-kind -> exact-label": 1
+          },
+          "regressions": {
+            "place-piece: exact-label -> different-position": 7,
+            "place-piece: exact-label -> different-shape": 5,
+            "place-piece: exact-label -> different-target": 1,
+            "reroll: exact-label -> wrong-kind": 5
+          }
+        },
+        "control:pointOnly": {
+          "gains": {
+            "place-piece: different-position -> exact-label": 1,
+            "place-piece: different-shape -> exact-label": 2,
+            "single-cell: different-position -> exact-label": 1
+          },
+          "regressions": {
+            "place-piece: exact-label -> different-position": 2,
+            "place-piece: exact-label -> different-shape": 1,
+            "place-piece: exact-label -> different-target": 1,
+            "place-piece: exact-label -> wrong-kind": 2
+          }
+        },
+        "combined:pointOnly": {
+          "gains": {
+            "place-piece: different-position -> exact-label": 6,
+            "place-piece: different-shape -> exact-label": 4,
+            "place-piece: different-target -> exact-label": 1,
+            "reroll: wrong-kind -> exact-label": 5
+          },
+          "regressions": {
+            "place-piece: exact-label -> different-position": 2,
+            "place-piece: exact-label -> different-shape": 2,
+            "place-piece: exact-label -> wrong-kind": 8,
+            "single-cell: exact-label -> wrong-kind": 1
+          }
+        }
+      },
+      "point": {
+        "examples": 52,
+        "joint": {
+          "control": {
+            "examples": 52,
+            "bothCorrect": 0,
+            "kindOnly": 10,
+            "coordinateOnly": 12,
+            "neither": 30
+          },
+          "combined": {
+            "examples": 52,
+            "bothCorrect": 2,
+            "kindOnly": 10,
+            "coordinateOnly": 12,
+            "neither": 28
+          },
+          "pointOnly": {
+            "examples": 52,
+            "bothCorrect": 1,
+            "kindOnly": 9,
+            "coordinateOnly": 13,
+            "neither": 29
+          }
+        },
+        "kindPatterns": {
+          "111": 10,
+          "000": 40,
+          "010": 2
+        },
+        "oraclePatterns": {
+          "111": 12,
+          "000": 38,
+          "011": 2
+        }
+      },
+      "sharedFailures": {
+        "examples": 215,
+        "byTeacherKind": {
+          "place-piece": 162,
+          "reroll": 3,
+          "single-cell": 50
+        },
+        "byFamily": {
+          "pressure": 90,
+          "sparse": 125
+        },
+        "errorTriples": {
+          "different-position | different-position | different-position": 43,
+          "different-shape | different-position | different-shape": 1,
+          "different-shape | different-shape | different-shape": 73,
+          "different-shape | different-target | different-shape": 1,
+          "different-target | different-shape | different-shape": 1,
+          "different-target | different-shape | different-target": 2,
+          "different-target | different-target | different-target": 25,
+          "wrong-kind | different-position | wrong-kind": 4,
+          "wrong-kind | different-shape | wrong-kind": 14,
+          "wrong-kind | different-target | wrong-kind": 3,
+          "wrong-kind | wrong-kind | wrong-kind": 48
+        }
+      }
+    },
+    "dev": {
+      "examples": 89,
+      "modelOrder": ["control", "combined", "pointOnly"],
+      "correctnessPatterns": {
+        "100": 0,
+        "101": 2,
+        "110": 1,
+        "111": 26,
+        "000": 58,
+        "001": 0,
+        "010": 2,
+        "011": 0
+      },
+      "overlap": {
+        "gainsBoth": 0,
+        "gainsCombinedOnly": 2,
+        "gainsPointOnly": 0,
+        "regressionsBoth": 0,
+        "regressionsCombinedOnly": 2,
+        "regressionsPointOnly": 1
+      },
+      "byTeacherKind": {
+        "place-piece": {
+          "examples": 68,
+          "actual": {
+            "control": 22,
+            "combined": 23,
+            "pointOnly": 21
+          }
+        },
+        "single-cell": {
+          "examples": 13,
+          "actual": {
+            "control": 0,
+            "combined": 0,
+            "pointOnly": 0
+          }
+        },
+        "reroll": {
+          "examples": 8,
+          "actual": {
+            "control": 7,
+            "combined": 6,
+            "pointOnly": 7
+          }
+        }
+      },
+      "actualCorrect": {
+        "control": 29,
+        "combined": 29,
+        "pointOnly": 28
+      },
+      "errors": {
+        "control": {
+          "different-position": 13,
+          "different-shape": 24,
+          "different-target": 7,
+          "exact-label": 29,
+          "wrong-kind": 16
+        },
+        "combined": {
+          "different-position": 16,
+          "different-shape": 24,
+          "different-target": 8,
+          "exact-label": 29,
+          "wrong-kind": 12
+        },
+        "pointOnly": {
+          "different-position": 14,
+          "different-shape": 25,
+          "different-target": 7,
+          "exact-label": 28,
+          "wrong-kind": 15
+        }
+      },
+      "pairs": {
+        "control:combined": {
+          "actual": {
+            "examples": 89,
+            "bothCorrect": 27,
+            "gain": 2,
+            "regression": 2,
+            "bothWrong": 58,
+            "netGain": 0
+          },
+          "kind": {
+            "examples": 89,
+            "bothCorrect": 72,
+            "gain": 5,
+            "regression": 1,
+            "bothWrong": 11,
+            "netGain": 4
+          },
+          "oracle": {
+            "examples": 89,
+            "bothCorrect": 32,
+            "gain": 0,
+            "regression": 2,
+            "bothWrong": 55,
+            "netGain": -2
+          },
+          "changedSelection": 17,
+          "changedButBothWrong": 13,
+          "errorTransitions": {
+            "place-piece: different-position -> different-position": 8,
+            "place-piece: different-position -> different-target": 1,
+            "place-piece: different-shape -> different-position": 1,
+            "place-piece: different-shape -> different-shape": 23,
+            "place-piece: different-target -> different-shape": 1,
+            "place-piece: different-target -> different-target": 6,
+            "place-piece: exact-label -> different-target": 1,
+            "place-piece: exact-label -> exact-label": 21,
+            "place-piece: wrong-kind -> different-position": 2,
+            "place-piece: wrong-kind -> exact-label": 2,
+            "place-piece: wrong-kind -> wrong-kind": 2,
+            "reroll: exact-label -> exact-label": 6,
+            "reroll: exact-label -> wrong-kind": 1,
+            "reroll: wrong-kind -> wrong-kind": 1,
+            "single-cell: different-position -> different-position": 4,
+            "single-cell: wrong-kind -> different-position": 1,
+            "single-cell: wrong-kind -> wrong-kind": 8
+          },
+          "savedDiagnosticDeltas": {
+            "fullNll": {
+              "mean": 0.10708818576309119,
+              "decreased": 32,
+              "unchanged": 2,
+              "increased": 55
+            },
+            "fullRank": {
+              "mean": 0.797752808988764,
+              "decreased": 18,
+              "unchanged": 48,
+              "increased": 23
+            },
+            "oracleNll": {
+              "mean": 0.06903611203090529,
+              "decreased": 24,
+              "unchanged": 4,
+              "increased": 61
+            },
+            "oracleRank": {
+              "mean": 0.6067415730337079,
+              "decreased": 9,
+              "unchanged": 57,
+              "increased": 23
+            }
+          }
+        },
+        "control:pointOnly": {
+          "actual": {
+            "examples": 89,
+            "bothCorrect": 28,
+            "gain": 0,
+            "regression": 1,
+            "bothWrong": 60,
+            "netGain": -1
+          },
+          "kind": {
+            "examples": 89,
+            "bothCorrect": 73,
+            "gain": 1,
+            "regression": 0,
+            "bothWrong": 15,
+            "netGain": 1
+          },
+          "oracle": {
+            "examples": 89,
+            "bothCorrect": 33,
+            "gain": 0,
+            "regression": 1,
+            "bothWrong": 55,
+            "netGain": -1
+          },
+          "changedSelection": 5,
+          "changedButBothWrong": 4,
+          "errorTransitions": {
+            "place-piece: different-position -> different-position": 9,
+            "place-piece: different-shape -> different-shape": 24,
+            "place-piece: different-target -> different-target": 7,
+            "place-piece: exact-label -> different-shape": 1,
+            "place-piece: exact-label -> exact-label": 21,
+            "place-piece: wrong-kind -> wrong-kind": 6,
+            "reroll: exact-label -> exact-label": 7,
+            "reroll: wrong-kind -> wrong-kind": 1,
+            "single-cell: different-position -> different-position": 4,
+            "single-cell: wrong-kind -> different-position": 1,
+            "single-cell: wrong-kind -> wrong-kind": 8
+          },
+          "savedDiagnosticDeltas": {
+            "fullNll": {
+              "mean": 0.0044904893703675,
+              "decreased": 35,
+              "unchanged": 2,
+              "increased": 52
+            },
+            "fullRank": {
+              "mean": -0.07865168539325842,
+              "decreased": 7,
+              "unchanged": 69,
+              "increased": 13
+            },
+            "oracleNll": {
+              "mean": 0.0027159512294142435,
+              "decreased": 34,
+              "unchanged": 4,
+              "increased": 51
+            },
+            "oracleRank": {
+              "mean": -0.0898876404494382,
+              "decreased": 5,
+              "unchanged": 71,
+              "increased": 13
+            }
+          }
+        },
+        "combined:pointOnly": {
+          "actual": {
+            "examples": 89,
+            "bothCorrect": 26,
+            "gain": 2,
+            "regression": 3,
+            "bothWrong": 58,
+            "netGain": -1
+          },
+          "kind": {
+            "examples": 89,
+            "bothCorrect": 73,
+            "gain": 1,
+            "regression": 4,
+            "bothWrong": 11,
+            "netGain": -3
+          },
+          "oracle": {
+            "examples": 89,
+            "bothCorrect": 31,
+            "gain": 2,
+            "regression": 1,
+            "bothWrong": 55,
+            "netGain": 1
+          },
+          "changedSelection": 14,
+          "changedButBothWrong": 9,
+          "errorTransitions": {
+            "place-piece: different-position -> different-position": 8,
+            "place-piece: different-position -> different-shape": 1,
+            "place-piece: different-position -> wrong-kind": 2,
+            "place-piece: different-shape -> different-shape": 23,
+            "place-piece: different-shape -> different-target": 1,
+            "place-piece: different-target -> different-position": 1,
+            "place-piece: different-target -> different-target": 6,
+            "place-piece: different-target -> exact-label": 1,
+            "place-piece: exact-label -> different-shape": 1,
+            "place-piece: exact-label -> exact-label": 20,
+            "place-piece: exact-label -> wrong-kind": 2,
+            "place-piece: wrong-kind -> wrong-kind": 2,
+            "reroll: exact-label -> exact-label": 6,
+            "reroll: wrong-kind -> exact-label": 1,
+            "reroll: wrong-kind -> wrong-kind": 1,
+            "single-cell: different-position -> different-position": 5,
+            "single-cell: wrong-kind -> wrong-kind": 8
+          },
+          "savedDiagnosticDeltas": {
+            "fullNll": {
+              "mean": -0.10259769639272369,
+              "decreased": 55,
+              "unchanged": 2,
+              "increased": 32
+            },
+            "fullRank": {
+              "mean": -0.8764044943820225,
+              "decreased": 22,
+              "unchanged": 48,
+              "increased": 19
+            },
+            "oracleNll": {
+              "mean": -0.06632016080149104,
+              "decreased": 58,
+              "unchanged": 4,
+              "increased": 27
+            },
+            "oracleRank": {
+              "mean": -0.6966292134831461,
+              "decreased": 21,
+              "unchanged": 57,
+              "increased": 11
+            }
+          }
+        }
+      },
+      "failureCohorts": {
+        "control:combined": {
+          "gains": {
+            "place-piece: wrong-kind -> exact-label": 2
+          },
+          "regressions": {
+            "place-piece: exact-label -> different-target": 1,
+            "reroll: exact-label -> wrong-kind": 1
+          }
+        },
+        "control:pointOnly": {
+          "gains": {},
+          "regressions": {
+            "place-piece: exact-label -> different-shape": 1
+          }
+        },
+        "combined:pointOnly": {
+          "gains": {
+            "place-piece: different-target -> exact-label": 1,
+            "reroll: wrong-kind -> exact-label": 1
+          },
+          "regressions": {
+            "place-piece: exact-label -> different-shape": 1,
+            "place-piece: exact-label -> wrong-kind": 2
+          }
+        }
+      },
+      "point": {
+        "examples": 13,
+        "joint": {
+          "control": {
+            "examples": 13,
+            "bothCorrect": 0,
+            "kindOnly": 4,
+            "coordinateOnly": 2,
+            "neither": 7
+          },
+          "combined": {
+            "examples": 13,
+            "bothCorrect": 0,
+            "kindOnly": 5,
+            "coordinateOnly": 1,
+            "neither": 7
+          },
+          "pointOnly": {
+            "examples": 13,
+            "bothCorrect": 0,
+            "kindOnly": 5,
+            "coordinateOnly": 2,
+            "neither": 6
+          }
+        },
+        "kindPatterns": {
+          "111": 4,
+          "000": 8,
+          "011": 1
+        },
+        "oraclePatterns": {
+          "101": 1,
+          "111": 1,
+          "000": 11
+        }
+      },
+      "sharedFailures": {
+        "examples": 58,
+        "byTeacherKind": {
+          "place-piece": 44,
+          "reroll": 1,
+          "single-cell": 13
+        },
+        "byFamily": {
+          "pressure": 26,
+          "sparse": 32
+        },
+        "errorTriples": {
+          "different-position | different-position | different-position": 12,
+          "different-position | different-target | different-position": 1,
+          "different-shape | different-position | different-shape": 1,
+          "different-shape | different-shape | different-shape": 23,
+          "different-target | different-shape | different-target": 1,
+          "different-target | different-target | different-target": 6,
+          "wrong-kind | different-position | different-position": 1,
+          "wrong-kind | different-position | wrong-kind": 2,
+          "wrong-kind | wrong-kind | wrong-kind": 11
+        }
+      }
+    }
+  },
+  "additionalCompute": {
+    "modelCreation": 0,
+    "checkpointDeserialization": 0,
+    "forward": 0,
+    "training": 0,
+    "teacherDomainTestRollout": 0
+  },
+  "limits": [
+    "Known-dev single-seed selected-epoch descriptive comparison; no kind-only, interaction, causal attribution, held-out survival or product claim",
+    "Different selected epochs are retained; this is not a controlled fixed-epoch causal or factorial comparison",
+    "Oracle diagnoses are not actual actions; per-observation details remain private",
+    "Original gates, models, labels and app DFS remain unchanged"
+  ]
+}
