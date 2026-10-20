@@ -846,6 +846,46 @@ node --test scripts/research/test-objective-error-comparison.mjs
 
 원본 archive는 로컬 private 입력이며 공개 저장소에 포함하지 않는다. 비교는 known-dev·single-seed·서로 다른 selected epoch의 사후 관측이다. Kind-only 실험과 interaction, kind 항의 독립 인과효과, held-out·장기 생존·앱 우월성을 검증한 것은 아니다. 다음 연구 선택은 이 사례군을 근거로 검토하며 새 학습·추론·routing·label·앱 변경을 자동으로 진행하지 않는다.
 
+### 5.26 Proposed Kind-only Auxiliary Contrast — NOT_RUN
+
+**설계 제안 — 2026-10-20. 추가 학습은 실행하지 않았다.** 다음 단일 대조는 kind 보조항 하나를 추가하는 실험이다. 5.25에서 combined만 회복한 일반 조각 wrong-kind 2건이 있었지만, point-only에서는 회복이 없었다. 이 차이를 단서로 종류 선택 효과를 별도로 확인하려 한다. 현재 관측만으로 kind 항의 인과효과가 입증된 것은 아니다.
+
+| 구분                       | 목적함수                | 역할                          |
+| -------------------------- | ----------------------- | ----------------------------- |
+| 새 concurrent control      | `L_flat`                | 원래 spatial flat CE 재현     |
+| 새 candidate               | `L_flat + 0.5 × L_kind` | Kind 보조항 하나만 비교       |
+| 기존 combined / point-only | 완료된 저장 결과 유지   | 맥락 비교, 추가 학습 arm 아님 |
+
+원래 A512 label, train 339개/dev 89개, 13292-parameter spatial 모델, 입력·optimizer·seed·12epoch·선택 기준을 유지한다. 각 arm의 최고 dev actual top1, 동률이면 가장 이른 epoch를 선택한다. 실제 행동은 전체 후보의 raw argmax와 원래 첫 index tie를 유지하며 kind routing을 추가하지 않는다.
+
+```text
+L_flat = native cross_entropy(s, y)
+a[g]   = logsumexp(s[G_g]) - log(|G_g|)   # 합법 후보가 있는 kind만
+L_kind = native cross_entropy(a, target_kind)
+L      = L_flat + 0.5 * L_kind
+```
+
+Point conditional 보조항은 0이며 계산하지 않는다. Target kind는 기존 hard label에서만 읽는다. CPU FP32/native CE와 실제 batch 평균을 유지한다. 빈 kind는 제외하고, kind가 하나뿐이면 추가 kind loss와 직접 gradient는 0이다. Dev에는 **점 찍기만 합법인 관측이 4개** 있다. 이 관측에는 추가 kind 신호가 없으므로 이번 제안은 좌표 문제의 직접 해결책이 아니다. 다만 공유 parameters와 다른 관측의 학습으로 좌표 순위가 바뀔 수 있으며, 예측 불변을 보장하는 것은 아니다.
+
+| 사전 판정                | 조건                                                                             |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| 기존 네 gate — 모두 유지 | Dev actual ≥48/89, 동시 control 대비 ≥+5, actual point ≥3/13, actual reroll ≥7/8 |
+| 별도 kind 기전           | Point correct-kind ≥7/13, 동시 control 대비 ≥+3                                  |
+| 별도 tradeoff guards     | Point oracle 정답 수와 actual reroll 정답 수가 각각 동시 control 이상            |
+| 종류·좌표 모두 개선 주장 | 기존 kind ≥7/13 **및** oracle ≥5/13 필요                                         |
+
+기술 적합성, 네 gate, kind 기전, tradeoff guards를 따로 판정한다. 좌표 비퇴행을 좌표 개선으로 표현하거나 별도 기전 PASS로 원래 gate FAIL을 덮어쓰지 않는다. 과거 dev 변경 5건은 freeze 후 설명에만 쓰며 학습 가중·조기 종료·선택 기준에 사용하지 않는다.
+
+향후 비용 제안은 **새 두 CPU 12epoch, 최대 12840 top-level forward**다. 초기 856회, arm당 train 4068회 + epoch dev 1068회 + frozen 반복 856회다. 소유 child 3개를 순차 실행하고 각각 600초, 전체 1860초, sampled working set 2GiB와 호출 전 ledger/실패 STOP을 유지하는 계약이다. 기존 두 실험의 예산은 이미 사용됐으며 **이 새 실행은 승인·구현·수행되지 않았다.** 새 runner와 FP32 autograd 검증도 아직 없다.
+
+[미실행 고정 계약·원본 hash](research/experiments/kind-only-objective-proposal-v1.json)과 [Node 정적·합성 검사](scripts/research/validate-kind-only-proposal.mjs)를 제공한다. 검사는 기존 공개 집계의 hash/수치, 제안 상수, 합성 scalar log-mean-exp/CE·finite difference와 실패 입력을 대조한다. 모델 생성·checkpoint load·forward·학습은 모두 0회다.
+
+```sh
+node scripts/research/validate-kind-only-proposal.mjs
+```
+
+이 검사는 JavaScript double 수학 검증이며 실제 PyTorch FP32 autograd나 학습 재현의 증거가 아니다. Primary contrast는 새 concurrent kind-only 대 flat이다. 과거 선택 epoch 11/12/11을 유지한 결과와 합쳐 fixed-epoch 2×2 interaction이나 causal 효과를 주장하지 않는다. Known-dev·single-seed screening의 한계를 유지하며 held-out·생존·앱 효과는 미검증이다. 실행과 결과 공개는 별도 결정이 필요하다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
