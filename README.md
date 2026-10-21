@@ -848,7 +848,7 @@ node --test scripts/research/test-objective-error-comparison.mjs
 
 ### 5.26 Proposed Kind-only Auxiliary Contrast — NOT_RUN
 
-**설계 제안 — 2026-10-20. 추가 학습은 실행하지 않았다.** 다음 단일 대조는 kind 보조항 하나를 추가하는 실험이다. 5.25에서 combined만 회복한 일반 조각 wrong-kind 2건이 있었지만, point-only에서는 회복이 없었다. 이 차이를 단서로 종류 선택 효과를 별도로 확인하려 한다. 현재 관측만으로 kind 항의 인과효과가 입증된 것은 아니다.
+**설계 원본 — 2026-10-20. 당시 추가 학습은 실행하지 않았다. 실제 승인 실행은 5.27에서 보고한다.** 다음 단일 대조는 kind 보조항 하나를 추가하는 실험이다. 5.25에서 combined만 회복한 일반 조각 wrong-kind 2건이 있었지만, point-only에서는 회복이 없었다. 이 차이를 단서로 종류 선택 효과를 별도로 확인하려 한다. 현재 관측만으로 kind 항의 인과효과가 입증된 것은 아니다.
 
 | 구분                       | 목적함수                | 역할                          |
 | -------------------------- | ----------------------- | ----------------------------- |
@@ -876,7 +876,7 @@ Point conditional 보조항은 0이며 계산하지 않는다. Target kind는 �
 
 기술 적합성, 네 gate, kind 기전, tradeoff guards를 따로 판정한다. 좌표 비퇴행을 좌표 개선으로 표현하거나 별도 기전 PASS로 원래 gate FAIL을 덮어쓰지 않는다. 과거 dev 변경 5건은 freeze 후 설명에만 쓰며 학습 가중·조기 종료·선택 기준에 사용하지 않는다.
 
-향후 비용 제안은 **새 두 CPU 12epoch, 최대 12840 top-level forward**다. 초기 856회, arm당 train 4068회 + epoch dev 1068회 + frozen 반복 856회다. 소유 child 3개를 순차 실행하고 각각 600초, 전체 1860초, sampled working set 2GiB와 호출 전 ledger/실패 STOP을 유지하는 계약이다. 기존 두 실험의 예산은 이미 사용됐으며 **이 새 실행은 승인·구현·수행되지 않았다.** 새 runner와 FP32 autograd 검증도 아직 없다.
+향후 비용 제안은 **새 두 CPU 12epoch, 최대 12840 top-level forward**다. 초기 856회, arm당 train 4068회 + epoch dev 1068회 + frozen 반복 856회다. 소유 child 3개를 순차 실행하고 각각 600초, 전체 1860초, sampled working set 2GiB와 호출 전 ledger/실패 STOP을 유지하는 계약이다. 기존 두 실험의 예산은 이미 사용됐으며 설계 당시 이 새 실행은 승인·구현·수행되지 않았다. 새 runner와 FP32 autograd 검증도 아직 없다.
 
 [미실행 고정 계약·원본 hash](research/experiments/kind-only-objective-proposal-v1.json)과 [Node 정적·합성 검사](scripts/research/validate-kind-only-proposal.mjs)를 제공한다. 검사는 기존 공개 집계의 hash/수치, 제안 상수, 합성 scalar log-mean-exp/CE·finite difference와 실패 입력을 대조한다. 모델 생성·checkpoint load·forward·학습은 모두 0회다.
 
@@ -885,6 +885,49 @@ node scripts/research/validate-kind-only-proposal.mjs
 ```
 
 이 검사는 JavaScript double 수학 검증이며 실제 PyTorch FP32 autograd나 학습 재현의 증거가 아니다. Primary contrast는 새 concurrent kind-only 대 flat이다. 과거 선택 epoch 11/12/11을 유지한 결과와 합쳐 fixed-epoch 2×2 interaction이나 causal 효과를 주장하지 않는다. Known-dev·single-seed screening의 한계를 유지하며 held-out·생존·앱 효과는 미검증이다. 실행과 결과 공개는 별도 결정이 필요하다.
+
+### 5.27 Fixed Kind-only Auxiliary Contrast
+
+**실행 — 2026-10-21.** 5.26의 고정 제안을 같은 spatial 모델과 A512 train 339개/dev 89개에서 실행했다. 후보 objective는 **flat CE + 0.5 × kind log-mean-exp CE**다. Point conditional 보조항은 0이며 계산하지 않았다. 13292 parameters·입력·원래 label/후보 순서·optimizer/seed·raw full-list argmax와 첫 index tie를 유지했다. 각 arm은 같은 cold initialization/shuffle에서 CPU 12epoch를 학습하고 원래 dev actual top1 최고/첫 epoch tie로 freeze했다.
+
+초기 856회에서 두 모델의 logits/weights 동등성을 확인했다. Concurrent flat control은 원래 spatial 및 완료된 combined/point-only 두 실행의 flat control과 history·epoch 11·logical weights·full logits/예측·shuffle·optimized flat loss trace를 exact 재현한 뒤 candidate를 학습했다. 후보 선택 epoch는 **12**다. Point/kind/oracle/NLL로 epoch를 다시 고르지 않았다.
+
+| Arm       | Split | Epoch | Actual top1 | Actual point | Point 종류 선택 정답 | Oracle point top1 | Actual reroll | Full NLL |
+| --------- | ----- | ----- | ----------- | ------------ | -------------------- | ----------------- | ------------- | -------- |
+| control   | train | 11    | 110/339     | 0/52         | 10/52                | 12/52             | 25/28         | 3.0484   |
+| control   | dev   | 11    | 29/89       | 0/13         | 4/13                 | 2/13              | 7/8           | 3.1109   |
+| candidate | train | 12    | 101/339     | 1/52         | 11/52                | 14/52             | 20/28         | 3.1213   |
+| candidate | dev   | 12    | 28/89       | 0/13         | 4/13                 | 1/13              | 6/8           | 3.2189   |
+
+Dev actual의 paired 회복은 **2개**, 퇴행은 **3개**, net은 **-1개**다. Point의 종류와 좌표가 같은 관측에서 함께 맞았는지도 별도로 집계했다.
+
+| Arm       | 둘 다 정답 = actual point | 종류만 정답 | 좌표만 정답 | 둘 다 오답 |
+| --------- | ------------------------- | ----------- | ----------- | ---------- |
+| control   | 0                         | 4           | 2           | 7          |
+| candidate | 0                         | 4           | 1           | 8          |
+
+| 사전 고정 판정                | 실제 결과 | 조건                                                                                    |
+| ----------------------------- | --------- | --------------------------------------------------------------------------------------- |
+| 기존 네 gate                  | **FAIL**  | Actual ≥48/89, concurrent control 대비 ≥+5, actual point ≥3/13, actual reroll ≥7/8 모두 |
+| 별도 kind 기전                | **FAIL**  | Point correct-kind ≥7/13 및 concurrent control 대비 ≥+3                                 |
+| 별도 tradeoff guards          | **FAIL**  | Point oracle과 actual reroll 정답 수 각각 concurrent control 이상                       |
+| 기존 종류·좌표 공동 개선 조건 | **FAIL**  | Point kind ≥7/13 및 oracle ≥5/13                                                        |
+
+각 checks와 분모는 공개 집계에 보존했다. 비퇴행 조건을 좌표 개선으로 표현하지 않는다. Dev의 점 찍기만 합법인 4개 관측은 **control 0/4, candidate 0/4**다. 여기서는 직접 kind 보조 loss가 0이지만 다른 관측을 통한 공유 parameter update가 예측에 영향을 줄 수 있다. 이 단일 대조의 실행 PASS를 원래 gate나 제품 수락으로 확대하지 않으며 앱은 기존 DFS를 유지한다.
+
+실제 top-level forward는 **12840회**, 새 CPU 12epoch 학습은 **2회**다. Preflight 856 + control 5992 + candidate 5992를 호출 전 phase ledger로 확인했다. Arm당 train 4068·epoch dev 1068·freeze 두 반복 856회다. Owner는 534.66초, 순차 child 세 개는 각각 600초/전체 1860초와 sampled working set 2GiB 이내에 종료했다. RSS는 순간 peak 측정이 아니다. 별도 fixture child로 실패/timeout/취소/다음 단계 STOP을 확인했고 실제 학습의 재시작·추가 tuning은 0이다.
+
+[고정 실행 config](research/experiments/kind-only-objective-v1.json), [모델별 지표·loss history·오류 전이·paired·point joint·gate/hash](assets/research/kind-only-train-dev-20261021-v1.json), [실행 코드](research/cnn/kind_only.py)를 제공한다. 별도 data-only reader로 저장값만 replay해 raw/summary byte exact와 **추가 실제 model 생성·checkpoint load·forward·학습 0**을 검증했다. 원본 data/weights/footprints/raw/logits/ledger·관측별 예측은 공개하지 않는다.
+
+공개 config는 계산과 무관한 `authorization` 설명에서 내부 승인 식별자만 제거했다. 따라서 원래 실행 config와 공개본의 byte hash는 다르다. [공개용 reader](research/cnn/kind_only_public_replay.py)는 **원래 private config를 명시 입력**으로 받아 frozen manifest의 원래 hash를 검증한다. 공개본과는 `authorization` 한 필드 외의 모든 값이 같아야 하며 loss·입력·예산·선택 기준의 차이는 거절한다. 원본 source·config·manifest와 기대 hash를 수정하거나 모델 guard를 완화하지 않는다. 추가 provenance는 원래 exclusive report를 보존한 별도 파일에 기록한다.
+
+이번 결과는 kind-only 대 concurrent flat의 known-dev·single-seed·선택 protocol 비교다. 과거 combined/point-only와 선택 epoch가 다른 결과를 합쳐 fixed-epoch factorial interaction이나 일반 causal 효과로 주장하지 않는다. Held-out·생존·앱 효과는 검증하지 않았다. 추가 seed/계수/epoch·새 test/rollout·teacher/label/data/feature/구조·앱/RL·새 dependency/GPU/service/install은 0이다.
+
+저장 검증은 학습을 반복하지 않는다. 아래 경로는 권한 있는 로컬 자료이며 공개 저장소에는 포함하지 않는다.
+
+```sh
+python research/cnn/kind_only_public_replay.py --source <paired-run> --original <outcome-run> --experiment <spatial-run> --execution <kind-only-run>/execution.json --recorded <kind-only-run> --frozen-config <original-private-config.json> --output .research-output/kind-only-readonly-new
+```
 
 ## 6. Reproduction and Usage
 
