@@ -1,8 +1,11 @@
 """Public export metadata and original private-config resolution boundaries."""
 import unittest
+import json
+import tempfile
 from pathlib import Path
+from unittest.mock import patch
 import kind_only
-from kind_only_public_replay import require_export_projection, manifest_input, config_input_adapter, ROOT, CONFIG_PATH
+from kind_only_public_replay import require_export_projection, manifest_input, config_input_adapter, replay, ROOT, CONFIG_PATH
 
 
 class PublicReaderTests(unittest.TestCase):
@@ -28,6 +31,20 @@ class PublicReaderTests(unittest.TestCase):
                 self.assertIsNot(kind_only.load,original)
                 raise RuntimeError('fixture')
         self.assertIs(kind_only.load,original)
+
+    def test_public_provenance_report_preserves_exclusive_original_report(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);config=root/'original.json';config.write_text('{}')
+            original_report={'status':'PASS','additionalModelLoadForwardTraining':0}
+            expected=json.dumps(original_report).encode()
+            def stored_only(*args):
+                (root/'report.json').write_bytes(expected)
+            with patch('kind_only_public_replay.original_reader.replay',side_effect=stored_only):
+                replay('source','old','spatial','execution','recorded',config,root)
+            self.assertEqual((root/'report.json').read_bytes(),expected)
+            public=json.loads((root/'public-config-report.json').read_bytes())
+            self.assertTrue(public['registeredReadonlyLoadAdapter'])
+            self.assertFalse(public['originalManifestRewritten'])
 
 
 if __name__=='__main__':unittest.main()

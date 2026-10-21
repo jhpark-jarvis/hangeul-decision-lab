@@ -90,7 +90,7 @@ def replay(source, original, experiment, execution, recorded, frozen_config, out
         configResolution="One explicit original private config input; all frozen manifest hash values exact, no model/score override",
         onlyExportMetadataField="authorization", originalManifestRewritten=False,
         originalSourceBytesRewritten=False, registeredReadonlyLoadAdapter=True)
-    write_json(Path(output)/"report.json", report)
+    write_json(Path(output)/"public-config-report.json", report)
 
 
 def main():
