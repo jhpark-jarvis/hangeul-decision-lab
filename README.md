@@ -929,6 +929,60 @@ Dev actual의 paired 회복은 **2개**, 퇴행은 **3개**, net은 **-1개**다
 python research/cnn/kind_only_public_replay.py --source <paired-run> --original <outcome-run> --experiment <spatial-run> --execution <kind-only-run>/execution.json --recorded <kind-only-run> --frozen-config <original-private-config.json> --output .research-output/kind-only-readonly-new
 ```
 
+### 5.28 Stored Four-objective Verification
+
+**저장값 검증 — 2026-10-22.** Control·combined·point-only·kind-only의 같은 train 339개/dev 89개 결과를 비교했다. 세 실행의 flat control은 row·12epoch 이력·logical weights·shuffle·전체 logits/예측·최적화 flat loss trace가 exact 일치했다. 세 archive의 frozen hash chain·arm 산출물·고정 입력/label/후보 identity를 검증했고, 5.25의 기존 세 모델 집계도 exact 재현했다. **추가 모델 생성·checkpoint 역직렬화·forward·학습은 모두 0회**다.
+
+선택 epoch는 **control 11 / combined 12 / point-only 11 / kind-only 12**를 그대로 유지했다. 아래 표는 각 비교의 왼쪽 모델에서 오른쪽 모델로 바뀐 정오 판정이며, 원래 label과 저장 오류 분류를 사용한다.
+
+| Dev 비교             | 회복 | 퇴행 | Net | 선택이 달라졌지만 둘 다 오답 |
+| -------------------- | ---- | ---- | --- | ---------------------------- |
+| control → combined   | 2    | 2    | 0   | 13                           |
+| control → pointOnly  | 0    | 1    | -1  | 4                            |
+| control → kindOnly   | 2    | 3    | -1  | 11                           |
+| combined → pointOnly | 2    | 3    | -1  | 9                            |
+| combined → kindOnly  | 0    | 1    | -1  | 2                            |
+| pointOnly → kindOnly | 2    | 2    | 0   | 9                            |
+
+Kind-only의 회복 2건은 **combined와 같은 일반 조각 wrong-kind 2건**이었다. 반면 kind-only의 퇴행 3건은 **combined 퇴행 2건과 point-only 퇴행 1건의 합집합**이었다. Combined와 비교하면 추가 회복 없이 일반 조각 different-shape 1건이 퇴행했다. 이는 선택된 네 결과의 같은 관측에 대한 사후 비교이며, loss 항의 독립 인과효과나 새로운 ensemble/routing 성능을 뜻하지 않는다.
+
+| Control / Combined / Point-only / Kind-only | Dev 관측 수 |
+| ------------------------------------------- | ----------- |
+| 1 / 0 / 1 / 0                               | 2           |
+| 1 / 1 / 0 / 0                               | 1           |
+| 1 / 1 / 1 / 1                               | 26          |
+| 0 / 0 / 0 / 0                               | 58          |
+| 0 / 1 / 0 / 1                               | 2           |
+
+네 모델의 공통 정답은 26/89, 공통 오답은 **58/89**다. 공통 오답은 일반 조각 44건·point 13건·reroll 1건이다. Kind-only에만 생긴 dev 정답은 없었다. 상세 ID·행동·좌표는 로컬 private cases에만 보관하며 공개는 집계다.
+
+| Dev point | 종류·좌표 모두 정답 = actual point | 종류만 정답 | 좌표만 정답 | 둘 다 오답 |
+| --------- | ---------------------------------- | ----------- | ----------- | ---------- |
+| control   | 0                                  | 4           | 2           | 7          |
+| combined  | 0                                  | 5           | 1           | 7          |
+| pointOnly | 0                                  | 5           | 2           | 6          |
+| kindOnly  | 0                                  | 4           | 1           | 8          |
+
+Point 종류 정답의 공통 4건은 모두 **점 찍기만 합법인 상태**였다. 이 4건은 네 모델 모두 종류 선택 4/4, 좌표·actual point 0/4다. 따라서 전체 4/13을 여러 행동 종류 중 point를 골라낸 성능으로 해석하면 안 된다. 이들을 제외한 **여러 행동 종류가 합법인 point 9건**은 다음과 같다.
+
+| Dev point — 여러 종류가 합법인 상태 | Actual point | 종류 선택 정답 | Oracle 좌표 정답 |
+| ----------------------------------- | ------------ | -------------- | ---------------- |
+| control                             | 0/9          | 0/9            | 2/9              |
+| combined                            | 0/9          | 1/9            | 1/9              |
+| pointOnly                           | 0/9          | 1/9            | 2/9              |
+| kindOnly                            | 0/9          | 0/9            | 1/9              |
+
+Combined와 point-only만 같은 1건에서 point 종류를 회복했고, 그 좌표는 네 모델 모두 틀렸다. Control oracle 정답 2건 중 1건은 네 모델 모두 유지했고, 다른 1건은 combined와 kind-only에서 함께 실패했다. 이 oracle 성공들은 실제 point 성공으로 연결되지 않았다. Actual point는 네 모델 모두 0/13이며 원래 네 gate와 각 기전·tradeoff FAIL, 모델 미채택을 유지한다.
+
+[고정 분석 계약](research/experiments/four-objective-errors-v1.json), [네 모델 pattern·6pair·오류 전이·point 교집합·저장 진단 delta·원본 hash](assets/research/four-objective-errors-20261022-v1.json), [Node 검증기](scripts/research/compare-four-objectives.mjs)를 제공한다. 두 독립 CLI의 private cases와 공개 summary는 byte 단위로 일치했다. Kind-only 원본 config는 명시 private 입력으로 읽어 원래 hash를 확인하고, 공개본과는 계산과 무관한 authorization 한 필드만 다를 수 있다. 원본 source/config/manifest와 hash 값을 다시 쓰지 않는다.
+
+```sh
+node --test scripts/research/test-objective-error-comparison.mjs scripts/research/test-four-objectives.mjs
+node scripts/research/compare-four-objectives.mjs --combined <frozen-combined-run> --point-only <frozen-point-only-run> --kind-only <frozen-kind-only-run> --kind-config <original-private-config.json> --output .research-output/four-objective-errors-new
+```
+
+자료와 weights·raw/logits·관측별 예측은 공개 저장소에 포함하지 않는다. 이 결과는 known-dev·single-seed·서로 다른 selected epoch의 descriptive 비교다. Fixed-epoch factorial interaction·일반 causal 효과·held-out·생존·앱 우월성은 검증하지 않았으며 새 score/epoch/label·정책을 선택하지 않았다. 추가 학습 예산은 사용하지 않았고 앱은 기존 DFS를 유지한다.
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
