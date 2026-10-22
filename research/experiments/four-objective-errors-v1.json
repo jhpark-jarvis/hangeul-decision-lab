@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "id": "four-objective-errors-v1",
+  "approval": "STORED_VALIDATION_AND_PUBLICATION_ONLY",
+  "splits": {
+    "train": 339,
+    "dev": 89
+  },
+  "archives": {
+    "combined": {
+      "configPath": "research/experiments/point-objective-v1.json",
+      "configSha256": "9759a59997ab16664c0da7b69fc3333b8c24e73dfec62a2547af7ccd1bd12b20",
+      "hashes": {
+        "freeze.json": "d4c8c2389bc64c86f58c0366e33dc744c29fcbc0fffba0050b98753a727cd7f5",
+        "execution.json": "97a765273f7b702b7251ea4ed2342df692896b81d92ae961685c29a5753a4c0a",
+        "report.json": "c67b1d2f2ecc696b65cfa71565b64eb600845fca0e80bd12e266b4067bb4aaa1",
+        "raw.json": "d172b303fc4b1270a4e88071935b7a1f65478b766359a4884642f28f2000fa8b",
+        "summary.json": "82721f6eb8de49aec912d7e4c0ceb99c6020519849ebb2b8a4c9fa304cd4a8fa",
+        "forward-count.jsonl": "7d73791b444fef0b2e24e7a601ec373e3d7c3939c8438bd518350a8ba6838532",
+        "control/report.json": "13953095774305b1ea464177d54b7b824e9f91ffd325d162c0badfb0e079d865",
+        "candidate/report.json": "61991a9ae5970973ee03101fae1da8bce81affc09919252ad803c3804ee75c7a"
+      }
+    },
+    "pointOnly": {
+      "configPath": "research/experiments/point-only-objective-v1.json",
+      "configSha256": "6a0614dcff9c8d1acaccee9f9d01be9c747080947e169d0b5085eb116eb41eae",
+      "hashes": {
+        "freeze.json": "ee0f8919727e70248df225956dd0d63e5b201b1ec16c58101662c9c0d042a5e9",
+        "execution.json": "fde464b612305cc9ba2128e465180c0b20ae2e0d465835a398585aef6c2b4769",
+        "report.json": "2c0550a41351c6c3df3dbb2b127ba352743208ea621f5b8e40a4ed303ef524d6",
+        "raw.json": "041639e597485e56d54ce5464817af34ad251496f06d6f73b39f7a294425e18d",
+        "summary.json": "8cc658aa58f05fca636e1d3fc9479f1ee79f46abfe18c67e5e6fc63c503977b8",
+        "forward-count.jsonl": "7d73791b444fef0b2e24e7a601ec373e3d7c3939c8438bd518350a8ba6838532",
+        "control/report.json": "aa40d84db5af91e28bd9d91f98af4ff37b97704d98c53fca72d5d2af6ef256bb",
+        "candidate/report.json": "d884270d0ba7540ab42055e72948a743ea518bb05ca0c0e7d116b1cbe813c0a5"
+      }
+    },
+    "kindOnly": {
+      "configPath": "research/experiments/kind-only-objective-v1.json",
+      "configSha256": "6ce35842af4799ab520d888ab47160103d62bdceaf76f5b418a7caf2ed441b38",
+      "exportedConfigSha256": "fdd1460fc67b27201c299f195dedee8238d847f1ce9d6f0c7aa9c46d76f77ebc",
+      "originalConfigRequired": true,
+      "hashes": {
+        "freeze.json": "b88b55bca92240efec5a580c0a18eea0747e13057a9d736c6179c9c6a7624463",
+        "execution.json": "24a452e40fa7eeb54b9457cb6d58ab5c2273f889d2256885e84dc3d0b97fd54e",
+        "report.json": "395536abadc96d4a62ccf064eea4f5a3d50d0a93dc7af6b44de7f2ce4eb6bb00",
+        "raw.json": "6c2c42bb16bc00eea424937f84746a0e1a03b56d0ef90f0811d1edf028cbcb14",
+        "summary.json": "de4071a3eca62bb2f0b07bd1eb1966f79dafa10b311f12de8bb893b5c2bbc801",
+        "forward-count.jsonl": "7d73791b444fef0b2e24e7a601ec373e3d7c3939c8438bd518350a8ba6838532",
+        "control/report.json": "263bdb6e05ad892738143d66720dfb5ec6a43e9792196f93f4b84a098ff1a0d2",
+        "candidate/report.json": "d3e228a6a38335718b4084fbd40246a0cdce187ca782c73954bd96a30f1dbe95"
+      }
+    }
+  },
+  "models": ["control", "combined", "pointOnly", "kindOnly"],
+  "pairs": [
+    ["control", "combined"],
+    ["control", "pointOnly"],
+    ["control", "kindOnly"],
+    ["combined", "pointOnly"],
+    ["combined", "kindOnly"],
+    ["pointOnly", "kindOnly"]
+  ],
+  "legacyComparison": {
+    "path": "assets/research/objective-error-comparison-20261020-v1.json",
+    "sha256": "1e3977f694281202652341b126e8531f72d2baa89f0a0b27cea676bf25a1a04b"
+  },
+  "boundaries": {
+    "newModelLoadForwardTraining": 0,
+    "teacherDomainEpisodeTestRollout": 0,
+    "newScoreOrSelection": false,
+    "originalFilesImmutable": true,
+    "detailCasesPrivate": true,
+    "publicAggregateOnly": true,
+    "interpretation": "Four historical selected-epoch outcomes on known train/dev, single seed; no fixed-epoch factorial interaction, causal attribution, held-out survival or product superiority. No score/epoch/label/policy adoption."
+  },
+  "configInput": "Kind-only original private config is an explicit frozen byte input; public authorization metadata projection only. All other computational fields and original manifest hash values remain exact."
+}
