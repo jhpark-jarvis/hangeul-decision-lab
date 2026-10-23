@@ -21,6 +21,7 @@ import {
   execute,
   parseArgs,
 } from "./analyze-stored-point-fit.mjs";
+import { privateCases, summarizeRows } from "./compare-four-objectives.mjs";
 const copy = (x) => structuredClone(x);
 const sha = (p) => createHash("sha256").update(readFileSync(p)).digest("hex");
 const write = (p, x) => writeFileSync(p, JSON.stringify(x, null, 2) + "\n");
@@ -169,7 +170,68 @@ function diskFixture() {
   ])
     mkdirSync(d, { recursive: true });
   const { cases, upstream } = fixture();
-  write(resolve(input, "cases.json"), cases);
+  const rawRow = (r, n) => {
+    const m = r.models[n];
+    return {
+      id: r.id,
+      fixtureId: r.fixtureId,
+      family: r.family,
+      error: m.error,
+      teacherKind: r.teacherKind,
+      selectedKind: m.selected.kind,
+      selectedIndex: m.selectedIndex,
+      globalCorrect: m.correct,
+      searchComplete: r.searchComplete,
+      teacherFinalPhase: r.phase,
+      legalKinds: r.legalKinds,
+      conditional: {
+        teacherKind: r.teacherKind,
+        teacherKindCandidates: r.candidates,
+        oracleIndex: 0,
+        oracleRank: m.oracleRank,
+        oracleNll: m.oracleNll,
+        oracleCorrect: m.oracleCorrect,
+      },
+      fullScore: {
+        id: r.id,
+        fixtureId: r.fixtureId,
+        family: r.family,
+        index: m.selectedIndex,
+        selected: m.selected,
+        candidates: r.candidates,
+        teacherActions: { A512: r.teacherAction },
+        firstLegalAction: { kind: "single-cell" },
+        targets: {
+          A512: { rank: m.fullRank, nll: m.fullNll, correct: m.correct },
+        },
+        margin: m.margin,
+      },
+    };
+  };
+  const rawByModel = Object.fromEntries(
+    MODELS.map((n) => [
+      n,
+      Object.fromEntries(
+        ["train", "dev"].map((s) => [s, cases[s].map((r) => rawRow(r, n))]),
+      ),
+    ]),
+  );
+  const selectedChanges = {};
+  for (const s of ["train", "dev"]) {
+    const group = Object.fromEntries(MODELS.map((n) => [n, rawByModel[n][s]]));
+    selectedChanges[s] = privateCases(group);
+    upstream.splits[s] = summarizeRows(group);
+  }
+  const archives = {};
+  for (const n of ["combined", "pointOnly", "kindOnly"]) {
+    archives[n] = resolve(input, n);
+    mkdirSync(archives[n]);
+    write(resolve(archives[n], "raw.json"), {
+      control: rawByModel.control,
+      candidate: rawByModel[n],
+    });
+  }
+  write(resolve(input, "cases.json"), selectedChanges);
   write(resolve(input, "summary.json"), upstream);
   const report = {
     status: "PASS",
@@ -193,6 +255,12 @@ function diskFixture() {
         sha(resolve(input, p)),
       ]),
     ),
+    rawInputs: Object.fromEntries(
+      Object.entries(archives).map(([n, p]) => [
+        n,
+        sha(resolve(p, "raw.json")),
+      ]),
+    ),
     upstreamAsset: {
       path: "assets/research/upstream.json",
       sha256: sha(resolve(root, "assets/research/upstream.json")),
@@ -212,7 +280,7 @@ function diskFixture() {
     },
   };
   write(resolve(root, "research/experiments/stored-point-fit-v1.json"), config);
-  return { root, input, config };
+  return { root, input, config, ...archives };
 }
 
 test("hand-counted joint and forced/multiple partitions differ from oracle-only success", () => {
@@ -408,11 +476,28 @@ test("four models have independent counts, never pooled into a sample multiplier
   assert.equal(s.train.point.models.kindOnly.actualCorrect, 0);
   assert.equal(s.train.point.models.control.actualCorrect, 1);
 });
-test("CLI accepts exactly two path options and rejects training, override and duplicate arguments", () => {
-  assert.deepEqual(parseArgs(["--output", "o", "--input", "i"]), {
-    input: "i",
-    output: "o",
-  });
+test("CLI accepts exactly five path options and rejects training, override and duplicate arguments", () => {
+  assert.deepEqual(
+    parseArgs([
+      "--output",
+      "o",
+      "--input",
+      "i",
+      "--combined",
+      "a",
+      "--point-only",
+      "b",
+      "--kind-only",
+      "c",
+    ]),
+    {
+      input: "i",
+      output: "o",
+      combined: "a",
+      pointOnly: "b",
+      kindOnly: "c",
+    },
+  );
   for (const a of [
     [],
     ["--input", "i"],
@@ -423,15 +508,17 @@ test("CLI accepts exactly two path options and rejects training, override and du
     assert.throws(() => parseArgs(a));
 });
 test("pinned data-only input succeeds and altered bytes are rejected before aggregation", () => {
-  const { root, input, config } = diskFixture();
-  assert.equal(loadSaved(input, config, root).cases.train.length, 6);
+  const f = diskFixture(),
+    { root, input, config } = f;
+  assert.equal(loadSaved(input, config, root, f).cases.train.length, 6);
   writeFileSync(resolve(input, "cases.json"), "{}\n");
-  assert.throws(() => loadSaved(input, config, root), /frozen hash drift/);
+  assert.throws(() => loadSaved(input, config, root, f), /frozen hash drift/);
 });
 test("two exclusive executions are byte-exact, record zero compute and keep inputs intact", () => {
-  const { root, input, config } = diskFixture();
+  const f = diskFixture(),
+    { root, input, config } = f;
   for (const name of ["a", "b"])
-    execute({ input, output: ".research-output/" + name }, root, {
+    execute({ ...f, input, output: ".research-output/" + name }, root, {
       node: process.version,
     });
   assert.equal(
@@ -452,15 +539,18 @@ test("two exclusive executions are byte-exact, record zero compute and keep inpu
   for (const [p, h] of Object.entries(config.inputFiles))
     assert.equal(sha(resolve(input, p)), h);
   const before = sha(resolve(root, ".research-output/a/summary.json"));
-  assert.throws(() => execute({ input, output: ".research-output/a" }, root));
+  assert.throws(() =>
+    execute({ ...f, input, output: ".research-output/a" }, root),
+  );
   assert.equal(sha(resolve(root, ".research-output/a/summary.json")), before);
 });
 test("failed execution preserves input and writes failure without a success summary", () => {
-  const { root, input } = diskFixture();
+  const f = diskFixture(),
+    { root, input } = f;
   writeFileSync(resolve(input, "cases.json"), "{}\n");
   const before = sha(resolve(input, "cases.json"));
   assert.throws(
-    () => execute({ input, output: ".research-output/fail" }, root),
+    () => execute({ ...f, input, output: ".research-output/fail" }, root),
     /frozen hash drift/,
   );
   assert(existsSync(resolve(root, ".research-output/fail/failure.json")));
@@ -468,14 +558,43 @@ test("failed execution preserves input and writes failure without a success summ
   assert.equal(sha(resolve(input, "cases.json")), before);
 });
 test("output escape and input nesting are rejected before writes", () => {
-  const { root, input } = diskFixture();
+  const f = diskFixture(),
+    { root, input } = f;
   for (const output of [
     "outside",
     "../escape",
     input,
     resolve(input, "nested"),
   ])
-    assert.throws(() => execute({ input, output }, root));
+    assert.throws(() => execute({ ...f, input, output }, root));
   assert(!existsSync(resolve(input, "nested")));
   assert(!existsSync(resolve(root, "outside")));
+});
+test("partial selected-change cases are never mistaken for all observations", () => {
+  const f = diskFixture();
+  assert.deepEqual(JSON.parse(readFileSync(resolve(f.input, "cases.json"))), {
+    train: [],
+    dev: [],
+  });
+  const loaded = loadSaved(f.input, f.config, f.root, f);
+  assert.equal(loaded.cases.train.length, 6);
+  assert.equal(loaded.cases.dev.length, 2);
+  assert.equal(
+    summarizeFit(loaded.cases, loaded.upstream).train.point.examples,
+    4,
+  );
+});
+test("raw byte drift and common-control identity drift fail with original files preserved", () => {
+  const f = diskFixture(),
+    p = resolve(f.kindOnly, "raw.json"),
+    r = JSON.parse(readFileSync(p));
+  r.control.train[0].id = "drift";
+  write(p, r);
+  assert.throws(
+    () => loadSaved(f.input, f.config, f.root, f),
+    /raw frozen hash drift/,
+  );
+  const config = copy(f.config);
+  config.rawInputs.kindOnly = sha(p);
+  assert.throws(() => loadSaved(f.input, config, f.root, f));
 });

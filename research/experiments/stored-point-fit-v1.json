@@ -7,6 +7,11 @@
     "summary.json": "7336e27d589d7de3336f9031e7679758a67fced85a83df7b3d0d4bfb3af90446",
     "report.json": "d20d5ede78f62b202591619089d2b4ae8fb3562cdaf89d4d393bd36ae791fbbc"
   },
+  "rawInputs": {
+    "combined": "d172b303fc4b1270a4e88071935b7a1f65478b766359a4884642f28f2000fa8b",
+    "pointOnly": "041639e597485e56d54ce5464817af34ad251496f06d6f73b39f7a294425e18d",
+    "kindOnly": "6c2c42bb16bc00eea424937f84746a0e1a03b56d0ef90f0811d1edf028cbcb14"
+  },
   "upstreamAsset": {
     "path": "assets/research/four-objective-errors-20261022-v1.json",
     "sha256": "2b465d07ffe1351c1875c58618331a9245a5a0cfacd6d43023f11f5e9cebe92e"
@@ -26,7 +31,7 @@
     "teacherDomainEpisodeTestRollout": 0,
     "newScoreSelectionLabelOrPolicy": false,
     "publicAggregateOnly": true,
-    "archiveVerification": "Inherited successful frozen archive validation; only the three pinned derived files are read here",
+    "archiveVerification": "Inherited successful archive validation; three pinned raw files provide full rows, and the derived selected-change cases are explicitly partial",
     "interpretation": "Descriptive selected-checkpoint fitting on known train/dev; no learning-curve, capacity, optimization, causal, held-out, survival or product conclusion"
   }
 }

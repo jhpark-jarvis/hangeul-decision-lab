@@ -4,6 +4,11 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, mkdirSync, realpathSync } from "node:fs";
 import { resolve, relative, isAbsolute, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  alignRows,
+  summarizeRows,
+  privateCases,
+} from "./compare-four-objectives.mjs";
 
 export const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 export const MODELS = ["control", "combined", "pointOnly", "kindOnly"];
@@ -243,14 +248,53 @@ export function summarizeFit(cases, upstream) {
   return splits;
 }
 
-export function loadSaved(directory, config, root = ROOT) {
+export function projectFullRows(group) {
+  alignRows(group);
+  return group.control.map((r, i) => ({
+    id: r.id,
+    fixtureId: r.fixtureId,
+    family: r.family,
+    teacherKind: r.teacherKind,
+    searchComplete: r.searchComplete,
+    phase: r.teacherFinalPhase,
+    legalKinds: r.legalKinds,
+    candidates: r.fullScore.candidates,
+    teacherAction: r.fullScore.teacherActions.A512,
+    correctnessPattern: MODELS.map((n) =>
+      Number(group[n][i].globalCorrect),
+    ).join(""),
+    models: Object.fromEntries(
+      MODELS.map((n) => {
+        const x = group[n][i];
+        return [
+          n,
+          {
+            error: x.error,
+            selected: x.fullScore.selected,
+            selectedIndex: x.selectedIndex,
+            correct: x.globalCorrect,
+            kindCorrect: x.selectedKind === x.teacherKind,
+            oracleCorrect: x.conditional.oracleCorrect,
+            fullRank: x.fullScore.targets.A512.rank,
+            fullNll: x.fullScore.targets.A512.nll,
+            oracleRank: x.conditional.oracleRank,
+            oracleNll: x.conditional.oracleNll,
+            margin: x.fullScore.margin,
+          },
+        ];
+      }),
+    ),
+  }));
+}
+
+export function loadSaved(directory, config, root = ROOT, archives) {
   for (const [name, sha] of Object.entries(config.inputFiles))
     assert.equal(
       hash(resolve(directory, name)),
       sha,
       name + " frozen hash drift",
     );
-  const cases = read(resolve(directory, "cases.json")),
+  const selectedChanges = read(resolve(directory, "cases.json")),
     upstream = read(resolve(directory, "summary.json")),
     report = read(resolve(directory, "report.json"));
   assert.equal(report.status, "PASS");
@@ -260,7 +304,38 @@ export function loadSaved(directory, config, root = ROOT) {
   assert(Object.values(report.additionalCompute).every((n) => n === 0));
   assert(Object.values(upstream.additionalCompute).every((n) => n === 0));
   assert.deepEqual(upstream.selectedEpochs, config.selectedEpochs);
+  keys(config.rawInputs, ["combined", "pointOnly", "kindOnly"]);
+  const raw = {};
+  for (const name of ["combined", "pointOnly", "kindOnly"]) {
+    const path = resolve(archives[name], "raw.json");
+    assert.equal(
+      hash(path),
+      config.rawInputs[name],
+      name + " raw frozen hash drift",
+    );
+    raw[name] = read(path);
+  }
+  const cases = {};
   for (const split of ["train", "dev"]) {
+    const group = {
+      control: raw.combined.control[split],
+      combined: raw.combined.candidate[split],
+      pointOnly: raw.pointOnly.candidate[split],
+      kindOnly: raw.kindOnly.candidate[split],
+    };
+    assert.deepEqual(raw.combined.control[split], raw.pointOnly.control[split]);
+    assert.deepEqual(raw.combined.control[split], raw.kindOnly.control[split]);
+    cases[split] = projectFullRows(group);
+    assert.deepEqual(
+      privateCases(group),
+      selectedChanges[split],
+      "Partial selected-change cases drift",
+    );
+    assert.deepEqual(
+      summarizeRows(group),
+      upstream.splits[split],
+      "Original full four-model aggregate drift",
+    );
     assert.equal(cases[split].length, config.splits[split]);
     assert.equal(
       upstream.splits[split].point.examples,
@@ -277,7 +352,11 @@ export function loadSaved(directory, config, root = ROOT) {
   return { cases, upstream };
 }
 
-export function execute({ input, output }, root = ROOT, metadata = {}) {
+export function execute(
+  { input, output, combined, pointOnly, kindOnly },
+  root = ROOT,
+  metadata = {},
+) {
   const configPath = resolve(root, CONFIG),
     config = read(configPath);
   assert.equal(config.id, "stored-point-fit-v1");
@@ -292,6 +371,10 @@ export function execute({ input, output }, root = ROOT, metadata = {}) {
   const base = resolve(root, ".research-output"),
     out = resolve(root, output),
     source = realpathSync(resolve(input));
+  const sources = [
+    source,
+    ...[combined, pointOnly, kindOnly].map((p) => realpathSync(resolve(p))),
+  ];
   assert(
     inside(base, out) && !inside(source, out) && out !== source,
     "New owned ignored output only",
@@ -301,7 +384,9 @@ export function execute({ input, output }, root = ROOT, metadata = {}) {
   const parent = realpathSync(dirname(out));
   assert(parent === realpathSync(base) || inside(realpathSync(base), parent));
   assert(
-    !inside(source, parent) && source !== parent,
+    sources.every(
+      (p) => !inside(p, out) && p !== out && !inside(p, parent) && p !== parent,
+    ),
     "Do not write inside source",
   );
   mkdirSync(out);
@@ -311,13 +396,18 @@ export function execute({ input, output }, root = ROOT, metadata = {}) {
     ...metadata,
   });
   try {
-    const { cases, upstream } = loadSaved(source, config, root);
+    const { cases, upstream } = loadSaved(source, config, root, {
+      combined,
+      pointOnly,
+      kindOnly,
+    });
     const result = {
       schemaVersion: 1,
       id: config.id,
       status: "PASS",
       method: config.method,
       inputFiles: config.inputFiles,
+      rawInputs: config.rawInputs,
       selectedEpochs: config.selectedEpochs,
       splits: summarizeFit(cases, upstream),
       additionalCompute: {
@@ -362,18 +452,34 @@ export function execute({ input, output }, root = ROOT, metadata = {}) {
 }
 
 export function parseArgs(args) {
-  assert.equal(args.length, 4, "Expected --input and --output only");
+  assert.equal(
+    args.length,
+    10,
+    "Expected --input, --output and three frozen archive directories only",
+  );
   const result = {};
   for (let i = 0; i < args.length; i += 2) {
     assert(
-      ["--input", "--output"].includes(args[i]) &&
+      [
+        "--input",
+        "--output",
+        "--combined",
+        "--point-only",
+        "--kind-only",
+      ].includes(args[i]) &&
         args[i + 1] &&
         !result[args[i]],
       "Unknown, duplicate or missing argument",
     );
     result[args[i]] = args[i + 1];
   }
-  return { input: result["--input"], output: result["--output"] };
+  return {
+    input: result["--input"],
+    output: result["--output"],
+    combined: result["--combined"],
+    pointOnly: result["--point-only"],
+    kindOnly: result["--kind-only"],
+  };
 }
 if (
   process.argv[1] &&
@@ -381,7 +487,7 @@ if (
 ) {
   if (process.argv.length === 3 && process.argv[2] === "--help")
     console.log(
-      "node scripts/research/analyze-stored-point-fit.mjs --input <frozen-four-objective-output> --output .research-output/<new-directory>",
+      "node scripts/research/analyze-stored-point-fit.mjs --input <frozen-four-objective-output> --combined <frozen-run> --point-only <frozen-run> --kind-only <frozen-run> --output .research-output/<new-directory>",
     );
   else {
     const args = parseArgs(process.argv.slice(2));
