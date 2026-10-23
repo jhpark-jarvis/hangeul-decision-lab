@@ -16,7 +16,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 후속 readonly 분석에서 dev 점 찍기 실패 13개는 다른 행동 종류를 고른 8개와 같은 종류의 다른 좌표를 고른 5개로 나뉘었다. 저장된 동점 대안의 첫 행동에 포함된 실패는 1개였다. Hard label과 점수는 변경하지 않았다.
 
-5.12–5.19는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+이후 네 objective의 저장 결과를 대조했다. Dev 점 찍기 정답은 모두 0/13이었고, 선택된 checkpoint의 **train 점 찍기 정답도 control/combined/point-only/kind-only 순서로 0/2/1/1건, 분모는 52건**이었다. 점 찍기만 합법인 train 9건은 네 모델 모두 좌표 정답이 없었다. 현재 근거는 fitting 진단을 다음 연구 우선순위로 삼을 이유이며, 실패 원인을 모델 용량이나 최적화 중 하나로 확정하지 않는다.
+
+5.12–5.29는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -982,6 +984,55 @@ node scripts/research/compare-four-objectives.mjs --combined <frozen-combined-ru
 ```
 
 자료와 weights·raw/logits·관측별 예측은 공개 저장소에 포함하지 않는다. 이 결과는 known-dev·single-seed·서로 다른 selected epoch의 descriptive 비교다. Fixed-epoch factorial interaction·일반 causal 효과·held-out·생존·앱 우월성은 검증하지 않았으며 새 score/epoch/label·정책을 선택하지 않았다. 추가 학습 예산은 사용하지 않았고 앱은 기존 DFS를 유지한다.
+
+### 5.29 Stored Point Fitting: Train Failures Before New Experiments
+
+**저장값 분석 — 2026-10-23.** 다음 연구 질문은 “dev에서 실패하는가?”에서 한 단계 앞선 **“선택된 checkpoint가 train의 점 찍기를 얼마나 맞히는가?”**다. 5.28과 같은 control/combined/point-only/kind-only, 선택 epoch **11/12/11/12**, train **339개**와 dev **89개**를 유지했다. 기존 세 raw 파일에서 전체 관측을 읽었으며, 이전의 private `cases`는 모델 간 선택이 달라진 일부 관측이므로 전체 분모로 사용하지 않았다.
+
+**이번 추가 모델 생성·checkpoint 역직렬화·forward·학습은 모두 0회**다. 원래 raw와 파생 입력의 고정 SHA, 세 공통 control의 row 일치, 이전 전체 집계와 부분 cases의 JSON 값 일치를 검사했다. 두 독립 CLI의 새 summary는 byte 단위로 일치했다. Archive 전체 검증 근거는 이전 실행에서 상속하며, 이번 분석이 모델이나 전체 archive를 다시 실행·검증했다는 뜻은 아니다.
+
+여기서 **종류 정답**은 실제 선택이 점 찍기인 경우다. **Oracle 좌표 정답**은 행동 종류를 teacher의 점 찍기로 제한했을 때 저장된 1위 좌표가 정답인 경우다. **실제 정답은 두 조건이 동시에 성립해야 한다.** Oracle은 별도 정책의 실행 결과가 아니다.
+
+| 선택된 checkpoint | Train 실제 점 찍기 정답 / 52 | Train 종류 정답 / 52 | Train oracle 좌표 정답 / 52 | Dev 실제 정답 / 13 |
+| ----------------- | ---------------------------- | -------------------- | --------------------------- | ------------------ |
+| Control           | 0                            | 10                   | 12                          | 0                  |
+| Combined          | 2                            | 12                   | 14                          | 0                  |
+| Point-only        | 1                            | 10                   | 14                          | 0                  |
+| Kind-only         | 1                            | 11                   | 14                          | 0                  |
+
+선택된 checkpoint의 train에서도 실제 정답이 0–2/52에 머문다. 따라서 현재 실패를 **dev 일반화만의 문제로 정리할 근거는 부족하다.** 이 표는 dev 기준으로 선택한 checkpoint의 기술통계다. Train 최고 epoch나 전체 학습 곡선을 비교한 결과가 아니므로 모델 용량 부족·최적화 실패·학습 불가능성 중 어느 것도 확정하지 않는다.
+
+#### 한 종류만 합법인 상태를 분리한 결과
+
+Train point 52건 중 **9건**, dev point 13건 중 **4건**은 점 찍기만 합법이었다. 이 상태에서 종류 정답은 강제되므로 여러 행동 종류 중 point를 고르는 능력과 구분해야 한다.
+
+| 관측 집합             | 관측 수 | 종류 정답 — C / Combined / Point-only / Kind-only | Oracle 좌표 정답 — 같은 순서 | 실제 정답 — 같은 순서 |
+| --------------------- | ------- | ------------------------------------------------- | ---------------------------- | --------------------- |
+| Train, 점 찍기만 합법 | 9       | 9 / 9 / 9 / 9                                     | 0 / 0 / 0 / 0                | 0 / 0 / 0 / 0         |
+| Train, 여러 종류 합법 | 43      | 1 / 3 / 1 / 2                                     | 12 / 14 / 14 / 14            | 0 / 2 / 1 / 1         |
+| Dev, 점 찍기만 합법   | 4       | 4 / 4 / 4 / 4                                     | 0 / 0 / 0 / 0                | 0 / 0 / 0 / 0         |
+| Dev, 여러 종류 합법   | 9       | 0 / 1 / 1 / 0                                     | 2 / 1 / 2 / 1                | 0 / 0 / 0 / 0         |
+
+점 찍기만 합법인 **train 9건은 네 모델 모두 정답 좌표의 oracle rank가 10위 밖**이었다. 이 9건과 dev의 같은 조건 4건은 원래 teacher 탐색이 scope 안에서 완료된 관측이다. 실패가 미완료 teacher 표본에만 나타나는 것은 아니다. 다만 탐색 완료는 게임 전체 최적성이나 label 품질의 보증이 아니며, 이 분할로 teacher 품질의 인과효과를 측정하지 않는다.
+
+Train point 52개 관측은 **49개 fixture**에서 나왔다. Dev point는 13개 관측·13개 fixture다. 같은 fixture의 여러 관측을 독립 실험으로 세거나 네 모델·반복 실행을 표본 수에 더하지 않았다. Family와 search-complete 여부별 집계, 두 조건의 교차 집계, 고정 rank 구간 **1 / 2–5 / 6–10 / >10**은 [전체 비민감 집계](assets/research/stored-point-fit-20261023-v1.json)에 제공한다.
+
+#### 다음 연구의 우선순위 — 실행 전 제안
+
+| 우선순위                       | 확인할 질문                                                 | 현재 근거와 필요한 다음 증거                                                                                            | 상태                |
+| ------------------------------ | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| 1. Fitting sanity check        | 고정된 소수 train 관측의 종류와 좌표를 각각 맞힐 수 있는가? | 강제 종류인 train 9건도 좌표 0/9다. 별도 진단 계약에서 train fitting·종류/좌표 교집합을 먼저 확인할 것을 권장한다.      | 제안, **NOT_RUN**   |
+| 2. 실패 원인 분리              | 목적·gradient 경로·표현 중 어디에서 fitting이 막히는가?     | 현재 저장 결과만으로 구별할 수 없다. 1의 결과와 별도 승인된 수치 진단이 필요하다.                                       | 제안, **NOT_RUN**   |
+| 3. Teacher/data·구조 변경 검토 | 위 진단으로 좁힌 가설에 어떤 단일 대조가 필요한가?          | 새 loss 계수 탐색·대형 모델·RL을 현재 실패의 해결책으로 확정하지 않는다. 변경 전 대조군·예산·판정 기준을 별도로 정한다. | 미결정, **NOT_RUN** |
+
+이 순서는 연구 우선순위 제안이며 새 학습·gradient 진단·label/data·architecture·정책 채택을 실행한 계약이 아니다. **Known train/dev, single seed, selected checkpoint의 descriptive 분석**이며 held-out·생존·실제 게임 효과는 미검증이다. 기존 성능 gate FAIL·모델 미채택을 유지하고 앱은 DFS를 사용한다.
+
+[고정 분석 config](research/experiments/stored-point-fit-v1.json), [Node 분석기](scripts/research/analyze-stored-point-fit.mjs), [검사](scripts/research/test-stored-point-fit.mjs)를 제공한다. 관측 ID·행동·좌표·raw/logits·weights는 공개하지 않는다.
+
+```sh
+node --test scripts/research/test-stored-point-fit.mjs scripts/research/test-four-objectives.mjs scripts/research/test-objective-error-comparison.mjs
+node scripts/research/analyze-stored-point-fit.mjs --input <frozen-four-objective-output> --combined <frozen-combined-run> --point-only <frozen-point-only-run> --kind-only <frozen-kind-only-run> --output .research-output/stored-point-fit-new
+```
 
 ## 6. Reproduction and Usage
 

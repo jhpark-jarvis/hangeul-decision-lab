@@ -1,0 +1,2306 @@
+{
+  "schemaVersion": 1,
+  "id": "stored-point-fit-v1",
+  "status": "PASS",
+  "method": "Selected-checkpoint train/dev point fitting, stored rows only",
+  "inputFiles": {
+    "cases.json": "6622668f326db2e82ab8797b03bf144bbcf1a3798a907469c618a469e5a1ef83",
+    "summary.json": "7336e27d589d7de3336f9031e7679758a67fced85a83df7b3d0d4bfb3af90446",
+    "report.json": "d20d5ede78f62b202591619089d2b4ae8fb3562cdaf89d4d393bd36ae791fbbc"
+  },
+  "rawInputs": {
+    "combined": "d172b303fc4b1270a4e88071935b7a1f65478b766359a4884642f28f2000fa8b",
+    "pointOnly": "041639e597485e56d54ce5464817af34ad251496f06d6f73b39f7a294425e18d",
+    "kindOnly": "6c2c42bb16bc00eea424937f84746a0e1a03b56d0ef90f0811d1edf028cbcb14"
+  },
+  "selectedEpochs": {
+    "control": 11,
+    "combined": 12,
+    "pointOnly": 11,
+    "kindOnly": 12
+  },
+  "splits": {
+    "train": {
+      "allExamples": 339,
+      "allDistinctFixtures": 64,
+      "allActualCorrect": {
+        "control": 110,
+        "combined": 105,
+        "pointOnly": 108,
+        "kindOnly": 101
+      },
+      "point": {
+        "examples": 52,
+        "distinctFixtures": 49,
+        "observationsPerFixtureHistogram": {
+          "1": 46,
+          "2": 3
+        },
+        "models": {
+          "control": {
+            "actualCorrect": 0,
+            "kindCorrect": 10,
+            "oracleCorrect": 12,
+            "joint": {
+              "bothCorrect": 0,
+              "kindOnly": 10,
+              "coordinateOnly": 12,
+              "neither": 30
+            },
+            "fullRankBuckets": {
+              "1": 0,
+              "2-5": 9,
+              "6-10": 7,
+              ">10": 36
+            },
+            "oracleRankBuckets": {
+              "1": 12,
+              "2-5": 8,
+              "6-10": 10,
+              ">10": 22
+            }
+          },
+          "combined": {
+            "actualCorrect": 2,
+            "kindCorrect": 12,
+            "oracleCorrect": 14,
+            "joint": {
+              "bothCorrect": 2,
+              "kindOnly": 10,
+              "coordinateOnly": 12,
+              "neither": 28
+            },
+            "fullRankBuckets": {
+              "1": 2,
+              "2-5": 9,
+              "6-10": 4,
+              ">10": 37
+            },
+            "oracleRankBuckets": {
+              "1": 14,
+              "2-5": 7,
+              "6-10": 8,
+              ">10": 23
+            }
+          },
+          "pointOnly": {
+            "actualCorrect": 1,
+            "kindCorrect": 10,
+            "oracleCorrect": 14,
+            "joint": {
+              "bothCorrect": 1,
+              "kindOnly": 9,
+              "coordinateOnly": 13,
+              "neither": 29
+            },
+            "fullRankBuckets": {
+              "1": 1,
+              "2-5": 8,
+              "6-10": 7,
+              ">10": 36
+            },
+            "oracleRankBuckets": {
+              "1": 14,
+              "2-5": 6,
+              "6-10": 11,
+              ">10": 21
+            }
+          },
+          "kindOnly": {
+            "actualCorrect": 1,
+            "kindCorrect": 11,
+            "oracleCorrect": 14,
+            "joint": {
+              "bothCorrect": 1,
+              "kindOnly": 10,
+              "coordinateOnly": 13,
+              "neither": 28
+            },
+            "fullRankBuckets": {
+              "1": 1,
+              "2-5": 7,
+              "6-10": 8,
+              ">10": 36
+            },
+            "oracleRankBuckets": {
+              "1": 14,
+              "2-5": 6,
+              "6-10": 9,
+              ">10": 23
+            }
+          }
+        }
+      },
+      "byLegality": {
+        "pointOnlyLegal": {
+          "examples": 9,
+          "distinctFixtures": 9,
+          "observationsPerFixtureHistogram": {
+            "1": 9
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 9,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 9,
+                "coordinateOnly": 0,
+                "neither": 0
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 9
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 9
+              }
+            },
+            "combined": {
+              "actualCorrect": 0,
+              "kindCorrect": 9,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 9,
+                "coordinateOnly": 0,
+                "neither": 0
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 9
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 9
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 9,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 9,
+                "coordinateOnly": 0,
+                "neither": 0
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 9
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 9
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 9,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 9,
+                "coordinateOnly": 0,
+                "neither": 0
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 9
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 9
+              }
+            }
+          }
+        },
+        "multipleLegalKinds": {
+          "examples": 43,
+          "distinctFixtures": 40,
+          "observationsPerFixtureHistogram": {
+            "1": 37,
+            "2": 3
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 1,
+              "oracleCorrect": 12,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 1,
+                "coordinateOnly": 12,
+                "neither": 30
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 9,
+                "6-10": 7,
+                ">10": 27
+              },
+              "oracleRankBuckets": {
+                "1": 12,
+                "2-5": 8,
+                "6-10": 10,
+                ">10": 13
+              }
+            },
+            "combined": {
+              "actualCorrect": 2,
+              "kindCorrect": 3,
+              "oracleCorrect": 14,
+              "joint": {
+                "bothCorrect": 2,
+                "kindOnly": 1,
+                "coordinateOnly": 12,
+                "neither": 28
+              },
+              "fullRankBuckets": {
+                "1": 2,
+                "2-5": 9,
+                "6-10": 4,
+                ">10": 28
+              },
+              "oracleRankBuckets": {
+                "1": 14,
+                "2-5": 7,
+                "6-10": 8,
+                ">10": 14
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 1,
+              "kindCorrect": 1,
+              "oracleCorrect": 14,
+              "joint": {
+                "bothCorrect": 1,
+                "kindOnly": 0,
+                "coordinateOnly": 13,
+                "neither": 29
+              },
+              "fullRankBuckets": {
+                "1": 1,
+                "2-5": 8,
+                "6-10": 7,
+                ">10": 27
+              },
+              "oracleRankBuckets": {
+                "1": 14,
+                "2-5": 6,
+                "6-10": 11,
+                ">10": 12
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 1,
+              "kindCorrect": 2,
+              "oracleCorrect": 14,
+              "joint": {
+                "bothCorrect": 1,
+                "kindOnly": 1,
+                "coordinateOnly": 13,
+                "neither": 28
+              },
+              "fullRankBuckets": {
+                "1": 1,
+                "2-5": 7,
+                "6-10": 8,
+                ">10": 27
+              },
+              "oracleRankBuckets": {
+                "1": 14,
+                "2-5": 6,
+                "6-10": 9,
+                ">10": 14
+              }
+            }
+          }
+        }
+      },
+      "byFamily": {
+        "sparse": {
+          "examples": 18,
+          "distinctFixtures": 18,
+          "observationsPerFixtureHistogram": {
+            "1": 18
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 6,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 6,
+                "neither": 12
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 3,
+                "6-10": 0,
+                ">10": 15
+              },
+              "oracleRankBuckets": {
+                "1": 6,
+                "2-5": 4,
+                "6-10": 4,
+                ">10": 4
+              }
+            },
+            "combined": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 6,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 6,
+                "neither": 12
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 3,
+                "6-10": 0,
+                ">10": 15
+              },
+              "oracleRankBuckets": {
+                "1": 6,
+                "2-5": 5,
+                "6-10": 4,
+                ">10": 3
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 6,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 6,
+                "neither": 12
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 3,
+                "6-10": 0,
+                ">10": 15
+              },
+              "oracleRankBuckets": {
+                "1": 6,
+                "2-5": 4,
+                "6-10": 5,
+                ">10": 3
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 6,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 6,
+                "neither": 12
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 2,
+                "6-10": 1,
+                ">10": 15
+              },
+              "oracleRankBuckets": {
+                "1": 6,
+                "2-5": 4,
+                "6-10": 3,
+                ">10": 5
+              }
+            }
+          }
+        },
+        "pressure": {
+          "examples": 34,
+          "distinctFixtures": 31,
+          "observationsPerFixtureHistogram": {
+            "1": 28,
+            "2": 3
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 10,
+              "oracleCorrect": 6,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 10,
+                "coordinateOnly": 6,
+                "neither": 18
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 6,
+                "6-10": 7,
+                ">10": 21
+              },
+              "oracleRankBuckets": {
+                "1": 6,
+                "2-5": 4,
+                "6-10": 6,
+                ">10": 18
+              }
+            },
+            "combined": {
+              "actualCorrect": 2,
+              "kindCorrect": 12,
+              "oracleCorrect": 8,
+              "joint": {
+                "bothCorrect": 2,
+                "kindOnly": 10,
+                "coordinateOnly": 6,
+                "neither": 16
+              },
+              "fullRankBuckets": {
+                "1": 2,
+                "2-5": 6,
+                "6-10": 4,
+                ">10": 22
+              },
+              "oracleRankBuckets": {
+                "1": 8,
+                "2-5": 2,
+                "6-10": 4,
+                ">10": 20
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 1,
+              "kindCorrect": 10,
+              "oracleCorrect": 8,
+              "joint": {
+                "bothCorrect": 1,
+                "kindOnly": 9,
+                "coordinateOnly": 7,
+                "neither": 17
+              },
+              "fullRankBuckets": {
+                "1": 1,
+                "2-5": 5,
+                "6-10": 7,
+                ">10": 21
+              },
+              "oracleRankBuckets": {
+                "1": 8,
+                "2-5": 2,
+                "6-10": 6,
+                ">10": 18
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 1,
+              "kindCorrect": 11,
+              "oracleCorrect": 8,
+              "joint": {
+                "bothCorrect": 1,
+                "kindOnly": 10,
+                "coordinateOnly": 7,
+                "neither": 16
+              },
+              "fullRankBuckets": {
+                "1": 1,
+                "2-5": 5,
+                "6-10": 7,
+                ">10": 21
+              },
+              "oracleRankBuckets": {
+                "1": 8,
+                "2-5": 2,
+                "6-10": 6,
+                ">10": 18
+              }
+            }
+          }
+        }
+      },
+      "byTeacherSearch": {
+        "complete": {
+          "examples": 22,
+          "distinctFixtures": 22,
+          "observationsPerFixtureHistogram": {
+            "1": 22
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 10,
+              "oracleCorrect": 3,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 10,
+                "coordinateOnly": 3,
+                "neither": 9
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 4,
+                "6-10": 5,
+                ">10": 13
+              },
+              "oracleRankBuckets": {
+                "1": 3,
+                "2-5": 2,
+                "6-10": 4,
+                ">10": 13
+              }
+            },
+            "combined": {
+              "actualCorrect": 1,
+              "kindCorrect": 11,
+              "oracleCorrect": 4,
+              "joint": {
+                "bothCorrect": 1,
+                "kindOnly": 10,
+                "coordinateOnly": 3,
+                "neither": 8
+              },
+              "fullRankBuckets": {
+                "1": 1,
+                "2-5": 3,
+                "6-10": 4,
+                ">10": 14
+              },
+              "oracleRankBuckets": {
+                "1": 4,
+                "2-5": 0,
+                "6-10": 4,
+                ">10": 14
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 1,
+              "kindCorrect": 10,
+              "oracleCorrect": 4,
+              "joint": {
+                "bothCorrect": 1,
+                "kindOnly": 9,
+                "coordinateOnly": 3,
+                "neither": 9
+              },
+              "fullRankBuckets": {
+                "1": 1,
+                "2-5": 3,
+                "6-10": 5,
+                ">10": 13
+              },
+              "oracleRankBuckets": {
+                "1": 4,
+                "2-5": 1,
+                "6-10": 4,
+                ">10": 13
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 1,
+              "kindCorrect": 11,
+              "oracleCorrect": 4,
+              "joint": {
+                "bothCorrect": 1,
+                "kindOnly": 10,
+                "coordinateOnly": 3,
+                "neither": 8
+              },
+              "fullRankBuckets": {
+                "1": 1,
+                "2-5": 3,
+                "6-10": 5,
+                ">10": 13
+              },
+              "oracleRankBuckets": {
+                "1": 4,
+                "2-5": 0,
+                "6-10": 5,
+                ">10": 13
+              }
+            }
+          }
+        },
+        "incomplete": {
+          "examples": 30,
+          "distinctFixtures": 29,
+          "observationsPerFixtureHistogram": {
+            "1": 28,
+            "2": 1
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 9,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 9,
+                "neither": 21
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 5,
+                "6-10": 2,
+                ">10": 23
+              },
+              "oracleRankBuckets": {
+                "1": 9,
+                "2-5": 6,
+                "6-10": 6,
+                ">10": 9
+              }
+            },
+            "combined": {
+              "actualCorrect": 1,
+              "kindCorrect": 1,
+              "oracleCorrect": 10,
+              "joint": {
+                "bothCorrect": 1,
+                "kindOnly": 0,
+                "coordinateOnly": 9,
+                "neither": 20
+              },
+              "fullRankBuckets": {
+                "1": 1,
+                "2-5": 6,
+                "6-10": 0,
+                ">10": 23
+              },
+              "oracleRankBuckets": {
+                "1": 10,
+                "2-5": 7,
+                "6-10": 4,
+                ">10": 9
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 10,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 10,
+                "neither": 20
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 5,
+                "6-10": 2,
+                ">10": 23
+              },
+              "oracleRankBuckets": {
+                "1": 10,
+                "2-5": 5,
+                "6-10": 7,
+                ">10": 8
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 10,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 10,
+                "neither": 20
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 4,
+                "6-10": 3,
+                ">10": 23
+              },
+              "oracleRankBuckets": {
+                "1": 10,
+                "2-5": 6,
+                "6-10": 4,
+                ">10": 10
+              }
+            }
+          }
+        }
+      },
+      "legalityByTeacherSearch": {
+        "pointOnlyLegal": {
+          "complete": {
+            "examples": 9,
+            "distinctFixtures": 9,
+            "observationsPerFixtureHistogram": {
+              "1": 9
+            },
+            "models": {
+              "control": {
+                "actualCorrect": 0,
+                "kindCorrect": 9,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 9,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 9
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 9
+                }
+              },
+              "combined": {
+                "actualCorrect": 0,
+                "kindCorrect": 9,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 9,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 9
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 9
+                }
+              },
+              "pointOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 9,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 9,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 9
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 9
+                }
+              },
+              "kindOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 9,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 9,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 9
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 9
+                }
+              }
+            }
+          },
+          "incomplete": {
+            "examples": 0,
+            "distinctFixtures": 0,
+            "observationsPerFixtureHistogram": {},
+            "models": {
+              "control": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                }
+              },
+              "combined": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                }
+              },
+              "pointOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                }
+              },
+              "kindOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                }
+              }
+            }
+          }
+        },
+        "multipleLegalKinds": {
+          "complete": {
+            "examples": 13,
+            "distinctFixtures": 13,
+            "observationsPerFixtureHistogram": {
+              "1": 13
+            },
+            "models": {
+              "control": {
+                "actualCorrect": 0,
+                "kindCorrect": 1,
+                "oracleCorrect": 3,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 1,
+                  "coordinateOnly": 3,
+                  "neither": 9
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 4,
+                  "6-10": 5,
+                  ">10": 4
+                },
+                "oracleRankBuckets": {
+                  "1": 3,
+                  "2-5": 2,
+                  "6-10": 4,
+                  ">10": 4
+                }
+              },
+              "combined": {
+                "actualCorrect": 1,
+                "kindCorrect": 2,
+                "oracleCorrect": 4,
+                "joint": {
+                  "bothCorrect": 1,
+                  "kindOnly": 1,
+                  "coordinateOnly": 3,
+                  "neither": 8
+                },
+                "fullRankBuckets": {
+                  "1": 1,
+                  "2-5": 3,
+                  "6-10": 4,
+                  ">10": 5
+                },
+                "oracleRankBuckets": {
+                  "1": 4,
+                  "2-5": 0,
+                  "6-10": 4,
+                  ">10": 5
+                }
+              },
+              "pointOnly": {
+                "actualCorrect": 1,
+                "kindCorrect": 1,
+                "oracleCorrect": 4,
+                "joint": {
+                  "bothCorrect": 1,
+                  "kindOnly": 0,
+                  "coordinateOnly": 3,
+                  "neither": 9
+                },
+                "fullRankBuckets": {
+                  "1": 1,
+                  "2-5": 3,
+                  "6-10": 5,
+                  ">10": 4
+                },
+                "oracleRankBuckets": {
+                  "1": 4,
+                  "2-5": 1,
+                  "6-10": 4,
+                  ">10": 4
+                }
+              },
+              "kindOnly": {
+                "actualCorrect": 1,
+                "kindCorrect": 2,
+                "oracleCorrect": 4,
+                "joint": {
+                  "bothCorrect": 1,
+                  "kindOnly": 1,
+                  "coordinateOnly": 3,
+                  "neither": 8
+                },
+                "fullRankBuckets": {
+                  "1": 1,
+                  "2-5": 3,
+                  "6-10": 5,
+                  ">10": 4
+                },
+                "oracleRankBuckets": {
+                  "1": 4,
+                  "2-5": 0,
+                  "6-10": 5,
+                  ">10": 4
+                }
+              }
+            }
+          },
+          "incomplete": {
+            "examples": 30,
+            "distinctFixtures": 29,
+            "observationsPerFixtureHistogram": {
+              "1": 28,
+              "2": 1
+            },
+            "models": {
+              "control": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 9,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 9,
+                  "neither": 21
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 5,
+                  "6-10": 2,
+                  ">10": 23
+                },
+                "oracleRankBuckets": {
+                  "1": 9,
+                  "2-5": 6,
+                  "6-10": 6,
+                  ">10": 9
+                }
+              },
+              "combined": {
+                "actualCorrect": 1,
+                "kindCorrect": 1,
+                "oracleCorrect": 10,
+                "joint": {
+                  "bothCorrect": 1,
+                  "kindOnly": 0,
+                  "coordinateOnly": 9,
+                  "neither": 20
+                },
+                "fullRankBuckets": {
+                  "1": 1,
+                  "2-5": 6,
+                  "6-10": 0,
+                  ">10": 23
+                },
+                "oracleRankBuckets": {
+                  "1": 10,
+                  "2-5": 7,
+                  "6-10": 4,
+                  ">10": 9
+                }
+              },
+              "pointOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 10,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 10,
+                  "neither": 20
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 5,
+                  "6-10": 2,
+                  ">10": 23
+                },
+                "oracleRankBuckets": {
+                  "1": 10,
+                  "2-5": 5,
+                  "6-10": 7,
+                  ">10": 8
+                }
+              },
+              "kindOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 10,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 10,
+                  "neither": 20
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 4,
+                  "6-10": 3,
+                  ">10": 23
+                },
+                "oracleRankBuckets": {
+                  "1": 10,
+                  "2-5": 6,
+                  "6-10": 4,
+                  ">10": 10
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "dev": {
+      "allExamples": 89,
+      "allDistinctFixtures": 16,
+      "allActualCorrect": {
+        "control": 29,
+        "combined": 29,
+        "pointOnly": 28,
+        "kindOnly": 28
+      },
+      "point": {
+        "examples": 13,
+        "distinctFixtures": 13,
+        "observationsPerFixtureHistogram": {
+          "1": 13
+        },
+        "models": {
+          "control": {
+            "actualCorrect": 0,
+            "kindCorrect": 4,
+            "oracleCorrect": 2,
+            "joint": {
+              "bothCorrect": 0,
+              "kindOnly": 4,
+              "coordinateOnly": 2,
+              "neither": 7
+            },
+            "fullRankBuckets": {
+              "1": 0,
+              "2-5": 0,
+              "6-10": 4,
+              ">10": 9
+            },
+            "oracleRankBuckets": {
+              "1": 2,
+              "2-5": 0,
+              "6-10": 4,
+              ">10": 7
+            }
+          },
+          "combined": {
+            "actualCorrect": 0,
+            "kindCorrect": 5,
+            "oracleCorrect": 1,
+            "joint": {
+              "bothCorrect": 0,
+              "kindOnly": 5,
+              "coordinateOnly": 1,
+              "neither": 7
+            },
+            "fullRankBuckets": {
+              "1": 0,
+              "2-5": 0,
+              "6-10": 3,
+              ">10": 10
+            },
+            "oracleRankBuckets": {
+              "1": 1,
+              "2-5": 1,
+              "6-10": 3,
+              ">10": 8
+            }
+          },
+          "pointOnly": {
+            "actualCorrect": 0,
+            "kindCorrect": 5,
+            "oracleCorrect": 2,
+            "joint": {
+              "bothCorrect": 0,
+              "kindOnly": 5,
+              "coordinateOnly": 2,
+              "neither": 6
+            },
+            "fullRankBuckets": {
+              "1": 0,
+              "2-5": 0,
+              "6-10": 4,
+              ">10": 9
+            },
+            "oracleRankBuckets": {
+              "1": 2,
+              "2-5": 0,
+              "6-10": 4,
+              ">10": 7
+            }
+          },
+          "kindOnly": {
+            "actualCorrect": 0,
+            "kindCorrect": 4,
+            "oracleCorrect": 1,
+            "joint": {
+              "bothCorrect": 0,
+              "kindOnly": 4,
+              "coordinateOnly": 1,
+              "neither": 8
+            },
+            "fullRankBuckets": {
+              "1": 0,
+              "2-5": 0,
+              "6-10": 1,
+              ">10": 12
+            },
+            "oracleRankBuckets": {
+              "1": 1,
+              "2-5": 1,
+              "6-10": 1,
+              ">10": 10
+            }
+          }
+        }
+      },
+      "byLegality": {
+        "pointOnlyLegal": {
+          "examples": 4,
+          "distinctFixtures": 4,
+          "observationsPerFixtureHistogram": {
+            "1": 4
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 4,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 4,
+                "coordinateOnly": 0,
+                "neither": 0
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 2
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 2
+              }
+            },
+            "combined": {
+              "actualCorrect": 0,
+              "kindCorrect": 4,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 4,
+                "coordinateOnly": 0,
+                "neither": 0
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 4
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 4
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 4,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 4,
+                "coordinateOnly": 0,
+                "neither": 0
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 3
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 3
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 4,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 4,
+                "coordinateOnly": 0,
+                "neither": 0
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 4
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 4
+              }
+            }
+          }
+        },
+        "multipleLegalKinds": {
+          "examples": 9,
+          "distinctFixtures": 9,
+          "observationsPerFixtureHistogram": {
+            "1": 9
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 2,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 2,
+                "neither": 7
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 7
+              },
+              "oracleRankBuckets": {
+                "1": 2,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 5
+              }
+            },
+            "combined": {
+              "actualCorrect": 0,
+              "kindCorrect": 1,
+              "oracleCorrect": 1,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 1,
+                "coordinateOnly": 1,
+                "neither": 7
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 3,
+                ">10": 6
+              },
+              "oracleRankBuckets": {
+                "1": 1,
+                "2-5": 1,
+                "6-10": 3,
+                ">10": 4
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 1,
+              "oracleCorrect": 2,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 1,
+                "coordinateOnly": 2,
+                "neither": 6
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 3,
+                ">10": 6
+              },
+              "oracleRankBuckets": {
+                "1": 2,
+                "2-5": 0,
+                "6-10": 3,
+                ">10": 4
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 1,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 1,
+                "neither": 8
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 8
+              },
+              "oracleRankBuckets": {
+                "1": 1,
+                "2-5": 1,
+                "6-10": 1,
+                ">10": 6
+              }
+            }
+          }
+        }
+      },
+      "byFamily": {
+        "sparse": {
+          "examples": 5,
+          "distinctFixtures": 5,
+          "observationsPerFixtureHistogram": {
+            "1": 5
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 2,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 2,
+                "neither": 3
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 4
+              },
+              "oracleRankBuckets": {
+                "1": 2,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 3
+              }
+            },
+            "combined": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 1,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 1,
+                "neither": 4
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 3
+              },
+              "oracleRankBuckets": {
+                "1": 1,
+                "2-5": 1,
+                "6-10": 1,
+                ">10": 2
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 2,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 2,
+                "neither": 3
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 3
+              },
+              "oracleRankBuckets": {
+                "1": 2,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 2
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 1,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 1,
+                "neither": 4
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 5
+              },
+              "oracleRankBuckets": {
+                "1": 1,
+                "2-5": 1,
+                "6-10": 0,
+                ">10": 3
+              }
+            }
+          }
+        },
+        "pressure": {
+          "examples": 8,
+          "distinctFixtures": 8,
+          "observationsPerFixtureHistogram": {
+            "1": 8
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 4,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 4,
+                "coordinateOnly": 0,
+                "neither": 4
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 3,
+                ">10": 5
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 4,
+                ">10": 4
+              }
+            },
+            "combined": {
+              "actualCorrect": 0,
+              "kindCorrect": 5,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 5,
+                "coordinateOnly": 0,
+                "neither": 3
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 7
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 6
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 5,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 5,
+                "coordinateOnly": 0,
+                "neither": 3
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 6
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 3,
+                ">10": 5
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 4,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 4,
+                "coordinateOnly": 0,
+                "neither": 4
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 7
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 7
+              }
+            }
+          }
+        }
+      },
+      "byTeacherSearch": {
+        "complete": {
+          "examples": 5,
+          "distinctFixtures": 5,
+          "observationsPerFixtureHistogram": {
+            "1": 5
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 4,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 4,
+                "coordinateOnly": 0,
+                "neither": 1
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 3,
+                ">10": 2
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 3,
+                ">10": 2
+              }
+            },
+            "combined": {
+              "actualCorrect": 0,
+              "kindCorrect": 4,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 4,
+                "coordinateOnly": 0,
+                "neither": 1
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 4
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 4
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 4,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 4,
+                "coordinateOnly": 0,
+                "neither": 1
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 3
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 3
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 4,
+              "oracleCorrect": 0,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 4,
+                "coordinateOnly": 0,
+                "neither": 1
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 4
+              },
+              "oracleRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 4
+              }
+            }
+          }
+        },
+        "incomplete": {
+          "examples": 8,
+          "distinctFixtures": 8,
+          "observationsPerFixtureHistogram": {
+            "1": 8
+          },
+          "models": {
+            "control": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 2,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 2,
+                "neither": 6
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 7
+              },
+              "oracleRankBuckets": {
+                "1": 2,
+                "2-5": 0,
+                "6-10": 1,
+                ">10": 5
+              }
+            },
+            "combined": {
+              "actualCorrect": 0,
+              "kindCorrect": 1,
+              "oracleCorrect": 1,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 1,
+                "coordinateOnly": 1,
+                "neither": 6
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 6
+              },
+              "oracleRankBuckets": {
+                "1": 1,
+                "2-5": 1,
+                "6-10": 2,
+                ">10": 4
+              }
+            },
+            "pointOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 1,
+              "oracleCorrect": 2,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 1,
+                "coordinateOnly": 2,
+                "neither": 5
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 6
+              },
+              "oracleRankBuckets": {
+                "1": 2,
+                "2-5": 0,
+                "6-10": 2,
+                ">10": 4
+              }
+            },
+            "kindOnly": {
+              "actualCorrect": 0,
+              "kindCorrect": 0,
+              "oracleCorrect": 1,
+              "joint": {
+                "bothCorrect": 0,
+                "kindOnly": 0,
+                "coordinateOnly": 1,
+                "neither": 7
+              },
+              "fullRankBuckets": {
+                "1": 0,
+                "2-5": 0,
+                "6-10": 0,
+                ">10": 8
+              },
+              "oracleRankBuckets": {
+                "1": 1,
+                "2-5": 1,
+                "6-10": 0,
+                ">10": 6
+              }
+            }
+          }
+        }
+      },
+      "legalityByTeacherSearch": {
+        "pointOnlyLegal": {
+          "complete": {
+            "examples": 4,
+            "distinctFixtures": 4,
+            "observationsPerFixtureHistogram": {
+              "1": 4
+            },
+            "models": {
+              "control": {
+                "actualCorrect": 0,
+                "kindCorrect": 4,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 4,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 2,
+                  ">10": 2
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 2,
+                  ">10": 2
+                }
+              },
+              "combined": {
+                "actualCorrect": 0,
+                "kindCorrect": 4,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 4,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 4
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 4
+                }
+              },
+              "pointOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 4,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 4,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 3
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 3
+                }
+              },
+              "kindOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 4,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 4,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 4
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 4
+                }
+              }
+            }
+          },
+          "incomplete": {
+            "examples": 0,
+            "distinctFixtures": 0,
+            "observationsPerFixtureHistogram": {},
+            "models": {
+              "control": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                }
+              },
+              "combined": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                }
+              },
+              "pointOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                }
+              },
+              "kindOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 0
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 0
+                }
+              }
+            }
+          }
+        },
+        "multipleLegalKinds": {
+          "complete": {
+            "examples": 1,
+            "distinctFixtures": 1,
+            "observationsPerFixtureHistogram": {
+              "1": 1
+            },
+            "models": {
+              "control": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 1
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 0
+                }
+              },
+              "combined": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 1
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 0
+                }
+              },
+              "pointOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 1
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 0
+                }
+              },
+              "kindOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 0,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 0,
+                  "neither": 1
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 0
+                },
+                "oracleRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 0
+                }
+              }
+            }
+          },
+          "incomplete": {
+            "examples": 8,
+            "distinctFixtures": 8,
+            "observationsPerFixtureHistogram": {
+              "1": 8
+            },
+            "models": {
+              "control": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 2,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 2,
+                  "neither": 6
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 7
+                },
+                "oracleRankBuckets": {
+                  "1": 2,
+                  "2-5": 0,
+                  "6-10": 1,
+                  ">10": 5
+                }
+              },
+              "combined": {
+                "actualCorrect": 0,
+                "kindCorrect": 1,
+                "oracleCorrect": 1,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 1,
+                  "coordinateOnly": 1,
+                  "neither": 6
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 2,
+                  ">10": 6
+                },
+                "oracleRankBuckets": {
+                  "1": 1,
+                  "2-5": 1,
+                  "6-10": 2,
+                  ">10": 4
+                }
+              },
+              "pointOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 1,
+                "oracleCorrect": 2,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 1,
+                  "coordinateOnly": 2,
+                  "neither": 5
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 2,
+                  ">10": 6
+                },
+                "oracleRankBuckets": {
+                  "1": 2,
+                  "2-5": 0,
+                  "6-10": 2,
+                  ">10": 4
+                }
+              },
+              "kindOnly": {
+                "actualCorrect": 0,
+                "kindCorrect": 0,
+                "oracleCorrect": 1,
+                "joint": {
+                  "bothCorrect": 0,
+                  "kindOnly": 0,
+                  "coordinateOnly": 1,
+                  "neither": 7
+                },
+                "fullRankBuckets": {
+                  "1": 0,
+                  "2-5": 0,
+                  "6-10": 0,
+                  ">10": 8
+                },
+                "oracleRankBuckets": {
+                  "1": 1,
+                  "2-5": 1,
+                  "6-10": 0,
+                  ">10": 6
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalCompute": {
+    "modelCreation": 0,
+    "checkpointDeserialization": 0,
+    "forward": 0,
+    "training": 0,
+    "teacherDomainEpisodeTestRollout": 0
+  },
+  "limits": [
+    "Descriptive selected-checkpoint fitting on known train/dev; no learning-curve, capacity, optimization, causal, held-out, survival or product conclusion",
+    "Inherited successful archive validation; three pinned raw files provide full rows, and the derived selected-change cases are explicitly partial",
+    "Counts are observations; multiple observations may share a fixture. Splits and strata are descriptive, not randomized treatments.",
+    "Oracle rank is within teacher kind; full rank is among all candidates. No new score, gate, epoch, label, routing or policy is selected.",
+    "Search complete is limited to original search scope, not an optimality or label-quality certificate.",
+    "Identifiers, actions, coordinates and observation-level predictions remain private; original model gates FAIL and app DFS remain unchanged."
+  ]
+}
