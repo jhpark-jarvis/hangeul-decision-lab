@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "stored-point-fit-v1",
+  "method": "Selected-checkpoint train/dev point fitting, stored rows only",
+  "inputFiles": {
+    "cases.json": "6622668f326db2e82ab8797b03bf144bbcf1a3798a907469c618a469e5a1ef83",
+    "summary.json": "7336e27d589d7de3336f9031e7679758a67fced85a83df7b3d0d4bfb3af90446",
+    "report.json": "d20d5ede78f62b202591619089d2b4ae8fb3562cdaf89d4d393bd36ae791fbbc"
+  },
+  "upstreamAsset": {
+    "path": "assets/research/four-objective-errors-20261022-v1.json",
+    "sha256": "2b465d07ffe1351c1875c58618331a9245a5a0cfacd6d43023f11f5e9cebe92e"
+  },
+  "splits": { "train": 339, "dev": 89 },
+  "pointExamples": { "train": 52, "dev": 13 },
+  "models": ["control", "combined", "pointOnly", "kindOnly"],
+  "selectedEpochs": {
+    "control": 11,
+    "combined": 12,
+    "pointOnly": 11,
+    "kindOnly": 12
+  },
+  "rankBuckets": ["1", "2-5", "6-10", ">10"],
+  "boundaries": {
+    "additionalModelCreationLoadForwardTraining": 0,
+    "teacherDomainEpisodeTestRollout": 0,
+    "newScoreSelectionLabelOrPolicy": false,
+    "publicAggregateOnly": true,
+    "archiveVerification": "Inherited successful frozen archive validation; only the three pinned derived files are read here",
+    "interpretation": "Descriptive selected-checkpoint fitting on known train/dev; no learning-curve, capacity, optimization, causal, held-out, survival or product conclusion"
+  }
+}
