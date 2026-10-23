@@ -157,7 +157,7 @@ function fixture() {
   };
   return { cases, upstream };
 }
-function diskFixture() {
+function diskFixture({ changed = false } = {}) {
   const base = resolve(ROOT, ".research-output");
   mkdirSync(base, { recursive: true });
   const root = mkdtempSync(resolve(base, "point-fit-test-")),
@@ -189,7 +189,7 @@ function diskFixture() {
         teacherKindCandidates: r.candidates,
         oracleIndex: 0,
         oracleRank: m.oracleRank,
-        oracleNll: m.oracleNll,
+        oracleNll: m.oracleCorrect ? -0 : m.oracleNll,
         oracleCorrect: m.oracleCorrect,
       },
       fullScore: {
@@ -216,6 +216,10 @@ function diskFixture() {
       ),
     ]),
   );
+  if (changed) {
+    rawByModel.combined.train[1].selectedIndex = 1;
+    rawByModel.combined.train[1].fullScore.index = 1;
+  }
   const selectedChanges = {};
   for (const s of ["train", "dev"]) {
     const group = Object.fromEntries(MODELS.map((n) => [n, rawByModel[n][s]]));
@@ -230,6 +234,14 @@ function diskFixture() {
       control: rawByModel.control,
       candidate: rawByModel[n],
     });
+    const path = resolve(archives[n], "raw.json");
+    writeFileSync(
+      path,
+      readFileSync(path, "utf8").replaceAll(
+        '"oracleNll": 0',
+        '"oracleNll": -0.0',
+      ),
+    );
   }
   write(resolve(input, "cases.json"), selectedChanges);
   write(resolve(input, "summary.json"), upstream);
@@ -597,4 +609,18 @@ test("raw byte drift and common-control identity drift fail with original files 
   const config = copy(f.config);
   config.rawInputs.kindOnly = sha(p);
   assert.throws(() => loadSaved(f.input, config, f.root, f));
+});
+test("JSON-normalized partial cases and aggregates preserve raw negative-zero NLL bytes", () => {
+  const f = diskFixture({ changed: true }),
+    p = resolve(f.combined, "raw.json"),
+    before = sha(p),
+    raw = JSON.parse(readFileSync(p));
+  assert(Object.is(raw.candidate.train[1].conditional.oracleNll, -0));
+  assert.equal(
+    JSON.parse(readFileSync(resolve(f.input, "cases.json"))).train.length,
+    1,
+  );
+  const loaded = loadSaved(f.input, f.config, f.root, f);
+  assert.equal(loaded.cases.train.length, 6);
+  assert.equal(sha(p), before);
 });

@@ -327,12 +327,12 @@ export function loadSaved(directory, config, root = ROOT, archives) {
     assert.deepEqual(raw.combined.control[split], raw.kindOnly.control[split]);
     cases[split] = projectFullRows(group);
     assert.deepEqual(
-      privateCases(group),
+      JSON.parse(JSON.stringify(privateCases(group))),
       selectedChanges[split],
       "Partial selected-change cases drift",
     );
     assert.deepEqual(
-      summarizeRows(group),
+      JSON.parse(JSON.stringify(summarizeRows(group))),
       upstream.splits[split],
       "Original full four-model aggregate drift",
     );
