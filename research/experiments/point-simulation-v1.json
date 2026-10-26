@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "point-simulation-v1",
+  "profile": "controlled-single-point-line-unlock",
+  "fixtureCount": 160,
+  "rows": 16,
+  "cols": 10,
+  "repetitions": 2,
+  "nodeBudgets": [128, 512],
+  "referenceMaxNodes": 256,
+  "maxActions": 2,
+  "useMemoization": true,
+  "maxAlternatives": 3,
+  "modelCreationLoadForwardTraining": 0,
+  "existingDatasetLabelChanges": false,
+  "randomSupplyOrNewItems": false,
+  "realGameAcceptance": "BLOCKED_NO_GAME_SCREEN"
+}
