@@ -18,7 +18,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이후 네 objective의 저장 결과를 대조했다. Dev 점 찍기 정답은 모두 0/13이었고, 선택된 checkpoint의 **train 점 찍기 정답도 control/combined/point-only/kind-only 순서로 0/2/1/1건, 분모는 52건**이었다. 점 찍기만 합법인 train 9건은 네 모델 모두 좌표 정답이 없었다. 현재 근거는 fitting 진단을 다음 연구 우선순위로 삼을 이유이며, 실패 원인을 모델 용량이나 최적화 중 하나로 확정하지 않는다.
 
-5.12–5.29는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+실제 게임 화면에 접근할 수 없는 상태에서도 연구를 이어가기 위해, 점 찍기로 막힌 조각을 해금하는 **160개 좌표의 통제 시뮬레이션**을 추가했다. 이 작은 현재 턴 문제에서 DFS128/512는 완전 열거 reference와 160/160 일치했다. 기존 CNN은 이 실험에서 실행하지 않았으며, 합성 결과를 실제 게임·모델 fitting·장기 생존 성능으로 확대하지 않는다.
+
+5.12–5.30은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1032,6 +1034,50 @@ Train point 52개 관측은 **49개 fixture**에서 나왔다. Dev point는 13�
 ```sh
 node --test scripts/research/test-stored-point-fit.mjs scripts/research/test-four-objectives.mjs scripts/research/test-objective-error-comparison.mjs
 node scripts/research/analyze-stored-point-fit.mjs --input <frozen-four-objective-output> --combined <frozen-combined-run> --point-only <frozen-point-only-run> --kind-only <frozen-kind-only-run> --output .research-output/stored-point-fit-new
+```
+
+### 5.30 Controlled Point Simulation Without a Game Screen
+
+**합성 시뮬레이션 — 2026-10-26.** 실제 화면 없이도 정답·합법 행동·전이·좌표 입력을 검증할 수 있도록 작은 scripted 환경을 추가했다. 기존 랜덤 공급 simulator와 구분되는 **현재 턴, 최대 두 행동**의 통제 실험이다. 기존 train/dev/test·CNN·teacher label은 바꾸지 않았다.
+
+16행 × 10열의 **모든 160개 칸**을 한 번씩 정답 위치로 삼았다. 보드에는 가로 3칸 조각 하나와 점 찍기 능력 하나만 남아 있다. 정답 행은 빈칸이 하나, 다른 행은 서로 엇갈린 빈칸이 둘씩이라 처음에는 일반 조각을 놓을 수 없다. 아이템·재뽑기·다음 조각 공급은 없다.
+
+```mermaid
+flowchart LR
+    A["합법 점 찍기 후보 31개"] --> B["정답 1개: 가로줄 삭제"]
+    B --> C["가로 3칸 조각 배치 8개"]
+    C --> D["현재 조각 소진 · 다음 입력 대기"]
+    A --> E["다른 30개: 줄 삭제 없음"]
+    E --> F["능력 소진 · 합법 행동 없음"]
+```
+
+Reference는 **모든 합법 행동을 깊이 2까지 열거**한다. 기존 domain 전이와 lexicographic evaluator를 공유하지만 DFS의 탐색 순서·memo·pruning을 사용하지 않는다. 각 보드에서 **40노드·38개 leaf**를 완전히 방문했고, 최적 첫 행동은 구성한 정답 좌표 하나뿐이었다. 예산이 부족한 reference는 최적 행동 집합을 반환하지 않는다.
+
+각 보드를 두 번 실행해 결과가 일치하는지 검사했다. 아래 표의 분모는 **160개 보드**이며 반복을 더해 320개 표본으로 세지 않는다. 모든 정책에는 현재 상태만 전달하고, 기대 정답 위치는 비교에만 사용했다.
+
+| 정책               | 정답 첫 수 / 160 | 현재 조각 소진 / 160 | Reference 최종 평가 일치 / 160 |
+| ------------------ | ---------------- | -------------------- | ------------------------------ |
+| First-legal        | 10               | 10                   | 0                              |
+| 즉시 줄삭제 greedy | 160              | 160                  | 90                             |
+| 기존 DFS, 예산 128 | 160              | 160                  | 160                            |
+| 기존 DFS, 예산 512 | 160              | 160                  | 160                            |
+
+First-legal의 성공 10건은 정답이 맨 위 행에 있는 보드였다. 즉시 줄삭제 greedy는 점 찍기 위치는 모두 맞혔지만, 이후 조각 배치를 포함한 **전체 lexicographic 평가**는 90건에서 reference와 같았다. 첫 좌표 정답·조각 소진·최종 배치 품질은 서로 다른 지표다.
+
+두 DFS는 모두 탐색을 완료했고, 보드당 실제 방문은 **41노드**였다. 이 구성에서는 128과 512의 상한 차이가 결과나 방문 수를 바꾸지 않았다. 더 어려운 보드에서도 작은 예산이면 충분하다는 뜻은 아니다. Best와 반환 대안은 원래 domain으로 다시 적용해 최종 상태·평가를 대조했다.
+
+기존 base encoder의 **3개 plane·140개 metadata·52개 candidate feature**도 확인했다. 160개 관측은 서로 구별됐고, 각 보드의 31개 점 찍기 후보도 서로 다른 feature를 가졌다. 이 집합에서 입력 충돌이 없다는 결과이며, CNN이 이를 학습할 수 있다거나 기존 train 오답의 원인이 해결됐다는 증거는 아니다. **이번 모델 생성·checkpoint 역직렬화·forward·학습은 모두 0회**다.
+
+원래 raw에서 별도로 **4,960개 점 찍기 전이의 기하 조건**과 **1,280개 해금 후 최종 배치 평가**를 대조했다. 기하 검사는 이 no-item LINE_3 구성만 다루며, 최종 평가 재검사는 기존 evaluator를 공유한다. 실제 이벤트 규칙의 독립 검증이나 장기 생존 oracle로 해석하지 않는다.
+
+이 환경은 다음 **작은 고정 집합 fitting 진단**에 쓸 수 있는 정답 검증 기반이다. 학습자료 채택·추가 학습·새 모델/loss/정책 실험은 아직 하지 않았다. 실제 게임/화면 수락은 접근 불가로 보류됐으며 합성 PASS가 이를 대신하지 않는다. 기존 CNN gate FAIL·미채택과 앱 DFS를 유지한다.
+
+[고정 profile](research/experiments/point-simulation-v1.json), [pure TS 환경·reference](src/research/point-simulation.ts), [검사](tests/research/point-simulation.test.ts), [비민감 집계와 한계](assets/research/point-simulation-20261026-v1.json)를 제공한다. CLI는 기존 TypeScript compiler로 연구 모듈을 실행하며, source/config/lock hash와 환경·반복·실패 기록을 새 로컬 output에 남긴다. 원본 화면이나 기존 모델 자료는 필요하지 않다.
+
+```sh
+pnpm exec vitest run tests/research/point-simulation.test.ts
+node --test scripts/research/test-point-simulation-cli.mjs
+node scripts/research/point-simulation.mjs --output .research-output/point-simulation-new
 ```
 
 ## 6. Reproduction and Usage

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "id": "point-simulation-v1",
+  "status": "PASS",
+  "protocol": {
+    "schemaVersion": 1,
+    "id": "point-simulation-v1",
+    "profile": "controlled-single-point-line-unlock",
+    "fixtureCount": 160,
+    "rows": 16,
+    "cols": 10,
+    "repetitions": 2,
+    "nodeBudgets": [128, 512],
+    "referenceMaxNodes": 256,
+    "maxActions": 2,
+    "useMemoization": true,
+    "maxAlternatives": 3,
+    "modelCreationLoadForwardTraining": 0,
+    "existingDatasetLabelChanges": false,
+    "randomSupplyOrNewItems": false,
+    "realGameAcceptance": "BLOCKED_NO_GAME_SCREEN"
+  },
+  "summary": {
+    "fixtures": 160,
+    "distinctTargets": 160,
+    "distinctBaseObservations": 160,
+    "distinctCandidateFeaturesEveryFixture": true,
+    "legalCandidateRange": [31, 31],
+    "reference": {
+      "complete": 160,
+      "uniqueOptimalFirstActions": 160,
+      "nodeRange": [40, 40],
+      "maxDepth": 2
+    },
+    "policies": {
+      "first-legal": {
+        "correctFirst": 10,
+        "allPiecesPlaced": 10,
+        "clearedRows": 10,
+        "referenceEvaluationMatch": 0,
+        "searchComplete": null,
+        "visitedNodes": null
+      },
+      "immediate-clear": {
+        "correctFirst": 160,
+        "allPiecesPlaced": 160,
+        "clearedRows": 160,
+        "referenceEvaluationMatch": 90,
+        "searchComplete": null,
+        "visitedNodes": null
+      },
+      "dfs-128": {
+        "correctFirst": 160,
+        "allPiecesPlaced": 160,
+        "clearedRows": 160,
+        "referenceEvaluationMatch": 160,
+        "searchComplete": 160,
+        "visitedNodes": 6560
+      },
+      "dfs-512": {
+        "correctFirst": 160,
+        "allPiecesPlaced": 160,
+        "clearedRows": 160,
+        "referenceEvaluationMatch": 160,
+        "searchComplete": 160,
+        "visitedNodes": 6560
+      }
+    }
+  },
+  "repetitionsExact": true,
+  "simulationCalls": {
+    "reference": 320,
+    "dfs": 640
+  },
+  "additionalCompute": {
+    "modelCreation": 0,
+    "checkpointDeserialization": 0,
+    "forward": 0,
+    "training": 0,
+    "existingTeacherLabelChanges": 0
+  },
+  "limits": [
+    "Constructed two-action coordinate diagnostic; no actual game distribution, capture or native sharing validation",
+    "Exhaustive reference shares domain transitions/evaluator; no independent proof of those game rules",
+    "Base encoder has distinct input contexts/candidates here; no neural representability, fitting or generalization conclusion",
+    "Current-turn completion is not long-term survival; no supply, random outcomes, new items, held-out evaluation or learned-policy adoption",
+    "Existing CNNs were not run and their previous gates remain FAIL; application policy remains DFS"
+  ]
+}
