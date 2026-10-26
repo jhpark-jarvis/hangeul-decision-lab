@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "id": "controlled-point-fit-proposal-v1",
+  "status": "PROPOSED_NOT_RUN",
+  "approval": "DESIGN_AND_PUBLICATION_ONLY",
+  "executionRequiresSeparateUserDecision": true,
+  "evidence": {
+    "path": "assets/research/point-simulation-20261026-v1.json",
+    "sha256": "19a19ec2ffe2368a01cc276e489e2b05da3166c49497c6473789fc71102dafb2"
+  },
+  "sourceHashes": {
+    "src/research/point-simulation.ts": "c4694ad790569c2eb438c959b7198ca9a7e745c0304ea9f64fd193fd05520e31",
+    "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+    "src/research/action-outcome.ts": "97b896d89a6e593dd839e7d9451402f6bbae334afa8cebeed6584615603cadde",
+    "src/research/spatial-footprint.ts": "09eff60bff74b1fa8a1f70b50c3a20243887d4ec3fc08159c73de498d0493ca4",
+    "research/cnn/model.py": "5d9809c50d8e8be1a79bb7c2a4252a8e39a7d7244276c4d479b421cf2306e3ac",
+    "research/cnn/outcome.py": "d306607902b0bbfdf265dbb2ee9c4f5a6136df2d54cb5339961c89790155a2c2",
+    "research/cnn/spatial.py": "f86df1f9c6528572fb6aa1f3b50d877d4bcb9b2d8be6825d3d8d9644ee21a87c",
+    "research/experiments/spatial-residual-v1.json": "178b0d3681b930653e4b31dd67430765fdcc895ed55ee08072a8a5c9070f9d33"
+  },
+  "dataset": {
+    "profile": "controlled-single-point-line-unlock",
+    "selection": "For each row r=0..15, choose pointFixtures()[10*r + (3*r)%10]; preserve increasing row order",
+    "examples": 16,
+    "legalCandidatesPerExample": 31,
+    "totalCandidates": 496,
+    "distinctRows": 16,
+    "distinctColumns": 10,
+    "split": "fit-only",
+    "oldDatasetOrLabelChanges": false,
+    "label": "Unique complete pointReference optimal first action, mapped to unchanged legal candidate order; STOP on incomplete or nonunique reference",
+    "referenceMaxNodesPerExample": 256,
+    "totalReferenceNodeCap": 4096,
+    "outcomeTransitions": 496,
+    "dfsCalls": 0,
+    "materialization": "Future approved execution only; new isolated artifact, never appended to previous train/dev/test"
+  },
+  "input": {
+    "planes": [3, 16, 10],
+    "metadata": 140,
+    "candidateFeatures": 74,
+    "footprint": [1, 16, 10],
+    "construction": "Unchanged encodeDecision 52 features + actionOutcome 22 features for every legal candidate + encodeFootprints binary geometry; no target, label, key, fixture id or reference score enters forward",
+    "shortcut": "Outcome feature index 52 is clearedRows/16 and separates the unique target in every example; fitting cannot establish spatial reasoning or residual necessity"
+  },
+  "model": {
+    "architecture": "Unmodified SpatialCandidateCNN v3",
+    "parameters": 13292,
+    "chunk": 32,
+    "residualScale": 1,
+    "initialization": "Cold same-seed make_model spatial; unchanged zero-initialized residual output; no old checkpoint load",
+    "config": {
+      "seed": 20261008,
+      "epochs": 12,
+      "batchSize": 8,
+      "threads": 2,
+      "convChannels": 8,
+      "embedding": 32,
+      "poolRows": 4,
+      "poolCols": 5,
+      "learningRate": 0.001,
+      "weightDecay": 0.0001
+    },
+    "interopThreads": 1
+  },
+  "fit": {
+    "runs": 1,
+    "optimizer": "Adam",
+    "steps": 200,
+    "observationsPerStep": 16,
+    "order": "Fixed increasing row order; one optimizer update after all 16 per-example forward/backward operations",
+    "loss": "Mean native float32 cross_entropy over all 31 original candidates for each of 16 observations; flat loss only",
+    "selection": "Final step 200 only; no early stop, best-step reselection, extra seed, sweep, retry or continuation",
+    "evaluation": "16 initial no-grad calls; 200*16 training calls; 2*16 final no-grad calls in eval mode on the same in-memory final model; original first-index raw argmax",
+    "oldFitRunner": "Do not call or modify fit_fixed; the future isolated runner implements fixed updates without dev selection"
+  },
+  "forwardBudget": {
+    "initial": 16,
+    "training": 3200,
+    "finalTwoRepeats": 32,
+    "totalTopLevelMax": 3248,
+    "modelCreations": 1,
+    "checkpointLoads": 0,
+    "scope": "Count before each top-level SpatialCandidateCNN call; internal common/residual modules are not separate top-level calls; no extra telemetry or warmup forward"
+  },
+  "resources": {
+    "children": 1,
+    "childWallSeconds": 600,
+    "supervisorWallSeconds": 660,
+    "sampledWorkingSetBytes": 2147483648,
+    "runtime": "Existing CPU PyTorch only; no install, GPU, service or external data transfer",
+    "limits": "Hard supervisor timeout; child sampled RSS at preparation, before/after each update and evaluation; instantaneous peak not measured; ledger and partial outputs retained on STOP"
+  },
+  "acceptance": {
+    "technical": "Exact source/config/data freeze, complete unique labels, legal order/schema, finite losses/gradients, exact ledger, immutable originals, repeat final logits and predictions byteexact",
+    "fit": {
+      "correct": 16,
+      "examples": 16,
+      "maximumMeanNll": 0.05,
+      "minimumEveryTargetMargin": 0
+    },
+    "margin": "Every target logit minus highest non-target logit must be strictly greater than zero",
+    "diagnostics": "Initial and final top1/mean NLL/per-example target rank and margin; per-update mean training loss; no intermediate extra inference",
+    "decision": "Technical PASS and fitting PASS are separate. Technical failure STOP; compliant run missing any fit criterion is fit FAIL, not proof of insufficient capacity. Even fit PASS cannot change prior gates or app policy"
+  },
+  "boundaries": {
+    "designModelCreationLoadForwardTraining": 0,
+    "designDomainTeacherDatasetMaterialization": 0,
+    "trainingRunnerImplemented": false,
+    "originalFilesImmutable": true,
+    "reservedTestAccess": false,
+    "devSelection": false,
+    "kindSelectionTested": false,
+    "rolloutOrRl": false,
+    "appUsesDfs": true,
+    "rawDatasetWeightsLogitsPrivate": true,
+    "publicValidation": "Node stdlib static contract, source/evidence byte hashes and deterministic subset/budget arithmetic only; no Python imports, model or domain execution",
+    "interpretation": "Proposed pipeline sanity/fit-only diagnostic, no comparator training arm, held-out generalization, spatial mechanism, prior failure repair, long survival, or product acceptance claim",
+    "failure": "STOP on mismatch, nonfinite, exhausted budget, process failure or overwrite; preserve partial evidence; no retry or automatic tuning",
+    "future": "Separate explicit decision required for synthetic fit data materialization, one 200-update CPU training run and at most 3248 top-level forward calls; prior budgets are spent"
+  }
+}

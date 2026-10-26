@@ -20,7 +20,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 실제 게임 화면에 접근할 수 없는 상태에서도 연구를 이어가기 위해, 점 찍기로 막힌 조각을 해금하는 **160개 좌표의 통제 시뮬레이션**을 추가했다. 이 작은 현재 턴 문제에서 DFS128/512는 완전 열거 reference와 160/160 일치했다. 기존 CNN은 이 실험에서 실행하지 않았으며, 합성 결과를 실제 게임·모델 fitting·장기 생존 성능으로 확대하지 않는다.
 
-5.12–5.30은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.31은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1079,6 +1079,36 @@ pnpm exec vitest run tests/research/point-simulation.test.ts
 node --test scripts/research/test-point-simulation-cli.mjs
 node scripts/research/point-simulation.mjs --output .research-output/point-simulation-new
 ```
+
+### 5.31 Proposed Fit-Only Diagnostic on 16 Controlled Boards
+
+**Status: PROPOSED / NOT_RUN.** 현재 단계는 실험 계약과 Node 정적 검증이다. 학습용 자료 생성, 모델 생성·추론·학습은 실행하지 않았다.
+
+앞선 selected-checkpoint 분석은 점 찍기 fitting 진단의 필요성을 보여 줬다. 다음 제안은 5.30의 통제 보드 중 **16개를 같은 모델이 외울 수 있는지** 확인하는 작은 pipeline 검사다. 원래 train/dev/test 자료를 교체하거나 추가하지 않는다.
+
+| 항목         | 고정 제안                                                                                                                         |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| Fit 집합     | 각 행 r에서 열 3r mod 10을 선택한 16개 보드. 16행·10열을 덮으며, 각 보드의 합법 후보는 점 찍기 31개다.                            |
+| Target       | 완전 열거 reference의 유일한 최적 첫 행동. 기존 합법 후보 순서의 index로 저장한다.                                                |
+| 모델·입력    | 기존 SpatialCandidateCNN v3, 13,292 parameters. Board 3 planes, metadata 140, candidate 74 features, binary footprint를 유지한다. |
+| 학습         | Cold initialization, seed 20261008, Adam, learning rate 0.001, weight decay 0.0001. Flat CE만 사용한다.                           |
+| Schedule     | 단일 run, full-batch 16개로 200회 update. 최종 step만 평가하며 중간 최고 checkpoint를 고르지 않는다.                              |
+| Forward 상한 | 초기 16 + 학습 3,200 + 최종 반복 32 = **3,248 top-level calls**.                                                                  |
+| 자원 상한    | 기존 CPU 환경. Child 600초, supervisor 660초, sampled working set 2 GiB. 순간 peak를 측정하는 기준은 아니다.                      |
+| Fit PASS     | 최종 16/16 정답, 평균 NLL ≤ 0.05, 모든 target margin > 0, 최종 두 평가의 logits·예측 일치.                                        |
+
+모델 생성용 config의 기존 epochs 12와 batch size 8은 보존한다. 이 제안의 실제 schedule은 별도 wrapper에서 200 full-batch update로 정의하며, 원래 dev 최고 checkpoint를 고르는 학습 함수를 호출하지 않는다. Training runner는 아직 구현하지 않았다.
+
+이 집합에는 **쉬운 단서가 이미 입력에 포함돼 있다.** Candidate feature index 52의 즉시 삭제 행 수가 유일한 정답을 구별한다. 따라서 성공해도 spatial residual의 필요성, 공간 추론, 행동 종류 선택, held-out generalization을 입증하지 않는다. 실패 역시 모델 용량 부족으로 단정할 수 없다. 기술적 실행 준수와 fitting 결과를 별도로 보고하며, 기존 CNN gate·앱 DFS·실제 화면 수락 상태는 바꾸지 않는다.
+
+실행에는 새 synthetic fit 자료 생성과 단일 CPU 학습에 대한 별도 결정이 필요하다. 정적 검증은 공개 evidence와 source byte hash, subset 선택, 계산 예산과 미실행 경계만 확인한다. Python import, domain 실행, dataset materialization은 없다.
+
+```sh
+node scripts/research/validate-controlled-point-fit-proposal.mjs
+node --test scripts/research/test-controlled-point-fit-proposal.mjs
+```
+
+[Machine-readable proposal](research/experiments/controlled-point-fit-proposal-v1.json) · [Static validator](scripts/research/validate-controlled-point-fit-proposal.mjs). 이 명령의 PASS는 계약 검증 결과이며 학습 결과가 아니다.
 
 ## 6. Reproduction and Usage
 
