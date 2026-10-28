@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "id": "controlled-point-fit-v1",
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "approval": "USER_APPROVED",
+  "decision": "User approved the fixed 16-example, one-run 200-update CPU fit and its bounded 3248 top-level calls.",
+  "proposalPath": "research/experiments/controlled-point-fit-proposal-v1.json",
+  "proposalSha256": "d40375519043d4dd6c39250927421ec39a216eb7c5fe723dbd18d9a214eabcdf",
+  "contract": {
+    "dataset": {
+      "profile": "controlled-single-point-line-unlock",
+      "selection": "For each row r=0..15, choose pointFixtures()[10*r + (3*r)%10]; preserve increasing row order",
+      "examples": 16,
+      "legalCandidatesPerExample": 31,
+      "totalCandidates": 496,
+      "distinctRows": 16,
+      "distinctColumns": 10,
+      "split": "fit-only",
+      "oldDatasetOrLabelChanges": false,
+      "label": "Unique complete pointReference optimal first action, mapped to unchanged legal candidate order; STOP on incomplete or nonunique reference",
+      "referenceMaxNodesPerExample": 256,
+      "totalReferenceNodeCap": 4096,
+      "outcomeTransitions": 496,
+      "dfsCalls": 0,
+      "materialization": "Future approved execution only; new isolated artifact, never appended to previous train/dev/test"
+    },
+    "input": {
+      "planes": [3, 16, 10],
+      "metadata": 140,
+      "candidateFeatures": 74,
+      "footprint": [1, 16, 10],
+      "construction": "Unchanged encodeDecision 52 features + actionOutcome 22 features for every legal candidate + encodeFootprints binary geometry; no target, label, key, fixture id or reference score enters forward",
+      "shortcut": "Outcome feature index 52 is clearedRows/16 and separates the unique target in every example; fitting cannot establish spatial reasoning or residual necessity"
+    },
+    "model": {
+      "architecture": "Unmodified SpatialCandidateCNN v3",
+      "parameters": 13292,
+      "chunk": 32,
+      "residualScale": 1,
+      "initialization": "Cold same-seed make_model spatial; unchanged zero-initialized residual output; no old checkpoint load",
+      "config": {
+        "seed": 20261008,
+        "epochs": 12,
+        "batchSize": 8,
+        "threads": 2,
+        "convChannels": 8,
+        "embedding": 32,
+        "poolRows": 4,
+        "poolCols": 5,
+        "learningRate": 0.001,
+        "weightDecay": 0.0001
+      },
+      "interopThreads": 1
+    },
+    "fit": {
+      "runs": 1,
+      "optimizer": "Adam",
+      "steps": 200,
+      "observationsPerStep": 16,
+      "order": "Fixed increasing row order; one optimizer update after all 16 per-example forward/backward operations",
+      "loss": "Mean native float32 cross_entropy over all 31 original candidates for each of 16 observations; flat loss only",
+      "selection": "Final step 200 only; no early stop, best-step reselection, extra seed, sweep, retry or continuation",
+      "evaluation": "16 initial no-grad calls; 200*16 training calls; 2*16 final no-grad calls in eval mode on the same in-memory final model; original first-index raw argmax",
+      "oldFitRunner": "Do not call or modify fit_fixed; the future isolated runner implements fixed updates without dev selection"
+    },
+    "forwardBudget": {
+      "initial": 16,
+      "training": 3200,
+      "finalTwoRepeats": 32,
+      "totalTopLevelMax": 3248,
+      "modelCreations": 1,
+      "checkpointLoads": 0,
+      "scope": "Count before each top-level SpatialCandidateCNN call; internal common/residual modules are not separate top-level calls; no extra telemetry or warmup forward"
+    },
+    "resources": {
+      "children": 1,
+      "childWallSeconds": 600,
+      "supervisorWallSeconds": 660,
+      "sampledWorkingSetBytes": 2147483648,
+      "runtime": "Existing CPU PyTorch only; no install, GPU, service or external data transfer",
+      "limits": "Hard supervisor timeout; child sampled RSS at preparation, before/after each update and evaluation; instantaneous peak not measured; ledger and partial outputs retained on STOP"
+    },
+    "acceptance": {
+      "technical": "Exact source/config/data freeze, complete unique labels, legal order/schema, finite losses/gradients, exact ledger, immutable originals, repeat final logits and predictions byteexact",
+      "fit": {
+        "correct": 16,
+        "examples": 16,
+        "maximumMeanNll": 0.05,
+        "minimumEveryTargetMargin": 0
+      },
+      "margin": "Every target logit minus highest non-target logit must be strictly greater than zero",
+      "diagnostics": "Initial and final top1/mean NLL/per-example target rank and margin; per-update mean training loss; no intermediate extra inference",
+      "decision": "Technical PASS and fitting PASS are separate. Technical failure STOP; compliant run missing any fit criterion is fit FAIL, not proof of insufficient capacity. Even fit PASS cannot change prior gates or app policy"
+    }
+  },
+  "boundaries": {
+    "originalFilesImmutable": true,
+    "oldDatasetOrLabelChanges": false,
+    "reservedTestOrRollout": false,
+    "appUsesDfs": true,
+    "publicReplayAdditionalModelLoadForwardTraining": 0,
+    "rawDataWeightsLogitsPrivate": true,
+    "retryOrAdditionalTuning": false
+  }
+}
