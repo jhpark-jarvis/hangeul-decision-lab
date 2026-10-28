@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "id": "controlled-fit-duration-v1",
+  "technicalStatus": "PASS",
+  "durationScreen": {
+    "controlFit": false,
+    "candidateFit": true,
+    "status": "PASS"
+  },
+  "arms": {
+    "control": {
+      "initial": {
+        "examples": 16,
+        "correct": 1,
+        "meanNll": 3.433131918311119,
+        "minimumTargetMargin": -0.10113419592380524,
+        "maximumTargetRank": 30
+      },
+      "final": {
+        "examples": 16,
+        "correct": 15,
+        "meanNll": 2.5084412693977356,
+        "minimumTargetMargin": -0.30619263648986816,
+        "maximumTargetRank": 11
+      },
+      "fitGate": {
+        "status": "FAIL",
+        "checks": {
+          "allCorrect": false,
+          "meanNllAtMost005": false,
+          "everyTargetMarginPositive": false
+        }
+      },
+      "updates": 200,
+      "topLevelForwards": 3248,
+      "processWallSeconds": 26.5630816,
+      "pythonBodyWallSeconds": 23.273074899800122,
+      "maxSampledWorkingSetBytes": 289468416,
+      "targetMassGeometricMean": 0.08139501331003123,
+      "savedPreUpdateLoss": [
+        {
+          "step": 1,
+          "meanTrainingNll": 3.433131918311119
+        },
+        {
+          "step": 100,
+          "meanTrainingNll": 2.947608321905136
+        },
+        {
+          "step": 200,
+          "meanTrainingNll": 2.513610228896141
+        }
+      ]
+    },
+    "candidate": {
+      "initial": {
+        "examples": 16,
+        "correct": 1,
+        "meanNll": 3.433131918311119,
+        "minimumTargetMargin": -0.10113419592380524,
+        "maximumTargetRank": 30
+      },
+      "final": {
+        "examples": 16,
+        "correct": 16,
+        "meanNll": 0.03393840487115085,
+        "minimumTargetMargin": 4.100128173828125,
+        "maximumTargetRank": 1
+      },
+      "fitGate": {
+        "status": "PASS",
+        "checks": {
+          "allCorrect": true,
+          "meanNllAtMost005": true,
+          "everyTargetMarginPositive": true
+        }
+      },
+      "updates": 1000,
+      "topLevelForwards": 16048,
+      "processWallSeconds": 106.06128329999999,
+      "pythonBodyWallSeconds": 102.77263800008222,
+      "maxSampledWorkingSetBytes": 300695552,
+      "targetMassGeometricMean": 0.9666310425674811,
+      "savedPreUpdateLoss": [
+        {
+          "step": 1,
+          "meanTrainingNll": 3.433131918311119
+        },
+        {
+          "step": 100,
+          "meanTrainingNll": 2.947608321905136
+        },
+        {
+          "step": 200,
+          "meanTrainingNll": 2.513610228896141
+        },
+        {
+          "step": 400,
+          "meanTrainingNll": 1.1531992889940739
+        },
+        {
+          "step": 600,
+          "meanTrainingNll": 0.28464122395962477
+        },
+        {
+          "step": 800,
+          "meanTrainingNll": 0.09624041942879558
+        },
+        {
+          "step": 1000,
+          "meanTrainingNll": 0.03407425159821287
+        }
+      ]
+    }
+  },
+  "pairedTransitions": {
+    "bothCorrect": 15,
+    "recovered": 1,
+    "regressed": 0,
+    "bothWrong": 0
+  },
+  "nllDelta": -2.4745028645265847,
+  "controls": {
+    "original200Exact": true,
+    "initialsExact": true,
+    "modelAndHistoryPrefix200Exact": true,
+    "concurrentOptimizerPrefix200Exact": true,
+    "originalOptimizerStateAvailable": false
+  },
+  "actualCompute": {
+    "topLevelModels": 2,
+    "checkpointLoads": 0,
+    "trainingRuns": 2,
+    "updates": 1200,
+    "topLevelForwards": 19296,
+    "domainReferenceOrNewDataset": 0
+  },
+  "ownerWallSeconds": 133.09651760000003,
+  "instantaneousMemoryPeakMeasured": false,
+  "interpretation": "Single-seed fit-only update-count contrast with five times candidate training exposure, outcome shortcut retained; no equal-compute, calibration, spatial mechanism, kind-selection, old train/dev repair, generalization, survival or app adoption claim.",
+  "replayValidation": "Stored artifact hashes, approved contract and original proposal source identity; full execution source freeze was checked by owner/child. Weights and optimizer state are read as bytes/JSON only, with no Python/model/optimizer execution.",
+  "additionalModelCreationLoadForwardTraining": 0,
+  "appUsesDfs": true
+}

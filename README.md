@@ -22,9 +22,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 후속 통제 fitting 진단에서 같은 spatial CNN을 보드 16개에 200회 update했다. 정답은 1/16에서 15/16으로 늘었지만 평균 NLL 2.508과 음수 target margin으로 사전 fitting gate를 통과하지 못했다. 고정 예산을 한 번 사용했으며 추가 학습이나 튜닝은 하지 않았다.
 
-다음 단일 대조는 같은 조건에서 200 대 1,000 update를 비교하는 미실행 제안이다. 추가 학습 없이 계약만 설계했으며, 새 control의 원래 결과 재현과 candidate의 첫 200-step 일치를 선행 조건으로 둔다.
+이어 같은 조건의 200 대 1,000 update 대조를 실행했다. 원래 200-step control과 candidate의 첫 200-step을 정확히 재현한 뒤, 1,000-step candidate는 **16/16 정답·평균 NLL 0.03394·최소 margin +4.10013**으로 fitting gate를 통과했다. 같은 작은 fit 집합에서 고정 연장 일정의 충분성을 확인한 결과이며, 일반화나 앱 정책 개선의 증거는 아니다.
 
-5.12–5.33은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.34는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1146,7 +1146,7 @@ node scripts/research/controlled-fit-diagnostics.mjs --recorded <local-run> --ou
 
 ### 5.33 Proposed Contrast: 200 vs. 1,000 Optimizer Updates
 
-**Status: PROPOSED / NOT_RUN.** 추가 학습·추론 없이 다음 단일 대조의 계약과 정적 검증만 설계했다. Training runner와 새 실행 config는 구현하지 않았다.
+**설계 원본: PROPOSED / NOT_RUN.** 이 절은 당시의 미실행 계약과 정적 검증을 보존한다. 이후 승인받은 별도 runner/config로 수행한 실제 결과는 5.34에 기록했다.
 
 5.32에서 정답은 15/16까지 늘었지만 평균 NLL 2.508과 음수 margin으로 fitting gate를 통과하지 못했다. 저장된 update 175/200의 학습 NLL은 2.641/2.514로 계속 내려갔다. 이는 **update 수를 늘리는 대조를 제안할 근거**이며, 기간 부족을 실패 원인으로 확정하는 증거는 아니다. 이 loss는 각 update 전 값으로 최종 평가 NLL과 시점이 다르다.
 
@@ -1167,7 +1167,7 @@ node scripts/research/controlled-fit-diagnostics.mjs --recorded <local-run> --ou
 
 Candidate의 학습 update와 노출은 5배이므로 equal-compute/equal-time 비교가 아니다. Step당 weight decay는 같아도 누적 regularization과 Adam state는 달라진다. Outcome index 52에 정답 단서가 있는 쉬운 point-only 집합이므로 성공해도 공간 추론·kind 선택·기존 train/dev 실패 해결·일반화·생존·앱 채택의 증거로 확대하지 않는다. 실패해도 capacity 부족으로 단정하지 않는다.
 
-새 두 학습과 19,296회 예산은 **아직 승인되지 않았다**. 이전 3,248회 예산은 이미 사용했다. 이번 명령은 공개 evidence/source hash, 고정 계약·예산 산술과 synthetic scalar gate/prefix 비교만 검증한다. Python·모델 생성/load/forward/학습·자료 생성은 수행하지 않는다.
+이 설계 이후 두 CPU 학습과 19,296회 예산을 승인받아 한 번 실행했다(5.34). 원본 proposal은 당시 상태를 보존한다. 아래 명령은 그 설계의 evidence/source hash, 고정 계약·예산 산술과 synthetic scalar gate/prefix 비교만 검증하며 Python·모델 생성/load/forward/학습·자료 생성은 수행하지 않는다.
 
 ```sh
 node scripts/research/validate-fit-duration-proposal.mjs
@@ -1175,6 +1175,37 @@ node --test scripts/research/test-fit-duration-proposal.mjs
 ```
 
 [Machine-readable proposal](research/experiments/controlled-fit-duration-proposal-v1.json) · [Static validator](scripts/research/validate-fit-duration-proposal.mjs). 정적 PASS는 미래 native FP32 재현·학습·fitting 성공의 증거가 아니다.
+
+### 5.34 Controlled Duration Contrast: Fit Gate Passed at 1,000 Updates
+
+**Technical execution: PASS · Duration screen: PASS.** 같은 stored fit 자료 16개와 기존 spatial CNN·74 features·footprint·flat native float32 CE·seed·Adam·learning rate·step당 weight decay·full batch 16·순서를 유지하고, update 수 **200 vs. 1,000**만 비교했다. 두 arm은 fresh cold initialization에서 시작했다. 새로운 데이터·domain/reference·teacher 호출은 없었다.
+
+| 최종 지표          | Control: 200 updates | Candidate: 1,000 updates | 사전 기준         |
+| ------------------ | -------------------: | -----------------------: | ----------------- |
+| 정답               |                15/16 |                **16/16** | 16/16             |
+| 평균 NLL           |             2.508441 |             **0.033938** | ≤ 0.05            |
+| 최소 target margin |            −0.306193 |            **+4.100128** | 모든 사례 > 0     |
+| 최악 target rank   |                   11 |                        1 | 참고 지표         |
+| Fitting gate       |                 FAIL |                 **PASS** | 세 조건 모두 충족 |
+| Top-level forward  |                3,248 |                   16,048 | 합계 19,296       |
+
+새 control은 원래 200-step 실행의 초기 값·200개 loss·최종 logical weights/logits/예측/지표와 반복 결과를 정확히 재현했다. 이 검사가 통과한 뒤에만 candidate를 시작했다. Candidate의 초기 값·첫 200개 loss·step-200 weights도 원래와 control에 일치했고, 새 두 arm의 step-200 optimizer canonical state와 fingerprint도 일치했다. 이 prefix 검사는 추가 forward·checkpoint load·warm start 없이 수행했다. 원래 실행의 optimizer state는 저장돼 있지 않아 원본 optimizer와의 일치라고 주장하지 않는다.
+
+최종 결과는 control의 정답 15개 유지·1개 회복·퇴행 0개다. 평균 NLL 차이는 candidate − control = **−2.474503**이었다. Target mass 기하평균은 약 8.14%에서 96.66%로 늘었다. 이는 같은 fit 집합의 저장 NLL에서 계산한 값이며 calibration이나 held-out 성능 측정은 아니다. 각 arm의 사전 최종 step과 최종 평가 2회만 사용했고 중간 최고 checkpoint를 선택하지 않았다.
+
+Owner wall time은 약 133.10초, child process는 control 약 26.56초 / candidate 약 106.06초였다. 이 process 시간은 interpreter/import를 포함한다. Python body timer는 각각 약 23.27초 / 102.77초다. RSS 표본은 451개 / 2,051개이며 최댓값은 약 286.8 MiB였다. Sampled working set을 검사했으며 순간 peak는 측정하지 않았다. 두 모델·두 학습·정확히 **19,296 forward**로 마쳤고 checkpoint load·추가 튜닝·재시작은 없었다.
+
+이 결과는 **기존 모델이 이 16개 보드에서 고정 1,000-update 일정으로 fitting 기준을 충족할 수 있음**을 보여 준다. 후보의 학습 노출은 5배이므로 equal-compute/equal-time 비교가 아니다. 누적 weight decay와 Adam state도 달라져 학습 기간만을 유일한 원인으로 확정할 수 없다. Outcome index 52에 정답 단서가 있는 쉬운 point-only 집합이며, 원래 339/89 자료의 실패 해결·kind 선택·공간 추론/residual 필요성·일반화·생존·앱 채택을 검증하지 않았다. 이전 200-step 실패 기록과 앱 DFS는 유지한다.
+
+[Aggregate result](assets/research/fit-duration-20261028-v1.json) · [Approved execution contract](research/experiments/controlled-fit-duration-v1.json) · [Saved-result verifier](scripts/research/replay-fit-duration.mjs).
+
+최종 두 평가와 로컬 두 저장 replay의 결과가 일치했다. 공개 검증도 저장값만 사용한다. 권한 있는 로컬 run 자료가 있을 때 새 output으로 다음 명령을 실행하며, 추가 Python·모델 생성/load/forward·학습은 없다. 원본 dataset·weights·logits·optimizer state·개별 좌표는 공개하지 않는다.
+
+```sh
+node scripts/research/replay-fit-duration.mjs --recorded <local-duration-run> --output .research-output/fit-duration-replay-new
+```
+
+승인된 단일 대조 예산은 한 번 사용했다. 결과 검증을 위해 학습을 다시 실행하지 않는다.
 
 ## 6. Reproduction and Usage
 
