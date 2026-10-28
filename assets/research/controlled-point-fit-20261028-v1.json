@@ -1,0 +1,126 @@
+{
+  "status": "PASS_STORED_REPLAY",
+  "summary": {
+    "schemaVersion": 1,
+    "id": "controlled-point-fit-v1",
+    "technicalStatus": "PASS",
+    "fitGate": {
+      "status": "FAIL",
+      "checks": {
+        "allCorrect": false,
+        "meanNllAtMost005": false,
+        "everyTargetMarginPositive": false
+      }
+    },
+    "initial": {
+      "examples": 16,
+      "correct": 1,
+      "meanNll": 3.433131918311119,
+      "minimumTargetMargin": -0.10113419592380524,
+      "maximumTargetRank": 30
+    },
+    "final": {
+      "examples": 16,
+      "correct": 15,
+      "meanNll": 2.5084412693977356,
+      "minimumTargetMargin": -0.30619263648986816,
+      "maximumTargetRank": 11
+    },
+    "updates": 200,
+    "trainingRuns": 1,
+    "topLevelForwardCalls": 3248,
+    "finalRepeatsExact": true,
+    "heldOutOrKindSelectionTested": false,
+    "spatialMechanismTested": false,
+    "appUsesDfs": true
+  },
+  "datasetCounts": {
+    "examples": 16,
+    "candidates": 496,
+    "referenceNodes": 640,
+    "referenceNodeCap": 4096,
+    "outcomeTransitions": 496,
+    "dfsCalls": 0
+  },
+  "budget": {
+    "ownerWallSeconds": 34.9771952,
+    "childWallSeconds": 28.1075177998282,
+    "maxSampledWorkingSetBytes": 285839360,
+    "instantaneousPeakMeasured": false
+  },
+  "sourceValidation": "Original graph freeze verified by owner/child; this data-only replay verifies stored artifact hashes, approved contract and the eight original proposal source hashes, without re-running the domain or model.",
+  "additionalModelCreationLoadForwardTraining": 0,
+  "researchVerdict": "FAIL",
+  "diagnostics": {
+    "examples": 16,
+    "transitions": {
+      "bothCorrect": 1,
+      "recovered": 14,
+      "regressed": 0,
+      "bothWrong": 1
+    },
+    "finalTargetRanks": {
+      "one": 15,
+      "twoToFive": 0,
+      "sixToTen": 0,
+      "aboveTen": 1
+    },
+    "finalNllAboveAcceptanceThreshold": 16,
+    "nllThresholdInterpretation": "0.05 is the mean acceptance threshold; the per-example exceedance count is descriptive, not an additional individual gate.",
+    "finalNonpositiveTargetMargins": 1,
+    "targetProbabilityFromStoredNll": {
+      "minimum": 0.03624945844469434,
+      "maximum": 0.11932703118399512,
+      "mean": 0.08468203476444114,
+      "geometricMean": 0.08139501331003123,
+      "interpretation": "exp(-stored float32 native NLL); target mass on 31 legal point candidates, no calibration or held-out claim"
+    },
+    "savedTrainingLossMilestones": [
+      {
+        "step": 1,
+        "meanTrainingNll": 3.433131918311119
+      },
+      {
+        "step": 25,
+        "meanTrainingNll": 3.28598091006279
+      },
+      {
+        "step": 50,
+        "meanTrainingNll": 3.119504392147064
+      },
+      {
+        "step": 75,
+        "meanTrainingNll": 3.0312170535326004
+      },
+      {
+        "step": 100,
+        "meanTrainingNll": 2.947608321905136
+      },
+      {
+        "step": 125,
+        "meanTrainingNll": 2.8575447350740433
+      },
+      {
+        "step": 150,
+        "meanTrainingNll": 2.756168410181999
+      },
+      {
+        "step": 175,
+        "meanTrainingNll": 2.6411687284708023
+      },
+      {
+        "step": 200,
+        "meanTrainingNll": 2.513610228896141
+      }
+    ],
+    "lossInterpretation": "Per-update mean training NLL before that optimizer update; milestones are descriptive, not extra inference or checkpoint reselection",
+    "scope": "Post-run fit-set description only; fixed gates and final step preserved. No model/weights load, forward, training or tuning."
+  },
+  "executionTiming": {
+    "ownerWallSeconds": 34.9771952,
+    "childProcessWallSeconds": 32.1120302,
+    "pythonBodyWallSeconds": 28.1075177998282,
+    "pythonBodyExcludesInterpreterImport": true,
+    "inheritedBudgetChildWallSecondsMeans": "Python body only; the Node child process timer and timeout include interpreter/import startup"
+  }
+}

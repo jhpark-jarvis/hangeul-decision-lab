@@ -20,7 +20,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 실제 게임 화면에 접근할 수 없는 상태에서도 연구를 이어가기 위해, 점 찍기로 막힌 조각을 해금하는 **160개 좌표의 통제 시뮬레이션**을 추가했다. 이 작은 현재 턴 문제에서 DFS128/512는 완전 열거 reference와 160/160 일치했다. 기존 CNN은 이 실험에서 실행하지 않았으며, 합성 결과를 실제 게임·모델 fitting·장기 생존 성능으로 확대하지 않는다.
 
-5.12–5.31은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+후속 통제 fitting 진단에서 같은 spatial CNN을 보드 16개에 200회 update했다. 정답은 1/16에서 15/16으로 늘었지만 평균 NLL 2.508과 음수 target margin으로 사전 fitting gate를 통과하지 못했다. 고정 예산을 한 번 사용했으며 추가 학습이나 튜닝은 하지 않았다.
+
+5.12–5.32는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1082,7 +1084,7 @@ node scripts/research/point-simulation.mjs --output .research-output/point-simul
 
 ### 5.31 Proposed Fit-Only Diagnostic on 16 Controlled Boards
 
-**Status: PROPOSED / NOT_RUN.** 현재 단계는 실험 계약과 Node 정적 검증이다. 학습용 자료 생성, 모델 생성·추론·학습은 실행하지 않았다.
+**설계 원본: 2026-10-26, PROPOSED / NOT_RUN.** 이 절은 당시 계약과 정적 검증을 보존한다. 이후 승인된 단일 실행의 실제 결과는 5.32에 기록했다.
 
 앞선 selected-checkpoint 분석은 점 찍기 fitting 진단의 필요성을 보여 줬다. 다음 제안은 5.30의 통제 보드 중 **16개를 같은 모델이 외울 수 있는지** 확인하는 작은 pipeline 검사다. 원래 train/dev/test 자료를 교체하거나 추가하지 않는다.
 
@@ -1101,7 +1103,7 @@ node scripts/research/point-simulation.mjs --output .research-output/point-simul
 
 이 집합에는 **쉬운 단서가 이미 입력에 포함돼 있다.** Candidate feature index 52의 즉시 삭제 행 수가 유일한 정답을 구별한다. 따라서 성공해도 spatial residual의 필요성, 공간 추론, 행동 종류 선택, held-out generalization을 입증하지 않는다. 실패 역시 모델 용량 부족으로 단정할 수 없다. 기술적 실행 준수와 fitting 결과를 별도로 보고하며, 기존 CNN gate·앱 DFS·실제 화면 수락 상태는 바꾸지 않는다.
 
-실행에는 새 synthetic fit 자료 생성과 단일 CPU 학습에 대한 별도 결정이 필요하다. 정적 검증은 공개 evidence와 source byte hash, subset 선택, 계산 예산과 미실행 경계만 확인한다. Python import, domain 실행, dataset materialization은 없다.
+이 설계 당시 요구한 별도 실행 결정을 이후 승인받았으며, 실제 결과는 5.32에 기록했다. 아래 정적 검증 명령은 설계 원본의 evidence와 source byte hash, subset 선택, 계산 예산과 당시 미실행 경계만 확인한다. 이 명령은 Python import, domain 실행, dataset materialization을 수행하지 않는다.
 
 ```sh
 node scripts/research/validate-controlled-point-fit-proposal.mjs
@@ -1109,6 +1111,36 @@ node --test scripts/research/test-controlled-point-fit-proposal.mjs
 ```
 
 [Machine-readable proposal](research/experiments/controlled-point-fit-proposal-v1.json) · [Static validator](scripts/research/validate-controlled-point-fit-proposal.mjs). 이 명령의 PASS는 계약 검증 결과이며 학습 결과가 아니다.
+
+### 5.32 Controlled Fit: Better Top-1, Failed Fitting Gate
+
+**Technical execution: PASS · Fitting gate: FAIL.** 5.31의 계약을 승인된 단일 CPU run으로 실행했다. 같은 SpatialCandidateCNN v3와 flat CE를 사용해 보드 16개를 full-batch로 200회 update했다. 초기 16 + 학습 3,200 + 최종 반복 32 = **3,248 top-level forward**를 사용했으며, 최종 step 200만 평가했다.
+
+| 지표               |      초기 |          최종 | 사전 기준     |
+| ------------------ | --------: | ------------: | ------------- |
+| 정답               |      1/16 |     **15/16** | 16/16         |
+| 평균 NLL           |  3.433132 |  **2.508441** | ≤ 0.05        |
+| 최소 target margin | −0.101134 | **−0.306193** | 모든 사례 > 0 |
+| 최악 target rank   |        30 |            11 | 참고 지표     |
+
+세 fitting 조건을 모두 충족하지 못했다. 기존 정답 1개를 유지했고 14개를 회복했으며 퇴행은 없었다. 남은 실패 1개의 target rank는 11이었다. **Top-1 향상과 충분한 fitting은 다른 판정**이다.
+
+최종 target에 배정된 확률은 저장된 native float32 NLL로부터 계산했을 때 산술평균 약 **8.47%**, 기하평균 약 **8.14%**였다. 후보는 보드마다 합법인 점 찍기 31개다. 이 값은 fit 집합의 target mass이며 calibration이나 일반화 성능 측정이 아니다. 16개 각각의 NLL도 0.05보다 컸지만, 사전 gate는 개별 NLL이 아닌 **평균 NLL**이다.
+
+실행은 owner 약 34.98초, Python child process 약 32.11초였다. Python 내부 body timer는 import 이후의 약 28.11초를 기록하며, process timeout 600초는 interpreter/import를 포함한다. RSS 451개 표본의 최댓값은 약 272.6 MiB였고 순간 peak는 측정하지 않았다. 최종 두 평가의 logits·예측과 로컬 두 저장 replay가 일치했다. 실제 run 뒤 추가 학습·추론·튜닝은 하지 않았다.
+
+이 결과는 쉬운 고정 집합에서 사전 일정과 강한 fitting gate를 검사한 음성 결과다. Outcome feature index 52에 정답을 구별하는 즉시 줄 삭제 단서가 있으므로 spatial residual의 필요성이나 공간 추론을 검증하지 않는다. 학습 기간, 정규화, 구조의 영향을 분리하지 않았으며 모델 용량 부족이나 기존 train 실패의 해결 여부를 확정하지 않는다. 앱은 DFS를 유지한다.
+
+[Aggregate result](assets/research/controlled-point-fit-20261028-v1.json) · [Approved execution contract](research/experiments/controlled-point-fit-v1.json) · [Data-only replay](scripts/research/replay-controlled-point-fit.mjs).
+
+원래 자료·weights·logits는 공개하지 않는다. 권한 있는 로컬 run 자료가 있을 때 아래 명령으로 저장값만 검증한다. 새 output을 사용하며, 모델 생성·checkpoint load·forward·학습은 추가하지 않는다.
+
+```sh
+node scripts/research/replay-controlled-point-fit.mjs --recorded <local-run> --output .research-output/controlled-fit-replay-new
+node scripts/research/controlled-fit-diagnostics.mjs --recorded <local-run> --output .research-output/controlled-fit-diagnostics-new
+```
+
+학습용 실행 명령은 source CLI에 있으나 고정 run 예산은 한 번 사용했다. Replay 대신 학습을 재실행해 결과를 검증하지 않는다. 공개 검증은 Node stdlib만 사용한다.
 
 ## 6. Reproduction and Usage
 
