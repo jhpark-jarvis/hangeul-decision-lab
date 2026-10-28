@@ -22,7 +22,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 후속 통제 fitting 진단에서 같은 spatial CNN을 보드 16개에 200회 update했다. 정답은 1/16에서 15/16으로 늘었지만 평균 NLL 2.508과 음수 target margin으로 사전 fitting gate를 통과하지 못했다. 고정 예산을 한 번 사용했으며 추가 학습이나 튜닝은 하지 않았다.
 
-5.12–5.32는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+다음 단일 대조는 같은 조건에서 200 대 1,000 update를 비교하는 미실행 제안이다. 추가 학습 없이 계약만 설계했으며, 새 control의 원래 결과 재현과 candidate의 첫 200-step 일치를 선행 조건으로 둔다.
+
+5.12–5.33은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1141,6 +1143,38 @@ node scripts/research/controlled-fit-diagnostics.mjs --recorded <local-run> --ou
 ```
 
 학습용 실행 명령은 source CLI에 있으나 고정 run 예산은 한 번 사용했다. Replay 대신 학습을 재실행해 결과를 검증하지 않는다. 공개 검증은 Node stdlib만 사용한다.
+
+### 5.33 Proposed Contrast: 200 vs. 1,000 Optimizer Updates
+
+**Status: PROPOSED / NOT_RUN.** 추가 학습·추론 없이 다음 단일 대조의 계약과 정적 검증만 설계했다. Training runner와 새 실행 config는 구현하지 않았다.
+
+5.32에서 정답은 15/16까지 늘었지만 평균 NLL 2.508과 음수 margin으로 fitting gate를 통과하지 못했다. 저장된 update 175/200의 학습 NLL은 2.641/2.514로 계속 내려갔다. 이는 **update 수를 늘리는 대조를 제안할 근거**이며, 기간 부족을 실패 원인으로 확정하는 증거는 아니다. 이 loss는 각 update 전 값으로 최종 평가 NLL과 시점이 다르다.
+
+| 항목                  | 고정 제안                                                                                                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 변경하는 factor       | Optimizer update 수: control **200**, candidate **1,000**                                                                                                             |
+| 같은 조건             | 원래 저장된 보드 16개·각 31후보·label/order/74 features/footprint, spatial CNN, seed, flat native float32 CE, Adam, learning rate, step당 weight decay, full batch 16 |
+| 시작·순서             | 두 arm 모두 같은 cold initialization. 새 200-update control을 정확히 재현한 뒤 candidate를 시작한다.                                                                  |
+| 원래 control 검증     | 초기 값·200개 loss·최종 logical weights/logits/예측/지표·최종 반복 일치. Serialization bytes와 실행 시간은 일치 대상이 아니다.                                        |
+| Candidate prefix 검증 | 초기 값, 첫 200개 loss, step-200 logical weights가 원래와 control에 일치해야 한다. Step-200 optimizer fingerprint는 새 두 arm 사이에서만 비교한다.                    |
+| 평가 시점             | Control 최종 200, candidate 최종 1,000. Prefix 검사는 state hash만 사용하며 추가 forward·warm start·중간 checkpoint 선택은 없다.                                      |
+| 제안 forward 상한     | Control 16 + 3,200 + 32 = **3,248**, candidate 16 + 16,000 + 32 = **16,048**, 합계 **19,296 top-level calls**                                                         |
+| 제안 자원 상한        | 기존 CPU 환경, 순차 child 2개 각각 600초, owner 1,260초, sampled working set 2 GiB. Process cap은 interpreter/import를 포함한다.                                      |
+
+원래 실행은 optimizer state를 저장하지 않았다. 따라서 원본 optimizer와의 정확한 일치를 주장하지 않고, 새 control과 candidate의 step-200 state를 비교하도록 제안한다. 원래 dataset byte를 재사용하며 domain/reference/자료 생성도 반복하지 않는다. 기존 frozen runner를 수정하거나 재실행해 update 수를 늘리지 않는다.
+
+각 arm에는 원래 **16/16 정답·평균 NLL ≤ 0.05·모든 target margin > 0**을 그대로 적용한다. 정확히 재현한 control은 실패하고 candidate가 세 조건을 모두 통과하며 NLL도 낮아야, 고정 연장 일정이 이 fit 집합에서 충분했다는 screen을 통과한다. 낮아진 NLL이나 16/16만으로 성공을 선언하지 않는다. 기술 검증과 fitting 판정도 분리한다.
+
+Candidate의 학습 update와 노출은 5배이므로 equal-compute/equal-time 비교가 아니다. Step당 weight decay는 같아도 누적 regularization과 Adam state는 달라진다. Outcome index 52에 정답 단서가 있는 쉬운 point-only 집합이므로 성공해도 공간 추론·kind 선택·기존 train/dev 실패 해결·일반화·생존·앱 채택의 증거로 확대하지 않는다. 실패해도 capacity 부족으로 단정하지 않는다.
+
+새 두 학습과 19,296회 예산은 **아직 승인되지 않았다**. 이전 3,248회 예산은 이미 사용했다. 이번 명령은 공개 evidence/source hash, 고정 계약·예산 산술과 synthetic scalar gate/prefix 비교만 검증한다. Python·모델 생성/load/forward/학습·자료 생성은 수행하지 않는다.
+
+```sh
+node scripts/research/validate-fit-duration-proposal.mjs
+node --test scripts/research/test-fit-duration-proposal.mjs
+```
+
+[Machine-readable proposal](research/experiments/controlled-fit-duration-proposal-v1.json) · [Static validator](scripts/research/validate-fit-duration-proposal.mjs). 정적 PASS는 미래 native FP32 재현·학습·fitting 성공의 증거가 아니다.
 
 ## 6. Reproduction and Usage
 
