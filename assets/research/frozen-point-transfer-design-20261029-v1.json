@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "id": "frozen-point-transfer-design-evidence-v1",
+  "status": "PASS_SAVED_ANALYSIS_ONLY",
+  "sourceAggregate": {
+    "path": "assets/research/fit-duration-20261028-v1.json",
+    "sha256": "0cc79079a65a2c58038c51d481c478a19987c2e7faf4867904735cda5f3edc4c"
+  },
+  "fit": {
+    "examples": 16,
+    "correct": 16,
+    "meanNll": 0.03393840487115085,
+    "minimumTargetMargin": 4.100128173828125,
+    "maximumTargetRank": 1
+  },
+  "lossMilestones": [
+    {
+      "step": 1,
+      "meanTrainingNll": 3.433131918311119
+    },
+    {
+      "step": 100,
+      "meanTrainingNll": 2.947608321905136
+    },
+    {
+      "step": 200,
+      "meanTrainingNll": 2.513610228896141
+    },
+    {
+      "step": 400,
+      "meanTrainingNll": 1.1531992889940739
+    },
+    {
+      "step": 600,
+      "meanTrainingNll": 0.28464122395962477
+    },
+    {
+      "step": 800,
+      "meanTrainingNll": 0.09624041942879558
+    },
+    {
+      "step": 1000,
+      "meanTrainingNll": 0.03407425159821287
+    }
+  ],
+  "split": {
+    "population": 160,
+    "fit": 16,
+    "transfer": 144,
+    "fitCandidates": 496,
+    "transferCandidates": 4464,
+    "transferPerRow": 9,
+    "transferColumnCounts": [14, 15, 14, 14, 15, 14, 14, 15, 15, 14]
+  },
+  "observedTransfer": "NOT_RUN",
+  "additionalCompute": {
+    "python": 0,
+    "modelCreation": 0,
+    "checkpointLoad": 0,
+    "forward": 0,
+    "training": 0,
+    "domainReference": 0,
+    "datasetMaterialization": 0
+  },
+  "interpretation": "Stored pre-update losses describe the already finished run; they cannot identify the earliest checkpoint passing final accuracy/NLL/margin gates. The 144 complement outcomes have not been measured. This is a within-family positional transfer proposal, not an untouched benchmark or spatial-mechanism claim."
+}

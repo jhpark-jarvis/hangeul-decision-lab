@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "id": "frozen-point-transfer-proposal-v1",
+  "status": "PROPOSED_NOT_RUN",
+  "approval": "LOCAL_DESIGN_ONLY",
+  "executionRequiresSeparateUserDecision": true,
+  "evidence": {
+    "path": "assets/research/frozen-point-transfer-design-20261029-v1.json",
+    "sha256": "f9d5e96f33f891563f040df1bc29e345a4c6d9794021708b96fd3b1afbe766d1"
+  },
+  "sourceHashes": {
+    "src/research/point-simulation.ts": "c4694ad790569c2eb438c959b7198ca9a7e745c0304ea9f64fd193fd05520e31",
+    "src/research/controlled-point-fit.ts": "30c37d2ae4bac609be4042049e54a5d5301450183798a55b99c3e324aa12b360",
+    "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+    "src/research/action-outcome.ts": "97b896d89a6e593dd839e7d9451402f6bbae334afa8cebeed6584615603cadde",
+    "src/research/spatial-footprint.ts": "09eff60bff74b1fa8a1f70b50c3a20243887d4ec3fc08159c73de498d0493ca4",
+    "research/cnn/model.py": "5d9809c50d8e8be1a79bb7c2a4252a8e39a7d7244276c4d479b421cf2306e3ac",
+    "research/cnn/outcome.py": "d306607902b0bbfdf265dbb2ee9c4f5a6136df2d54cb5339961c89790155a2c2",
+    "research/cnn/spatial.py": "f86df1f9c6528572fb6aa1f3b50d877d4bcb9b2d8be6825d3d8d9644ee21a87c",
+    "research/cnn/controlled_point_fit.py": "747ba3bd085bbec1eff34f5ea62e5c5f7fb3490a94466af629ccc60bff3dfd5f",
+    "research/cnn/fit_duration.py": "8826c42b3a26bab7fe7a7630bea3556d7a19ea37e5a7a67519046d8714868f61",
+    "research/experiments/controlled-fit-duration-v1.json": "45499dcefd520250a516ef5447051bdea05abb423d7ae2dea11cd127be643682"
+  },
+  "checkpoint": {
+    "source": "controlled-fit-duration-v1/candidate/final-1000",
+    "serializationSha256": "abb5d67b6afbb16a275e2bfde7d33821a2fb5d44497007203a034d7dae090cec",
+    "logicalWeightsSha256": "424704f9ed88d76a3f77dcd2d3ff4493451ea66fdc20ac3f2cc5df4cb03a1981",
+    "fitDatasetSha256": "862353fc79a5bc12a97da008b9ce0467ac026d28a4dc86fb211767ca45d12666",
+    "fitPredictionsSha256": "bdc0560426ead312bf171490617f3b3e05743c2c8d453be262cc7b3da755ae30",
+    "selection": "Already fixed final step 1000; no new checkpoint selection, retraining or optimizer construction",
+    "loading": "Existing CPU weights_only=True state_dict load, strict keys/shapes/finite values, eval and no_grad; optimizer state is neither loaded nor executed"
+  },
+  "split": {
+    "profile": "controlled-single-point-line-unlock",
+    "population": 160,
+    "rows": 16,
+    "cols": 10,
+    "fitFormula": "10*r + (3*r)%10 for r=0..15",
+    "fitExamples": 16,
+    "transferExamples": 144,
+    "order": "Fit in increasing row order; complement in increasing original fixture index",
+    "candidatesPerExample": 31,
+    "transferPerRow": 9,
+    "transferColumnCounts": [14, 15, 14, 14, 15, 14, 14, 15, 15, 14],
+    "overlap": 0,
+    "definition": "Disjoint complement of the 16 optimization examples within the existing 160-fixture family; no new rows/columns, random seeds or reserved test split",
+    "priorExposure": "All 160 fixtures were already inspected with reference/DFS in the simulator; the frozen CNN has only optimized the 16 fit examples. This is not a pristine held-out benchmark"
+  },
+  "input": {
+    "planes": [3, 16, 10],
+    "metadata": 140,
+    "candidateFeatures": 74,
+    "footprint": [1, 16, 10],
+    "modelParameters": 13292,
+    "chunk": 32,
+    "residualScale": 1,
+    "selection": "Unchanged full legal-list raw argmax; first legal index on ties",
+    "shortcut": "Outcome index 52 clearedRows/16 remains; even complete transfer cannot prove spatial reasoning or residual necessity"
+  },
+  "materialization": {
+    "fit": "Read original 16 stored examples byte-for-byte; do not regenerate or edit original dataset",
+    "transfer": "Future separate isolated 144-example artifact only, using unchanged pointFixtures, encodeDecision, actionOutcome, encodeFootprints and complete unique pointReference labels",
+    "legalCandidates": 4464,
+    "outcomeTransitions": 4464,
+    "referenceMaxNodesPerExample": 256,
+    "totalReferenceNodeCap": 36864,
+    "dfsCalls": 0,
+    "oldTrainDevTestOrLabelChanges": false,
+    "preflight": "Validate full 160-index partition, target coordinates, finite schema, exact legal order and unique complete reference before creating the model; STOP on mismatch"
+  },
+  "forwardBudget": {
+    "fitControl": 16,
+    "transfer": 144,
+    "repeatFit": 16,
+    "repeatTransfer": 144,
+    "totalTopLevelMax": 320,
+    "topLevelModels": 1,
+    "checkpointLoads": 1,
+    "trainingRuns": 0,
+    "optimizerUpdates": 0,
+    "warmupOrExtraCalls": 0,
+    "order": "fit-control16 exact to stored candidate final logits/metrics -> transfer144 -> fit-repeat16 -> transfer-repeat144; STOP before transfer on control mismatch"
+  },
+  "resources": {
+    "runtime": "Existing CPU PyTorch only; no install, GPU, new runtime, service or external transmission",
+    "children": 1,
+    "childProcessWallSeconds": 600,
+    "ownerWallSeconds": 660,
+    "sampledWorkingSetBytes": 2147483648,
+    "processTimerIncludesImports": true,
+    "instantaneousPeakMeasured": false,
+    "failure": "Pre-call global/phase/example ledger, exclusive new output, STOP on hash/load/control/finite/schema/reference/repeat/budget failure; retain partial data, no retry or tuning"
+  },
+  "screening": {
+    "technical": "Exact checkpoint bytes/logical weights, original fit data/predictions replay, fixed 16/144 partition, full legal order, 320-call pre-ledger, immutable sources and exact repeated logits/predictions; model/control failure blocks transfer verdict",
+    "transfer": {
+      "examples": 144,
+      "correct": 144,
+      "maximumMeanNll": 0.05,
+      "minimumEveryTargetMargin": 0
+    },
+    "rule": "Require all 144 correct AND mean NLL <= 0.05 AND every target margin strictly > 0; separate technical PASS, fit replay PASS and transfer PASS/FAIL. No threshold tuning, metric-based model selection or merging fit examples into the transfer denominator",
+    "descriptive": "Separate fit16 and transfer144 metrics; row/column counts, top1, target ranks, margins and NLL; report nonfinite/abstention as technical failure, not excluded observations",
+    "interpretation": "Same-family untrained board/target combinations with all rows/columns already covered in fitting. No out-of-distribution, action-kind, broad train/dev repair, calibration, rollout, survival, spatial-mechanism or app-adoption claim"
+  },
+  "boundaries": {
+    "designPythonModelLoadForwardTraining": 0,
+    "designDomainReferenceMaterialization": 0,
+    "runnerImplemented": false,
+    "originalSourceDataModelImmutable": true,
+    "additionalTraining": false,
+    "featureArchitectureScoreChanges": false,
+    "reservedTestDevOrRollout": false,
+    "appUsesDfs": true,
+    "rawDataWeightsLogitsPrivate": true,
+    "publication": "Local README/proposal only in this task; a new explicit publication decision is required before public preparation or push",
+    "future": "Separate user decision required for isolated 144-example materialization, model creation/load and up to 320 evaluation forwards; previous 19296-call training budget is spent"
+  }
+}

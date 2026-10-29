@@ -24,7 +24,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 같은 조건의 200 대 1,000 update 대조를 실행했다. 원래 200-step control과 candidate의 첫 200-step을 정확히 재현한 뒤, 1,000-step candidate는 **16/16 정답·평균 NLL 0.03394·최소 margin +4.10013**으로 fitting gate를 통과했다. 같은 작은 fit 집합에서 고정 연장 일정의 충분성을 확인한 결과이며, 일반화나 앱 정책 개선의 증거는 아니다.
 
-5.12–5.34는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.35는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1206,6 +1206,35 @@ node scripts/research/replay-fit-duration.mjs --recorded <local-duration-run> --
 ```
 
 승인된 단일 대조 예산은 한 번 사용했다. 결과 검증을 위해 학습을 다시 실행하지 않는다.
+
+### 5.35 Proposed Frozen Positional Transfer — NOT_RUN
+
+**Local design / evaluation not run.** 5.34의 16/16은 optimization에 사용한 집합의 fitting 결과다. 다음 질문은 고정한 모델이 **같은 통제 퍼즐에서 학습하지 않은 board/target 조합**에도 통하는가다.
+
+권장안은 final-1,000 checkpoint를 그대로 유지하고, 기존 160개 fixture 중 학습한 16개를 제외한 144개를 평가하는 것이다. 추가 학습이나 optimizer update는 없다. 더 긴 학습, 새 seed 반복, feature ablation보다 현재 모델의 위치 전이 범위를 먼저 확인한다.
+
+| 구분      | 고정 계약                                                    | 현재 상태                |
+| --------- | ------------------------------------------------------------ | ------------------------ |
+| Control   | 원래 fit 16개의 logits·예측·지표 exact 재현                  | 새 모델 replay는 NOT_RUN |
+| Transfer  | 나머지 144개, fit과 중복 0                                   | NOT_RUN                  |
+| 분포      | 행별 9개, 열별 14 또는 15개                                  | Index 산술만 검증        |
+| 모델      | 같은 final-1,000 weights·74 features·spatial residual        | 변경 없음                |
+| 호출 예산 | Control 16 → transfer 144 → 전체 160 반복 = 최대 320 forward | 실행 승인 전, 사용 0     |
+| 학습      | 0회, optimizer update 0회                                    | 실행 runner 미구현       |
+| 전이 기준 | 144/144, 평균 NLL≤0.05, 모든 target margin>0                 | 세 조건 모두 필요        |
+
+먼저 저장된 원래 archive를 Node로 다시 검증했다. 이미 끝난 학습의 pre-update 평균 loss는 update 200/400/600/800/1,000에서 각각 2.51361 / 1.15320 / 0.28464 / 0.09624 / 0.03407이었다. 이들은 **각 update 전 loss**이며 최종 평가 지표와 시점이 다르다. 중간 checkpoint의 정확도·margin은 저장하지 않았으므로, 처음 fit gate를 통과한 시점을 이 값으로 추정하지 않는다.
+
+미래 평가는 기존 CPU 환경의 모델 1개·checkpoint load 1회·학습 0회로 제한한다. 원래 fit replay가 다르면 144개 평가 전에 중단한다. 호출 전 ledger·source/data/weights hash·전체 반복 exact·child 600초 / owner 660초·sampled RSS 2 GiB를 요구하며 실패 기록을 보존한다. 재시도·튜닝·추가 forward는 허용하지 않는 제안이다.
+
+**해석 범위:** 모든 행과 열은 이미 fit 16에 등장했고, simulator의 reference/DFS는 160개 전체를 관찰했다. 따라서 pristine held-out benchmark나 새 행·열에 대한 OOD 평가가 아니다. Outcome index 52의 정답 단서도 유지한다. 통과해도 공간 추론·residual 필요성·kind 선택·기존 train/dev 실패 해결·생존·앱 채택을 입증하지 않는다. Fit 16과 transfer 144의 분모는 따로 보고한다.
+
+[고정 proposal](research/experiments/frozen-point-transfer-proposal-v1.json)과 [저장 근거 요약](assets/research/frozen-point-transfer-design-20261029-v1.json)을 분리했다. 아래 명령은 Node stdlib의 hash·분할·예산·scalar gate만 검사한다. Python·모델 생성/load/forward/학습·domain/reference·새 자료 생성은 모두 0이다. 실제 144개 자료 생성과 최대 320회 평가는 별도 실행 결정이 필요하다.
+
+```sh
+node scripts/research/validate-frozen-point-transfer.mjs
+node --test scripts/research/test-frozen-point-transfer.mjs
+```
 
 ## 6. Reproduction and Usage
 
