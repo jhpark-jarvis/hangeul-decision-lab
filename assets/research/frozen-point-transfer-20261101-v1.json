@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "id": "frozen-point-transfer-v1",
+  "technicalStatus": "PASS",
+  "fit": {
+    "examples": 16,
+    "correct": 16,
+    "meanNll": 0.03393840487115085,
+    "minimumTargetMargin": 4.100128173828125,
+    "maximumTargetRank": 1
+  },
+  "transfer": {
+    "examples": 144,
+    "correct": 109,
+    "meanNll": 1.2157150445875433,
+    "minimumTargetMargin": -2.8761978149414062,
+    "maximumTargetRank": 20
+  },
+  "transferGate": {
+    "status": "FAIL",
+    "checks": {
+      "allCorrect": false,
+      "meanNllAtMost005": false,
+      "everyTargetMarginPositive": false
+    }
+  },
+  "topLevelModels": 1,
+  "checkpointLoads": 1,
+  "topLevelForwards": 320,
+  "trainingRuns": 0,
+  "optimizerUpdates": 0,
+  "byRow": [
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.2804274145099852,
+      "minimumTargetMargin": 1.4066581726074219,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 7,
+      "meanNll": 1.1872419784518167,
+      "minimumTargetMargin": -2.0998001098632812,
+      "maximumTargetRank": 9
+    },
+    {
+      "examples": 9,
+      "correct": 4,
+      "meanNll": 1.985678846637408,
+      "minimumTargetMargin": -2.1137123107910156,
+      "maximumTargetRank": 16
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.270893148974412,
+      "minimumTargetMargin": 0.8637542724609375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 4,
+      "meanNll": 1.7505009106049936,
+      "minimumTargetMargin": -2.5694351196289062,
+      "maximumTargetRank": 10
+    },
+    {
+      "examples": 9,
+      "correct": 5,
+      "meanNll": 1.672459052539327,
+      "minimumTargetMargin": -1.4949417114257812,
+      "maximumTargetRank": 8
+    },
+    {
+      "examples": 9,
+      "correct": 8,
+      "meanNll": 0.6808782898717456,
+      "minimumTargetMargin": -1.0288200378417969,
+      "maximumTargetRank": 6
+    },
+    {
+      "examples": 9,
+      "correct": 6,
+      "meanNll": 1.3984480963812933,
+      "minimumTargetMargin": -1.9084205627441406,
+      "maximumTargetRank": 15
+    },
+    {
+      "examples": 9,
+      "correct": 5,
+      "meanNll": 1.7427229024469852,
+      "minimumTargetMargin": -1.9614181518554688,
+      "maximumTargetRank": 15
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.6946455416489496,
+      "minimumTargetMargin": 0.5584564208984375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 1.0282244640919898,
+      "minimumTargetMargin": 0.06850051879882812,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 6,
+      "meanNll": 1.6001471214824252,
+      "minimumTargetMargin": -1.5293693542480469,
+      "maximumTargetRank": 14
+    },
+    {
+      "examples": 9,
+      "correct": 4,
+      "meanNll": 2.453775172225303,
+      "minimumTargetMargin": -2.8761978149414062,
+      "maximumTargetRank": 20
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.42536769020888543,
+      "minimumTargetMargin": 0.037353515625,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 6,
+      "meanNll": 1.4962340576781168,
+      "minimumTargetMargin": -2.2440338134765625,
+      "maximumTargetRank": 15
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.7837960256470574,
+      "minimumTargetMargin": 0.5589523315429688,
+      "maximumTargetRank": 1
+    }
+  ],
+  "byColumn": [
+    {
+      "examples": 14,
+      "correct": 11,
+      "meanNll": 1.5879035421780177,
+      "minimumTargetMargin": -2.2440338134765625,
+      "maximumTargetRank": 15
+    },
+    {
+      "examples": 15,
+      "correct": 14,
+      "meanNll": 0.621966767249008,
+      "minimumTargetMargin": -1.6765670776367188,
+      "maximumTargetRank": 11
+    },
+    {
+      "examples": 14,
+      "correct": 12,
+      "meanNll": 1.0453578943686028,
+      "minimumTargetMargin": -1.0710945129394531,
+      "maximumTargetRank": 6
+    },
+    {
+      "examples": 14,
+      "correct": 11,
+      "meanNll": 0.7749497701546976,
+      "minimumTargetMargin": -0.8468399047851562,
+      "maximumTargetRank": 4
+    },
+    {
+      "examples": 15,
+      "correct": 13,
+      "meanNll": 0.9163427831449856,
+      "minimumTargetMargin": -0.9161949157714844,
+      "maximumTargetRank": 7
+    },
+    {
+      "examples": 14,
+      "correct": 12,
+      "meanNll": 0.6880527161327856,
+      "minimumTargetMargin": -1.4549140930175781,
+      "maximumTargetRank": 11
+    },
+    {
+      "examples": 14,
+      "correct": 12,
+      "meanNll": 0.6382104097408176,
+      "minimumTargetMargin": -1.4949417114257812,
+      "maximumTargetRank": 8
+    },
+    {
+      "examples": 15,
+      "correct": 10,
+      "meanNll": 1.8490276793638865,
+      "minimumTargetMargin": -2.8761978149414062,
+      "maximumTargetRank": 20
+    },
+    {
+      "examples": 15,
+      "correct": 10,
+      "meanNll": 1.66629251986742,
+      "minimumTargetMargin": -2.1137123107910156,
+      "maximumTargetRank": 16
+    },
+    {
+      "examples": 14,
+      "correct": 4,
+      "meanNll": 2.3554199657269885,
+      "minimumTargetMargin": -1.9614181518554688,
+      "maximumTargetRank": 15
+    }
+  ],
+  "construction": {
+    "examples": 144,
+    "candidates": 4464,
+    "referenceNodes": 5760,
+    "referenceNodeCap": 36864,
+    "outcomeTransitions": 4464,
+    "dfsCalls": 0
+  },
+  "reproduction": {
+    "originalFitExact": true,
+    "all160RepeatedExact": true,
+    "frozenWeightsExact": true
+  },
+  "actualCompute": {
+    "topLevelModels": 1,
+    "checkpointLoads": 1,
+    "topLevelForwards": 320,
+    "trainingRuns": 0,
+    "optimizerUpdates": 0
+  },
+  "timing": {
+    "ownerWallSeconds": 22.001912500000003,
+    "childProcessWallSeconds": 11.866264100000002,
+    "pythonBodyWallSeconds": 8.405248499999288,
+    "maxSampledWorkingSetBytes": 298283008,
+    "rssSamples": 643,
+    "instantaneousPeakMeasured": false
+  },
+  "interpretation": "Same-family untrained board/target combinations with all rows/columns already covered in fitting. No out-of-distribution, action-kind, broad train/dev repair, calibration, rollout, survival, spatial-mechanism or app-adoption claim",
+  "additionalPythonModelLoadForwardTraining": 0,
+  "appUsesDfs": true,
+  "replayScope": "Node saved hashes/rows/metrics/ledger only; no source re-encoding, domain calls, checkpoint deserialization or new inference. Full source freeze was enforced by the owner/child."
+}

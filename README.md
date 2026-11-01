@@ -24,7 +24,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 같은 조건의 200 대 1,000 update 대조를 실행했다. 원래 200-step control과 candidate의 첫 200-step을 정확히 재현한 뒤, 1,000-step candidate는 **16/16 정답·평균 NLL 0.03394·최소 margin +4.10013**으로 fitting gate를 통과했다. 같은 작은 fit 집합에서 고정 연장 일정의 충분성을 확인한 결과이며, 일반화나 앱 정책 개선의 증거는 아니다.
 
-5.12–5.35는 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+이어 동결한 final-1,000 모델을 같은 통제 퍼즐의 미학습 조합 144개에 평가했다. 기존 fit16 결과는 정확히 재현됐지만 transfer는 **109/144(75.69%)·평균 NLL 1.21572·최소 margin −2.87620**으로 사전 기준을 통과하지 못했다. 추가 학습 없이 320회 추론만 사용했으며, 작은 fit 집합의 성공과 전이 성능을 구분한다.
+
+5.12–5.36절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1209,11 +1211,11 @@ node scripts/research/replay-fit-duration.mjs --recorded <local-duration-run> --
 
 ### 5.35 Proposed Frozen Positional Transfer — NOT_RUN
 
-**Local design / evaluation not run.** 5.34의 16/16은 optimization에 사용한 집합의 fitting 결과다. 다음 질문은 고정한 모델이 **같은 통제 퍼즐에서 학습하지 않은 board/target 조합**에도 통하는가다.
+**당시 설계 원본 / PROPOSED_NOT_RUN.** 이후 승인된 실제 평가는 5.36에 별도로 기록했다. 5.34의 16/16은 optimization에 사용한 집합의 fitting 결과다. 다음 질문은 고정한 모델이 **같은 통제 퍼즐에서 학습하지 않은 board/target 조합**에도 통하는가다.
 
 권장안은 final-1,000 checkpoint를 그대로 유지하고, 기존 160개 fixture 중 학습한 16개를 제외한 144개를 평가하는 것이다. 추가 학습이나 optimizer update는 없다. 더 긴 학습, 새 seed 반복, feature ablation보다 현재 모델의 위치 전이 범위를 먼저 확인한다.
 
-| 구분      | 고정 계약                                                    | 현재 상태                |
+| 구분      | 고정 계약                                                    | 설계 당시 상태           |
 | --------- | ------------------------------------------------------------ | ------------------------ |
 | Control   | 원래 fit 16개의 logits·예측·지표 exact 재현                  | 새 모델 replay는 NOT_RUN |
 | Transfer  | 나머지 144개, fit과 중복 0                                   | NOT_RUN                  |
@@ -1235,6 +1237,34 @@ node scripts/research/replay-fit-duration.mjs --recorded <local-duration-run> --
 node scripts/research/validate-frozen-point-transfer.mjs
 node --test scripts/research/test-frozen-point-transfer.mjs
 ```
+
+### 5.36 Frozen Positional Transfer: Fit Passed, Transfer Failed
+
+Final-1,000 checkpoint를 그대로 동결하고, 기존 160개 통제 fixture에서 fitting에 사용한 16개를 제외한 **144개 board/target 조합**을 평가했다. 같은 74개 feature·공간 footprint·raw argmax를 유지했다. 새로운 학습·optimizer update·모델 선택은 없다.
+
+| 지표               | 원래 fit 16개 replay |    미학습 조합 144개 |
+| ------------------ | -------------------: | -------------------: |
+| 정답               |         16/16 (100%) | **109/144 (75.69%)** |
+| 평균 NLL           |             0.033938 |         **1.215715** |
+| 최소 target margin |            +4.100128 |        **−2.876198** |
+| 최악 target rank   |                    1 |                   20 |
+| 사전 gate          |                 PASS |             **FAIL** |
+
+Transfer gate는 144/144 정답, 평균 NLL≤0.05, 모든 target margin>0을 동시에 요구한다. 이번에는 **세 조건 모두 미충족**이다. Fit 16을 transfer 분모에 합치거나 기준을 결과에 맞춰 변경하지 않았다. 행별 9개, 열별 14 또는 15개를 고정했으며 행별 정답 범위는 4–9/9, 열별 정답 범위는 4/14–14/15였다.
+
+기술 검증은 PASS다. 원래 fit 16의 logits·예측·지표가 byte exact인 것을 먼저 확인한 뒤 144개를 평가했다. 전체 160개를 한 번 더 평가해 반복 logits·예측도 byte exact였다. 같은 모델 1개·checkpoint load 1회, **정확히 320 top-level forward·학습 0회·optimizer update 0회**를 사용했고 원래 checkpoint와 logical weights는 변하지 않았다.
+
+새 자료는 별도 evaluation artifact로 생성했다. 기존 reference의 complete unique label을 사용했으며 실제 reference 5,760 nodes(상한 36,864), outcome 전이 4,464회, DFS 0회였다. 기존 train/dev/test 자료와 label 규칙은 변경하지 않았다. 전체 owner 22.002초, child process 11.866초(import 포함), Python body 8.405초(import 제외)를 관측했다. RSS 643개 표본의 최댓값은 약 284.5 MiB로 2 GiB 상한 이내였으며 순간 peak는 측정하지 않았다.
+
+**해석:** 16개 fitting 성공만으로 같은 계열의 미학습 조합 전체에 확장되지는 않았다. 모든 행/열은 fitting에 이미 등장했고 reference/DFS는 160개 전체를 관찰했으므로 pristine held-out/OOD benchmark가 아니다. Outcome index 52의 정답 단서도 유지했다. 실패 원인이나 공간 추론·residual 필요성, kind 선택·기존 broad train/dev의 개선, 장기 생존·앱 채택을 이 결과로 단정하지 않는다. 앱은 DFS를 유지한다.
+
+[결과 집계](assets/research/frozen-point-transfer-20261101-v1.json)와 [고정 실행 config](research/experiments/frozen-point-transfer-v1.json)에 방법·실제 예산·판정을 남겼다. 자료·checkpoint·개별 예측/logits는 공개하지 않는다. 아래 저장 replay는 권한 있는 로컬 산출물을 읽어 hash·지표·ledger·반복을 검증하며 Python·모델 생성/load/forward/학습·domain/자료 생성은 추가하지 않는다.
+
+```sh
+node scripts/research/replay-frozen-point-transfer.mjs --recorded <local-frozen-transfer-run> --output .research-output/my-frozen-transfer-replay
+```
+
+실제 320회 예산은 한 번 소진했다. 새 학습·추론·자료 변형은 별도 연구 결정이며, 결과 재현을 위해 evaluator를 반복 실행하지 않는다.
 
 ## 6. Reproduction and Usage
 
