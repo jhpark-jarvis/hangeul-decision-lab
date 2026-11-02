@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": "research-candidate-evidence-v1",
+  "status": "PASS_SAVED_ANALYSIS_ONLY",
+  "clientDate": "2026-11-02",
+  "sourceAggregate": {
+    "path": "assets/research/frozen-point-transfer-20261101-v1.json",
+    "sha256": "615e7eb985fdc708e2ed7f1a0e5c993591ab08488204e8a32d44c84bc8246f24"
+  },
+  "fit": {
+    "examples": 16,
+    "correct": 16,
+    "meanNll": 0.03393840487115085,
+    "minimumTargetMargin": 4.100128173828125,
+    "maximumTargetRank": 1
+  },
+  "transfer": {
+    "examples": 144,
+    "correct": 109,
+    "meanNll": 1.2157150445875433,
+    "minimumTargetMargin": -2.8761978149414062,
+    "maximumTargetRank": 20
+  },
+  "transferGate": {
+    "status": "FAIL",
+    "checks": {
+      "allCorrect": false,
+      "meanNllAtMost005": false,
+      "everyTargetMarginPositive": false
+    }
+  },
+  "wrongExamples": 35,
+  "wrongTargetRanks": {
+    "twoToFive": 14,
+    "sixToTen": 10,
+    "aboveTen": 11
+  },
+  "errorsWithStoredPredictionAtFitTargetCoordinates": 35,
+  "incorrectCandidatePool": {
+    "candidatesPerExample": 30,
+    "atFitTargetCoordinatesPerExample": 15
+  },
+  "interpretationOfCoordinateOverlap": "Descriptive overlap only: 15 of 30 wrong legal alternatives already match old fit coordinates by fixture construction. Selection was not random; overlap cannot establish coordinate memorization or a causal mechanism.",
+  "featureSeparability": {
+    "featureIndex": 52,
+    "meaning": "clearedRows/16",
+    "fitExamplesWithUniqueTargetSignal": 16,
+    "transferExamplesWithUniqueTargetSignal": 144,
+    "interpretation": "Stored feature property, not a new policy, model prediction, score contract or inference; no spatial reasoning or larger-family sufficiency claim"
+  },
+  "inputContext": {
+    "candidateFeatures": 74,
+    "outcomeFeatures": 22,
+    "outcomeMlpProposedLayers": [22, 32, 1],
+    "outcomeMlpProposedParameters": 769,
+    "existingCandidateCoordinates": true,
+    "existingFootprint": true
+  },
+  "actualAdditionalCompute": {
+    "python": 0,
+    "modelCreation": 0,
+    "checkpointLoad": 0,
+    "forward": 0,
+    "training": 0,
+    "domainOrTeacher": 0,
+    "experimentDatasetMaterialization": 0
+  },
+  "futureExperiments": "PROPOSED_NOT_RUN; no model or data adoption in this task"
+}

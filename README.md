@@ -26,7 +26,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 동결한 final-1,000 모델을 같은 통제 퍼즐의 미학습 조합 144개에 평가했다. 기존 fit16 결과는 정확히 재현됐지만 transfer는 **109/144(75.69%)·평균 NLL 1.21572·최소 margin −2.87620**으로 사전 기준을 통과하지 못했다. 추가 학습 없이 320회 추론만 사용했으며, 작은 fit 집합의 성공과 전이 성능을 구분한다.
 
-5.12–5.36절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.37절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1266,6 +1266,49 @@ node scripts/research/replay-frozen-point-transfer.mjs --recorded <local-frozen-
 
 실제 320회 예산은 한 번 소진했다. 새 학습·추론·자료 변형은 별도 연구 결정이며, 결과 재현을 위해 evaluator를 반복 실행하지 않는다.
 
+### 5.37 Research Candidates for Better Accuracy — PROPOSED / NOT_RUN
+
+**2026-11-02 조사·계획이며 새 실험 결과가 아니다.** 현재 기준은 fit 16/16, 같은 통제 계열의 미학습 조합 109/144(75.69%), 전이 gate FAIL이다. 이번에는 저장값과 논문을 검토했으며 추가 모델 생성·load·forward·학습·domain 호출·실험 자료 생성은 모두 0이다.
+
+#### 저장된 오류가 제시하는 질문
+
+35개 오류 중 정답 rank는 2–5가 14개, 6–10이 10개, 10 초과가 11개였다. 오류 35개 모두에서 모델이 이미 고른 좌표가 원래 fit 16개의 정답 좌표 중 하나였다. 다만 fixture 구성상 각 관측의 오답 후보 30개 중 15개가 그 좌표에 있으므로, 이 일치만으로 좌표 암기나 실패 원인을 확정하지 않는다.
+
+저장된 feature index 52(clearedRows/16)는 fit 16개와 transfer 144개 모두에서 정답 후보에만 1/16, 나머지 후보에는 0이었다. 이는 **이미 저장된 입력의 분리 가능성**이며 새 classifier의 정답률이 아니다. 이 쉬운 단서가 있는데도 오류가 남은 이유를 단순 baseline, coverage, 공간 readout 순서로 분리해 본다. [저장 근거 집계](assets/research/research-candidates-20261102-v1.json)에 분모와 한계를 남겼다.
+
+#### 후보 비교와 추천 순서
+
+| 순위 | 연구 후보                                        | 먼저 할 대조                                                                            | 기대와 주요 한계                                                                                                                      |
+| ---- | ------------------------------------------------ | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | **Outcome-only small MLP**                       | 기존 spatial CNN 대 22→32→1 scorer, 같은 fit 자료·flat CE·update 수                     | 복합 board/좌표 경로 없이 결과 feature를 이용할 수 있는지 확인. Board context 제거와 구조 단순화가 함께 바뀌므로 인과 ablation은 아님 |
+| 2    | **Coverage 확대 / 검증된 symmetry augmentation** | 동일 노출 예산의 중복 표본 대 다양한 board/target 조합. 대칭 증강은 별도 실험           | 행·열 조합 편향을 줄이는 가설. 데이터 다양성과 학습 횟수 효과를 섞지 않고 train/eval 누출 방지                                        |
+| 3    | **Dense spatial readout**                        | 같은 common/outcome branch를 두고 pooled residual 대 16×10 score map의 후보 위치 gather | 후보 위치에 대응하는 공간 정보를 보존하는 가설. 우선 point-only이며 일반 조각·reroll 해법으로 확대하지 않음                           |
+| 4    | CoordConv                                        | 같은 크기의 zero-channel control 대 row/column channel을 넣은 spatial branch            | 후보 좌표와 board feature 정렬을 검사. 현재도 candidate 좌표·footprint가 있고 절대 위치 의존이 더 커질 위험이 있음                    |
+| 5    | Pairwise ranking objective                       | 같은 모델·자료에서 flat CE 대 target/non-target pairwise 항 추가                        | 오답과의 순서·margin을 직접 학습하는 가설. 계수는 실행 전에 고정하며 과거 kind/point 보조 loss와 구별                                 |
+| 6    | DAgger 계열 state coverage                       | 향후 같은 teacher 예산으로 기존 상태 대 정책 방문 상태를 수집·모방                      | 순차 의사결정의 분포 차이를 다루는 후속안. 현재 한 수 진단 실패의 직접 해법은 아니며 새 episode·teacher·학습 예산 필요                |
+
+단순 baseline 비교의 필요성은 [tabular 모델 비교 연구][5]를 참고했다. **22→32→1 MLP를 이 퍼즐에서 시험하자는 것은 이 프로젝트의 가설**이며 논문이 그 구조의 우월성을 보장하지 않는다. Coverage와 augmentation도 같은 개념이 아니다. [augmentation 이론][6]은 보존되는 대칭에 대한 근거이고, 임의로 새 board를 추가하는 효과를 보장하지 않는다.
+
+Dense readout은 [FCN의 공간별 예측 방식][7]에서 착안한 설계 후보이며 segmentation 성능을 퍼즐 정답률로 옮겨 주장하지 않는다. [CoordConv][8]는 convolution에 좌표 channel을 주는 방법이지만 이 모델의 입력에 좌표가 없다는 뜻은 아니다. [RankNet 계열][9]과 [DAgger][10] 역시 각각 순위 학습·순차 분포 차이에 대한 참고이며 이 저장소의 개선 결과가 아니다.
+
+#### 첫 추천 실험의 계약 초안
+
+추천은 **769-parameter outcome MLP와 기존 13,292-parameter spatial CNN의 대조**다. 새 자료를 늘리기 전에, 현재 있는 결과 feature만으로 쉬운 문제의 ranking이 개선되는지 확인한다.
+
+- 기존 fit 16개·각 31개 전체 후보와 label/order를 그대로 사용한다. Candidate는 원래 74개 중 마지막 22개만 입력받으며 label·정답 좌표·reference score를 입력에 넣지 않는다.
+- 두 arm 모두 cold initialization, 기존 seed·Adam·learning rate·step당 weight decay·flat native FP32 CE, full batch 16·1,000 update·최종 step만 사용한다. 서로 다른 구조의 초기 weights가 같다고 요구하지 않는다. Learning rate·loss·자료 coverage를 동시에 조정하지 않는다.
+- Control은 원래 초기 출력·1,000개 loss·최종 logical weights와 fit/transfer logits를 exact 재현한 뒤에만 candidate를 허용한다. Candidate는 자기 최종 반복의 exact를 요구한다. 새 실행기는 아직 구현하지 않았다.
+- 예산 초안은 arm당 초기 fit 16 + 학습 16,000 + 최종 160개 두 번 = **16,336 forward**, 두 CPU 학습 합계 **32,672 forward**, top-level 모델 2개·checkpoint load 0회다. Child 각 600초 / owner 1,260초 / sampled RSS 2 GiB, 호출 전 ledger·실패 STOP·재시작/튜닝 0을 제안한다. **이 예산은 승인·사용되지 않았다.**
+- 두 arm을 같은 144개에서 paired 비교해 정답 유지·회복·퇴행, NLL·margin·rank·행열별 분모를 보고한다. 109/144보다 높아도 기존 144/144·평균 NLL≤0.05·모든 margin>0을 충족하지 못하면 전이 gate는 계속 FAIL이다. 같은 호출 수가 같은 FLOPs·시간·parameter 수를 뜻하지 않는다.
+
+#### 누출 방지와 다음 단계
+
+기존 144개는 오류까지 확인한 **post-hoc 진단 집합**이다. 여기서 후보를 비교해도 새로운 held-out 일반화 증거가 되지 않는다. Coverage 실험에서 학습 표본을 추가하면 모든 arm의 학습 표본 합집합을 평가에서 제외하고 공통 평가 분모를 다시 고정한다. 같은 board의 후보 행을 train/eval로 나누지 않으며, 증강본도 원본과 같은 split group에 둔다. 이후 별도 승인을 받아 새 layout family와 train/dev/final 평가 경계를 실행 전에 동결한다.
+
+16×10 보드에 90도 회전·임의 행/열 permutation·wraparound shift를 그대로 적용하지 않는다. 가로줄 삭제, 조각 footprint, 아이템과 row/column 획득 순서를 보존해야 한다. 첫 대칭 검토는 아이템 없는 point-only 상태의 좌우/상하 반사로 제한하고, 상태·행동을 함께 변환한 뒤 domain 전이와 complete unique reference label을 검증한다. 검증 없는 label 복사나 이미지 픽셀만 뒤집는 증강은 하지 않는다.
+
+최적화 횟수만 다시 늘리기, 이미 실패한 보조 loss 반복, positive temperature scaling만으로 top-1을 올리기는 우선순위에서 내렸다. 특히 양의 temperature로 logits를 나누는 것만으로는 argmax 순서가 바뀌지 않는다. 먼저 위 단일 대조의 실행 여부를 결정하고, 결과를 본 뒤 coverage와 dense readout 중 다음 하나를 고른다. **현재는 연구 계획만 공개하며 새 모델·학습·자료 채택과 앱 적용은 하지 않는다.**
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
@@ -1540,11 +1583,23 @@ $pointRun = ".research-output/point-objective-train-dev-20261018-v1"
 [2]: https://sites.ualberta.ca/~szepesva/papers/ecml06.pdf
 [3]: https://arxiv.org/abs/1312.5602
 [4]: https://arxiv.org/abs/1707.06347
+[5]: https://arxiv.org/abs/2106.11959
+[6]: https://jmlr.org/papers/v21/20-163.html
+[7]: https://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Long_Fully_Convolutional_Networks_2015_CVPR_paper.html
+[8]: https://proceedings.neurips.cc/paper_files/paper/2018/hash/60106888f8977b71e1f15db7bc9a88d1-Abstract.html
+[9]: https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/
+[10]: https://proceedings.mlr.press/v15/ross11a.html
 
 1. Nexon. [한글 모아모아 이벤트 안내][1]. 게임 배경 자료이며 독립 형상/확률 검증을 대체하지 않는다.
 2. Kocsis, L., & Szepesvári, C. (2006). [Bandit Based Monte-Carlo Planning][2]. ECML, 282–293.
 3. Mnih, V., et al. (2013). [Playing Atari with Deep Reinforcement Learning][3]. arXiv:1312.5602.
 4. Schulman, J., et al. (2017). [Proximal Policy Optimization Algorithms][4]. arXiv:1707.06347.
+5. Gorishniy, Y., et al. (2021). [Revisiting Deep Learning Models for Tabular Data][5]. NeurIPS.
+6. Chen, S., Dobriban, E., & Lee, J. H. (2020). [A Group-Theoretic Framework for Data Augmentation][6]. JMLR, 21(245).
+7. Long, J., Shelhamer, E., & Darrell, T. (2015). [Fully Convolutional Networks for Semantic Segmentation][7]. CVPR.
+8. Liu, R., et al. (2018). [An Intriguing Failing of Convolutional Neural Networks and the CoordConv Solution][8]. NeurIPS.
+9. Burges, C. J. C. (2010). [From RankNet to LambdaRank to LambdaMART: An Overview][9]. MSR-TR-2010-82.
+10. Ross, S., Gordon, G., & Bagnell, D. (2011). [A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning][10]. AISTATS.
 
 논문은 방법 참고이며 본 프로젝트의 성능 증거가 아니다. 모든 그림은 자체 생성 설명용 도식이다. 메이플스토리 상표/게임 저작물의 권리는 각 권리자에게 있으며 공식/제휴 프로젝트가 아니다.
 
