@@ -26,7 +26,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 동결한 final-1,000 모델을 같은 통제 퍼즐의 미학습 조합 144개에 평가했다. 기존 fit16 결과는 정확히 재현됐지만 transfer는 **109/144(75.69%)·평균 NLL 1.21572·최소 margin −2.87620**으로 사전 기준을 통과하지 못했다. 추가 학습 없이 320회 추론만 사용했으며, 작은 fit 집합의 성공과 전이 성능을 구분한다.
 
-5.12–5.37절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.38절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1308,6 +1308,39 @@ Dense readout은 [FCN의 공간별 예측 방식][7]에서 착안한 설계 후�
 16×10 보드에 90도 회전·임의 행/열 permutation·wraparound shift를 그대로 적용하지 않는다. 가로줄 삭제, 조각 footprint, 아이템과 row/column 획득 순서를 보존해야 한다. 첫 대칭 검토는 아이템 없는 point-only 상태의 좌우/상하 반사로 제한하고, 상태·행동을 함께 변환한 뒤 domain 전이와 complete unique reference label을 검증한다. 검증 없는 label 복사나 이미지 픽셀만 뒤집는 증강은 하지 않는다.
 
 최적화 횟수만 다시 늘리기, 이미 실패한 보조 loss 반복, positive temperature scaling만으로 top-1을 올리기는 우선순위에서 내렸다. 특히 양의 temperature로 logits를 나누는 것만으로는 argmax 순서가 바뀌지 않는다. 먼저 위 단일 대조의 실행 여부를 결정하고, 결과를 본 뒤 coverage와 dense readout 중 다음 하나를 고른다. **현재는 연구 계획만 공개하며 새 모델·학습·자료 채택과 앱 적용은 하지 않는다.**
+
+### 5.38 Outcome Input Equivalence and a Frozen MLP Proposal
+
+**저장 입력 감사 PASS / 새 모델 실험 NOT_RUN.** 5.37의 첫 후보를 실행 계약으로 구체화하기 전에 outcome 22개 입력 전체를 비교했다. 정답 후보만 달리 태그한 벡터 multiset과 중복을 보존하는 후보 bijection을 검사했다. Label은 감사에만 사용했으며 모델을 만들거나 새 점수·예측을 계산하지 않았다.
+
+| 입력 속성                                   | Fit 16개 |            Transfer 144개 |
+| ------------------------------------------- | -------: | ------------------------: |
+| 후보 행                                     |      496 |                     4,464 |
+| Unique outcome 22-vector                    |      136 |                       136 |
+| Fit에 없던 outcome vector                   |        — |                     **0** |
+| Fit과 label-preserving multiset이 같은 관측 |        — |               **144/144** |
+| Unique 전체 74-vector                       |      496 |                       624 |
+| Fit에 없던 전체 74-vector                   |        — | **144**, 모두 target 후보 |
+
+각 transfer 목록은 16개 fit 목록 중 하나의 outcome 후보행 재정렬이었다. 따라서 **결정적 pointwise outcome-only scorer는 알려진 입력 벡터를 다른 순서로 받는다.** 원래 CNN의 보드·74개 feature가 같았다는 뜻은 아니다. 또한 이 입력 동치는 MLP 학습 성공·새 정답률·네이티브 FP32 logits/NLL 일치를 측정한 결과가 아니다. [집계](assets/research/outcome-input-equivalence-20261103-v1.json)에 범위를 남겼으며 상세 permutation witness와 raw vector는 공개하지 않는다.
+
+이 한계에 따라 첫 MLP 대조는 **복합 board/좌표 경로를 우회하는 sanity 진단**으로 규정한다. 통과해도 독립적인 일반화 성과로 볼 수 없으며, 새 layout family·split 설계는 별도 후속 결정이다. 기존 CNN의 109/144 실패와 앱 DFS는 그대로 유지한다.
+
+#### 확정한 제안 항목
+
+- Candidate는 **Linear(22,32,bias) → ReLU → Linear(32,1,bias)**, 769 parameters다. 기존 후보 feature의 마지막 22개만 받아 원래 31개 후보 순서로 점수를 반환한다. Board·metadata·footprint·절대 후보 좌표·key/id·label/reference score는 forward에서 제외한다.
+- Control은 원래 13,292-parameter spatial CNN, 같은 stored fit16/transfer144와 기존 seed·Adam·lr0.001·weight decay0.0001·flat native FP32 CE·full batch16·1,000 update·최종 step을 유지한다. Legacy model config의 epochs12/batch8은 constructor metadata이며 실제 학습 일정과 구분한다.
+- Control의 원래 초기 출력/weights·1,000개 loss/history·최종 logical weights·fit/transfer logits·반복을 exact 재현한 다음에만 candidate를 허용한다. 구조가 달라 candidate와 control의 초기 weights/logits 동일성은 요구하지 않으며 candidate는 자기 최종 반복의 exact를 요구한다.
+- 예산은 arm당 16 + 16,000 + 320 = **16,336**, 두 CPU 학습·모델 2개·checkpoint load 0회·**최대 32,672 top-level forward**다. 각 child600초/owner1,260초·sampled RSS2GiB·호출 전 ledger·실패 STOP·재시작/튜닝0이다. **새 runner/실행 config는 미구현이며 이 예산은 미승인·미사용이다.**
+- 기술 준수, fit16/16·transfer144/144·평균 NLL≤0.05·모든 target margin>0, paired 회복/퇴행을 구분한다. 입력 동치와 post-hoc 평가를 별도 한계로 남기고 gate를 낮추지 않는다. 구조·용량·context 제거가 함께 바뀌므로 단일 성분 인과 대조나 동일 FLOPs 비교도 아니다.
+
+[고정 proposal](research/experiments/outcome-mlp-proposal-v1.json)과 Node 정적 검증/저장 감사 CLI를 추가했다. 아래 명령은 새 Python·모델 생성/load/forward/학습·domain/teacher·실험 자료 생성을 실행하지 않는다. 저장 감사에는 권한 있는 기존 로컬 산출물이 필요하고 새 출력 폴더를 사용한다.
+
+```sh
+node scripts/research/validate-outcome-mlp-proposal.mjs
+node --test scripts/research/test-outcome-mlp-proposal.mjs
+node scripts/research/analyze-outcome-equivalence.mjs --recorded <local-frozen-transfer-run> --output .research-output/my-outcome-input-audit
+```
 
 ## 6. Reproduction and Usage
 

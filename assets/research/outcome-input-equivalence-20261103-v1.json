@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "outcome-input-equivalence-v1",
+  "status": "PASS_STORED_INPUT_AUDIT",
+  "sourceAggregate": {
+    "path": "assets/research/frozen-point-transfer-20261101-v1.json",
+    "sha256": "615e7eb985fdc708e2ed7f1a0e5c993591ab08488204e8a32d44c84bc8246f24"
+  },
+  "previousTransfer": {
+    "examples": 144,
+    "correct": 109,
+    "meanNll": 1.2157150445875433,
+    "minimumTargetMargin": -2.8761978149414062,
+    "maximumTargetRank": 20
+  },
+  "previousTransferGate": "FAIL",
+  "inputAudit": {
+    "fitExamples": 16,
+    "transferExamples": 144,
+    "fitCandidateRows": 496,
+    "transferCandidateRows": 4464,
+    "fitUniqueOutcomeVectors": 136,
+    "transferUniqueOutcomeVectors": 136,
+    "transferUnseenOutcomeVectors": 0,
+    "fitOutcomeLabelConflicts": 0,
+    "uniqueFitBags": 16,
+    "labelPreservingBagMatches": 144,
+    "fitUniqueFull74Vectors": 496,
+    "transferUniqueFull74Vectors": 624,
+    "transferUnseenFull74Vectors": 144,
+    "transferTargetRowsUnseenFull74": 144,
+    "transferNonTargetRowsUnseenFull74": 0
+  },
+  "interpretation": "All 144 tagged 22-feature candidate multisets match one of 16 fit multisets; all 136 unique outcome vectors were seen in fitting. A deterministic pointwise outcome-only scorer therefore sees rearranged known inputs, not new outcome vectors. Full boards and original 74-feature model inputs are different. This is an input audit, not a new model prediction, transfer accuracy, causal claim or native floating-point guarantee.",
+  "additionalPythonModelLoadForwardTrainingDomainDataset": 0,
+  "appUsesDfs": true
+}

@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "id": "outcome-mlp-proposal-v1",
+  "status": "PROPOSED_NOT_RUN",
+  "approval": "DESIGN_AND_PUBLICATION_ONLY",
+  "executionRequiresSeparateUserDecision": true,
+  "evidence": {
+    "path": "assets/research/outcome-input-equivalence-20261103-v1.json",
+    "sha256": "9add7d6aa7ca4ec6a342f442ad2d504c7a9a414251cdf694a70c419d4fba450d"
+  },
+  "sourceHashes": {
+    "src/research/point-simulation.ts": "c4694ad790569c2eb438c959b7198ca9a7e745c0304ea9f64fd193fd05520e31",
+    "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+    "src/research/action-outcome.ts": "97b896d89a6e593dd839e7d9451402f6bbae334afa8cebeed6584615603cadde",
+    "src/research/spatial-footprint.ts": "09eff60bff74b1fa8a1f70b50c3a20243887d4ec3fc08159c73de498d0493ca4",
+    "research/cnn/model.py": "5d9809c50d8e8be1a79bb7c2a4252a8e39a7d7244276c4d479b421cf2306e3ac",
+    "research/cnn/outcome.py": "d306607902b0bbfdf265dbb2ee9c4f5a6136df2d54cb5339961c89790155a2c2",
+    "research/cnn/spatial.py": "f86df1f9c6528572fb6aa1f3b50d877d4bcb9b2d8be6825d3d8d9644ee21a87c",
+    "research/experiments/spatial-residual-v1.json": "178b0d3681b930653e4b31dd67430765fdcc895ed55ee08072a8a5c9070f9d33",
+    "research/cnn/controlled_point_fit.py": "747ba3bd085bbec1eff34f5ea62e5c5f7fb3490a94466af629ccc60bff3dfd5f",
+    "scripts/research/controlled-point-fit-contract.mjs": "a7523228eea524cc11299c9b60f7485125231c1bba8f97cafb0ffd71d348548e",
+    "scripts/research/controlled-fit-diagnostics.mjs": "309a31192324e4aad26a1dad5947d7fe7c4d61a301cb9ee89d74b212354659ef",
+    "research/experiments/controlled-point-fit-v1.json": "c5d4f494cf5ab8cb3f29700357cc43e247b34d9e76625f05198ba792d68bfa6d",
+    "research/cnn/fit_duration.py": "8826c42b3a26bab7fe7a7630bea3556d7a19ea37e5a7a67519046d8714868f61",
+    "research/cnn/frozen_point_transfer.py": "8a76d901ae510ef75ffe3f9ccbdeb34ff4891cadd725efeb066b71729c6b728a",
+    "research/experiments/controlled-fit-duration-v1.json": "45499dcefd520250a516ef5447051bdea05abb423d7ae2dea11cd127be643682",
+    "research/experiments/frozen-point-transfer-v1.json": "b2f3e37738bdd1e38f99d3433e94a4a40454fcf3fc84a3b7df6e2061336c4849",
+    "scripts/research/analyze-outcome-equivalence.mjs": "a498446bdf81eabe6940def08eada420813f680df52a2c2b3e784762579c269c"
+  },
+  "original": {
+    "fitDatasetSha256": "862353fc79a5bc12a97da008b9ce0467ac026d28a4dc86fb211767ca45d12666",
+    "transferDatasetSha256": "142c26aabd0dfbb863be9f0c50037849f22e7cffbec3f2c0a65753a849f01588",
+    "initialFitLogitsSha256": "ce4f971b347e118dc51ed7213fd408962a2ce7e1f38fda169f473876f36a4a52",
+    "history1000Sha256": "2413bce01298f376bbd1a584f7633a64c1b0f3dec0585582cdb54332546b9590",
+    "finalFitLogitsSha256": "bdc0560426ead312bf171490617f3b3e05743c2c8d453be262cc7b3da755ae30",
+    "finalTransferLogitsSha256": "593c36101f71ca93f2ba52f9a7e743883711b218446ea10a129ac516cab5ec3c",
+    "finalLogicalWeightsSha256": "424704f9ed88d76a3f77dcd2d3ff4493451ea66fdc20ac3f2cc5df4cb03a1981",
+    "initialLogicalWeightsSha256": "8c36dfe1cd14e50da02db90bbc0e7e1d7dc6f5025711b4aa4818ee02f91d2c6b"
+  },
+  "shared": {
+    "data": {
+      "fitExamples": 16,
+      "transferExamples": 144,
+      "candidatesEach": 31,
+      "fitCandidateRows": 496,
+      "transferCandidateRows": 4464,
+      "materialization": "Exact existing stored bytes and legal order; no new domain/teacher/labels/data, no append to original train/dev/test"
+    },
+    "modelConfig": {
+      "seed": 20261008,
+      "epochs": 12,
+      "batchSize": 8,
+      "threads": 2,
+      "convChannels": 8,
+      "embedding": 32,
+      "poolRows": 4,
+      "poolCols": 5,
+      "learningRate": 0.001,
+      "weightDecay": 0.0001
+    },
+    "interopThreads": 1,
+    "training": {
+      "optimizer": "Adam",
+      "learningRate": 0.001,
+      "weightDecay": 0.0001,
+      "seed": 20261008,
+      "updates": 1000,
+      "batchExamples": 16,
+      "loss": "Native CPU float32 flat full-list cross_entropy; sum of 16 per-example losses divided by 16; one optimizer update after all 16 backwards",
+      "order": "Fixed original increasing row order; no shuffle or vectorization of the reference control",
+      "selection": "Final update1000 only; initial fit16 and final fit16/transfer144 twice, no early stop, best checkpoint, extra seed or tuning"
+    },
+    "prediction": "Original full-list raw argmax and first legal index on ties; no score scaling or routing"
+  },
+  "contrast": {
+    "factor": "scorer design: original board-conditioned spatial13292 versus pointwise outcome-only MLP769",
+    "control": {
+      "architecture": "Unmodified SpatialCandidateCNN v3",
+      "parameters": 13292,
+      "planes": [3, 16, 10],
+      "metadata": 140,
+      "candidateFeatures": 74,
+      "footprint": [1, 16, 10],
+      "chunk": 32,
+      "residualScale": 1
+    },
+    "candidate": {
+      "architecture": "Linear(22,32,bias=True) -> ReLU -> Linear(32,1,bias=True)",
+      "input": "Only stored candidateFeatures columns52..73, in original31-candidate order",
+      "layers": [22, 32, 1],
+      "activation": "ReLU",
+      "biases": true,
+      "parameters": 769,
+      "initialization": "Cold torch.nn.Linear default initialization after existing configure(seed20261008); no checkpoint load or original-CNN weight mapping",
+      "excludedInputs": "No board/metadata/footprint, absolute candidate coordinates, candidate key, instance/id, label or reference score enters forward"
+    },
+    "interpretation": "Architecture, context removal and capacity change together; this is a bypass/sufficiency diagnostic, not a single-component causal ablation or equal-FLOPs comparison"
+  },
+  "controls": {
+    "order": "Run complete exact spatial control before creating candidate model",
+    "controlExact": "Original initial fit logits/weights, all1000 pre-update losses/history, final logical weights, fit16 and transfer144 logits/predictions/metrics and final repeats exact; STOP on mismatch",
+    "candidateInitial": "Validate deterministic cold candidate shape/parameter count and finite output only; cross-architecture initial weights/logits are not expected equal",
+    "candidateRepeat": "Candidate final fit16/transfer144 repeated byteexact, finite weights/gradients and exact before-call ledger; no original candidate score exists",
+    "noReferenceModel": "Native tests use scalar/tensor/mocks only; no extra reference network/warmup/prefix forward"
+  },
+  "forwardBudget": {
+    "perArm": {
+      "initialFit": 16,
+      "training": 16000,
+      "finalFitFirst": 16,
+      "finalTransferFirst": 144,
+      "finalFitRepeat": 16,
+      "finalTransferRepeat": 144,
+      "total": 16336
+    },
+    "arms": 2,
+    "totalTopLevelMax": 32672,
+    "topLevelModels": 2,
+    "trainingRuns": 2,
+    "checkpointLoads": 0,
+    "extraTelemetryOrWarmup": 0
+  },
+  "resources": {
+    "runtime": "Existing CPU PyTorch only; no install/GPU/service/external transmission",
+    "sequentialChildren": 2,
+    "childProcessWallSeconds": 600,
+    "ownerWallSeconds": 1260,
+    "sampledWorkingSetBytes": 2147483648,
+    "processTimerIncludesImports": true,
+    "instantaneousPeakMeasured": false,
+    "failure": "Reserve global/arm/phase/example before each call; STOP on source/data/control/finite/ledger/time/RSS/cancel failure, retain partial artifacts, no retry/restart/tuning"
+  },
+  "screening": {
+    "fit": {
+      "examples": 16,
+      "correct": 16,
+      "maximumMeanNll": 0.05,
+      "minimumEveryTargetMargin": 0
+    },
+    "transfer": {
+      "examples": 144,
+      "correct": 144,
+      "maximumMeanNll": 0.05,
+      "minimumEveryTargetMargin": 0
+    },
+    "comparison": "Separate technical/control reproducibility, fit gate, transfer gate, paired recovered/regressed/both-correct/both-wrong; retain FAIL unless all gates pass, no new threshold or merged denominator",
+    "inputEquivalence": "144/144 outcome candidate multisets already match fit16; deterministic pointwise outcome ranking sees known vectors, so even a native transfer PASS is not an independent generalization result. Floating-point metrics/order still require actual native verification",
+    "limits": "Prior144 is post-hoc; no new data family, action-kind, old339/89 repair, spatial mechanism, survival or app adoption claim"
+  },
+  "boundaries": {
+    "modelRunnerImplemented": false,
+    "executionConfigImplemented": false,
+    "currentPythonModelLoadForwardTraining": 0,
+    "currentDomainTeacherMaterialization": 0,
+    "originalSourceDataModelImmutable": true,
+    "newScoreFeaturePolicyAdopted": false,
+    "appUsesDfs": true,
+    "rawWeightsLogitsAndPermutationWitnessesPrivate": true,
+    "publication": "Proposal/Node tools/tests/non-sensitive input counts/README only, no raw vectors or per-example permutation witnesses",
+    "future": "Explicit user model/input/two-CPU32672 execution decision required; past320/19296 budgets are spent"
+  }
+}
