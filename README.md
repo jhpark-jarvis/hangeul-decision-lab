@@ -2,7 +2,7 @@
 
 ### Budgeted Search and a Research Agenda for a Hangul Block Puzzle
 
-**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN experiments, spatial residual contrast and frozen ranking diagnostics · **Application policy:** DFS · **RL:** FUTURE
+**Implemented:** DFS assistant, synthetic simulator/benchmark, offline CPU CNN/MLP experiments, spatial residual contrast and frozen ranking diagnostics · **Application policy:** DFS · **RL:** FUTURE
 
 ## Abstract
 
@@ -26,7 +26,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 동결한 final-1,000 모델을 같은 통제 퍼즐의 미학습 조합 144개에 평가했다. 기존 fit16 결과는 정확히 재현됐지만 transfer는 **109/144(75.69%)·평균 NLL 1.21572·최소 margin −2.87620**으로 사전 기준을 통과하지 못했다. 추가 학습 없이 320회 추론만 사용했으며, 작은 fit 집합의 성공과 전이 성능을 구분한다.
 
-5.12–5.38절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+후속 outcome-only MLP 대조에서는 CNN의 기존 결과를 정확히 재현한 뒤, 22→32→1 scorer가 **fit 16/16·같은 144개 진단 144/144**와 NLL·margin 기준을 통과했다. 다만 마지막 22개 입력만 보면 144개는 fit 목록의 label 보존 재정렬이므로 **독립 일반화 성과가 아닌 bypass 진단**이다.
+
+5.12–5.39절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1266,9 +1268,9 @@ node scripts/research/replay-frozen-point-transfer.mjs --recorded <local-frozen-
 
 실제 320회 예산은 한 번 소진했다. 새 학습·추론·자료 변형은 별도 연구 결정이며, 결과 재현을 위해 evaluator를 반복 실행하지 않는다.
 
-### 5.37 Research Candidates for Better Accuracy — PROPOSED / NOT_RUN
+### 5.37 Research Candidates for Better Accuracy — Historical Proposal
 
-**2026-11-02 조사·계획이며 새 실험 결과가 아니다.** 현재 기준은 fit 16/16, 같은 통제 계열의 미학습 조합 109/144(75.69%), 전이 gate FAIL이다. 이번에는 저장값과 논문을 검토했으며 추가 모델 생성·load·forward·학습·domain 호출·실험 자료 생성은 모두 0이다.
+**2026-11-02 당시 조사·계획이다.** 아래 미실행 문구와 예산은 당시 기록이며, 이후 승인된 첫 MLP 대조의 실제 결과는 5.39에 구분했다. 나머지 후보는 여전히 PROPOSED / NOT_RUN이다. 현재 기준은 fit 16/16, 같은 통제 계열의 미학습 조합 109/144(75.69%), 전이 gate FAIL이다. 이번에는 저장값과 논문을 검토했으며 추가 모델 생성·load·forward·학습·domain 호출·실험 자료 생성은 모두 0이다.
 
 #### 저장된 오류가 제시하는 질문
 
@@ -1311,7 +1313,7 @@ Dense readout은 [FCN의 공간별 예측 방식][7]에서 착안한 설계 후�
 
 ### 5.38 Outcome Input Equivalence and a Frozen MLP Proposal
 
-**저장 입력 감사 PASS / 새 모델 실험 NOT_RUN.** 5.37의 첫 후보를 실행 계약으로 구체화하기 전에 outcome 22개 입력 전체를 비교했다. 정답 후보만 달리 태그한 벡터 multiset과 중복을 보존하는 후보 bijection을 검사했다. Label은 감사에만 사용했으며 모델을 만들거나 새 점수·예측을 계산하지 않았다.
+**입력 감사 당시: PASS / 모델 실험 NOT_RUN.** 이후 승인·실행 결과는 5.39에 기록했다. 5.37의 첫 후보를 실행 계약으로 구체화하기 전에 outcome 22개 입력 전체를 비교했다. 정답 후보만 달리 태그한 벡터 multiset과 중복을 보존하는 후보 bijection을 검사했다. Label은 감사에만 사용했으며 모델을 만들거나 새 점수·예측을 계산하지 않았다.
 
 | 입력 속성                                   | Fit 16개 |            Transfer 144개 |
 | ------------------------------------------- | -------: | ------------------------: |
@@ -1340,6 +1342,50 @@ Dense readout은 [FCN의 공간별 예측 방식][7]에서 착안한 설계 후�
 node scripts/research/validate-outcome-mlp-proposal.mjs
 node --test scripts/research/test-outcome-mlp-proposal.mjs
 node scripts/research/analyze-outcome-equivalence.mjs --recorded <local-frozen-transfer-run> --output .research-output/my-outcome-input-audit
+```
+
+### 5.39 Outcome-only MLP Contrast — Known-input Bypass Diagnostic
+
+**2026-11-03 단일 실행 완료.** 사용자 승인 후 기존 spatial CNN과 outcome-only MLP를 각각 cold initialization부터 CPU 1,000 update했다. 원래 fit16/transfer144 자료·31개 합법 후보·label/order·seed·Adam·learning rate0.001·weight decay0.0001·full batch16·native FP32 flat CE와 최종 step 선택을 유지했다. 새 자료·teacher·domain 호출은 없었다.
+
+#### Method and Control Reproduction
+
+Control은 기존 **13,292-parameter spatial CNN**이다. Candidate는 **Linear(22,32) → ReLU → Linear(32,1), bias 포함 769 parameters**이며 후보별로 기존 feature의 마지막22개만 입력받는다. Board·metadata·footprint·절대좌표·label·reference score를 전달하지 않는다. 구조·용량·context 제거가 함께 달라 단일 성분 ablation이나 동일 FLOPs 비교는 아니다.
+
+CNN의 초기 weights/logits, 1,000개 loss history, 최종 logical weights와 fit16/transfer144 logits가 기존 값과 정확히 같아야 MLP child를 시작했다. 모든 비교를 통과했고, 두 모델의 최종160개 예측을 각각 한 번 더 계산해 byte 일치를 확인했다. Candidate에 control과 같은 초기 weights를 요구하지 않았다.
+
+#### Results
+
+| Model / set                 |          Correct | Mean full-list NLL | Minimum target margin | Gate |
+| --------------------------- | ---------------: | -----------------: | --------------------: | ---- |
+| Spatial CNN / fit16         |     16/16 (100%) |           0.033938 |             +4.100128 | PASS |
+| Outcome MLP / fit16         |     16/16 (100%) |           0.009989 |             +7.685898 | PASS |
+| Spatial CNN / diagnostic144 | 109/144 (75.69%) |           1.215715 |             −2.876198 | FAIL |
+| Outcome MLP / diagnostic144 |   144/144 (100%) |           0.009989 |             +7.685898 | PASS |
+
+Gate는 정답 전부 일치·평균 NLL≤0.05·모든 target margin>0의 세 조건을 유지했다. 같은144개에서 **오류 회복35·퇴행0·정답 유지109**, 선택 변경35였다. Candidate의 모든 target rank는1이다. 행별16개·열별10개 집계와 분모는 [비민감 결과](assets/research/outcome-mlp-20261103-v1.json)에 기록했다. 기존 CNN의 실패 기록은 유지한다.
+
+#### Compute and Reproduction Scope
+
+각 arm은 초기16 + 학습16,000 + 최종160×2 = **16,336 call**, 전체 **32,672 top-level forward**를 사용했다. 모델2개·checkpoint load0·학습2회·총2,000 update, 추가 seed/tuning/retry0이다. CPU child는 순차 실행했고 모든 호출을 실행 전에 ledger에 기록했다.
+
+Windows/Python3.13.13/PyTorch2.14.1+cpu·intra2/interop1 환경의 단일 관측에서 owner102.69초, import 포함 CNN child81.75초·MLP child19.91초였다. 각2,674회 sampled working set의 최대값은 약302.3/289.0MiB로2GiB cap 이내였다. 순간 peak는 측정하지 않았고 이 시간에는 검증·IO·프로세스 비용이 포함된다. 호출 수가 같다는 사실을 동일 연산량이나 일반적인 속도 배율로 해석하지 않는다.
+
+Node126개/native scalar·tensor·ledger4개 테스트와 lint/format이 통과했다. 별도 Node 저장 replay 두 번의 summary가 byte 일치했다. 공개 검증에서는 추가 모델 생성/load/forward/학습을 하지 않는다. [실행 config](research/experiments/outcome-mlp-v1.json)와 [원래 미실행 proposal](research/experiments/outcome-mlp-proposal-v1.json)을 별도로 보존했다.
+
+#### Interpretation and Next Research Boundary
+
+5.38의 감사대로 outcome22만 보면 **144개 목록 모두 fit16 중 한 목록의 label 보존 재정렬**이다. Fit/diagnostic의 unique outcome 벡터는 각각 같은136개이며 새로운 벡터는0개다. 따라서 100%는 이 known-input ranking 문제에서 단순 scorer가 동작한다는 근거다. 새로운 입력이나 layout family로의 독립 일반화를 입증하지 않는다. 같은 NLL이 관측된 것도 이 입력 동치와 일관된다.
+
+이 결과만으로 CNN 실패 원인을 공간 구조·용량·최적화 중 하나로 확정하지 않는다. 기존339/89 train/dev 문제·일반 조각/행동 종류·장기 생존·앱 정책 개선은 검증하지 않았다. 앱은 계속 DFS를 사용한다.
+
+다음 우선순위는 **새 layout family·outcome novelty·원본 board 단위 split을 갖춘 coverage 평가 계약**이다. 현재144개를 새 held-out으로 재명명하지 않고, 자료 생성/학습 전에 train/dev/final 경계와 노출 예산·baseline/gate를 동결해야 한다. 추가 자료·학습·모델 채택은 별도 결정이며 이번 실행 뒤 자동 튜닝하지 않았다.
+
+권한 있는 로컬 run이 있을 때 아래 명령으로 저장 logits/hash/ledger를 재검산할 수 있다. Raw 자료·weights·logits는 공개하지 않으므로 공개 clone만으로 원래 수치를 독립 복구할 수는 없다. 새 output 폴더만 허용한다.
+
+```sh
+node scripts/research/replay-outcome-mlp.mjs --recorded <local-outcome-mlp-run> --output .research-output/my-outcome-mlp-replay
+node --test scripts/research/test-outcome-mlp-execution.mjs
 ```
 
 ## 6. Reproduction and Usage

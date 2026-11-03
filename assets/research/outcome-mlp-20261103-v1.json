@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "id": "outcome-mlp-v1",
+  "technicalStatus": "PASS",
+  "control": {
+    "arm": "control",
+    "initial": {
+      "examples": 16,
+      "correct": 1,
+      "meanNll": 3.433131918311119,
+      "minimumTargetMargin": -0.10113419592380524,
+      "maximumTargetRank": 30
+    },
+    "fit": {
+      "examples": 16,
+      "correct": 16,
+      "meanNll": 0.03393840487115085,
+      "minimumTargetMargin": 4.100128173828125,
+      "maximumTargetRank": 1
+    },
+    "transfer": {
+      "examples": 144,
+      "correct": 109,
+      "meanNll": 1.2157150445875433,
+      "minimumTargetMargin": -2.8761978149414062,
+      "maximumTargetRank": 20
+    },
+    "fitGate": {
+      "status": "PASS",
+      "checks": {
+        "allCorrect": true,
+        "meanNllAtMost005": true,
+        "everyTargetMarginPositive": true
+      }
+    },
+    "transferGate": {
+      "status": "FAIL",
+      "checks": {
+        "allCorrect": false,
+        "meanNllAtMost005": false,
+        "everyTargetMarginPositive": false
+      }
+    },
+    "updates": 1000
+  },
+  "candidate": {
+    "arm": "candidate",
+    "initial": {
+      "examples": 16,
+      "correct": 10,
+      "meanNll": 3.4214721024036407,
+      "minimumTargetMargin": -0.06921060383319855,
+      "maximumTargetRank": 31
+    },
+    "fit": {
+      "examples": 16,
+      "correct": 16,
+      "meanNll": 0.00998942373553291,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    "transfer": {
+      "examples": 144,
+      "correct": 144,
+      "meanNll": 0.00998942373553291,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    "fitGate": {
+      "status": "PASS",
+      "checks": {
+        "allCorrect": true,
+        "meanNllAtMost005": true,
+        "everyTargetMarginPositive": true
+      }
+    },
+    "transferGate": {
+      "status": "PASS",
+      "checks": {
+        "allCorrect": true,
+        "meanNllAtMost005": true,
+        "everyTargetMarginPositive": true
+      }
+    },
+    "updates": 1000
+  },
+  "paired": {
+    "fit": {
+      "examples": 16,
+      "bothCorrect": 16,
+      "recovered": 0,
+      "regressed": 0,
+      "bothWrong": 0,
+      "changedChoices": 0
+    },
+    "transfer": {
+      "examples": 144,
+      "bothCorrect": 109,
+      "recovered": 35,
+      "regressed": 0,
+      "bothWrong": 0,
+      "changedChoices": 35
+    }
+  },
+  "candidateTransferByRow": [
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.009394249878823757,
+      "minimumTargetMargin": 7.975013732910156,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.01252028439193964,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.008663922548294067,
+      "minimumTargetMargin": 8.059013366699219,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.010475766845047474,
+      "minimumTargetMargin": 7.8653411865234375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.009698179550468922,
+      "minimumTargetMargin": 7.954154968261719,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.009367678314447403,
+      "minimumTargetMargin": 8.012779235839844,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.007813012227416039,
+      "minimumTargetMargin": 8.169792175292969,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.011419175192713737,
+      "minimumTargetMargin": 7.794807434082031,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.008541124872863293,
+      "minimumTargetMargin": 8.08154296875,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.012868928723037243,
+      "minimumTargetMargin": 7.689544677734375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.011256757192313671,
+      "minimumTargetMargin": 7.8253326416015625,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.01086403802037239,
+      "minimumTargetMargin": 7.832244873046875,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.008698903024196625,
+      "minimumTargetMargin": 8.058174133300781,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.008367953822016716,
+      "minimumTargetMargin": 8.0869140625,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.008964057080447674,
+      "minimumTargetMargin": 8.050994873046875,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 9,
+      "correct": 9,
+      "meanNll": 0.010916748084127903,
+      "minimumTargetMargin": 7.841743469238281,
+      "maximumTargetRank": 1
+    }
+  ],
+  "candidateTransferByColumn": [
+    {
+      "examples": 14,
+      "correct": 14,
+      "meanNll": 0.009941412335527795,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 15,
+      "correct": 15,
+      "meanNll": 0.009894106971720855,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 14,
+      "correct": 14,
+      "meanNll": 0.01008346736697214,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 14,
+      "correct": 14,
+      "meanNll": 0.009746175525443894,
+      "minimumTargetMargin": 7.689544677734375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 15,
+      "correct": 15,
+      "meanNll": 0.010085976993044218,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 14,
+      "correct": 14,
+      "meanNll": 0.009967596669282233,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 14,
+      "correct": 14,
+      "meanNll": 0.01017628244257399,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 15,
+      "correct": 15,
+      "meanNll": 0.009797456736365954,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 15,
+      "correct": 15,
+      "meanNll": 0.010134517836074034,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    },
+    {
+      "examples": 14,
+      "correct": 14,
+      "meanNll": 0.010070504221533026,
+      "minimumTargetMargin": 7.6858978271484375,
+      "maximumTargetRank": 1
+    }
+  ],
+  "reproduction": {
+    "originalControlExact": true,
+    "all160FinalPredictionsRepeatedExact": true
+  },
+  "actualCompute": {
+    "topLevelModels": 2,
+    "checkpointLoads": 0,
+    "topLevelForwards": 32672,
+    "trainingRuns": 2,
+    "optimizerUpdates": 2000
+  },
+  "timing": {
+    "ownerWallSeconds": 102.68917080000001,
+    "children": [
+      {
+        "arm": "control",
+        "processWallSeconds": 81.7542564,
+        "pythonBody": {
+          "samples": 2674,
+          "maxSampledWorkingSetBytes": 317018112,
+          "instantaneousPeakMeasured": false,
+          "wallTimeSeconds": 78.74646440002834,
+          "wallTimeLimitSeconds": 600,
+          "workingSetLimitBytes": 2147483648
+        }
+      },
+      {
+        "arm": "candidate",
+        "processWallSeconds": 19.912051999999996,
+        "pythonBody": {
+          "samples": 2674,
+          "maxSampledWorkingSetBytes": 303017984,
+          "instantaneousPeakMeasured": false,
+          "wallTimeSeconds": 16.97761179995723,
+          "wallTimeLimitSeconds": 600,
+          "workingSetLimitBytes": 2147483648
+        }
+      }
+    ]
+  },
+  "interpretation": "Outcome22 transfer is a label-preserving permutation of known fit inputs; bypass diagnostic, not independent generalization. Architecture, capacity and board context change together. Existing wider tasks and app adoption are untested.",
+  "additionalPythonModelLoadForwardTraining": 0,
+  "appUsesDfs": true
+}
