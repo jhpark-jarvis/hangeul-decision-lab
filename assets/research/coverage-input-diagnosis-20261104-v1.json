@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "coverage-input-diagnosis-v1",
+  "status": "PASS_STORED_AUDIT",
+  "sourceResultSha256": "c02e68acf9a85acc747cac6c72b84cf5e954b6485f2d672466529ce71e18023a",
+  "previousCandidateCorrect": 144,
+  "audit": {
+    "training": {
+      "examples": 16,
+      "candidateRows": 496,
+      "uniqueBoardGroups": 16,
+      "uniqueFp32Vectors": 136,
+      "conflictingFp32Labels": 0
+    },
+    "evaluations": {
+      "diagnostic": {
+        "examples": 144,
+        "candidateRows": 4464,
+        "uniqueBoardGroups": 144,
+        "boardGroupOverlap": 0,
+        "labelPreservingBagMatches": 144,
+        "unseenTargetRows": 0,
+        "unseenCandidateRows": 0,
+        "unseenUniqueFp32Vectors": 0
+      }
+    },
+    "evaluationPairs": []
+  },
+  "interpretation": "Distinct board groups can share every model-visible FP32 input; old144 remains a known-input diagnostic, never a new holdout.",
+  "additionalPythonModelLoadForwardTrainingDomainDataset": 0
+}

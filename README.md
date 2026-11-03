@@ -28,7 +28,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 후속 outcome-only MLP 대조에서는 CNN의 기존 결과를 정확히 재현한 뒤, 22→32→1 scorer가 **fit 16/16·같은 144개 진단 144/144**와 NLL·margin 기준을 통과했다. 다만 마지막 22개 입력만 보면 144개는 fit 목록의 label 보존 재정렬이므로 **독립 일반화 성과가 아닌 bypass 진단**이다.
 
-5.12–5.39절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.40절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1386,6 +1386,53 @@ Node126개/native scalar·tensor·ledger4개 테스트와 lint/format이 통과�
 ```sh
 node scripts/research/replay-outcome-mlp.mjs --recorded <local-outcome-mlp-run> --output .research-output/my-outcome-mlp-replay
 node --test scripts/research/test-outcome-mlp-execution.mjs
+```
+
+### 5.40 Coverage Preflight — Proposed Data Contract
+
+**2026-11-04 설계·저장 입력 감사 완료. 새 데이터 생성·학습은 NOT_RUN이다.** 5.39의 성공을 다음 연구로 이어가기 위해, 같은 MLP에서 학습 노출량을 맞추고 보드 다양성만 바꾸는 대조를 설계했다. 실제 실행 전에는 데이터 생성·누출 감사를 먼저 수락하도록 분리했다.
+
+#### Why Board-level Splits Are Insufficient Here
+
+기존 저장 입력을 native 입력과 같은 FP32 값으로 바꿔 다시 비교했다. Fit16과 diagnostic144는 좌우/상하 반사를 보수적으로 묶은 보드 그룹도 겹치지 않았다. 그러나 **label 보존 후보 multiset144/144가 일치했고, 새 target·candidate 벡터는 모두0개**였다. 보드가 다르다는 사실만으로 모델이 새로운 입력을 받았다고 볼 수 없다. [저장 감사 집계](assets/research/coverage-input-diagnosis-20261104-v1.json)는 추가 추론 없이 계산했다.
+
+#### Proposed Controlled Data
+
+모든 보드는 LINE_3 한 조각과 점 하나를 사용한다. Target행의 빈칸은1개이고 나머지15행에2/3/4개를 배분한다. 주변 행 중 a개는2칸, a개는4칸, 나머지15−2a개는3칸이다. 따라서 전체 빈칸은 **1+2a+3(15−2a)+4a=46개**로 같아 두 arm의 합법 후보 수를 맞출 수 있다. 실제 합법성·정답·46후보는 생성 후 기존 domain/reference로 확인해야 한다.
+
+| Split         | Boards | a                   | Column phase | Purpose                                   |
+| ------------- | -----: | ------------------- | -----------: | ----------------------------------------- |
+| Control train |     16 | 0                   |            0 | 주변 행의 빈칸 수 고정                    |
+| Diverse train |     16 | 1+(target row mod3) |            0 | 같은 target 행·열에서 주변 배분 다양화    |
+| Dev           |     16 | 5                   |            1 | 두 학습 arm의 union과 새 입력 경계 검사   |
+| Final         |     16 | 7                   |            2 | 학습 union 및 dev와 겹치지 않는 합성 진단 |
+
+각 split은 target행0–15를 한 번씩 사용한다. 열은 (3×target row+phase) mod10이다. 구멍 mask·행별 배분 순서·seed-independent descriptor는 [고정 proposal](research/experiments/coverage-preflight-proposal-v1.json)에 기록했다. 구멍을 고르는 modular 연산은 보드를 물리적으로 shift/행 permutation하는 증강이 아니다. Control도 새로운46후보 데이터이므로 기존31후보 모델의 최종 결과와 직접적인 인과 대조를 주장하지 않는다.
+
+#### Required Leakage Gates Before Any Training
+
+- 전체64개의 보드 그룹이 유일해야 한다. 반사 그룹은 누출 방지용이며 대칭 증강 채택이나 label 보존의 증거가 아니다.
+- Dev/final은 **두 training arm의 union**과 비교한다. 같은 보드의 후보 행을 서로 다른 split으로 나누지 않는다.
+- 각22열을 Math.fround로 변환하고 중복 개수·label tag를 보존해 multiset을 비교한다. Decimal 표현만 달라도 FP32가 같으면 이미 본 입력으로 센다.
+- Dev/final 각각 **16 target·736 candidate 행 전부 unseen**이어야 한다. Dev-final 보드/벡터 교집합도0, training의 동일 FP32 벡터에 상충하는 target label도0이어야 한다.
+- Reference는 complete unique optimum을 요구한다. 실제 label·novelty·반복이 다르면 자료를 재배치하거나 재샘플링하지 않고 STOP한다.
+
+기존 게임 전이·encoder·reference는 유지한다. 실제 데이터 수락 전에는 위 조건이 성립했다고 주장하지 않는다. 현재 추가한 검증은 FP32 충돌·multiset·group overlap·분모·계약 산술을 검사하는 Node 도구와 scalar/array 테스트다.
+
+#### Execution Stages and Limits
+
+다음 제안은 **새64개 데이터 생성·누출 감사만**이다. 같은64개를 두 번 생성해 bytes를 비교하며 최대reference128회/32,768nodes·outcome5,888전이·DFS0, Python/모델/load/forward/학습0을 제안한다. Node owner120초·sampled working set2GiB·사전 ledger·실패 STOP/재시작0이다. 이 단계는 미승인·미실행이며 generator/실행 config도 아직 없다.
+
+데이터 PASS와 hash 동결 이후에만 두 MLP 학습을 별도 결정한다. 같은22→32→1 ReLU769·seed/Adam/flatCE/1,000 update/fullbatch16을 유지하면 arm당 **16,000 observation·736,000 candidate 노출**이다. 초기 old16 anchor +학습16,000+최종train/dev/final 각16개 두 번으로 arm16,112·전체32,224forward를 제안하며, 이 학습 예산 역시 미승인·미사용이다. Dev를 보며 checkpoint/epoch를 고르지 않는다.
+
+최종 비교에서는 fitting/dev/final gate와 paired 회복·퇴행을 분리한다. 즉시 삭제 feature52가 계속 label을 구별할 수 있어 immediate-clear baseline과의 비교가 필요하다. 새로운 FP32 입력을 검증해도 이 작은 합성 계열의 결과이며 실제 게임·미래 계획·기존339/89·일반 행동·장기 생존이나 앱 채택을 입증하지 않는다. 앱은 DFS를 사용한다.
+
+아래 명령은 정적 계약 또는 기존 저장값만 검사한다. 새 연구 보드·모델·추론·학습을 실행하지 않는다. 저장 감사에는 권한 있는 로컬 run이 필요하고 raw/data/weights/logits는 공개 저장소에 없다.
+
+```sh
+node scripts/research/validate-coverage-proposal.mjs
+node --test scripts/research/test-coverage-proposal.mjs
+node scripts/research/audit-coverage-inputs.mjs --recorded <local-outcome-mlp-run> --output .research-output/my-coverage-input-audit
 ```
 
 ## 6. Reproduction and Usage
