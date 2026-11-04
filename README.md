@@ -30,7 +30,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 새 coverage 데이터 64개를 생성해 보드 그룹과 FP32 입력 누출을 검사하고, 같은 MLP의 두 학습을 비교했다. 두 모델 모두 새 dev/final에서 16/16과 NLL·margin 기준을 통과해 **coverage의 정답률 개선은0개**였다. 즉시 삭제 baseline도 16/16이므로 이 합성 문제에서 NN의 우월성이나 미래 계획 효과는 확인하지 못했다.
 
-5.12–5.45절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.46절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1525,7 +1525,7 @@ node --test scripts/research/test-coverage-training.mjs
 
 Point-only·점 1개·재뽑기 0개에서 줄을 지우지 않는 point는 점유만 늘린다. 원래 일반 배치가 하나도 없었다면 새 일반 배치를 만들 수 없고 능력도 소진된다. 해당 target class는 train 9개·dev 3개였다. 이런 hard label의 충돌을 모두 살릴 수 있는 행동의 구별 실패로 세면 안 된다.
 
-한편 train의 다른 두 상태에서는 동일한 outcome22를 가진 후보 4개/5개가, 원래 유일한 일반 배치의 mask를 막거나 보존하는 차이를 보였다. 다만 두 상태의 저장 teacher 경로는 최종 실패였고 hard label도 다음 일반 배치를 막는 쪽이었다. 이는 terminal 평가 맥락을 함께 살펴야 할 이유이며 teacher 오류나 전체 턴 구제 가능성을 곧바로 뜻하지 않는다. 이 두 기존 상태의 9개 후보를 원래 domain으로 검증하려 했으나, 첫 재생은 검증 도구의 비교 오류로 중단됐다. 진행 상태와 정정은 5.44에 구분한다.
+한편 train의 다른 두 상태에서는 동일한 outcome22를 가진 후보 4개/5개가, 원래 유일한 일반 배치의 mask를 막거나 보존하는 차이를 보였다. 다만 두 상태의 저장 teacher 경로는 최종 실패였고 hard label도 다음 일반 배치를 막는 쪽이었다. 이는 terminal 평가 맥락을 함께 살펴야 할 이유이며 teacher 오류나 전체 턴 구제 가능성을 곧바로 뜻하지 않는다. 이 두 기존 상태의 9개 후보를 원래 domain으로 검증하려 했으나, 첫 재생은 검증 도구의 비교 오류로 중단됐다. 실패와 정정은 5.44, 수정 후 검증 결과는 5.46에 구분한다.
 
 [비민감 저장 집계](assets/research/representation-alias-20261104-v1.json)에 complete/incomplete·point-only·삭제/비삭제·dead-end 분모를 분리했다. 두 번의 summary·private cases·선택 manifest가 byte 일치했다. 개별 상태·좌표·선택 manifest는 private이며 모델·label·점수·앱은 바꾸지 않았다.
 
@@ -1536,7 +1536,7 @@ node --test scripts/research/test-representation-alias.mjs
 
 ### 5.44 Existing-State Replay — Harness Failure, No Utility Claim
 
-**실행과 정정 — 2026-11-04.** 5.43에서 선택한 기존 두 train 상태의 alias 후보 9개를 두 번 재생하도록 동결했다. 각 후보마다 직접 domain 전이와 기존 outcome 계산을 한 번씩 호출하므로 계획은 총 36전이였다. 새 teacher·reference·학습자료·모델은 만들지 않았다.
+**첫 실행과 정정의 당시 기록 — 2026-11-04.** 이후 같은 기존 입력의 새 고정 검증은 5.46에서 보고한다. 5.43에서 선택한 기존 두 train 상태의 alias 후보 9개를 두 번 재생하도록 동결했다. 각 후보마다 직접 domain 전이와 기존 outcome 계산을 한 번씩 호출하므로 계획은 총 36전이였다. 새 teacher·reference·학습자료·모델은 만들지 않았다.
 
 첫 직접 전이가 반환한 뒤 검증 도구가 중단됐다. 기존 domain은 아이템 목록을 좌표순으로 정규화하지만, 검증 코드는 원본 배열과 반환 배열의 JSON 순서까지 같아야 한다고 검사했다. 의미가 같은 아이템의 정렬을 변경으로 오인한 **검증 도구 오류**였다. 실패 기록과 실행 당시 source/config를 보존했으며 retry는 하지 않았다.
 
@@ -1565,9 +1565,34 @@ node --test scripts/research/test-representation-alias.mjs
 
 Next playing은 현재 턴 소진의 증거가 아니다. 특히 일반 배치가 없고 점 1개만 남은 상태에서 줄을 지우지 않는 점은 빈칸을 더 막을 뿐이다. 이런 dead end를 primary cohort에 섞으면 정보 충돌이나 임의 tie를 gameplay 오류로 오인할 수 있다.
 
-제안된 reference는 기존 게임 전이와 terminal evaluation 순서를 보존한다. 기존 앱·teacher label·모델을 바꾸지 않고, 별도 isolated 평가 자료에서 action quality를 진단하는 방안이다. 원래 CNN의 실패나 P106의 미완료 재생을 이 계획으로 해소했다고 표시하지 않는다.
+제안된 reference는 기존 게임 전이와 terminal evaluation 순서를 보존한다. 기존 앱·teacher label·모델을 바꾸지 않고, 별도 isolated 평가 자료에서 action quality를 진단하는 방안이다. 원래 CNN의 실패나 P106 당시 실패를 이 계획으로 해소했다고 표시하지 않는다. P106의 수정 후 실제 재검증은 5.46의 별도 근거다.
 
 생성 descriptor·표본 수·split·horizon·전이/시간 예산은 아직 동결하지 않았다. 따라서 새 자료·reference·target set의 채택과 실행은 별도 결정이 필요하다. 새 모델·입력·학습은 데이터 gate를 통과한 뒤 검토하며, 이번에는 생성·추론·학습을 하지 않았다.
+
+### 5.46 Corrected Existing-State Replay — Equal Outcome22, Different Next Actions
+
+**실행 결과 — 2026-11-04.** 5.44의 검증 코드를 정정한 뒤, 같은 기존 train 상태 2개·alias 후보 9개를 새 고정 계약으로 두 번 재생했다. Direct 18회와 기존 outcome 계산 18회, 총 36전이를 실행했다. 첫 실패의 1회와 별도로 기록하며 새 자료·teacher·reference·모델·학습은 추가하지 않았다.
+
+| Check                                 | Result                                  |
+| ------------------------------------- | --------------------------------------- |
+| 두 상태의 root ordered legal mask     | 저장값과 일치                           |
+| 각 후보의 FP32 outcome22              | 저장값·동일 class 안에서 모두 일치      |
+| 다음 일반 배치가 남음 / 즉시 gameover | 한 반복의 고유 후보 9개 중 5개 / 4개    |
+| Class 안에 두 next phase가 모두 존재  | 2/2 상태                                |
+| 두 실제 반복 / 두 저장 reader         | 각각 exact / summary byte 일치          |
+| 실제 전이 시간 / sampled RSS          | 약2.55초 / 약915MiB. 순간 peak는 미측정 |
+| 자동 검사                             | Node164/164, typecheck·lint·format PASS |
+
+**이 표본에서 outcome22는 다음 일반 배치의 존재 여부를 보존하지 못했다.** 같은 행별 점유 수라도 열 방향의 빈칸 배치가 달라질 수 있기 때문이다. 이는 입력에 빠진 정보에 대한 직접 근거이며, 새 모델의 학습 성공이나 기존 full74 CNN의 불가능성을 뜻하지 않는다.
+
+두 저장 hard label은 모두 즉시 gameover를 만드는 후보였지만, 두 상태의 원래 teacher 경로도 최종 실패였다. 다음 한 수를 둘 수 있다는 사실과 현재 턴을 끝낼 수 있다는 사실은 다르다. 따라서 teacher 오류·전체 턴 구제·자연 게임 성능을 주장하지 않고, 5.45의 complete reference와 salvageability gate를 다음 연구 제안으로 유지한다.
+
+[비민감 결과 집계](assets/research/stored-alias-replay-20261104-v2.json)에 실제 분모와 미평가 범위를 명시했다. 개별 보드·좌표·선택 manifest·실행 원본은 private이며, 공개 코드의 저장 reader는 접근 권한이 있는 로컬 archive를 읽어 추가 전이·추론·학습 없이 검산한다. 공개 집계만으로 private 원본을 복구할 수는 없다.
+
+```sh
+node scripts/research/replay-stored-alias.mjs --recorded <local-private-replay-archive> --output .research-output/my-stored-alias-check
+node --test scripts/research/test-stored-alias-replay.mjs
+```
 
 ## 6. Reproduction and Usage
 

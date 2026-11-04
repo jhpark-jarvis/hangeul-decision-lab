@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "states": 2,
+  "distinctCandidates": 9,
+  "repetitions": 2,
+  "directCalls": 18,
+  "outcomeCalls": 18,
+  "totalTransitions": 36,
+  "nextPlayingPerPass": 5,
+  "nextGameoverPerPass": 4,
+  "mixedPhaseStates": 2,
+  "hardLabelNextGameover": 2,
+  "earliestAliasNextGameover": 1,
+  "storedTeacherTerminalFailure": 2,
+  "repeatedRowsExact": true,
+  "newTeacherReferenceModelLoadForwardTrainingDataset": 0,
+  "wholeTurnSalvageability": "NOT_EVALUATED",
+  "teacherLabelError": "NOT_ESTABLISHED"
+}
