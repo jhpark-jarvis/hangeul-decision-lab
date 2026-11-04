@@ -30,7 +30,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 새 coverage 데이터 64개를 생성해 보드 그룹과 FP32 입력 누출을 검사하고, 같은 MLP의 두 학습을 비교했다. 두 모델 모두 새 dev/final에서 16/16과 NLL·margin 기준을 통과해 **coverage의 정답률 개선은0개**였다. 즉시 삭제 baseline도 16/16이므로 이 합성 문제에서 NN의 우월성이나 미래 계획 효과는 확인하지 못했다.
 
-5.12–5.44절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.45절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1552,6 +1552,22 @@ node --test scripts/research/test-representation-alias.mjs
 이 실패로 게임 규칙이나 teacher label이 틀렸다고 판정하지 않는다. P105의 저장값 감사와 수학적 한계는 유효하지만, 실제 domain이 같은 class의 후보에 다른 next phase를 반환한다는 주장은 아직 검증하지 못했다. 다음 행동이 있다는 사실도 전체 턴을 살릴 수 있다는 뜻은 아니다.
 
 [비민감 실패 집계](assets/research/stored-alias-replay-20261104-v1.json)에 실행 분모와 미실행 조건을 남겼다. 원래 V1 config는 실행 당시 source hash를 보존한다. 수정된 source로 진행하려면 먼저 계약을 다시 동결해야 하며, 이번 실행의 성공으로 표시하지 않았다.
+
+### 5.45 Next Research Proposal — Salvageability before Hard Labels
+
+**설계 제안이며 미실행이다.** 다음 자료는 hard label을 맞히기 어려운 사례와 실제로 행동 선택이 중요한 사례를 구분해야 한다. 이번에는 다음 세 가지 gate를 먼저 설계했다.
+
+| Gate                                 | Proposed Requirement                                                                                                                                                         |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Complete reference / salvageability  | 각 합법 root를 고정한 완전 탐색에서 현재 남은 조각을 모두 소진할 수 있는 경로가 있어야 한다. Cap으로 미완료된 경로는 정답으로 삼지 않는다.                                   |
+| Immediate baseline separation        | 즉시 삭제 수가 같은 상위 후보 사이에도 terminal 품질 차이가 있고, 고정 immediate-clear baseline이 최적 집합 밖인 cohort를 따로 측정한다. Easy control과 dead end는 분리한다. |
+| Quality-equivalent targets / novelty | 최고 terminal evaluation이 같은 행동을 target set으로 묶는 방안을 검토한다. 기존 hard-label top1도 병기하고, raw board·FP32 입력·board family의 중복을 감사한다.             |
+
+Next playing은 현재 턴 소진의 증거가 아니다. 특히 일반 배치가 없고 점 1개만 남은 상태에서 줄을 지우지 않는 점은 빈칸을 더 막을 뿐이다. 이런 dead end를 primary cohort에 섞으면 정보 충돌이나 임의 tie를 gameplay 오류로 오인할 수 있다.
+
+제안된 reference는 기존 게임 전이와 terminal evaluation 순서를 보존한다. 기존 앱·teacher label·모델을 바꾸지 않고, 별도 isolated 평가 자료에서 action quality를 진단하는 방안이다. 원래 CNN의 실패나 P106의 미완료 재생을 이 계획으로 해소했다고 표시하지 않는다.
+
+생성 descriptor·표본 수·split·horizon·전이/시간 예산은 아직 동결하지 않았다. 따라서 새 자료·reference·target set의 채택과 실행은 별도 결정이 필요하다. 새 모델·입력·학습은 데이터 gate를 통과한 뒤 검토하며, 이번에는 생성·추론·학습을 하지 않았다.
 
 ## 6. Reproduction and Usage
 
