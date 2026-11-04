@@ -30,7 +30,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 새 coverage 데이터 64개를 생성해 보드 그룹과 FP32 입력 누출을 검사하고, 같은 MLP의 두 학습을 비교했다. 두 모델 모두 새 dev/final에서 16/16과 NLL·margin 기준을 통과해 **coverage의 정답률 개선은0개**였다. 즉시 삭제 baseline도 16/16이므로 이 합성 문제에서 NN의 우월성이나 미래 계획 효과는 확인하지 못했다.
 
-5.12–5.46절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.47절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1592,6 +1592,44 @@ Next playing은 현재 턴 소진의 증거가 아니다. 특히 일반 배치�
 ```sh
 node scripts/research/replay-stored-alias.mjs --recorded <local-private-replay-archive> --output .research-output/my-stored-alias-check --selection <local-private-selection-manifest>
 node --test scripts/research/test-stored-alias-replay.mjs
+```
+
+### 5.47 Proposed Counterfactual Pairs — Same Row Counts, Different Packing
+
+**실행 전 설계 — 2026-11-04.** 5.46은 같은 outcome22가 다음 배치 가능 여부를 보존하지 못함을 확인했지만, 두 원본 상태는 teacher의 최종 경로도 실패했다. 다음 질문은 **현재 턴을 끝낼 수 있는 상태에서, 행별 빈칸 수가 같은 두 보드의 최선 선택이 달라질 수 있는가**다.
+
+두 개의 3행 영역을 가진 보드에서 가운데 행의 빈칸 정렬만 서로 교환하는 16쌍·32개 진단 상태를 제안한다. 각 상태는 ㅁ 두 조각과 점 하나를 가진다. ㅁ의 위·아래는 빈칸 세 개, 가운데는 양 끝의 빈칸 두 개가 필요하다. 가운데 빈칸을 인접한 두 칸으로 바꾸면 개수는 같아도 블록이 맞지 않을 수 있다.
+
+| Fixed Component | Proposed Definition                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------- |
+| Geometry        | 첫 영역 top row 0/2/4/6, 두 번째는7행 아래, 시작 column 0/2/5/7                             |
+| Two arms        | 이른 영역 정렬 / 늦은 영역 정렬. 행별 빈칸 수와 보유 상태는 동일                            |
+| Legal root 가설 | 최초 점 찍기만32개. 두 후보는 각각 즉시 한 줄을 삭제                                        |
+| Baseline        | 즉시 삭제 수가 최대인 후보 중 원래 legal order의 첫 후보                                    |
+| 의도한 대조     | Early-aligned에서는 baseline이 quality set에 포함, late-aligned에서는 다른 후보가 턴을 끝냄 |
+| Data boundary   | 진단 전용32개, train/dev/test 분할·모델 실행·학습 없음                                      |
+
+이 생성 규칙을 정답으로 간주하지 않는다. 새 complete conditional-root reference가 각 root의 최선 terminal 평가와 quality target set을 독립적으로 산출해야 한다. 기존 게임 전이·lexicographic evaluator는 유지하며, one-LINE_3 전용인 기존 reference를 두 조각 입력에 그대로 사용하지 않는다.
+
+쌍 사이의 **전체 ordered FP32 outcome22 행렬은 같고 quality index set은 겹치지 않는지** 확인하도록 계약을 정했다. 조건이 성립하면 그 동일 입력만 받는 결정적 selector는 두 사례를 모두 맞힐 수 없다. Board-aware CNN은 다른 보드 plane을 받으므로 이 한계를 그대로 적용할 수 없다. 24/74열·footprint의 차이와 기존 자료의 FP32 중복도 별도 보고하며, column 변형을 독립 일반화로 주장하지 않는다.
+
+| Proposed Compute Cap                           |                          Count |
+| ---------------------------------------------- | -----------------------------: |
+| 두 빌드의 state materialization / reference    |                        64 / 64 |
+| Reference node 예약, root 포함                 |                          4,096 |
+| Reference edge 전이                            |                      최대4,032 |
+| Root outcome 전이                              |                          2,048 |
+| 전체 전이                                      |                      최대6,080 |
+| 추가 witness replay / production DFS / NN·학습 |                          모두0 |
+| Node wall / sampled RSS                        | 120초 / 2GiB. 순간 peak 미측정 |
+
+현재 완료한 것은 [고정 proposal](research/experiments/lookahead-pairs-proposal-v1.json)과 정적 validator다. 신규15개를 포함한180개 Node 테스트·lint·format이 통과했고, 정적 CLI 두 출력이 일치했다. [정적 집계](assets/research/lookahead-pairs-contract-20261104-v1.json)는 실행 결과가 아니다.
+
+실제 generator·reference·runner는 아직 구현하지 않았고 새 보드도 만들지 않았다. 모든 root의 complete 판정, hard16/control16, 쌍의 입력 동치와 novelty 중 하나라도 어긋나면 증거를 보존하고 중단한다. 재샘플링·quota 보충·추가 튜닝은0이며, 자료 gate를 통과해도 새 학습을 자동 실행하지 않는다.
+
+```sh
+node scripts/research/validate-lookahead-proposal.mjs
+node --test scripts/research/test-lookahead-proposal.mjs
 ```
 
 ## 6. Reproduction and Usage

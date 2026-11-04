@@ -1,0 +1,21 @@
+{
+  "status": "PASS_STATIC_CONTRACT",
+  "execution": "PROPOSED_NOT_RUN",
+  "descriptors": 32,
+  "counterfactualFamilies": 16,
+  "proposedCompute": {
+    "uniqueStates": 32,
+    "builds": 2,
+    "stateMaterializations": 64,
+    "referenceCalls": 64,
+    "referenceNodeReservations": 4096,
+    "referenceApplyCallsMax": 4032,
+    "outcomeApplyCalls": 2048,
+    "totalApplyCallsMax": 6080,
+    "extraWitnessReplayCalls": 0,
+    "productionDfsCalls": 0,
+    "pythonModelLoadForwardTraining": 0
+  },
+  "actualDomainReferenceDatasetModelLoadForwardTraining": 0,
+  "publication": "NOT_AUTHORIZED_THIS_TASK"
+}
