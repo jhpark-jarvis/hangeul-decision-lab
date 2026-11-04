@@ -1,13 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { resolve, dirname } from "node:path";
 import { compileResearch } from "./runtime.mjs";
-import { root } from "./controlled-point-fit-contract.mjs";
+import { root, hash, json } from "./controlled-point-fit-contract.mjs";
+import { auditRecordedAlias } from "./stored-alias-replay.mjs";
+import { replayStoredAliasEvidence } from "./replay-stored-alias.mjs";
 import {
   schedule,
   validateSelection,
   createLedger,
   auditReplayRows,
   parseStoredAliasArgs,
+  configPath,
 } from "./stored-alias-replay-contract.mjs";
 
 const { aliasItemIdentity } = await import(
@@ -71,6 +76,97 @@ function records(s) {
     })),
   );
 }
+
+function savedFixture() {
+  const base = mkdtempSync(
+    resolve(root, ".research-output/stored-alias-scalar-test-"),
+  );
+  const recorded = resolve(base, "recorded");
+  mkdirSync(recorded);
+  const put = (p, v) => {
+    mkdirSync(dirname(p), { recursive: true });
+    writeFileSync(p, JSON.stringify(v, null, 2) + "\n");
+  };
+  const s = selection(),
+    r = records(s),
+    ledger = schedule(s.cases).map((e, i) => ({ call: i + 1, ...e }));
+  put(resolve(base, "selection.json"), s);
+  const c = {
+    id: "stored-alias-replay-v2",
+    selection: "selection.json",
+    hashes: { "selection.json": hash(resolve(base, "selection.json")) },
+    resources: { seconds: 60, sampledRssBytes: 2147483648 },
+  };
+  put(resolve(base, configPath), c);
+  put(resolve(recorded, "private-rows.json"), [r, r]);
+  writeFileSync(
+    resolve(recorded, "ledger.jsonl"),
+    ledger.map((l) => JSON.stringify(l)).join("\n") + "\n",
+  );
+  const summary = {
+    schemaVersion: 1,
+    status: "PASS",
+    ...auditReplayRows(s, [r, r], ledger),
+    newTeacherReferenceModelLoadForwardTrainingDataset: 0,
+    wholeTurnSalvageability: "NOT_EVALUATED",
+    teacherLabelError: "NOT_ESTABLISHED",
+  };
+  put(resolve(recorded, "summary.json"), summary);
+  const report = {
+    status: "PASS",
+    contractId: c.id,
+    configSha256: hash(resolve(base, configPath)),
+    elapsedSeconds: 1,
+    maxSampledRss: 1024,
+    instantaneousPeakMeasured: false,
+    originalInputsAndSourcesUnchanged: true,
+    hashes: Object.fromEntries(
+      ["private-rows.json", "summary.json", "ledger.jsonl"].map((p) => [
+        p,
+        hash(resolve(recorded, p)),
+      ]),
+    ),
+  };
+  put(resolve(recorded, "report.json"), report);
+  return { base, recorded, summary, report, put };
+}
+test("saved replay reconstructs scalar evidence and rejects inflated utility claims", () => {
+  const f = savedFixture();
+  assert.deepEqual(auditRecordedAlias(f.recorded, f.base), f.summary);
+  const changed = { ...f.summary, wholeTurnSalvageability: "PASS" };
+  f.put(resolve(f.recorded, "summary.json"), changed);
+  f.report.hashes["summary.json"] = hash(resolve(f.recorded, "summary.json"));
+  f.put(resolve(f.recorded, "report.json"), f.report);
+  assert.throws(() => auditRecordedAlias(f.recorded, f.base));
+});
+test("saved replay checks config hash, exact evidence set and resource bounds", () => {
+  const f = savedFixture();
+  for (const change of [
+    (r) => (r.configSha256 = "0".repeat(64)),
+    (r) => (r.elapsedSeconds = 61),
+    (r) => (r.hashes = { "summary.json": r.hashes["summary.json"] }),
+    (r) => (r.originalInputsAndSourcesUnchanged = false),
+  ]) {
+    const r = structuredClone(f.report);
+    change(r);
+    f.put(resolve(f.recorded, "report.json"), r);
+    assert.throws(() => auditRecordedAlias(f.recorded, f.base));
+  }
+  f.put(resolve(f.recorded, "report.json"), f.report);
+  const s = json(resolve(f.base, "selection.json"));
+  s.cases[0].label = 0;
+  f.put(resolve(f.base, "selection.json"), s);
+  assert.throws(() => auditRecordedAlias(f.recorded, f.base));
+});
+test("saved-replay CLI rejects execution and tuning options before I/O", () => {
+  for (const a of [
+    [],
+    ["--output", "x"],
+    ["--run", "x", "--output", "y"],
+    ["--recorded", "x", "--output", "y", "--repeat", "2"],
+  ])
+    assert.throws(() => replayStoredAliasEvidence(a));
+});
 test("exact replay schedule reserves 18 direct and 18 outcome calls", () => {
   const s = selection(),
     calls = schedule(s.cases);

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-export const configPath = "research/experiments/stored-alias-replay-v1.json";
+export const configPath = "research/experiments/stored-alias-replay-v2.json";
 export const schedule = (cases) =>
   [0, 1].flatMap((pass) =>
     cases.flatMap((c, caseIndex) =>

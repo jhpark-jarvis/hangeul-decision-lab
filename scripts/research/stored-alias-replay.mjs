@@ -37,7 +37,8 @@ export async function runStoredAliasReplay(args) {
     "Commit implementation before domain replay",
   );
   const c = json(resolve(root, configPath));
-  assert.equal(c.id, "stored-alias-replay-v1");
+  assert.equal(c.id, "stored-alias-replay-v2");
+  assert.equal(c.status, "FROZEN_BEFORE_EXECUTION");
   assert.deepEqual(c.budget, {
     states: 2,
     candidates: 9,
@@ -75,6 +76,7 @@ export async function runStoredAliasReplay(args) {
       node: process.version,
       sourceHead: git(["rev-parse", "HEAD"]),
       configSha256: hash(resolve(root, configPath)),
+      contractId: c.id,
       retry: 0,
     });
     checkHashes();
@@ -176,15 +178,31 @@ export async function runStoredAliasReplay(args) {
 }
 
 /** Saved evidence replay only: no runtime compilation/import or domain call. */
-export function auditRecordedAlias(recorded) {
-  const c = json(resolve(root, configPath)),
+export function auditRecordedAlias(recorded, base = root) {
+  const c = json(resolve(base, configPath)),
     report = json(resolve(recorded, "report.json"));
   assert.equal(report.status, "PASS");
-  assert.equal(report.configSha256, hash(resolve(root, configPath)));
+  assert.equal(c.id, "stored-alias-replay-v2");
+  assert.equal(report.contractId, c.id);
+  assert.equal(report.configSha256, hash(resolve(base, configPath)));
+  assert.deepEqual(Object.keys(report.hashes).sort(), [
+    "ledger.jsonl",
+    "private-rows.json",
+    "summary.json",
+  ]);
+  assert(
+    report.elapsedSeconds >= 0 && report.elapsedSeconds <= c.resources.seconds,
+  );
+  assert(
+    report.maxSampledRss > 0 &&
+      report.maxSampledRss <= c.resources.sampledRssBytes,
+  );
+  assert.equal(report.instantaneousPeakMeasured, false);
+  assert.equal(report.originalInputsAndSourcesUnchanged, true);
   for (const [p, h] of Object.entries(report.hashes))
     assert.equal(hash(resolve(recorded, p)), h);
-  assert.equal(hash(resolve(root, c.selection)), c.hashes[c.selection]);
-  const selection = json(resolve(root, c.selection)),
+  assert.equal(hash(resolve(base, c.selection)), c.hashes[c.selection]);
+  const selection = json(resolve(base, c.selection)),
     passes = json(resolve(recorded, "private-rows.json"));
   const ledger = bytes(resolve(recorded, "ledger.jsonl"))
     .toString("utf8")
@@ -193,7 +211,14 @@ export function auditRecordedAlias(recorded) {
     .map((s) => JSON.parse(s));
   const result = auditReplayRows(selection, passes, ledger),
     saved = json(resolve(recorded, "summary.json"));
-  for (const [k, v] of Object.entries(result)) assert.deepEqual(saved[k], v);
+  assert.deepEqual(saved, {
+    schemaVersion: 1,
+    status: "PASS",
+    ...result,
+    newTeacherReferenceModelLoadForwardTrainingDataset: 0,
+    wholeTurnSalvageability: "NOT_EVALUATED",
+    teacherLabelError: "NOT_ESTABLISHED",
+  });
   return saved;
 }
 
