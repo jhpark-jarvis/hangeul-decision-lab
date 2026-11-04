@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "id": "lookahead-pairs-proposal-v1",
+  "status": "PROPOSED_NOT_RUN",
+  "approval": "DESIGN_ONLY",
+  "executionRequiresSeparateUserDecision": true,
+  "contract": {
+    "generator": {
+      "version": "two-well-mieum-counterfactual-v1",
+      "rows": 16,
+      "cols": 10,
+      "firstRows": [0, 2, 4, 6],
+      "columns": [0, 2, 5, 7],
+      "secondRowDelta": 7,
+      "arms": ["early-aligned", "late-aligned"],
+      "familyCount": 16,
+      "diagnosticStates": 32,
+      "repetitions": 2,
+      "background": "Two holes at (3*row+phase) mod10 and the following column mod10; phase=(3*firstRow+column) mod10.",
+      "wells": "Override background in each three-row well. Top has one hole: column+1 in early well, column+2 in late well. Bottom has holes column,column+1,column+2. Middle has column,column+2 when aligned, otherwise column+1,column+2. Exactly one aligned well per arm.",
+      "pieces": ["MIEUM", "MIEUM"],
+      "slots": [0, 1],
+      "initialPoint": 1,
+      "initialReroll": 0,
+      "hiddenItems": 0,
+      "pendingReroll": null,
+      "initialCompletedRows": 0,
+      "expectedPointOnlyCandidates": 32,
+      "seed": null,
+      "augmentation": false,
+      "trainingDevTestSplit": "NONE_DIAGNOSTIC_ONLY",
+      "encoding": "Unchanged encodeDecision52 + actionOutcome22 and encodeFootprints. Constructor/arm/family/quality labels never enter features. 24/74 are diagnostic projections only, not new model inputs."
+    },
+    "reference": {
+      "implementation": "NEW_NOT_IMPLEMENTED; existing pointReference rejects this two-MIEUM domain",
+      "traversal": "Full ordered legal tree once per state; retain the best terminal evaluation conditional on EACH root, without memoization or production pruning.",
+      "evaluator": "Existing evaluateState/compareEvaluations lexicographic order and current 19-piece catalog, unchanged.",
+      "terminal": "Stop only at no remaining pieces or gameover. No next supply, reroll, items, reacquisition, random future or early stopping at next-playing.",
+      "maxActions": 3,
+      "maxVisitedNodesPerState": 64,
+      "rootCountsAsNode": true,
+      "reserveBeforeEveryEdgeApply": true,
+      "maxApplyPerState": 63,
+      "rewards": "Accumulate actual clearedRows and acquiredItems along each path before terminal evaluateState; no new score or partial-depth terminal fallback.",
+      "incomplete": "Retain partial report; STOP, no reference labels or baseline-success verdict; no retry, quota refill, tuning or extra samples.",
+      "qualityTargets": "All root indices whose complete conditional best terminal evaluation equals the complete global best by compareEvaluations. Single-label representative is first ordered quality member, auxiliary only; existing labels unchanged."
+    },
+    "gates": {
+      "structure": "All 32 planned states: initial point-only legal list of32, no items or full rows; exactly two immediate1-row clears and all others0; legal order and inputs immutable.",
+      "primary": "16 late-aligned states: complete reference, all-pieces-placed terminal exists, immediate-clear-tied candidates have different best quality and first-legal immediate baseline is outside the quality set.",
+      "control": "16 early-aligned states: same complete and salvageability checks, fixed immediate baseline is inside the quality set. Report the worse tied immediate action too.",
+      "pairing": "Each family has two different boards, matching metadata and exact ordered FP32 outcome22 matrices, equal root count, disjoint nonempty quality-target index sets. Expected two unique point-clear roots; reference must establish them, never overwrite labels from geometry.",
+      "representation": "Audit ordered22 identity and quality-set information bound; report22/24/74 and board-plane distinctions separately. Board-aware CNN is not restricted to22 and no model is executed.",
+      "novelty": "Require32 distinct board/D2 groups and no board/D2 overlap with prior train-dev, fit16, transfer144 and coverage64. Report FP32 target/row/tagged-multiset overlap and cross-family duplicates, not independent generalization or a new training split.",
+      "holdoutBoundary": "Original held-out archive access0; no model fitting or evaluation split created. Counterfactual arm pairs stay in one family in any separately approved future split.",
+      "quotas": "Any incomplete/structure/pair/primary/control/novelty/repeat mismatch fails this fixed campaign; retain every attempted descriptor and rejection. No resampling, split reassignment or replacement."
+    },
+    "proposedCompute": {
+      "uniqueStates": 32,
+      "builds": 2,
+      "stateMaterializations": 64,
+      "referenceCalls": 64,
+      "referenceNodeReservations": 4096,
+      "referenceApplyCallsMax": 4032,
+      "outcomeApplyCalls": 2048,
+      "totalApplyCallsMax": 6080,
+      "extraWitnessReplayCalls": 0,
+      "productionDfsCalls": 0,
+      "pythonModelLoadForwardTraining": 0
+    },
+    "resources": {
+      "nodeWallSeconds": 120,
+      "sampledRssBytes": 2147483648,
+      "instantaneousPeakMeasured": false,
+      "retries": 0,
+      "newPackagesRuntimesServicesGpu": 0
+    },
+    "stage": {
+      "current": "DESIGN_AND_STATIC_VALIDATION_ONLY",
+      "next": "Separate user decision required for new diagnostic states, reference and quality targets. Generator/runner/execution config not implemented.",
+      "following": "Any model, feature, loss, training, test, RL, app adoption or publication is a separate decision; no learning budget here."
+    }
+  },
+  "sourceHashes": {
+    "src/domain/pieces/catalog.ts": "a0b998e5fde9c8f081557263dcf4cad01394907aae7d075d5b2efff71b2bce3e",
+    "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+    "src/domain/game/hidden-items.ts": "c165d20964b844b8d11b2f3a424b944d0bc67085a5b513903ed3b770cdcf6783",
+    "src/domain/game/game-state.ts": "fe651495fcf0009fe5dfa9a34b53b323e6a6f29da1bb726b1570fe42463720c3",
+    "src/domain/solver/evaluator.ts": "6561674cf06a31e1761213de852eaa0739e672276538a507fe65a46d9a9ce752",
+    "src/research/point-simulation.ts": "c4694ad790569c2eb438c959b7198ca9a7e745c0304ea9f64fd193fd05520e31",
+    "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+    "src/research/action-outcome.ts": "97b896d89a6e593dd839e7d9451402f6bbae334afa8cebeed6584615603cadde",
+    "src/research/spatial-footprint.ts": "09eff60bff74b1fa8a1f70b50c3a20243887d4ec3fc08159c73de498d0493ca4",
+    "scripts/research/audit-coverage-inputs.mjs": "cd1a874ca89c43cdd2cc93de029fa954e284484b9796e87b5b16b0c83296b4dd",
+    "scripts/research/representation-alias.mjs": "055976d2fb31abfba616594280dd57ddd34aae57dec719149f2a710afc7f9916",
+    "assets/research/coverage-training-20261104-v1.json": "ea6935888f1e5fa356979aca9961b77c8f2b97d54a1ea400cb789bd552d0c3e7",
+    "assets/research/representation-alias-20261104-v1.json": "0c893dcdf027cb009f2d10ba9ebf737015af479bc304a69c1d6b8a43d47ae533",
+    "assets/research/stored-alias-replay-20261104-v2.json": "3ef2cd864e7dfbe70c919b29889bffedf64df8b1d48a30132db9c07279960a25",
+    "scripts/research/validate-lookahead-proposal.mjs": "8c3c061f893c5ba31724494db9975f7442dcf35ac47d106fec76bd88fdf4d546"
+  },
+  "inputHashes": {
+    ".research-output/paired-teacher/paired-teacher-cnn-20261011-v1/train-dev/dataset.json": "fa72eb460151763e664ecdd0a2438e1ae69172b98dbb5ab4b3f6f44b9e4c29fb",
+    ".research-output/action-outcome-train-dev-20261012-recovered/dataset.json": "98e37f090604d8ac7510371139fe66155b2ad57c863aa8a1966bab4374fdd1f4",
+    ".research-output/controlled-point-fit-20261028-v1/dataset.json": "862353fc79a5bc12a97da008b9ce0467ac026d28a4dc86fb211767ca45d12666",
+    ".research-output/frozen-point-transfer-20261101-v1/transfer-dataset.json": "142c26aabd0dfbb863be9f0c50037849f22e7cffbec3f2c0a65753a849f01588",
+    ".research-output/coverage-preflight-20261104-v1/build1.json": "f0f4db408928ea9b201e8bbecdb66cb976193b7cb2ecdd08d1f466f5ff06e9e9"
+  }
+}
