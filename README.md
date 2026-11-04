@@ -30,7 +30,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 새 coverage 데이터 64개를 생성해 보드 그룹과 FP32 입력 누출을 검사하고, 같은 MLP의 두 학습을 비교했다. 두 모델 모두 새 dev/final에서 16/16과 NLL·margin 기준을 통과해 **coverage의 정답률 개선은0개**였다. 즉시 삭제 baseline도 16/16이므로 이 합성 문제에서 NN의 우월성이나 미래 계획 효과는 확인하지 못했다.
 
-5.12–5.47절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.48절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1596,7 +1596,7 @@ node --test scripts/research/test-stored-alias-replay.mjs
 
 ### 5.47 Proposed Counterfactual Pairs — Same Row Counts, Different Packing
 
-**실행 전 설계 — 2026-11-04.** 5.46은 같은 outcome22가 다음 배치 가능 여부를 보존하지 못함을 확인했지만, 두 원본 상태는 teacher의 최종 경로도 실패했다. 다음 질문은 **현재 턴을 끝낼 수 있는 상태에서, 행별 빈칸 수가 같은 두 보드의 최선 선택이 달라질 수 있는가**다.
+**설계 당시의 미실행 기록 — 2026-11-04.** 이후 고정 실행 결과는 5.48에 별도로 기록한다. 5.46은 같은 outcome22가 다음 배치 가능 여부를 보존하지 못함을 확인했지만, 두 원본 상태는 teacher의 최종 경로도 실패했다. 다음 질문은 **현재 턴을 끝낼 수 있는 상태에서, 행별 빈칸 수가 같은 두 보드의 최선 선택이 달라질 수 있는가**다.
 
 두 개의 3행 영역을 가진 보드에서 가운데 행의 빈칸 정렬만 서로 교환하는 16쌍·32개 진단 상태를 제안한다. 각 상태는 ㅁ 두 조각과 점 하나를 가진다. ㅁ의 위·아래는 빈칸 세 개, 가운데는 양 끝의 빈칸 두 개가 필요하다. 가운데 빈칸을 인접한 두 칸으로 바꾸면 개수는 같아도 블록이 맞지 않을 수 있다.
 
@@ -1630,6 +1630,46 @@ node --test scripts/research/test-stored-alias-replay.mjs
 ```sh
 node scripts/research/validate-lookahead-proposal.mjs
 node --test scripts/research/test-lookahead-proposal.mjs
+```
+
+### 5.48 Counterfactual Pairs — A 50% Information Ceiling for Outcome22
+
+**실행 결과 — 2026-11-05.** 5.47의 고정32개 진단 상태를 두 번 생성하고 모든 root의 현재 턴 경로를 완전히 탐색했다. 기존 domain·lexicographic evaluator를 공유하는 통제 reference이며, 모델 추론이나 학습은 하지 않았다.
+
+| Check                                                    |          Result |
+| -------------------------------------------------------- | --------------: |
+| 고유 보드 / 반사실 쌍                                    |         32 / 16 |
+| 조각 두 개를 모두 소진할 수 있는 상태                    |           32/32 |
+| Hard / order-lucky control                               |         16 / 16 |
+| 쌍의 전체 ordered FP32 outcome22 일치                    |           16/16 |
+| 같은 입력 쌍에서 quality target set 교집합               |           모두0 |
+| 고유 ordered22 입력                                      | 4종 / 32개 상태 |
+| 22입력만 쓰는 결정적 selector의 이상적 quality 정답 상한 |           16/32 |
+| 즉시 삭제 최대·first-legal baseline                      |           16/32 |
+| 전체 ordered24 / ordered74 행렬이 같은 쌍                |        각각0/16 |
+
+**살릴 수 있는 상태에서도 outcome22만으로는 이 자료의 모든 정답을 구분할 수 없었다.** 각 쌍은 행별 점유 수와 즉시 삭제 결과가 같지만, 열 방향의 빈칸 정렬이 달라 최선 선택이 바뀌었다. 동일 입력에 같은 index를 반환하는 selector는 서로 겹치지 않는 두 quality target set을 동시에 만족할 수 없다. 이 값은 저장 자료의 정보 한계이며 학습한 모델의 측정 정확도가 아니다.
+
+기존 train-dev·fit16·transfer144·coverage64의 총652관측/157,501후보와 비교해 새32개 보드/D2 group은 겹치지 않았다. 새 root1,024행과 target32개는22/24/74 벡터 모두 기존 자료와 교집합이0이었다. 다만 새22벡터는64종이고 전체 ordered22 입력은4종뿐이다. 이 의도적인 반사실 중복을 독립 일반화나 새 train/dev/test 성능으로 해석하지 않는다.
+
+| Execution                               |                                Observed |
+| --------------------------------------- | --------------------------------------: |
+| State materialization / reference calls |                                 64 / 64 |
+| Reference nodes                         |                        2,752 / cap4,096 |
+| Reference / outcome 전이                |                           2,688 / 2,048 |
+| 전체 전이                               |                        4,736 / cap6,080 |
+| Node elapsed / sampled RSS              |                    약13.85초 / 약641MiB |
+| 두 빌드 / 두 저장 reader                |                              각각 exact |
+| 자동 검사                               | Node190/190, typecheck·lint·format PASS |
+| 모델 생성·로드·추론·학습                |                                   모두0 |
+
+각 상태의 최고 quality root는 이번에는 하나였다. 다중 동치 정답의 학습이나 기존 board-aware CNN의 성공·실패는 평가하지 않았다. 그 CNN은 서로 다른 보드 plane을 받으므로22-only 한계를 그대로 적용할 수 없다. 다음 연구는 공간 정보를 어떻게 사용할지 별도 계약으로 검토하며, 추가 학습을 자동 실행하지 않는다.
+
+[비민감 결과 집계](assets/research/lookahead-pairs-20261105-v1.json)에 분모·입력 중복·novelty·실제 연산량을 남겼다. Raw board·좌표·root 경로·이전자료 fingerprint registry는 로컬 private archive에 보존한다. 저장 reader는 추가 domain 전이나 모델 실행 없이 그 archive를 검산하며, 공개 집계만으로 private 원본을 복구할 수는 없다.
+
+```sh
+node scripts/research/replay-lookahead-pairs.mjs --recorded <local-private-lookahead-archive> --output .research-output/my-lookahead-replay
+node --test scripts/research/test-lookahead-pairs.mjs
 ```
 
 ## 6. Reproduction and Usage

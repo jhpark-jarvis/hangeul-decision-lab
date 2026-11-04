@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "lookahead-pairs-result-v1",
+  "status": "PASS",
+  "states": 32,
+  "pairs": 16,
+  "initialPointCandidatesEach": 32,
+  "hard": 16,
+  "orderLuckyControls": 16,
+  "baselineQualityCorrect": 16,
+  "completeReferenceSalvageable": 32,
+  "ordered22PairsEqual": 16,
+  "disjointQualityPairs": 16,
+  "ordered24PairsEqual": 0,
+  "ordered74PairsEqual": 0,
+  "boardD2Unique": 32,
+  "priorBoardD2Overlap": 0,
+  "qualityInputBound": {
+    "examples": 32,
+    "orderedInputGroups": 4,
+    "idealQualityMembershipUpperBoundCorrect": 16
+  },
+  "novelty": {
+    "22": {
+      "candidateRows": 1024,
+      "overlapRows": 0,
+      "qualityTargetRows": 32,
+      "overlapQualityTargets": 0,
+      "uniqueVectors": 64
+    },
+    "24": {
+      "candidateRows": 1024,
+      "overlapRows": 0,
+      "qualityTargetRows": 32,
+      "overlapQualityTargets": 0,
+      "uniqueVectors": 512
+    },
+    "74": {
+      "candidateRows": 1024,
+      "overlapRows": 0,
+      "qualityTargetRows": 32,
+      "overlapQualityTargets": 0,
+      "uniqueVectors": 512
+    }
+  },
+  "priorTagged22BagMatches": 0,
+  "priorExamples": 652,
+  "priorCandidates": 157501,
+  "actualCompute": {
+    "states": 64,
+    "roots": 64,
+    "nodes": 2752,
+    "referenceApply": 2688,
+    "outcomeApply": 2048,
+    "totalApply": 4736
+  },
+  "repeatedBuildsExact": true,
+  "additionalPythonModelLoadForwardTraining": 0,
+  "independentGeneralization": false,
+  "appUsesDfs": true
+}
