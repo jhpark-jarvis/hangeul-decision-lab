@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "id": "coverage-preflight-v1",
+  "approval": "USER_APPROVED",
+  "proposalSha256": "59a24c1b51852c20ebb8f3e8fff670b60e77313812849606515ab4f60ee50d4a",
+  "contract": {
+    "schemaVersion": 1,
+    "id": "coverage-preflight-proposal-v1",
+    "status": "PROPOSED_NOT_RUN",
+    "approval": "DESIGN_ONLY",
+    "executionRequiresSeparateUserDecision": true,
+    "evidence": {
+      "path": "assets/research/outcome-mlp-20261103-v1.json",
+      "sha256": "c02e68acf9a85acc747cac6c72b84cf5e954b6485f2d672466529ce71e18023a"
+    },
+    "question": "Does diverse row-hole coverage improve the same outcome-only MLP on genuinely unseen FP32 inputs at matched observation and candidate-row exposure?",
+    "stage": {
+      "next": "Data generation and leakage audit only; zero Python/model/load/forward/training",
+      "following": "Two MLP training runs require separate decision after successful data hashes; no runner or execution config now"
+    },
+    "data": {
+      "rows": 16,
+      "cols": 10,
+      "candidatesEach": 46,
+      "totalExamples": 64,
+      "newTrainingExamples": 32,
+      "devExamples": 16,
+      "finalExamples": 16,
+      "targetRow": "r=0..15 once per split",
+      "targetColumn": "(3*r+phase) mod10",
+      "trainingPhase": 0,
+      "devPhase": 1,
+      "finalPhase": 2,
+      "allowedOffsets": {
+        "two": [0, 1],
+        "three": [0, 1, 4],
+        "four": [0, 1, 4, 5]
+      },
+      "nonTargetHoleStart": "(3*boardRow+phase) mod10; offset addition mod10 affects column selection only, never a board translation",
+      "rowOrder": "The fifteen non-target row indices (r+k) mod16 for k=1..15; enumeration only, no row permutation",
+      "allocation": "First a non-target rows have two holes, last a have four holes, the rest have three; target row has exactly one hole",
+      "holeTotal": "1 + 2*a + 3*(15-2*a) + 4*a = 46",
+      "splits": {
+        "control": {
+          "examples": 16,
+          "a": "0"
+        },
+        "diverse": {
+          "examples": 16,
+          "a": "1+(r mod3)"
+        },
+        "dev": {
+          "examples": 16,
+          "a": "5"
+        },
+        "final": {
+          "examples": 16,
+          "a": "7"
+        }
+      },
+      "remainingPiece": "Exactly original canonical LINE_3, one instance, one single-cell ability; no items/reroll/pending/supply",
+      "encoding": "Unchanged encodeDecision52 + actionOutcome22 and footprint; future MLP gets only columns52..73 in original legal order",
+      "legalOrder": "getAvailableActions, require exactly46 point-only actions and no initial ordinary placement",
+      "labels": "Unchanged pointReference current-turn exhaustive traversal, depth<=2/nodes<=256; require complete unique optimum equal to constructed target; no inferred label fallback",
+      "materialization": "Two deterministic full builds, compare data bytes/counters; exactly64 unique boards/groups per build, no sampling/resampling or split reassignment"
+    },
+    "preflight": {
+      "referenceRuns": 128,
+      "referenceNodeCap": 32768,
+      "outcomeTransitionCap": 5888,
+      "dfsCalls": 0,
+      "pythonModelLoadForwardTraining": 0,
+      "all64BoardGroupsUnique": true,
+      "group": "Canonical D2 hash of saved occupancy under identity/left-right/up-down/both; conservative leakage grouping only, not augmentation or proof of symmetry",
+      "leakage": "Dev/final versus UNION of both training arms; dev versus final also disjoint. Board/group, tagged FP32 candidate multiset, target and all candidate FP32 vectors audited independently",
+      "float": "Math.fround on each outcome column before keying; preserve multiplicity and label tags; no rounding decimal tolerance",
+      "novelty": {
+        "dev": {
+          "examples": 16,
+          "candidateRows": 736,
+          "unseenTargets": 16,
+          "unseenRows": 736
+        },
+        "final": {
+          "examples": 16,
+          "candidateRows": 736,
+          "unseenTargets": 16,
+          "unseenRows": 736
+        },
+        "devFinalGroupAndVectorOverlap": 0,
+        "trainingLabelConflicts": 0
+      },
+      "failure": "STOP on any source/input hash, schema, unique-reference, candidate count, repeat, group or novelty mismatch; retain partial reports, retry/tuning/fallback0"
+    },
+    "resources": {
+      "nodeWallSeconds": 120,
+      "sampledWorkingSetBytes": 2147483648,
+      "instantaneousPeakMeasured": false,
+      "newPackagesRuntimesServices": 0
+    },
+    "futureTraining": {
+      "status": "NOT_AUTHORIZED_NOT_IMPLEMENTED",
+      "model": "Same outcome-only ReLU Linear22->32->1 with bias,769 parameters; new wrapper may validate46 candidates but computation/initialization must match original",
+      "runs": 2,
+      "initialOldFitAnchorEach": 16,
+      "updatesEach": 1000,
+      "fullBatchEach": 16,
+      "trainingCandidatesEach": 46,
+      "trainingObservationExposuresEach": 16000,
+      "trainingCandidateExposuresEach": 736000,
+      "finalEvaluationEach": 96,
+      "forwardsEach": 16112,
+      "totalTopLevelForwardMax": 32224,
+      "checkpointLoads": 0,
+      "seed": 20261008,
+      "optimizer": "Unchanged Adam/lr0.001/wd0.0001/native FP32 flat CE; fixed row order/final1000 only",
+      "selection": "No dev tuning/checkpoint selection; both train16/dev16/final16 evaluated twice after final step; initial old16 outputs/weights exact anchor before either training",
+      "comparison": "Only data coverage differs between arms; target rows/columns, per-example46 candidates, loss/steps/model/seed fixed. Control is new data, not a replay of the old31-candidate final model",
+      "screening": "Report fit/dev/final separately, each16/16, meanNll<=0.05, every margin>0; paired recovery/regression, no threshold changes; control and diverse gates separate",
+      "baselines": "First-legal and immediate-clear use existing domain on frozen evaluation data only after separate research execution authorization; anticipated immediate-clear success is a construction hypothesis, not a measured result",
+      "executionRequiresNewDecision": true
+    },
+    "boundaries": {
+      "currentPythonModelLoadForwardTraining": 0,
+      "currentDomainTeacherMaterialization": 0,
+      "generatorImplemented": false,
+      "trainingRunnerImplemented": false,
+      "executionConfigImplemented": false,
+      "originalSourceDataModelImmutable": true,
+      "appUsesDfs": true,
+      "actualScreenAcceptance": "BLOCKED_NO_GAME_SCREEN",
+      "publication": "Local README/proposal/tools only in this task; no prepare or push without new explicit authorization",
+      "limits": "Prospective synthetic diagnostic after previous post-hoc evidence, not natural game generalization. All labels may remain separable by immediate-clear feature52; no claim of future planning, old339/89 repair, action-kind accuracy, survival or app adoption."
+    },
+    "sourceHashes": {
+      "src/research/point-simulation.ts": "c4694ad790569c2eb438c959b7198ca9a7e745c0304ea9f64fd193fd05520e31",
+      "src/research/action-outcome.ts": "97b896d89a6e593dd839e7d9451402f6bbae334afa8cebeed6584615603cadde",
+      "src/research/imitation.ts": "c06adc99a27b895ae3c539b3cbe776949e6feac6da3e6d9dc4b1ac383cf39b23",
+      "src/research/spatial-footprint.ts": "09eff60bff74b1fa8a1f70b50c3a20243887d4ec3fc08159c73de498d0493ca4",
+      "src/domain/game/actions.ts": "2eb383bb60019c18532ac143621c4c2243f954d46971589f319c2cb16c4cdac6",
+      "research/cnn/outcome_mlp.py": "98d8b17a287edcb7c74bcaa408bf8914a47aeb7e0fb7ab62e1663accd0c59564",
+      "research/experiments/outcome-mlp-v1.json": "17fc8b81b85ed91c638c4e7563d0d0f3d96cfceacb10936d917f32e2c9cc5608",
+      "assets/research/outcome-mlp-20261103-v1.json": "c02e68acf9a85acc747cac6c72b84cf5e954b6485f2d672466529ce71e18023a",
+      "scripts/research/audit-coverage-inputs.mjs": "cd1a874ca89c43cdd2cc93de029fa954e284484b9796e87b5b16b0c83296b4dd"
+    }
+  }
+}
