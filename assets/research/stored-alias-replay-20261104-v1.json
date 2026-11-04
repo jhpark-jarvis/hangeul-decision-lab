@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "status": "FAIL_VERIFICATION_HARNESS",
+  "planned": {
+    "states": 2,
+    "candidates": 9,
+    "repetitions": 2,
+    "transitions": 36
+  },
+  "actual": {
+    "reservedDirectCalls": 1,
+    "returnedDirectCalls": 1,
+    "outcomeCalls": 0,
+    "referenceTeacherModelLoadForwardTrainingDataset": 0,
+    "retries": 0
+  },
+  "rootOrderedMaskCase0": "PASS",
+  "nextPhaseComparison": "NOT_RUN",
+  "outcomeExact": "NOT_RUN",
+  "repeatExact": "NOT_RUN",
+  "wholeTurnSalvageability": "NOT_EVALUATED",
+  "cause": "Hidden-item array order normalization was mistaken for a semantic mutation.",
+  "correction": "Compare sorted row/col/type identities; preserve separate original-byte mutation check.",
+  "correctedUnitTests": 161,
+  "correctedReplay": "NOT_RUN",
+  "v1ConfigPreserved": true,
+  "sourceRefreezeRequiredBeforeNewExecution": true
+}

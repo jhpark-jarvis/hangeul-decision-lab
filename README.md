@@ -30,7 +30,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 새 coverage 데이터 64개를 생성해 보드 그룹과 FP32 입력 누출을 검사하고, 같은 MLP의 두 학습을 비교했다. 두 모델 모두 새 dev/final에서 16/16과 NLL·margin 기준을 통과해 **coverage의 정답률 개선은0개**였다. 즉시 삭제 baseline도 16/16이므로 이 합성 문제에서 NN의 우월성이나 미래 계획 효과는 확인하지 못했다.
 
-5.12–5.43절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.44절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1525,7 +1525,7 @@ node --test scripts/research/test-coverage-training.mjs
 
 Point-only·점 1개·재뽑기 0개에서 줄을 지우지 않는 point는 점유만 늘린다. 원래 일반 배치가 하나도 없었다면 새 일반 배치를 만들 수 없고 능력도 소진된다. 해당 target class는 train 9개·dev 3개였다. 이런 hard label의 충돌을 모두 살릴 수 있는 행동의 구별 실패로 세면 안 된다.
 
-한편 train의 다른 두 상태에서는 동일한 outcome22를 가진 후보 4개/5개가, 원래 유일한 일반 배치의 mask를 막거나 보존하는 차이를 보였다. 다만 두 상태의 저장 teacher 경로는 최종 실패였고 hard label도 다음 일반 배치를 막는 쪽이었다. 이는 terminal 평가 맥락을 함께 살펴야 할 이유이며 teacher 오류나 전체 턴 구제 가능성을 곧바로 뜻하지 않는다. 다음에는 이 두 기존 상태의 9개 후보만 원래 domain으로 재생 검증한다.
+한편 train의 다른 두 상태에서는 동일한 outcome22를 가진 후보 4개/5개가, 원래 유일한 일반 배치의 mask를 막거나 보존하는 차이를 보였다. 다만 두 상태의 저장 teacher 경로는 최종 실패였고 hard label도 다음 일반 배치를 막는 쪽이었다. 이는 terminal 평가 맥락을 함께 살펴야 할 이유이며 teacher 오류나 전체 턴 구제 가능성을 곧바로 뜻하지 않는다. 이 두 기존 상태의 9개 후보를 원래 domain으로 검증하려 했으나, 첫 재생은 검증 도구의 비교 오류로 중단됐다. 진행 상태와 정정은 5.44에 구분한다.
 
 [비민감 저장 집계](assets/research/representation-alias-20261104-v1.json)에 complete/incomplete·point-only·삭제/비삭제·dead-end 분모를 분리했다. 두 번의 summary·private cases·선택 manifest가 byte 일치했다. 개별 상태·좌표·선택 manifest는 private이며 모델·label·점수·앱은 바꾸지 않았다.
 
@@ -1533,6 +1533,25 @@ Point-only·점 1개·재뽑기 0개에서 줄을 지우지 않는 point는 점�
 node scripts/research/representation-alias.mjs --source <local-paired-run> --outcome <local-outcome-run> --output .research-output/my-representation-audit
 node --test scripts/research/test-representation-alias.mjs
 ```
+
+### 5.44 Existing-State Replay — Harness Failure, No Utility Claim
+
+**실행과 정정 — 2026-11-04.** 5.43에서 선택한 기존 두 train 상태의 alias 후보 9개를 두 번 재생하도록 동결했다. 각 후보마다 직접 domain 전이와 기존 outcome 계산을 한 번씩 호출하므로 계획은 총 36전이였다. 새 teacher·reference·학습자료·모델은 만들지 않았다.
+
+첫 직접 전이가 반환한 뒤 검증 도구가 중단됐다. 기존 domain은 아이템 목록을 좌표순으로 정규화하지만, 검증 코드는 원본 배열과 반환 배열의 JSON 순서까지 같아야 한다고 검사했다. 의미가 같은 아이템의 정렬을 변경으로 오인한 **검증 도구 오류**였다. 실패 기록과 실행 당시 source/config를 보존했으며 retry는 하지 않았다.
+
+| Check                                 | Result                                                            |
+| ------------------------------------- | ----------------------------------------------------------------- |
+| 실행된 호출                           | Direct 1회, outcome 0회                                           |
+| 첫 상태의 root ordered legal mask     | 저장값과 일치                                                     |
+| Next phase / outcome22 / 두 반복 일치 | NOT_RUN                                                           |
+| Item identity 비교 정정               | 배열 순서를 제외한 row/column/type 비교, 원본 byte 불변 검사 유지 |
+| 정정 후 자동 검사                     | Node 161/161, typecheck·lint·format PASS                          |
+| 정정 후 실제 재생                     | NOT_RUN                                                           |
+
+이 실패로 게임 규칙이나 teacher label이 틀렸다고 판정하지 않는다. P105의 저장값 감사와 수학적 한계는 유효하지만, 실제 domain이 같은 class의 후보에 다른 next phase를 반환한다는 주장은 아직 검증하지 못했다. 다음 행동이 있다는 사실도 전체 턴을 살릴 수 있다는 뜻은 아니다.
+
+[비민감 실패 집계](assets/research/stored-alias-replay-20261104-v1.json)에 실행 분모와 미실행 조건을 남겼다. 원래 V1 config는 실행 당시 source hash를 보존한다. 수정된 source로 진행하려면 먼저 계약을 다시 동결해야 하며, 이번 실행의 성공으로 표시하지 않았다.
 
 ## 6. Reproduction and Usage
 

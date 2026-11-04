@@ -2,6 +2,7 @@ import { applyAction, getAvailableActions } from "../domain/game/actions";
 import type { GameState } from "../domain/game/types";
 import { actionOutcome } from "./action-outcome";
 import { actionKey } from "./imitation";
+import { aliasItemIdentity } from "./alias-item-identity";
 
 export type StoredAliasCase = {
   state: GameState;
@@ -46,10 +47,13 @@ export function replayStoredAlias(
         next.state.abilities.reroll === 0 &&
         next.state.pendingReroll === null &&
         JSON.stringify(next.state.remainingPieces) ===
-          JSON.stringify(input.state.remainingPieces) &&
-        JSON.stringify(next.state.hiddenItems) ===
-          JSON.stringify(input.state.hiddenItems),
+          JSON.stringify(input.state.remainingPieces),
       "Nonclearing/no-acquisition class mismatch",
+    );
+    requireValue(
+      aliasItemIdentity(next.state.hiddenItems) ===
+        aliasItemIdentity(input.state.hiddenItems),
+      "Hidden item identities changed",
     );
     const available = getAvailableActions(next.state);
     requireValue(available.ok, "Next mask failed");

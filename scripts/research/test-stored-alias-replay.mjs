@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { compileResearch } from "./runtime.mjs";
+import { root } from "./controlled-point-fit-contract.mjs";
 import {
   schedule,
   validateSelection,
@@ -7,6 +9,34 @@ import {
   auditReplayRows,
   parseStoredAliasArgs,
 } from "./stored-alias-replay-contract.mjs";
+
+const { aliasItemIdentity } = await import(
+  compileResearch(root, "src/research/alias-item-identity.ts").url
+);
+test("item normalization order is not a semantic mutation", () => {
+  const items = [
+    { type: "reroll", col: 3, row: 8 },
+    { row: 2, col: 1, type: "single-cell" },
+  ];
+  const original = JSON.stringify(items);
+  const normalized = [
+    { row: 2, col: 1, type: "single-cell" },
+    { row: 8, col: 3, type: "reroll" },
+  ];
+  assert.notEqual(JSON.stringify(items), JSON.stringify(normalized));
+  assert.equal(aliasItemIdentity(items), aliasItemIdentity(normalized));
+  assert.equal(JSON.stringify(items), original);
+});
+test("item identity detects missing, duplicated, moved or retyped icons", () => {
+  const items = [{ row: 1, col: 3, type: "reroll" }];
+  for (const changed of [
+    [],
+    [...items, ...items],
+    [{ row: 1, col: 4, type: "reroll" }],
+    [{ row: 1, col: 3, type: "single-cell" }],
+  ])
+    assert.notEqual(aliasItemIdentity(items), aliasItemIdentity(changed));
+});
 
 // Scalar verification records only; no synthetic GameState, transition or NN.
 function selection() {
