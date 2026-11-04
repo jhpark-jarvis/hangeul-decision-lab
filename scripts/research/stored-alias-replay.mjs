@@ -178,7 +178,11 @@ export async function runStoredAliasReplay(args) {
 }
 
 /** Saved evidence replay only: no runtime compilation/import or domain call. */
-export function auditRecordedAlias(recorded, base = root) {
+export function auditRecordedAlias(
+  recorded,
+  base = root,
+  selectionFile = null,
+) {
   const c = json(resolve(base, configPath)),
     report = json(resolve(recorded, "report.json"));
   assert.equal(report.status, "PASS");
@@ -201,8 +205,9 @@ export function auditRecordedAlias(recorded, base = root) {
   assert.equal(report.originalInputsAndSourcesUnchanged, true);
   for (const [p, h] of Object.entries(report.hashes))
     assert.equal(hash(resolve(recorded, p)), h);
-  assert.equal(hash(resolve(base, c.selection)), c.hashes[c.selection]);
-  const selection = json(resolve(base, c.selection)),
+  const selected = selectionFile ?? resolve(base, c.selection);
+  assert.equal(hash(selected), c.hashes[c.selection]);
+  const selection = json(selected),
     passes = json(resolve(recorded, "private-rows.json"));
   const ledger = bytes(resolve(recorded, "ledger.jsonl"))
     .toString("utf8")

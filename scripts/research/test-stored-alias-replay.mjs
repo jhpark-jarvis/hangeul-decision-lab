@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync, renameSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { compileResearch } from "./runtime.mjs";
 import { root, hash, json } from "./controlled-point-fit-contract.mjs";
@@ -139,6 +139,17 @@ test("saved replay reconstructs scalar evidence and rejects inflated utility cla
   f.put(resolve(f.recorded, "report.json"), f.report);
   assert.throws(() => auditRecordedAlias(f.recorded, f.base));
 });
+test("portable saved replay accepts only the exact frozen external selection", () => {
+  const f = savedFixture();
+  const external = resolve(f.base, "relocated-selection.json");
+  renameSync(resolve(f.base, "selection.json"), external);
+  assert.throws(() => auditRecordedAlias(f.recorded, f.base));
+  assert.deepEqual(auditRecordedAlias(f.recorded, f.base, external), f.summary);
+  const changed = json(external);
+  changed.cases[0].label = 0;
+  f.put(external, changed);
+  assert.throws(() => auditRecordedAlias(f.recorded, f.base, external));
+});
 test("saved replay checks config hash, exact evidence set and resource bounds", () => {
   const f = savedFixture();
   for (const change of [
@@ -164,6 +175,7 @@ test("saved-replay CLI rejects execution and tuning options before I/O", () => {
     ["--output", "x"],
     ["--run", "x", "--output", "y"],
     ["--recorded", "x", "--output", "y", "--repeat", "2"],
+    ["--recorded", "x", "--output", "y", "--selection", "--train"],
   ])
     assert.throws(() => replayStoredAliasEvidence(a));
 });

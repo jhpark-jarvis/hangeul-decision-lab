@@ -1573,24 +1573,24 @@ Next playing은 현재 턴 소진의 증거가 아니다. 특히 일반 배치�
 
 **실행 결과 — 2026-11-04.** 5.44의 검증 코드를 정정한 뒤, 같은 기존 train 상태 2개·alias 후보 9개를 새 고정 계약으로 두 번 재생했다. Direct 18회와 기존 outcome 계산 18회, 총 36전이를 실행했다. 첫 실패의 1회와 별도로 기록하며 새 자료·teacher·reference·모델·학습은 추가하지 않았다.
 
-| Check                                 | Result                                  |
-| ------------------------------------- | --------------------------------------- |
-| 두 상태의 root ordered legal mask     | 저장값과 일치                           |
-| 각 후보의 FP32 outcome22              | 저장값·동일 class 안에서 모두 일치      |
-| 다음 일반 배치가 남음 / 즉시 gameover | 한 반복의 고유 후보 9개 중 5개 / 4개    |
-| Class 안에 두 next phase가 모두 존재  | 2/2 상태                                |
-| 두 실제 반복 / 두 저장 reader         | 각각 exact / summary byte 일치          |
-| 실제 전이 시간 / sampled RSS          | 약2.55초 / 약915MiB. 순간 peak는 미측정 |
-| 자동 검사                             | Node164/164, typecheck·lint·format PASS |
+| Check                                 | Result                                                           |
+| ------------------------------------- | ---------------------------------------------------------------- |
+| 두 상태의 root ordered legal mask     | 저장값과 일치                                                    |
+| 각 후보의 FP32 outcome22              | 저장값·동일 class 안에서 모두 일치                               |
+| 다음 일반 배치가 남음 / 즉시 gameover | 한 반복의 고유 후보 9개 중 5개 / 4개                             |
+| Class 안에 두 next phase가 모두 존재  | 2/2 상태                                                         |
+| 두 실제 반복 / 두 저장 reader         | 각각 exact / summary byte 일치                                   |
+| 실제 전이 시간 / sampled RSS          | 약 2.55초 / 약 915MiB. 순간 peak는 미측정                        |
+| 자동 검사                             | Node 165/165 (저장 reader 정정 포함), typecheck·lint·format PASS |
 
 **이 표본에서 outcome22는 다음 일반 배치의 존재 여부를 보존하지 못했다.** 같은 행별 점유 수라도 열 방향의 빈칸 배치가 달라질 수 있기 때문이다. 이는 입력에 빠진 정보에 대한 직접 근거이며, 새 모델의 학습 성공이나 기존 full74 CNN의 불가능성을 뜻하지 않는다.
 
 두 저장 hard label은 모두 즉시 gameover를 만드는 후보였지만, 두 상태의 원래 teacher 경로도 최종 실패였다. 다음 한 수를 둘 수 있다는 사실과 현재 턴을 끝낼 수 있다는 사실은 다르다. 따라서 teacher 오류·전체 턴 구제·자연 게임 성능을 주장하지 않고, 5.45의 complete reference와 salvageability gate를 다음 연구 제안으로 유지한다.
 
-[비민감 결과 집계](assets/research/stored-alias-replay-20261104-v2.json)에 실제 분모와 미평가 범위를 명시했다. 개별 보드·좌표·선택 manifest·실행 원본은 private이며, 공개 코드의 저장 reader는 접근 권한이 있는 로컬 archive를 읽어 추가 전이·추론·학습 없이 검산한다. 공개 집계만으로 private 원본을 복구할 수는 없다.
+[비민감 결과 집계](assets/research/stored-alias-replay-20261104-v2.json)에 실제 분모와 미평가 범위를 명시했다. 개별 보드·좌표·선택 manifest·실행 원본은 private이며, 공개 코드의 저장 reader는 접근 권한이 있는 로컬 archive와 선택 manifest를 읽어 추가 전이·추론·학습 없이 검산한다. 선택 manifest는 --selection으로 위치를 지정하며, 동결된 SHA와 일치해야 한다. 공개 집계만으로 private 원본을 복구할 수는 없다.
 
 ```sh
-node scripts/research/replay-stored-alias.mjs --recorded <local-private-replay-archive> --output .research-output/my-stored-alias-check
+node scripts/research/replay-stored-alias.mjs --recorded <local-private-replay-archive> --output .research-output/my-stored-alias-check --selection <local-private-selection-manifest>
 node --test scripts/research/test-stored-alias-replay.mjs
 ```
 
