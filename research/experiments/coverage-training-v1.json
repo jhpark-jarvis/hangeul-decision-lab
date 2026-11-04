@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "coverage-training-v1",
+  "approval": "USER_APPROVED",
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "proposalPath": "research/experiments/coverage-preflight-proposal-v1.json",
+  "proposalSha256": "59a24c1b51852c20ebb8f3e8fff670b60e77313812849606515ab4f60ee50d4a",
+  "training": {
+    "status": "NOT_AUTHORIZED_NOT_IMPLEMENTED",
+    "model": "Same outcome-only ReLU Linear22->32->1 with bias,769 parameters; new wrapper may validate46 candidates but computation/initialization must match original",
+    "runs": 2,
+    "initialOldFitAnchorEach": 16,
+    "updatesEach": 1000,
+    "fullBatchEach": 16,
+    "trainingCandidatesEach": 46,
+    "trainingObservationExposuresEach": 16000,
+    "trainingCandidateExposuresEach": 736000,
+    "finalEvaluationEach": 96,
+    "forwardsEach": 16112,
+    "totalTopLevelForwardMax": 32224,
+    "checkpointLoads": 0,
+    "seed": 20261008,
+    "optimizer": "Unchanged Adam/lr0.001/wd0.0001/native FP32 flat CE; fixed row order/final1000 only",
+    "selection": "No dev tuning/checkpoint selection; both train16/dev16/final16 evaluated twice after final step; initial old16 outputs/weights exact anchor before either training",
+    "comparison": "Only data coverage differs between arms; target rows/columns, per-example46 candidates, loss/steps/model/seed fixed. Control is new data, not a replay of the old31-candidate final model",
+    "screening": "Report fit/dev/final separately, each16/16, meanNll<=0.05, every margin>0; paired recovery/regression, no threshold changes; control and diverse gates separate",
+    "baselines": "First-legal and immediate-clear use existing domain on frozen evaluation data only after separate research execution authorization; anticipated immediate-clear success is a construction hypothesis, not a measured result",
+    "executionRequiresNewDecision": true
+  },
+  "dataSha256": "f0f4db408928ea9b201e8bbecdb66cb976193b7cb2ecdd08d1f466f5ff06e9e9",
+  "preflightAssetSha256": "106d9eb4c411cf3cc1211baeb73e0418cf6e49fec2f3533b780457496b0eee8c",
+  "anchor": {
+    "datasetSha256": "862353fc79a5bc12a97da008b9ce0467ac026d28a4dc86fb211767ca45d12666",
+    "logitsSha256": "fc28a0292b1519fd833ea27797dcdc1b8792d37a83c44a2273fcff886c248e0b",
+    "weightsSha256": "2759ec730ac37286ea0dec191985eebdd07566661d4889f68f4a6100c848919b"
+  },
+  "modelConfig": {
+    "seed": 20261008,
+    "epochs": 12,
+    "batchSize": 8,
+    "threads": 2,
+    "convChannels": 8,
+    "embedding": 32,
+    "poolRows": 4,
+    "poolCols": 5,
+    "learningRate": 0.001,
+    "weightDecay": 0.0001
+  },
+  "resources": {
+    "childSeconds": 600,
+    "ownerSeconds": 1260,
+    "sampledWorkingSetBytes": 2147483648,
+    "instantaneousPeakMeasured": false
+  },
+  "boundaries": {
+    "model2": true,
+    "checkpointLoads": 0,
+    "additionalTuningRetry": 0,
+    "additionalDomainDataset": 0,
+    "appUsesDfs": true
+  }
+}
