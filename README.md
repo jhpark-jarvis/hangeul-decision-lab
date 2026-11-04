@@ -28,7 +28,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 후속 outcome-only MLP 대조에서는 CNN의 기존 결과를 정확히 재현한 뒤, 22→32→1 scorer가 **fit 16/16·같은 144개 진단 144/144**와 NLL·margin 기준을 통과했다. 다만 마지막 22개 입력만 보면 144개는 fit 목록의 label 보존 재정렬이므로 **독립 일반화 성과가 아닌 bypass 진단**이다.
 
-5.12–5.41절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+이어 새 coverage 데이터 64개를 생성해 보드 그룹과 FP32 입력 누출을 검사하고, 같은 MLP의 두 학습을 비교했다. 두 모델 모두 새 dev/final에서 16/16과 NLL·margin 기준을 통과해 **coverage의 정답률 개선은0개**였다. 즉시 삭제 baseline도 16/16이므로 이 합성 문제에서 NN의 우월성이나 미래 계획 효과는 확인하지 못했다.
+
+5.12–5.42절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1451,6 +1453,51 @@ node scripts/research/audit-coverage-inputs.mjs --recorded <local-outcome-mlp-ru
 Reference128회에서 실제7,208nodes(상한32,768), outcome5,888전이·DFS0을 사용했다. Node24.15.0/Windows 단일 관측에서 owner15.02초, sampled RSS최대266.4MiB(상한2GiB), 순간peak 미측정이다. 호출 전 ledger와 실패STOP/재시작0을 적용했다. [비민감 집계](assets/research/coverage-preflight-20261104-v1.json)에 분모·gate·자료SHA를 기록했다.
 
 이번에는 기존 진단144개와 달리 실제 FP32 입력 novelty gate를 통과했다. 그러나 feature52의 즉시 삭제 단서와 이 작은 synthetic family의 한계는 남는다. 데이터 PASS는 learned accuracy나 자연 게임 일반화의 증거가 아니다. 이후 같은 MLP·동일노출의 control/diverse 두학습을 별도로 실행한다. 원본 데이터/weights/logits는 private이며 공개 재현은 저장값만 읽는다.
+
+### 5.42 Matched MLP Coverage Contrast — Both Pass, No Accuracy Gain
+
+**2026-11-04 고정 두 학습 완료.** 5.41에서 수락한 데이터를 동결하고, 같은 outcome-only ReLU MLP(22→32→1, bias 포함 769 parameters)를 control 16개와 diverse 16개에 각각 cold initialization부터 1,000 update했다.
+
+두 arm은 target 행·열, 합법 후보 46개, seed 20261008, Adam, learning rate 0.001, weight decay 0.0001, native FP32 flat CE, full batch 16과 최종 step 선택을 공유한다. 각 16,000 observation·736,000 candidate 노출을 유지해 coverage만 바꿨다.
+
+#### Results
+
+| Model / split   | Correct | Mean full-list NLL | Minimum target margin | Gate |
+| --------------- | ------: | -----------------: | --------------------: | ---- |
+| Control / fit   |   16/16 |           0.011813 |             +7.887306 | PASS |
+| Diverse / fit   |   16/16 |           0.011599 |             +7.928261 | PASS |
+| Control / dev   |   16/16 |           0.014498 |             +7.392097 | PASS |
+| Diverse / dev   |   16/16 |           0.013335 |             +7.417267 | PASS |
+| Control / final |   16/16 |           0.015389 |             +7.238342 | PASS |
+| Diverse / final |   16/16 |           0.013944 |             +7.468803 | PASS |
+
+각 split의 세 gate는 16/16 정답·평균 NLL ≤ 0.05·모든 target margin > 0이다. 같은 dev 16개와 final 16개에서 각각 **회복 0·퇴행 0·선택 변화 0·정답 유지 16**으로, diverse coverage의 정답률 향상은 관측되지 않았다. Diverse의 NLL이 조금 낮았지만 단일 seed/run의 관측이며 통계적 우월성을 주장하지 않는다.
+
+저장 후보의 원래 순서와 feature 52만으로 계산한 baseline은 dev/final에서 각각 **first-legal 1/16, immediate-clear 16/16**이었다. 추가 domain 호출이나 추론 없이 계산했다. 단순 즉시 삭제 규칙도 이 문제에서 이미 포화됐으며 NN이 이를 능가한 근거는 없다.
+
+#### Compute and Reproduction
+
+양쪽 모두 원래 MLP의 초기 logical weights와 old16 logits를 정확히 재현한 뒤 학습했다. 기존 constructor/layers를 상속하고 후보 수 guard를 31/46으로 넓혔으며 모델 계산·초기화를 유지했다. Control도 새 46후보 자료이므로 기존 31후보 final 모델의 재현 대조는 아니다.
+
+Arm당 초기 anchor 16 + 학습 16,000 + 최종 train/dev/final 각 16개 두 번 = **16,112 call**, 합계 **32,224 top-level forward**를 사용했다. 모델 2개·checkpoint load 0회·두 CPU 학습·총 2,000 update다. 호출 전 ledger와 child 600초 / owner 1,260초 / sampled working set 2 GiB 상한을 적용했고, 실패 STOP·추가 튜닝·재시작 0을 유지했다.
+
+Windows/Python 3.13.13/PyTorch 2.14.1+cpu, intra 2 / interop 1의 단일 관측에서 owner는 45.45초, import 포함 child는 25.25/19.17초였다. 각 2,226회 RSS sample의 최대값은 약 281.8/282.4 MiB다. 순간 peak는 측정하지 않았고 시간에는 프로세스·검증·IO 비용이 포함된다. 두 학습의 시간차를 일반적인 속도차로 해석하지 않는다.
+
+최종 48개 출력은 각 모델에서 반복 byte 일치했고, 두 Node 저장 replay의 summary도 byte 일치했다. Node 141개와 native scalar·tensor·ledger 4개 테스트, lint/format을 검증했다. [비민감 결과](assets/research/coverage-training-20261104-v1.json)와 [실행 config](research/experiments/coverage-training-v1.json)에 분모·계산량·gate를 기록했다. 공개 검증은 저장값만 사용해 추가 모델·추론·학습·자료 생성이 0이다.
+
+#### Interpretation and Next Question
+
+이번 dev/final은 두 학습 arm의 union과 보드 그룹·모든 FP32 후보 벡터에서 달랐다. 이전 144개 known-input permutation과 구분되는, 이 고정 합성 계열의 새 입력 검증이다. 그래도 feature 52의 즉시 삭제 단서, 작은 16개 평가, 한 seed, 기존 관측에서 정한 family라는 한계가 남는다. 자연 게임/OOD, 기존 339/89 문제, 일반 행동, 장기 생존이나 앱 정책 개선을 입증하지 않는다. 앱은 DFS를 사용한다.
+
+다음 우선순위는 **즉시 삭제만으로 정답이 정해지지 않는 bounded lookahead 문제와 표현 충돌을 먼저 검토하는 계약**이다. 같은 22개 입력으로 다른 최적 행동이 요구된다면 입력의 정보 한계부터 확인해야 한다. 새 자료·모델·학습을 자동 추가하지 않았으며 이번 예산은 소진했다.
+
+```sh
+node scripts/research/replay-coverage-preflight.mjs --recorded <local-coverage-data-run> --output .research-output/my-data-replay
+node scripts/research/replay-coverage-training.mjs --recorded <local-coverage-training-run> --output .research-output/my-training-replay
+node --test scripts/research/test-coverage-training.mjs
+```
+
+저장 재현에는 권한 있는 로컬 archive가 필요하다. Raw data·weights·logits는 공개하지 않아 공개 clone만으로 원래 수치를 복구할 수는 없다. 위 CLI는 새 output에 저장 검증 결과를 기록한다.
 
 ## 6. Reproduction and Usage
 

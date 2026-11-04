@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "id": "coverage-training-v1",
+  "technicalStatus": "PASS",
+  "dataSha256": "f0f4db408928ea9b201e8bbecdb66cb976193b7cb2ecdd08d1f466f5ff06e9e9",
+  "control": {
+    "arm": "control",
+    "updates": 1000,
+    "splits": {
+      "fit": {
+        "metrics": {
+          "examples": 16,
+          "correct": 16,
+          "meanNll": 0.011812744836788625,
+          "minimumTargetMargin": 7.887306213378906,
+          "maximumTargetRank": 1
+        },
+        "gate": {
+          "status": "PASS",
+          "checks": {
+            "allCorrect": true,
+            "meanNllAtMost005": true,
+            "everyTargetMarginPositive": true
+          }
+        }
+      },
+      "dev": {
+        "metrics": {
+          "examples": 16,
+          "correct": 16,
+          "meanNll": 0.01449773638159968,
+          "minimumTargetMargin": 7.392097473144531,
+          "maximumTargetRank": 1
+        },
+        "gate": {
+          "status": "PASS",
+          "checks": {
+            "allCorrect": true,
+            "meanNllAtMost005": true,
+            "everyTargetMarginPositive": true
+          }
+        }
+      },
+      "final": {
+        "metrics": {
+          "examples": 16,
+          "correct": 16,
+          "meanNll": 0.015389345702715218,
+          "minimumTargetMargin": 7.23834228515625,
+          "maximumTargetRank": 1
+        },
+        "gate": {
+          "status": "PASS",
+          "checks": {
+            "allCorrect": true,
+            "meanNllAtMost005": true,
+            "everyTargetMarginPositive": true
+          }
+        }
+      }
+    }
+  },
+  "diverse": {
+    "arm": "diverse",
+    "updates": 1000,
+    "splits": {
+      "fit": {
+        "metrics": {
+          "examples": 16,
+          "correct": 16,
+          "meanNll": 0.011598528770264238,
+          "minimumTargetMargin": 7.928260803222656,
+          "maximumTargetRank": 1
+        },
+        "gate": {
+          "status": "PASS",
+          "checks": {
+            "allCorrect": true,
+            "meanNllAtMost005": true,
+            "everyTargetMarginPositive": true
+          }
+        }
+      },
+      "dev": {
+        "metrics": {
+          "examples": 16,
+          "correct": 16,
+          "meanNll": 0.01333536475431174,
+          "minimumTargetMargin": 7.417266845703125,
+          "maximumTargetRank": 1
+        },
+        "gate": {
+          "status": "PASS",
+          "checks": {
+            "allCorrect": true,
+            "meanNllAtMost005": true,
+            "everyTargetMarginPositive": true
+          }
+        }
+      },
+      "final": {
+        "metrics": {
+          "examples": 16,
+          "correct": 16,
+          "meanNll": 0.013943595171440393,
+          "minimumTargetMargin": 7.468803405761719,
+          "maximumTargetRank": 1
+        },
+        "gate": {
+          "status": "PASS",
+          "checks": {
+            "allCorrect": true,
+            "meanNllAtMost005": true,
+            "everyTargetMarginPositive": true
+          }
+        }
+      }
+    }
+  },
+  "paired": {
+    "dev": {
+      "examples": 16,
+      "bothCorrect": 16,
+      "recovered": 0,
+      "regressed": 0,
+      "bothWrong": 0,
+      "changedChoices": 0
+    },
+    "final": {
+      "examples": 16,
+      "bothCorrect": 16,
+      "recovered": 0,
+      "regressed": 0,
+      "bothWrong": 0,
+      "changedChoices": 0
+    }
+  },
+  "baselines": {
+    "dev": {
+      "examples": 16,
+      "firstLegalCorrect": 1,
+      "immediateClearCorrect": 16
+    },
+    "final": {
+      "examples": 16,
+      "firstLegalCorrect": 1,
+      "immediateClearCorrect": 16
+    }
+  },
+  "reproduction": {
+    "originalOld16InitialAnchorExact": true,
+    "final48EachRepeatedExact": true
+  },
+  "actualCompute": {
+    "topLevelModels": 2,
+    "checkpointLoads": 0,
+    "topLevelForwards": 32224,
+    "trainingRuns": 2,
+    "optimizerUpdates": 2000,
+    "trainingObservationsEach": 16000,
+    "trainingCandidatesEach": 736000
+  },
+  "timing": {
+    "ownerWallSeconds": 45.447978199999994,
+    "children": [
+      {
+        "arm": "control",
+        "processWallSeconds": 25.246634299999997,
+        "pythonBody": {
+          "samples": 2226,
+          "maxSampledWorkingSetBytes": 295444480,
+          "instantaneousPeakMeasured": false,
+          "wallTimeSeconds": 22.25874310004292,
+          "wallTimeLimitSeconds": 600,
+          "workingSetLimitBytes": 2147483648
+        }
+      },
+      {
+        "arm": "diverse",
+        "processWallSeconds": 19.171076799999994,
+        "pythonBody": {
+          "samples": 2226,
+          "maxSampledWorkingSetBytes": 296116224,
+          "instantaneousPeakMeasured": false,
+          "wallTimeSeconds": 16.401824600005057,
+          "wallTimeLimitSeconds": 600,
+          "workingSetLimitBytes": 2147483648
+        }
+      }
+    ]
+  },
+  "additionalPythonModelLoadForwardTrainingDomainDataset": 0,
+  "interpretation": "New FP32 inputs within a prospective synthetic immediate-clear family; not natural-game generalization, future planning or app adoption. Data coverage varies, model and exposures match.",
+  "appUsesDfs": true
+}
