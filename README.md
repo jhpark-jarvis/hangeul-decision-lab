@@ -28,7 +28,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 후속 outcome-only MLP 대조에서는 CNN의 기존 결과를 정확히 재현한 뒤, 22→32→1 scorer가 **fit 16/16·같은 144개 진단 144/144**와 NLL·margin 기준을 통과했다. 다만 마지막 22개 입력만 보면 144개는 fit 목록의 label 보존 재정렬이므로 **독립 일반화 성과가 아닌 bypass 진단**이다.
 
-5.12–5.40절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.41절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1390,7 +1390,7 @@ node --test scripts/research/test-outcome-mlp-execution.mjs
 
 ### 5.40 Coverage Preflight — Proposed Data Contract
 
-**2026-11-04 설계·저장 입력 감사 완료. 새 데이터 생성·학습은 NOT_RUN이다.** 5.39의 성공을 다음 연구로 이어가기 위해, 같은 MLP에서 학습 노출량을 맞추고 보드 다양성만 바꾸는 대조를 설계했다. 실제 실행 전에는 데이터 생성·누출 감사를 먼저 수락하도록 분리했다.
+**당시 설계·저장 입력 감사 기록이다.** 이후 승인된 데이터 실행 결과는5.41, 학습 대조 결과는 이어지는 절에서 구분한다. 5.39의 성공을 다음 연구로 이어가기 위해, 같은 MLP에서 학습 노출량을 맞추고 보드 다양성만 바꾸는 대조를 설계했다. 실제 실행 전에는 데이터 생성·누출 감사를 먼저 수락하도록 분리했다.
 
 #### Why Board-level Splits Are Insufficient Here
 
@@ -1434,6 +1434,23 @@ node scripts/research/validate-coverage-proposal.mjs
 node --test scripts/research/test-coverage-proposal.mjs
 node scripts/research/audit-coverage-inputs.mjs --recorded <local-outcome-mlp-run> --output .research-output/my-coverage-input-audit
 ```
+
+### 5.41 Coverage Data Preflight — PASS
+
+**2026-11-04 실제 새 데이터 생성·감사 완료. 이 단계의 모델 추론·학습은0이다.** 5.40의 고정64보드를 두 번 생성하고 기존 exhaustive reference와 encoder를 적용했다. 각 보드의46개 합법 후보·유일 정답·입력 불변과 두build byte 일치를 확인했다.
+
+| Check                            | Actual result                                                          | Gate |
+| -------------------------------- | ---------------------------------------------------------------------- | ---- |
+| Unique conservative board groups | 64/64                                                                  | PASS |
+| Train union                      | 32boards /1472candidate rows /506unique FP32 vectors, label conflicts0 | PASS |
+| Dev novelty vs train union       | 16/16targets,736/736candidate rows unseen;256unique                    | PASS |
+| Final novelty vs train union     | 16/16targets,736/736candidate rows unseen;256unique                    | PASS |
+| Dev-final group/vector overlap   | 0/0                                                                    | PASS |
+| Two builds / two stored replays  | Byte exact                                                             | PASS |
+
+Reference128회에서 실제7,208nodes(상한32,768), outcome5,888전이·DFS0을 사용했다. Node24.15.0/Windows 단일 관측에서 owner15.02초, sampled RSS최대266.4MiB(상한2GiB), 순간peak 미측정이다. 호출 전 ledger와 실패STOP/재시작0을 적용했다. [비민감 집계](assets/research/coverage-preflight-20261104-v1.json)에 분모·gate·자료SHA를 기록했다.
+
+이번에는 기존 진단144개와 달리 실제 FP32 입력 novelty gate를 통과했다. 그러나 feature52의 즉시 삭제 단서와 이 작은 synthetic family의 한계는 남는다. 데이터 PASS는 learned accuracy나 자연 게임 일반화의 증거가 아니다. 이후 같은 MLP·동일노출의 control/diverse 두학습을 별도로 실행한다. 원본 데이터/weights/logits는 private이며 공개 재현은 저장값만 읽는다.
 
 ## 6. Reproduction and Usage
 

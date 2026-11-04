@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "id": "coverage-preflight-v1",
+  "status": "PASS",
+  "audit": {
+    "training": {
+      "examples": 32,
+      "candidateRows": 1472,
+      "uniqueBoardGroups": 32,
+      "uniqueFp32Vectors": 506,
+      "conflictingFp32Labels": 0
+    },
+    "evaluations": {
+      "dev": {
+        "examples": 16,
+        "candidateRows": 736,
+        "uniqueBoardGroups": 16,
+        "boardGroupOverlap": 0,
+        "labelPreservingBagMatches": 0,
+        "unseenTargetRows": 16,
+        "unseenCandidateRows": 736,
+        "unseenUniqueFp32Vectors": 256
+      },
+      "final": {
+        "examples": 16,
+        "candidateRows": 736,
+        "uniqueBoardGroups": 16,
+        "boardGroupOverlap": 0,
+        "labelPreservingBagMatches": 0,
+        "unseenTargetRows": 16,
+        "unseenCandidateRows": 736,
+        "unseenUniqueFp32Vectors": 256
+      }
+    },
+    "evaluationPairs": [
+      {
+        "a": "dev",
+        "b": "final",
+        "boardGroupOverlap": 0,
+        "candidateRowsSeenInOther": 0
+      }
+    ]
+  },
+  "gate": {
+    "status": "PASS",
+    "checks": {
+      "splitNames": true,
+      "training32": true,
+      "trainingCandidateRows": true,
+      "trainingGroups32": true,
+      "noConflictingTrainingLabels": true,
+      "allEvaluationExamplesAndCandidates": true,
+      "allBoardGroupsUnique": true,
+      "noTrainingGroupOverlap": true,
+      "noTrainingBagMatches": true,
+      "allTargetsUnseen": true,
+      "allCandidateRowsUnseen": true,
+      "noDevFinalGroupOrFp32Overlap": true
+    }
+  },
+  "construction": {
+    "builds": 2,
+    "referenceCalls": 128,
+    "referenceNodeCap": 32768,
+    "actualReferenceNodes": 7208,
+    "outcomeTransitions": 5888,
+    "dfsCalls": 0
+  },
+  "dataSha256": "f0f4db408928ea9b201e8bbecdb66cb976193b7cb2ecdd08d1f466f5ff06e9e9",
+  "twoBuildsByteExact": true,
+  "timing": {
+    "ownerWallSeconds": 15.017316600000001,
+    "maxSampledRss": 279318528,
+    "instantaneousPeakMeasured": false
+  },
+  "additionalPythonModelLoadForwardTrainingDomainDataset": 0,
+  "interpretation": "Prospective synthetic coverage data; feature52 remains an immediate-clear shortcut; no learned accuracy measured here.",
+  "appUsesDfs": true
+}
