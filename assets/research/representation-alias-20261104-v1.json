@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 1,
+  "id": "representation-alias-v1",
+  "status": "PASS_STORED_AUDIT",
+  "splits": {
+    "train": {
+      "all": {
+        "outcome22": {
+          "examples": 339,
+          "aliasTargets": 206,
+          "earlierDuplicateTargets": 36,
+          "positiveMarginPossibleExamples": 133,
+          "hardLabelTop1UpperBoundCorrect": 303,
+          "meanIdealNllLowerBound": 0.8476552518827521,
+          "multiplicityHistogram": {
+            "1": 133,
+            "2": 63,
+            "3": 32,
+            "4": 26,
+            "5": 17,
+            "6": 22,
+            "7": 11,
+            "8": 7,
+            "9": 7,
+            "10": 7,
+            "11": 1,
+            "12": 1,
+            "13": 2,
+            "14": 2,
+            "16": 4,
+            "18": 2,
+            "20": 1,
+            "22": 1
+          }
+        },
+        "outcomePlusCoordinates24": {
+          "examples": 339,
+          "aliasTargets": 86,
+          "earlierDuplicateTargets": 4,
+          "positiveMarginPossibleExamples": 253,
+          "hardLabelTop1UpperBoundCorrect": 335,
+          "meanIdealNllLowerBound": 0.190001686698926,
+          "multiplicityHistogram": {
+            "1": 253,
+            "2": 77,
+            "3": 5,
+            "4": 4
+          }
+        },
+        "full74": {
+          "examples": 339,
+          "aliasTargets": 0,
+          "earlierDuplicateTargets": 0,
+          "positiveMarginPossibleExamples": 339,
+          "hardLabelTop1UpperBoundCorrect": 339,
+          "meanIdealNllLowerBound": 0,
+          "multiplicityHistogram": {
+            "1": 339
+          }
+        }
+      },
+      "point": {
+        "outcome22": {
+          "examples": 52,
+          "aliasTargets": 22,
+          "earlierDuplicateTargets": 9,
+          "positiveMarginPossibleExamples": 30,
+          "hardLabelTop1UpperBoundCorrect": 43,
+          "meanIdealNllLowerBound": 0.4741215850209132,
+          "multiplicityHistogram": {
+            "1": 30,
+            "2": 8,
+            "3": 4,
+            "4": 7,
+            "5": 2,
+            "6": 1
+          }
+        },
+        "outcomePlusCoordinates24": {
+          "examples": 52,
+          "aliasTargets": 0,
+          "earlierDuplicateTargets": 0,
+          "positiveMarginPossibleExamples": 52,
+          "hardLabelTop1UpperBoundCorrect": 52,
+          "meanIdealNllLowerBound": 0,
+          "multiplicityHistogram": {
+            "1": 52
+          }
+        },
+        "full74": {
+          "examples": 52,
+          "aliasTargets": 0,
+          "earlierDuplicateTargets": 0,
+          "positiveMarginPossibleExamples": 52,
+          "hardLabelTop1UpperBoundCorrect": 52,
+          "meanIdealNllLowerBound": 0,
+          "multiplicityHistogram": {
+            "1": 52
+          }
+        }
+      },
+      "cohorts": {
+        "searchComplete": {
+          "examples": 22,
+          "distinctFixtures": 22,
+          "bounds22": {
+            "examples": 22,
+            "aliasTargets": 12,
+            "earlierDuplicateTargets": 6,
+            "positiveMarginPossibleExamples": 10,
+            "hardLabelTop1UpperBoundCorrect": 16,
+            "meanIdealNllLowerBound": 0.5796835143596379,
+            "multiplicityHistogram": {
+              "1": 10,
+              "2": 5,
+              "3": 3,
+              "4": 2,
+              "5": 2
+            }
+          }
+        },
+        "searchIncomplete": {
+          "examples": 30,
+          "distinctFixtures": 29,
+          "bounds22": {
+            "examples": 30,
+            "aliasTargets": 10,
+            "earlierDuplicateTargets": 3,
+            "positiveMarginPossibleExamples": 20,
+            "hardLabelTop1UpperBoundCorrect": 27,
+            "meanIdealNllLowerBound": 0.39670950350584844,
+            "multiplicityHistogram": {
+              "1": 20,
+              "2": 3,
+              "3": 1,
+              "4": 5,
+              "6": 1
+            }
+          }
+        },
+        "pointOnly": {
+          "examples": 9,
+          "distinctFixtures": 9,
+          "bounds22": {
+            "examples": 9,
+            "aliasTargets": 9,
+            "earlierDuplicateTargets": 4,
+            "positiveMarginPossibleExamples": 0,
+            "hardLabelTop1UpperBoundCorrect": 5,
+            "meanIdealNllLowerBound": 0.9620769726322153,
+            "multiplicityHistogram": {
+              "2": 5,
+              "3": 2,
+              "4": 1,
+              "5": 1
+            }
+          }
+        },
+        "targetClears": {
+          "examples": 30,
+          "distinctFixtures": 28,
+          "bounds22": {
+            "examples": 30,
+            "aliasTargets": 0,
+            "earlierDuplicateTargets": 0,
+            "positiveMarginPossibleExamples": 30,
+            "hardLabelTop1UpperBoundCorrect": 30,
+            "meanIdealNllLowerBound": 0,
+            "multiplicityHistogram": {
+              "1": 30
+            }
+          }
+        },
+        "targetDoesNotClear": {
+          "examples": 22,
+          "distinctFixtures": 22,
+          "bounds22": {
+            "examples": 22,
+            "aliasTargets": 22,
+            "earlierDuplicateTargets": 9,
+            "positiveMarginPossibleExamples": 0,
+            "hardLabelTop1UpperBoundCorrect": 13,
+            "meanIdealNllLowerBound": 1.1206510191403405,
+            "multiplicityHistogram": {
+              "2": 8,
+              "3": 4,
+              "4": 7,
+              "5": 2,
+              "6": 1
+            }
+          }
+        },
+        "monotoneDeadEnd": {
+          "examples": 9,
+          "distinctFixtures": 9,
+          "bounds22": {
+            "examples": 9,
+            "aliasTargets": 9,
+            "earlierDuplicateTargets": 4,
+            "positiveMarginPossibleExamples": 0,
+            "hardLabelTop1UpperBoundCorrect": 5,
+            "meanIdealNllLowerBound": 0.9620769726322153,
+            "multiplicityHistogram": {
+              "2": 5,
+              "3": 2,
+              "4": 1,
+              "5": 1
+            }
+          }
+        },
+        "liveAlias": {
+          "examples": 2,
+          "distinctFixtures": 2,
+          "bounds22": {
+            "examples": 2,
+            "aliasTargets": 2,
+            "earlierDuplicateTargets": 2,
+            "positiveMarginPossibleExamples": 0,
+            "hardLabelTop1UpperBoundCorrect": 0,
+            "meanIdealNllLowerBound": 1.4978661367769954,
+            "multiplicityHistogram": {
+              "4": 1,
+              "5": 1
+            }
+          }
+        }
+      },
+      "candidates": 118233,
+      "storedGeometry": {
+        "cases": 2,
+        "distinctFixtures": 2,
+        "mixedOrdinaryAvailability": 2,
+        "earliestAliasPreservesOrdinary": 1,
+        "teacherHardLabelPreservesOrdinary": 0,
+        "storedTeacherTerminalSurvivable": 0
+      }
+    },
+    "dev": {
+      "all": {
+        "outcome22": {
+          "examples": 89,
+          "aliasTargets": 53,
+          "earlierDuplicateTargets": 4,
+          "positiveMarginPossibleExamples": 36,
+          "hardLabelTop1UpperBoundCorrect": 85,
+          "meanIdealNllLowerBound": 0.8119185190083702,
+          "multiplicityHistogram": {
+            "1": 36,
+            "2": 18,
+            "3": 11,
+            "4": 3,
+            "5": 5,
+            "6": 3,
+            "7": 4,
+            "9": 1,
+            "10": 2,
+            "12": 1,
+            "13": 2,
+            "14": 3
+          }
+        },
+        "outcomePlusCoordinates24": {
+          "examples": 89,
+          "aliasTargets": 20,
+          "earlierDuplicateTargets": 0,
+          "positiveMarginPossibleExamples": 69,
+          "hardLabelTop1UpperBoundCorrect": 89,
+          "meanIdealNllLowerBound": 0.16031919909333786,
+          "multiplicityHistogram": {
+            "1": 69,
+            "2": 19,
+            "3": 1
+          }
+        },
+        "full74": {
+          "examples": 89,
+          "aliasTargets": 0,
+          "earlierDuplicateTargets": 0,
+          "positiveMarginPossibleExamples": 89,
+          "hardLabelTop1UpperBoundCorrect": 89,
+          "meanIdealNllLowerBound": 0,
+          "multiplicityHistogram": {
+            "1": 89
+          }
+        }
+      },
+      "point": {
+        "outcome22": {
+          "examples": 13,
+          "aliasTargets": 7,
+          "earlierDuplicateTargets": 2,
+          "positiveMarginPossibleExamples": 6,
+          "hardLabelTop1UpperBoundCorrect": 11,
+          "meanIdealNllLowerBound": 0.5513106059163246,
+          "multiplicityHistogram": {
+            "1": 6,
+            "2": 2,
+            "3": 4,
+            "4": 1
+          }
+        },
+        "outcomePlusCoordinates24": {
+          "examples": 13,
+          "aliasTargets": 0,
+          "earlierDuplicateTargets": 0,
+          "positiveMarginPossibleExamples": 13,
+          "hardLabelTop1UpperBoundCorrect": 13,
+          "meanIdealNllLowerBound": 0,
+          "multiplicityHistogram": {
+            "1": 13
+          }
+        },
+        "full74": {
+          "examples": 13,
+          "aliasTargets": 0,
+          "earlierDuplicateTargets": 0,
+          "positiveMarginPossibleExamples": 13,
+          "hardLabelTop1UpperBoundCorrect": 13,
+          "meanIdealNllLowerBound": 0,
+          "multiplicityHistogram": {
+            "1": 13
+          }
+        }
+      },
+      "cohorts": {
+        "searchComplete": {
+          "examples": 5,
+          "distinctFixtures": 5,
+          "bounds22": {
+            "examples": 5,
+            "aliasTargets": 3,
+            "earlierDuplicateTargets": 2,
+            "positiveMarginPossibleExamples": 2,
+            "hardLabelTop1UpperBoundCorrect": 3,
+            "meanIdealNllLowerBound": 0.49698132995759997,
+            "multiplicityHistogram": {
+              "1": 2,
+              "2": 2,
+              "3": 1
+            }
+          }
+        },
+        "searchIncomplete": {
+          "examples": 8,
+          "distinctFixtures": 8,
+          "bounds22": {
+            "examples": 8,
+            "aliasTargets": 4,
+            "earlierDuplicateTargets": 0,
+            "positiveMarginPossibleExamples": 4,
+            "hardLabelTop1UpperBoundCorrect": 8,
+            "meanIdealNllLowerBound": 0.5852664033905275,
+            "multiplicityHistogram": {
+              "1": 4,
+              "3": 3,
+              "4": 1
+            }
+          }
+        },
+        "pointOnly": {
+          "examples": 4,
+          "distinctFixtures": 4,
+          "bounds22": {
+            "examples": 4,
+            "aliasTargets": 3,
+            "earlierDuplicateTargets": 2,
+            "positiveMarginPossibleExamples": 1,
+            "hardLabelTop1UpperBoundCorrect": 2,
+            "meanIdealNllLowerBound": 0.621226662447,
+            "multiplicityHistogram": {
+              "1": 1,
+              "2": 2,
+              "3": 1
+            }
+          }
+        },
+        "targetClears": {
+          "examples": 6,
+          "distinctFixtures": 6,
+          "bounds22": {
+            "examples": 6,
+            "aliasTargets": 0,
+            "earlierDuplicateTargets": 0,
+            "positiveMarginPossibleExamples": 6,
+            "hardLabelTop1UpperBoundCorrect": 6,
+            "meanIdealNllLowerBound": 0,
+            "multiplicityHistogram": {
+              "1": 6
+            }
+          }
+        },
+        "targetDoesNotClear": {
+          "examples": 7,
+          "distinctFixtures": 7,
+          "bounds22": {
+            "examples": 7,
+            "aliasTargets": 7,
+            "earlierDuplicateTargets": 2,
+            "positiveMarginPossibleExamples": 0,
+            "hardLabelTop1UpperBoundCorrect": 5,
+            "meanIdealNllLowerBound": 1.023862553844603,
+            "multiplicityHistogram": {
+              "2": 2,
+              "3": 4,
+              "4": 1
+            }
+          }
+        },
+        "monotoneDeadEnd": {
+          "examples": 3,
+          "distinctFixtures": 3,
+          "bounds22": {
+            "examples": 3,
+            "aliasTargets": 3,
+            "earlierDuplicateTargets": 2,
+            "positiveMarginPossibleExamples": 0,
+            "hardLabelTop1UpperBoundCorrect": 1,
+            "meanIdealNllLowerBound": 0.828302216596,
+            "multiplicityHistogram": {
+              "2": 2,
+              "3": 1
+            }
+          }
+        },
+        "liveAlias": {
+          "examples": 0,
+          "distinctFixtures": 0,
+          "bounds22": {
+            "examples": 0,
+            "aliasTargets": 0,
+            "earlierDuplicateTargets": 0,
+            "positiveMarginPossibleExamples": 0,
+            "hardLabelTop1UpperBoundCorrect": 0,
+            "meanIdealNllLowerBound": null,
+            "multiplicityHistogram": {}
+          }
+        }
+      },
+      "candidates": 31364,
+      "storedGeometry": {
+        "cases": 0,
+        "distinctFixtures": 0,
+        "mixedOrdinaryAvailability": 0,
+        "earliestAliasPreservesOrdinary": 0,
+        "teacherHardLabelPreservesOrdinary": 0,
+        "storedTeacherTerminalSurvivable": 0
+      }
+    }
+  },
+  "totalCandidateRows": 149597,
+  "assumption": "Ideal deterministic candidate-pointwise f(FP32 outcome22), raw full-list softmax and first-legal tie order; no board, coordinates, index or set context. Not measured native NN output equality or a bound for the existing74-feature CNN.",
+  "limits": "Hard-label mimicry only, not unavoidable gameplay error. Stored A512 complete/incomplete labels are preserved; alias-class action quality needs separate conditional reference evidence.",
+  "additionalPythonModelLoadForwardTrainingDomainDataset": 0,
+  "appUsesDfs": true
+}

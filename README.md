@@ -30,7 +30,7 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 새 coverage 데이터 64개를 생성해 보드 그룹과 FP32 입력 누출을 검사하고, 같은 MLP의 두 학습을 비교했다. 두 모델 모두 새 dev/final에서 16/16과 NLL·margin 기준을 통과해 **coverage의 정답률 개선은0개**였다. 즉시 삭제 baseline도 16/16이므로 이 합성 문제에서 NN의 우월성이나 미래 계획 효과는 확인하지 못했다.
 
-5.12–5.42절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+5.12–5.43절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1498,6 +1498,41 @@ node --test scripts/research/test-coverage-training.mjs
 ```
 
 저장 재현에는 권한 있는 로컬 archive가 필요하다. Raw data·weights·logits는 공개하지 않아 공개 clone만으로 원래 수치를 복구할 수는 없다. 위 CLI는 새 output에 저장 검증 결과를 기록한다.
+
+### 5.43 Representation Aliases in Stored Train/Dev
+
+**2026-11-04 저장 입력 감사 완료. 추가 모델·추론·학습·domain 실행은 0이다.** 앞선 coverage 문제를 더 학습하기 전에, 기존 train 339/dev 89의 저장 입력에서 같은 feature가 서로 다른 후보를 합치는지 검사했다. 원래 후보 순서·A512 label·52열 prefix를 보존하고 149,597개 후보를 검증했다. Test archive는 열지 않았다.
+
+#### Structural Bounds, Not New Predictions
+
+이상적인 deterministic candidate-pointwise scorer f(FP32 outcome22)를 가정한다. 같은 관측의 target과 동일한 입력을 갖는 후보가 m개이면 같은 점수를 받는다. 그중 target보다 앞선 후보가 있으면 first-legal tie 규칙으로 그 hard label을 고를 수 없다. Softmax target 확률은 최대 1/m, NLL은 최소 ln(m)이고, 중복 rival이 있으면 양수 target margin은 불가능하다.
+
+이 값은 수학적 계약 아래의 모방 한계다. Native NN의 실제 출력 동등성을 측정하거나 일반적인 gameplay accuracy의 상한을 계산한 결과가 아니다. 기존 CNN은 74열과 보드 정보를 사용하므로 아래 22열 한계를 그 모델의 실패 원인으로 옮기지 않는다.
+
+| Stored point targets                      |    Train |      Dev |
+| ----------------------------------------- | -------: | -------: |
+| Examples                                  |       52 |       13 |
+| Target와 같은 outcome22 후보가 있음       |       22 |        7 |
+| 그 중 target보다 앞선 중복 후보가 있음    |        9 |        2 |
+| 이상적 hard-label top1 상한               |    43/52 |    11/13 |
+| 이상적 평균 NLL 하한                      | 0.474122 | 0.551311 |
+| Outcome22 + row/column 진단의 target 충돌 |        0 |        0 |
+| 기존 full74의 target 충돌                 |        0 |        0 |
+
+좌표 2열을 붙인 24열은 진단용 투영이며 새 NN 입력으로 채택하지 않았다. 전체 행동 종류에서는 이 24열에도 train 86/339·dev 20/89의 target 충돌이 남았고 full74는 0/339·0/89였다. 입력별 충돌 제거와 학습 성공·의사결정 효용은 별개의 조건이다.
+
+#### Dead Ends and Action Utility
+
+Point-only·점 1개·재뽑기 0개에서 줄을 지우지 않는 point는 점유만 늘린다. 원래 일반 배치가 하나도 없었다면 새 일반 배치를 만들 수 없고 능력도 소진된다. 해당 target class는 train 9개·dev 3개였다. 이런 hard label의 충돌을 모두 살릴 수 있는 행동의 구별 실패로 세면 안 된다.
+
+한편 train의 다른 두 상태에서는 동일한 outcome22를 가진 후보 4개/5개가, 원래 유일한 일반 배치의 mask를 막거나 보존하는 차이를 보였다. 다만 두 상태의 저장 teacher 경로는 최종 실패였고 hard label도 다음 일반 배치를 막는 쪽이었다. 이는 terminal 평가 맥락을 함께 살펴야 할 이유이며 teacher 오류나 전체 턴 구제 가능성을 곧바로 뜻하지 않는다. 다음에는 이 두 기존 상태의 9개 후보만 원래 domain으로 재생 검증한다.
+
+[비민감 저장 집계](assets/research/representation-alias-20261104-v1.json)에 complete/incomplete·point-only·삭제/비삭제·dead-end 분모를 분리했다. 두 번의 summary·private cases·선택 manifest가 byte 일치했다. 개별 상태·좌표·선택 manifest는 private이며 모델·label·점수·앱은 바꾸지 않았다.
+
+```sh
+node scripts/research/representation-alias.mjs --source <local-paired-run> --outcome <local-outcome-run> --output .research-output/my-representation-audit
+node --test scripts/research/test-representation-alias.mjs
+```
 
 ## 6. Reproduction and Usage
 
