@@ -1628,6 +1628,7 @@ node --test scripts/research/test-stored-alias-replay.mjs
 실제 generator·reference·runner는 아직 구현하지 않았고 새 보드도 만들지 않았다. 모든 root의 complete 판정, hard16/control16, 쌍의 입력 동치와 novelty 중 하나라도 어긋나면 증거를 보존하고 중단한다. 재샘플링·quota 보충·추가 튜닝은0이며, 자료 gate를 통과해도 새 학습을 자동 실행하지 않는다.
 
 ```sh
+# 원래 proposal 정적 검사는 inputHashes에 지정된 권한 있는 로컬 private JSON 5개가 필요하다.
 node scripts/research/validate-lookahead-proposal.mjs
 node --test scripts/research/test-lookahead-proposal.mjs
 ```
@@ -1652,16 +1653,16 @@ node --test scripts/research/test-lookahead-proposal.mjs
 
 기존 train-dev·fit16·transfer144·coverage64의 총652관측/157,501후보와 비교해 새32개 보드/D2 group은 겹치지 않았다. 새 root1,024행과 target32개는22/24/74 벡터 모두 기존 자료와 교집합이0이었다. 다만 새22벡터는64종이고 전체 ordered22 입력은4종뿐이다. 이 의도적인 반사실 중복을 독립 일반화나 새 train/dev/test 성능으로 해석하지 않는다.
 
-| Execution                               |                                Observed |
-| --------------------------------------- | --------------------------------------: |
-| State materialization / reference calls |                                 64 / 64 |
-| Reference nodes                         |                        2,752 / cap4,096 |
-| Reference / outcome 전이                |                           2,688 / 2,048 |
-| 전체 전이                               |                        4,736 / cap6,080 |
-| Node elapsed / sampled RSS              |                    약13.85초 / 약641MiB |
-| 두 빌드 / 두 저장 reader                |                              각각 exact |
-| 자동 검사                               | Node190/190, typecheck·lint·format PASS |
-| 모델 생성·로드·추론·학습                |                                   모두0 |
+| Execution                               |                                 Observed |
+| --------------------------------------- | ---------------------------------------: |
+| State materialization / reference calls |                                  64 / 64 |
+| Reference nodes                         |                         2,752 / cap4,096 |
+| Reference / outcome 전이                |                            2,688 / 2,048 |
+| 전체 전이                               |                         4,736 / cap6,080 |
+| Node elapsed / sampled RSS              |                     약13.85초 / 약641MiB |
+| 두 빌드 / 두 저장 reader                |                               각각 exact |
+| 자동 검사                               | Node 190/190, typecheck·lint·format PASS |
+| 모델 생성·로드·추론·학습                |                                    모두0 |
 
 각 상태의 최고 quality root는 이번에는 하나였다. 다중 동치 정답의 학습이나 기존 board-aware CNN의 성공·실패는 평가하지 않았다. 그 CNN은 서로 다른 보드 plane을 받으므로22-only 한계를 그대로 적용할 수 없다. 다음 연구는 공간 정보를 어떻게 사용할지 별도 계약으로 검토하며, 추가 학습을 자동 실행하지 않는다.
 
