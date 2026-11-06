@@ -1696,6 +1696,30 @@ node scripts/research/lookahead-information.mjs --recorded <local-private-lookah
 node --test scripts/research/test-lookahead-information.mjs
 ```
 
+### 5.50 Next Controlled Experiment — Occupancy Context, Same CNN
+
+**설계 완료, 실행 전 — 2026-11-06.** 다음 질문은 기존 spatial CNN이 이번 32개 보드의 차이를 학습할 수 있는가다. 서로 다른 모델 구조를 비교하면 입력 정보와 모델 용량의 효과가 섞이므로, 같은 CNN에서 **보드 점유 plane의 유무만** 바꾸는 단일 대조를 제안한다.
+
+| 항목                                       | Control                                              | Candidate      |
+| ------------------------------------------ | ---------------------------------------------------- | -------------- |
+| 구조                                       | 기존 SpatialCandidateCNN, 13,292 parameters          | 동일           |
+| 보드 점유 plane                            | channel 0을 FP32 zero로 고정                         | 원래 점유 정보 |
+| Item planes·metadata·74 features·footprint | 원본 그대로                                          | 동일           |
+| 자료·정답·후보 순서                        | 저장32개·각32후보·unique quality root                | 동일           |
+| 학습                                       | Cold seed 고정·Adam·flat CE·fullbatch32·1,000 update | 동일           |
+| 선택                                       | 최종 step1,000의 first-index argmax                  | 동일           |
+
+제안 예산은 **CPU 학습 2회, 최대 64,192 top-level forward**다. 각 run은 initial32 + train32,000 + final 두 번64 =32,096회이며, 모델 생성2개·checkpoint load0이다. 새 자료 생성·reference 실행은 없다. 각 child600초·전체1,260초·sampled RSS2GiB·호출 전 ledger·실패 STOP·추가 튜닝0을 고정한다.
+
+Control의 quality 실패는 예상되므로 기술 검사와 구분한다. 같은 후보 입력의 native FP32 logits가 실제로 같은지, 초기 logical weights와 최종 반복이 일치하는지 먼저 검사한다. Candidate의 fit 기준은32/32·mean NLL≤0.05·모든 target margin>0이며 개선 수와 실패도 함께 보고한다. 입력 차이 때문에 두 arm의 초기 logits가 같을 것을 요구하지 않는다.
+
+[고정 proposal](research/experiments/board-context-proposal-v1.json)과 정적 검증을 완료했다. 새13개를 포함한214개 Node 검사·lint·format과 두 정적 출력 일치가 통과했다. **학습 runner는 아직 구현하지 않았고, 새 입력·학습 실행은 별도 사용자 결정이 필요하다.** 이 설계가 실제 학습 성공을 의미하지 않는다. 성공해도 fit-only 자료에서의 occupancy 정보 활용을 확인하는 범위이며, residual 필수성·독립 일반화·기존 CNN의109/144 실패 해소·게임 생존 성능·앱 적용을 주장하지 않는다.
+
+```sh
+node scripts/research/validate-board-context-proposal.mjs
+node --test scripts/research/test-board-context-proposal.mjs
+```
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.

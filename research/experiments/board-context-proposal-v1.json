@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "id": "board-context-proposal-v1",
+  "status": "PROPOSED_NOT_RUN",
+  "approval": "DESIGN_ONLY",
+  "executionRequiresSeparateUserDecision": true,
+  "contract": {
+    "dataset": {
+      "states": 32,
+      "candidatesEach": 32,
+      "totalCandidates": 1024,
+      "split": "FIT_ONLY_NO_GENERALIZATION",
+      "source": "Exact P110 build1 bytes and ordered unique quality roots; no generation or reference",
+      "labels": "Single complete quality root per example; no relabeling or target-dependent features"
+    },
+    "model": {
+      "architecture": "Unmodified SpatialCandidateCNN v3",
+      "parameters": 13292,
+      "chunk": 32,
+      "residualScale": 1,
+      "initialization": "Two sequential cold same-seed models; exact initial logical weights across arms; checkpoint loads zero",
+      "config": {
+        "seed": 20261008,
+        "epochs": 12,
+        "batchSize": 8,
+        "threads": 2,
+        "convChannels": 8,
+        "embedding": 32,
+        "poolRows": 4,
+        "poolCols": 5,
+        "learningRate": 0.001,
+        "weightDecay": 0.0001
+      },
+      "interopThreads": 1
+    },
+    "input": {
+      "planes": [3, 16, 10],
+      "metadata": 140,
+      "candidateFeatures": 74,
+      "footprint": [1, 16, 10],
+      "factor": "OCCUPIED_PLANE_ONLY",
+      "control": "Set occupied plane channel 0 to literal FP32 zero in both common and residual branches; preserve item planes",
+      "candidate": "Use original three planes",
+      "unchanged": "All ordered features, metadata, footprints, targets, architecture, seed, loss, optimizer, order, update count and selection",
+      "excluded": "No descriptor, family, arm, coordinate key, reference evaluation or paths enter forward"
+    },
+    "fit": {
+      "runs": 2,
+      "updatesEach": 1000,
+      "observationsPerUpdate": 32,
+      "optimizer": "Adam",
+      "loss": "Mean native FP32 flat cross_entropy over original 32 candidates; unique quality root target",
+      "order": "Original P110 descriptor order; one optimizer step after all 32 per-example backward calls",
+      "selection": "Final step 1000 only; original first-index argmax; no early stopping, extra seed, sweep or tuning"
+    },
+    "budget": {
+      "initialEach": 32,
+      "trainingEach": 32000,
+      "finalEach": 64,
+      "totalEach": 32096,
+      "totalTopLevelForwardMax": 64192,
+      "modelCreations": 2,
+      "checkpointLoads": 0,
+      "domainReferenceMaterializations": 0
+    },
+    "resources": {
+      "sequentialChildren": 2,
+      "childWallSeconds": 600,
+      "ownerWallSeconds": 1260,
+      "sampledRssBytes": 2147483648,
+      "retries": 0,
+      "runtime": "Existing local CPU PyTorch only; no install/GPU/service"
+    },
+    "validation": {
+      "beforeExecution": "Separate explicit user decision, new execution config/source hashes and clean commit; original proposal preserved",
+      "beforeCandidate": "Control technical/hash/budget/repeat checks PASS; its expected quality failure is not a technical STOP",
+      "sharedInitial": "Initial logical weight hashes exact across arms; initial logits are NOT expected equal with different planes",
+      "nativePointwise": "Control identical per-candidate FP32 inputs must yield exactly identical saved logits across all occurrences; otherwise technical FAIL, no comparison claim",
+      "counting": "Durable pre-call global/arm/phase ledger; top-level calls include initial/training/final repeats, no extra warmup or telemetry",
+      "stop": "Nonfinite/input/hash/schema/initial weights/ledger/repeat/resource mismatch STOP; no retry or tuning"
+    },
+    "acceptance": {
+      "candidate": {
+        "correct": 32,
+        "maximumMeanNll": 0.05,
+        "minimumEveryTargetMarginExclusive": 0
+      },
+      "pairedMinimumNetCorrect": 1,
+      "controlPointwiseUpperCorrect": 16,
+      "technical": "Budget and exact repeated final logits checked separately from fit gates",
+      "interpretation": "Full fit PASS with control ceiling validates occupancy availability for this fixed fit-only task, not residual mechanism, independent generalization, original CNN error resolution or app adoption"
+    },
+    "exclusions": [
+      "new data",
+      "reference",
+      "teacher",
+      "new architecture",
+      "new loss",
+      "checkpoint continuation",
+      "dev/test selection",
+      "held-out access",
+      "RL",
+      "app integration",
+      "installation",
+      "service",
+      "GPU",
+      "deployment",
+      "blanket publication"
+    ]
+  },
+  "sourceHashes": {
+    "research/cnn/model.py": "5d9809c50d8e8be1a79bb7c2a4252a8e39a7d7244276c4d479b421cf2306e3ac",
+    "research/cnn/outcome.py": "d306607902b0bbfdf265dbb2ee9c4f5a6136df2d54cb5339961c89790155a2c2",
+    "research/cnn/spatial.py": "f86df1f9c6528572fb6aa1f3b50d877d4bcb9b2d8be6825d3d8d9644ee21a87c",
+    "research/cnn/controlled_point_fit.py": "747ba3bd085bbec1eff34f5ea62e5c5f7fb3490a94466af629ccc60bff3dfd5f",
+    "research/experiments/spatial-residual-v1.json": "178b0d3681b930653e4b31dd67430765fdcc895ed55ee08072a8a5c9070f9d33",
+    "scripts/research/lookahead-information.mjs": "1663a08cbc9c299920202aac873ef14c22ab3c844cb869d0e35c06219791c1d9",
+    "scripts/research/validate-board-context-proposal.mjs": "2ab17b65b703c18459a9d25565fec6ed081996b1645ac88a031f11e1c55fa153"
+  },
+  "evidenceSha256": "b8483e8da2a0eb395b7b3d03c6a6597701683fc83bc609235dec5e572d95e4ad",
+  "archiveHashes": {
+    "build1.json": "beab93ce282847dfa1efa97fb97d673d8518ba42bc977af9cdd6f7ce9bf4210f",
+    "build2.json": "beab93ce282847dfa1efa97fb97d673d8518ba42bc977af9cdd6f7ce9bf4210f",
+    "ledger.jsonl": "c0cb619a855ef92c39452fa6dbfe304c63dd5ed53cceb27f9510c9ca3b64be61",
+    "prior-fingerprints.json": "9824be5649efd34cac32e87d34f2fc7da01cd73381a01fb735d816c54ecef9e5",
+    "report.json": "d3cada431d14cd980a1b906aa0c5b6728ad50863a2a352669113f0f2f667fb30"
+  }
+}
