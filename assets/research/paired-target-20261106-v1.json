@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "id": "paired-target-identity-v1",
+  "technicalStatus": "PASS",
+  "contrastOutcome": "FIT_ONLY_CONTRAST_PASS",
+  "control": {
+    "arm": "control",
+    "updates": 1000,
+    "initial": {
+      "examples": 32,
+      "correct": 0,
+      "meanNll": 3.461288630962372,
+      "minMargin": -0.09352798759937286,
+      "maxRank": 27,
+      "cohorts": {
+        "orderLucky": {
+          "examples": 16,
+          "correct": 0
+        },
+        "hard": {
+          "examples": 16,
+          "correct": 0
+        }
+      }
+    },
+    "final": {
+      "examples": 32,
+      "correct": 16,
+      "meanNll": 0.7680160105228424,
+      "minMargin": -0.05653190612792969,
+      "maxRank": 2,
+      "cohorts": {
+        "orderLucky": {
+          "examples": 16,
+          "correct": 10
+        },
+        "hard": {
+          "examples": 16,
+          "correct": 6
+        }
+      }
+    },
+    "fitGate": {
+      "status": "FAIL",
+      "checks": {
+        "correct32": false,
+        "meanNllAtMost005": false,
+        "allMarginsPositive": false
+      }
+    }
+  },
+  "candidate": {
+    "arm": "candidate",
+    "updates": 1000,
+    "initial": {
+      "examples": 32,
+      "correct": 0,
+      "meanNll": 3.461306147277355,
+      "minMargin": -0.09281646087765694,
+      "maxRank": 27,
+      "cohorts": {
+        "orderLucky": {
+          "examples": 16,
+          "correct": 0
+        },
+        "hard": {
+          "examples": 16,
+          "correct": 0
+        }
+      }
+    },
+    "final": {
+      "examples": 32,
+      "correct": 32,
+      "meanNll": 0.013968054132419638,
+      "minMargin": 3.798828125,
+      "maxRank": 1,
+      "cohorts": {
+        "orderLucky": {
+          "examples": 16,
+          "correct": 16
+        },
+        "hard": {
+          "examples": 16,
+          "correct": 16
+        }
+      }
+    },
+    "fitGate": {
+      "status": "PASS",
+      "checks": {
+        "correct32": true,
+        "meanNllAtMost005": true,
+        "allMarginsPositive": true
+      }
+    }
+  },
+  "paired": {
+    "examples": 32,
+    "recovered": 16,
+    "regressed": 0,
+    "bothCorrect": 16,
+    "bothWrong": 0,
+    "netCorrect": 16
+  },
+  "identity": {
+    "sameInitialLogicalWeights": true,
+    "pairedTargetAnchorsExactAllPhases": true,
+    "finalRepeatsExact": true,
+    "tolerance": 0
+  },
+  "identityDiagnostics": {
+    "control": {
+      "initial": {
+        "anchors": {
+          "pairs": 16,
+          "anchorComparisons": 32,
+          "scoreOccurrences": 64,
+          "exactTargetAnchorScores": true,
+          "sameTiePriority": true,
+          "nativeCorrectUpperBound": 16
+        },
+        "globalDrift": {
+          "candidateRows": 1024,
+          "uniqueInputs": 512,
+          "repeatedInputGroups": 464,
+          "mismatchGroups": 1,
+          "maximumAbsoluteGap": 3.725290298461914e-9,
+          "maximumUlpGap": 1,
+          "sameIndexMismatchGroups": 0,
+          "differentIndexMismatchGroups": 1
+        },
+        "mismatchTargetOccurrences": 0
+      },
+      "final1": {
+        "anchors": {
+          "pairs": 16,
+          "anchorComparisons": 32,
+          "scoreOccurrences": 64,
+          "exactTargetAnchorScores": true,
+          "sameTiePriority": true,
+          "nativeCorrectUpperBound": 16
+        },
+        "globalDrift": {
+          "candidateRows": 1024,
+          "uniqueInputs": 512,
+          "repeatedInputGroups": 464,
+          "mismatchGroups": 0,
+          "maximumAbsoluteGap": 0,
+          "maximumUlpGap": 0,
+          "sameIndexMismatchGroups": 0,
+          "differentIndexMismatchGroups": 0
+        },
+        "mismatchTargetOccurrences": 0
+      },
+      "final2": {
+        "anchors": {
+          "pairs": 16,
+          "anchorComparisons": 32,
+          "scoreOccurrences": 64,
+          "exactTargetAnchorScores": true,
+          "sameTiePriority": true,
+          "nativeCorrectUpperBound": 16
+        },
+        "globalDrift": {
+          "candidateRows": 1024,
+          "uniqueInputs": 512,
+          "repeatedInputGroups": 464,
+          "mismatchGroups": 0,
+          "maximumAbsoluteGap": 0,
+          "maximumUlpGap": 0,
+          "sameIndexMismatchGroups": 0,
+          "differentIndexMismatchGroups": 0
+        },
+        "mismatchTargetOccurrences": 0
+      }
+    },
+    "candidate": {
+      "initial": {
+        "globalDrift": {
+          "candidateRows": 1024,
+          "uniqueInputs": 1024,
+          "repeatedInputGroups": 0,
+          "mismatchGroups": 0,
+          "maximumAbsoluteGap": 0,
+          "maximumUlpGap": 0,
+          "sameIndexMismatchGroups": 0,
+          "differentIndexMismatchGroups": 0
+        }
+      },
+      "final1": {
+        "globalDrift": {
+          "candidateRows": 1024,
+          "uniqueInputs": 1024,
+          "repeatedInputGroups": 0,
+          "mismatchGroups": 0,
+          "maximumAbsoluteGap": 0,
+          "maximumUlpGap": 0,
+          "sameIndexMismatchGroups": 0,
+          "differentIndexMismatchGroups": 0
+        }
+      },
+      "final2": {
+        "globalDrift": {
+          "candidateRows": 1024,
+          "uniqueInputs": 1024,
+          "repeatedInputGroups": 0,
+          "mismatchGroups": 0,
+          "maximumAbsoluteGap": 0,
+          "maximumUlpGap": 0,
+          "sameIndexMismatchGroups": 0,
+          "differentIndexMismatchGroups": 0
+        }
+      }
+    }
+  },
+  "actualCompute": {
+    "topLevelModels": 2,
+    "checkpointLoads": 0,
+    "trainingRuns": 2,
+    "optimizerUpdates": 2000,
+    "newTopLevelForwards": 64192,
+    "priorStoppedForwards": 32,
+    "cumulativeTopLevelForwards": 64224,
+    "domainReferenceMaterializations": 0
+  },
+  "timing": {
+    "ownerWallSeconds": 363.9992206,
+    "ownerMaxSampledRss": 221425664,
+    "children": [
+      {
+        "arm": "control",
+        "processWallSeconds": 185.75385989999998,
+        "pythonBudget": {
+          "samples": 2194,
+          "maxSampledWorkingSetBytes": 303710208,
+          "instantaneousPeakMeasured": false,
+          "wallTimeSeconds": 184.826356900041,
+          "wallTimeLimitSeconds": 600,
+          "workingSetLimitBytes": 2147483648
+        }
+      },
+      {
+        "arm": "candidate",
+        "processWallSeconds": 176.3648701,
+        "pythonBudget": {
+          "samples": 2194,
+          "maxSampledWorkingSetBytes": 303214592,
+          "instantaneousPeakMeasured": false,
+          "wallTimeSeconds": 175.5636097000679,
+          "wallTimeLimitSeconds": 600,
+          "workingSetLimitBytes": 2147483648
+        }
+      }
+    ],
+    "instantaneousPeakMeasured": false
+  },
+  "additionalReplayModelLoadForwardTraining": 0,
+  "interpretation": "Same-CNN occupancy fit-only contrast, exact target anchors with zero tolerance. No independent generalization, residual necessity, original CNN failure resolution or app adoption.",
+  "appUsesDfs": true
+}

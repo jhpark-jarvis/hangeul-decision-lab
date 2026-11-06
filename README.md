@@ -1764,6 +1764,44 @@ node scripts/research/validate-paired-target-proposal.mjs
 node --test scripts/research/test-paired-target-proposal.mjs
 ```
 
+### 5.53 Same CNN, Different Occupancy Context — 16/32 to 32/32 on the Fixed Fit Set
+
+**고정 대조 실행 결과 — 2026-11-06.** 5.52의 exact target 계약을 승인받아 실행했다. 같은 저장 자료 32개와 같은 SpatialCandidateCNN 13,292 parameters를 사용하고, 보드 점유 plane을 0으로 만드는 control과 원래 plane을 주는 candidate를 비교했다. 두 모델은 같은 초기 logical weights·seed·Adam·flat CE·학습 순서·1,000 update를 사용했다.
+
+| 최종 fit 평가      | Control: 점유 plane 0 | Candidate: 원래 점유 plane |
+| ------------------ | --------------------: | -------------------------: |
+| Top1               |                 16/32 |                  **32/32** |
+| Mean NLL           |              0.768016 |               **0.013968** |
+| 최소 target margin |             −0.056532 |               **3.798828** |
+| Hard cohort        |                  6/16 |                      16/16 |
+| Order-lucky cohort |                 10/16 |                      16/16 |
+
+Candidate는 32/32·mean NLL≤0.05·모든 target margin>0의 기준을 통과했다. Paired 비교는 개선 16건·퇴행 0건이며, control은 검증한 이론 상한 16/32에 도달했다. **이번 32개 fit 자료에서는 보드 점유 정보를 포함한 기존 CNN이 모든 정답을 학습할 수 있었다.**
+
+Control의 initial·final1·final2에서 각각 16쌍의 두 target anchor 점수와 tie priority가 모두 exact였다. 허용 오차는 0이며 score를 수정하지 않았다. 초기 global 입력 한 그룹의 1 ULP 차이는 별도 진단에 남겼고, control의 최종 두 평가에서는 global 입력 차이도 0이었다. 두 arm의 최종 반복 출력과 두 저장 reader의 summary가 byte 단위로 일치했다. 원래 중단된 5.51의 실패 기록은 그대로 보존한다.
+
+| 실행·검증                               |                          실제 사용 |
+| --------------------------------------- | ---------------------------------: |
+| 새 모델 / checkpoint load               |                              2 / 0 |
+| CPU 학습                                |                 2회 × 1,000 update |
+| 새 top-level forward                    |                           64,192회 |
+| 이전 중단 32회를 포함한 누적            |                           64,224회 |
+| 전체 owner 시간                         |                           약 364초 |
+| Child process 시간                      |             약 185.75초 / 176.36초 |
+| 최대 sampled child RSS                  |                         약 290 MiB |
+| 추가 데이터·domain 전이·reference·retry |                             모두 0 |
+| 자동 검사                               | 247 Node·5 native scalar 검사 PASS |
+
+시간·메모리는 정한 상한 안이었으며 순간 peak는 측정하지 않았다. [비민감 집계](assets/research/paired-target-20261106-v1.json)에 실제 호출 수·두 arm의 지표·입력 동일성 진단·한계를 남겼다. Raw data·weights·logits·ledger는 로컬 private archive에 보관한다.
+
+이 결과는 **fit-only 대조**다. 미노출 보드 일반화, residual branch의 필수성, 알고리즘적 공간 추론, 게임 생존 성능이나 앱 적용을 입증하지 않는다. 기존 CNN의 다른 144개 평가에서 나온 109/144 실패도 별개로 남는다. 다음 연구는 학습에 쓰지 않은 family에서 동결 모델을 평가하도록 계약을 설계하는 방향이다. 이번 예산으로 추가 자료나 추론을 실행하지 않았다.
+
+```sh
+# 저장 출력 검증: 추가 추론·학습 없음. 권한 있는 원본 archive가 필요하다.
+node scripts/research/replay-paired-target.mjs --recorded <local-private-paired-target-run> --output .research-output/my-paired-target-replay
+node --test scripts/research/test-paired-target-execution.mjs
+```
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
