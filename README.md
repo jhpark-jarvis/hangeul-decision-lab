@@ -30,7 +30,9 @@ Hangeul Decision Lab은 메이플스토리 한글날 이벤트의 16행 × 10열
 
 이어 새 coverage 데이터 64개를 생성해 보드 그룹과 FP32 입력 누출을 검사하고, 같은 MLP의 두 학습을 비교했다. 두 모델 모두 새 dev/final에서 16/16과 NLL·margin 기준을 통과해 **coverage의 정답률 개선은0개**였다. 즉시 삭제 baseline도 16/16이므로 이 합성 문제에서 NN의 우월성이나 미래 계획 효과는 확인하지 못했다.
 
-5.12–5.48절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
+마지막으로 현재 턴의 lookahead가 필요한 32개 보드에서 입력 정보를 대조했다. 같은 CNN에 보드 점유 정보를 지우면 16/32, 원래 정보를 주면 **32/32·평균 NLL 0.01397·최소 margin +3.79883**으로 고정 fit 기준을 통과했다. 이는 이번 fit 집합의 결과이며 미노출 family 일반화는 아직 평가하지 않았다. [최신 고정 대조 결과](#occupancy-fit-result)에 방법·예산·한계를 정리했다.
+
+5.12–5.53절은 각 실험의 방법·결과·한계를 구분한다. 학습 절차와 재현성은 검증했지만 앱의 learned policy 채택이나 생존 향상을 뒷받침하지 않는다. Reinforcement learning (RL)은 향후 연구로 남는다.
 
 **Keywords:** combinatorial planning, bounded DFS, legal-action masking, stochastic planning, reinforcement learning
 
@@ -1763,6 +1765,8 @@ node --test scripts/research/test-board-context-stop.mjs
 node scripts/research/validate-paired-target-proposal.mjs
 node --test scripts/research/test-paired-target-proposal.mjs
 ```
+
+<a id="occupancy-fit-result"></a>
 
 ### 5.53 Same CNN, Different Occupancy Context — 16/32 to 32/32 on the Fixed Fit Set
 
