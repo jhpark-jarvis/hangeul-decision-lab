@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": "board-context-stop-audit-v1",
+  "auditStatus": "PASS",
+  "experimentTechnicalStatus": "FAIL",
+  "fitStatus": "NOT_RUN",
+  "stopReason": "Initial native identical-input bitwise mismatch",
+  "initial": {
+    "examples": 32,
+    "correct": 0,
+    "meanNll": 3.461288630962372,
+    "minMargin": -0.09352798759937286,
+    "maxRank": 27,
+    "cohorts": {
+      "orderLucky": {
+        "examples": 16,
+        "correct": 0
+      },
+      "hard": {
+        "examples": 16,
+        "correct": 0
+      }
+    }
+  },
+  "drift": {
+    "candidateRows": 1024,
+    "uniqueInputs": 512,
+    "repeatedInputGroups": 464,
+    "mismatchGroups": 1,
+    "maximumAbsoluteGap": 3.725290298461914e-9,
+    "maximumUlpGap": 1,
+    "sameIndexMismatchGroups": 0,
+    "differentIndexMismatchGroups": 1
+  },
+  "pairedTargetProofAtInitialOnly": {
+    "pairs": 16,
+    "anchorComparisons": 32,
+    "scoreOccurrences": 64,
+    "exactTargetAnchorScores": true,
+    "sameTiePriority": true,
+    "nativeCorrectUpperBound": 16
+  },
+  "actualCompute": {
+    "topLevelModels": 1,
+    "checkpointLoads": 0,
+    "initialForwards": 32,
+    "trainingForwards": 0,
+    "finalForwards": 0,
+    "totalTopLevelForwards": 32,
+    "optimizerUpdates": 0,
+    "candidateModels": 0,
+    "retries": 0,
+    "domainReferenceMaterializations": 0
+  },
+  "observations": {
+    "ownerStartToFailureTimestampSeconds": 21.168,
+    "childLastSampleSeconds": 18.3924387000734,
+    "childMaxSampledRssBytes": 280788992,
+    "instantaneousPeakMeasured": false
+  },
+  "conclusions": {
+    "allInputExactGuardFailed": true,
+    "pairAnchorsStillExactAtInitial": true,
+    "observedDifferentIndexAssociationIsNotCausalLocalization": true,
+    "noTrainingOrModelQualityConclusion": true,
+    "noAutomaticToleranceOrRetry": true
+  },
+  "additionalReplayPythonModelLoadForwardTraining": 0
+}

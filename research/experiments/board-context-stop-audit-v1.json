@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "board-context-stop-audit-v1",
+  "mode": "STORED_ONLY_NO_RETRY",
+  "sourceHashes": {
+    "scripts/research/board-context-stop.mjs": "13d237eb39edaf61faff4e56d91ffd3d0800d20b531ede1331906641aa773648",
+    "scripts/research/board-context-contract.mjs": "22ef82e86639bf60769f34fbc1bab5ca87d4934d074659b4bb6c81a67e43f660",
+    "scripts/research/lookahead-information.mjs": "1663a08cbc9c299920202aac873ef14c22ab3c844cb869d0e35c06219791c1d9"
+  },
+  "artifactHashes": {
+    "control/child.json": "da5b0723f5a5af89269039039666c64557a8baa98a887aca5912e9e445aa3c06",
+    "control/failure.json": "909d7bf5b2257da458d1342fb275212b4856eeb5a678510e5c0c8bc95d5e1a9e",
+    "control/forward-count.jsonl": "a29501d1993c2a24c81f16b1e72e4160bf1d086915f1431fe07a8f042f7d9baa",
+    "control/initial.json": "009b5387b924d2dc74d9ec68b5ce36d9a971ea92fc6dd2b9709e85cfe082ee23",
+    "control/input-identities.json": "8dcf24e46380c513cfffcd7ecf4de4856d669aa09cc4df9de575eacfbb680102",
+    "control/memory.jsonl": "6391cdb829e4e63f98aa4192009e09dd75b7925666d27cbf1a7f25c97e5d36f5",
+    "control/model-intent.json": "e0b22cbc67a8199c88680f150324cf63caabd7748645dcac9074e5a62e879971",
+    "control/stderr.log": "2d8620055c753224ba79b493e4f03b8a7c6f32c65201eb3848667af0671e12d7",
+    "dataset.json": "beab93ce282847dfa1efa97fb97d673d8518ba42bc977af9cdd6f7ce9bf4210f",
+    "execution.json": "25a64257c6e813adf986b6986ae08baf09483721af9f96b35f3aa589089cde33",
+    "failure.json": "8678d5a445cb87843ac38ebc4f300c3f31c727d96382bc49af39599bc95a4b1f",
+    "source/build1.json": "beab93ce282847dfa1efa97fb97d673d8518ba42bc977af9cdd6f7ce9bf4210f",
+    "source/build2.json": "beab93ce282847dfa1efa97fb97d673d8518ba42bc977af9cdd6f7ce9bf4210f",
+    "source/ledger.jsonl": "c0cb619a855ef92c39452fa6dbfe304c63dd5ed53cceb27f9510c9ca3b64be61",
+    "source/prior-fingerprints.json": "9824be5649efd34cac32e87d34f2fc7da01cd73381a01fb735d816c54ecef9e5",
+    "source/report.json": "d3cada431d14cd980a1b906aa0c5b6728ad50863a2a352669113f0f2f667fb30",
+    "start.json": "5f4822eb0267553705b7fef2e649e2208c0af0e547b6e02938639ff9a0de81e8",
+    "source-at-stop.json": "3d396864770c72af677da5337c167f589a45c875e4a8543f04c6d6cf3907d004"
+  },
+  "additionalModelLoadForwardTraining": 0
+}

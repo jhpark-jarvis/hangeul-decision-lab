@@ -1720,6 +1720,31 @@ node scripts/research/validate-board-context-proposal.mjs
 node --test scripts/research/test-board-context-proposal.mjs
 ```
 
+### 5.51 Occupancy Contrast — Stopped Before Training on a 1-ULP Check Failure
+
+**실행 중단과 저장 분석 — 2026-11-06.** 5.50의 고정 계약을 승인받아 실행했지만, 첫 control의 초기 평가32회 뒤 기술 검사에서 중단했다. 같은 native FP32 입력은 bit 단위로 같은 score를 내야 한다는 조건을 충족하지 못했다. 계약대로 재시도하지 않았고, 학습 update와 두 번째 모델 생성은 모두0이다.
+
+| 관측                            |               결과 |
+| ------------------------------- | -----------------: |
+| 초기 평가 / optimizer update    |         32회 / 0회 |
+| 생성 모델 / candidate 모델      |          1개 / 0개 |
+| 고유 후보 입력 / 반복 입력 그룹 |    512종 / 464그룹 |
+| Bit 단위 score가 달랐던 그룹    |              1그룹 |
+| 최대 차이                       | 1 ULP, 약3.73×10⁻⁹ |
+| 16쌍의 정답 anchor score 비교   |  32비교 모두 exact |
+| 추가 추론·학습·재시도           |              모두0 |
+
+불일치한 입력의 네 occurrence는 후보 index가 달랐고 정답 후보는 아니었다. 이 관찰만으로 특정 GEMM이나 병렬 연산을 원인으로 확정할 수는 없다. Native kernel의 수치 동작과 이상적인 pointwise scorer의 정보 상한을 구분해야 한다.
+
+정답률 상한의 증명에는 각 쌍의 **서로 반대인 두 정답 후보가 양쪽 목록에서 같은 점수와 같은 tie priority를 받는 조건**이 필요하다. 이번 초기 출력에서는 이 조건이 모두 성립했지만, 원래 계약은 모든 동일 입력의 exact score까지 요구했으므로 실험 판정은 **technical FAIL**이다. 이 결과를 CNN의 학습 실패나 정확도 비교로 해석하지 않는다.
+
+[저장 분석 집계](assets/research/board-context-stop-20261106-v1.json)에 실제32회 호출·0 update와 수치 차이를 남겼다. 새8개를 포함한231개 Node 검사와 두 저장 분석의 summary·private cases byte 일치가 통과했다. 허용 오차를 바꾸거나 남은 예산으로 학습을 재개하지 않았다.
+
+```sh
+node scripts/research/board-context-stop.mjs --recorded <local-private-stopped-board-context-run> --output .research-output/my-board-context-stop-audit
+node --test scripts/research/test-board-context-stop.mjs
+```
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
