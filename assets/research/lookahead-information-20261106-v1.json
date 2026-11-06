@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "id": "lookahead-information-v1",
+  "status": "PASS",
+  "states": 32,
+  "pairs": 16,
+  "results": {
+    "outcome22": {
+      "orderedMatrixEqualPairs": 16,
+      "incompatiblePointwisePairs": 16,
+      "pairedPointwiseUpperBoundCorrect": 16,
+      "orderedMatrixBound": {
+        "examples": 32,
+        "orderedInputGroups": 4,
+        "idealQualityMembershipUpperBoundCorrect": 16
+      },
+      "pointwise": {
+        "observations": 32,
+        "uniqueCandidateInputs": 64,
+        "constraints": 992,
+        "positiveNegativeAliasObservations": 0,
+        "cyclicComponents": 4,
+        "strictCyclicComponents": 4,
+        "allFirstIndexTop1Feasible": false,
+        "allPositiveMarginFeasible": false
+      }
+    },
+    "diagnostic24": {
+      "orderedMatrixEqualPairs": 0,
+      "incompatiblePointwisePairs": 16,
+      "pairedPointwiseUpperBoundCorrect": 16,
+      "orderedMatrixBound": {
+        "examples": 32,
+        "orderedInputGroups": 32,
+        "idealQualityMembershipUpperBoundCorrect": 32
+      },
+      "pointwise": {
+        "observations": 32,
+        "uniqueCandidateInputs": 512,
+        "constraints": 992,
+        "positiveNegativeAliasObservations": 0,
+        "cyclicComponents": 16,
+        "strictCyclicComponents": 16,
+        "allFirstIndexTop1Feasible": false,
+        "allPositiveMarginFeasible": false
+      }
+    },
+    "candidate74": {
+      "orderedMatrixEqualPairs": 0,
+      "incompatiblePointwisePairs": 16,
+      "pairedPointwiseUpperBoundCorrect": 16,
+      "orderedMatrixBound": {
+        "examples": 32,
+        "orderedInputGroups": 32,
+        "idealQualityMembershipUpperBoundCorrect": 32
+      },
+      "pointwise": {
+        "observations": 32,
+        "uniqueCandidateInputs": 512,
+        "constraints": 992,
+        "positiveNegativeAliasObservations": 0,
+        "cyclicComponents": 16,
+        "strictCyclicComponents": 16,
+        "allFirstIndexTop1Feasible": false,
+        "allPositiveMarginFeasible": false
+      }
+    },
+    "maskedSpatial": {
+      "orderedMatrixEqualPairs": 0,
+      "incompatiblePointwisePairs": 16,
+      "pairedPointwiseUpperBoundCorrect": 16,
+      "orderedMatrixBound": {
+        "examples": 32,
+        "orderedInputGroups": 32,
+        "idealQualityMembershipUpperBoundCorrect": 32
+      },
+      "pointwise": {
+        "observations": 32,
+        "uniqueCandidateInputs": 512,
+        "constraints": 992,
+        "positiveNegativeAliasObservations": 0,
+        "cyclicComponents": 16,
+        "strictCyclicComponents": 16,
+        "allFirstIndexTop1Feasible": false,
+        "allPositiveMarginFeasible": false
+      }
+    },
+    "fullSpatial": {
+      "orderedMatrixEqualPairs": 0,
+      "incompatiblePointwisePairs": 0,
+      "pairedPointwiseUpperBoundCorrect": 32,
+      "orderedMatrixBound": {
+        "examples": 32,
+        "orderedInputGroups": 32,
+        "idealQualityMembershipUpperBoundCorrect": 32
+      },
+      "pointwise": {
+        "observations": 32,
+        "uniqueCandidateInputs": 1024,
+        "constraints": 992,
+        "positiveNegativeAliasObservations": 0,
+        "cyclicComponents": 0,
+        "strictCyclicComponents": 0,
+        "allFirstIndexTop1Feasible": true,
+        "allPositiveMarginFeasible": true
+      }
+    }
+  },
+  "limits": {
+    "informationIdentityIsNotNativeFloat32LogitIdentity": true,
+    "feasibleDoesNotProveNetworkCapacityOrOptimization": true,
+    "notAccuracyMeasurement": true,
+    "noIndependentGeneralization": true
+  },
+  "additional": {
+    "domain": 0,
+    "reference": 0,
+    "materialization": 0,
+    "python": 0,
+    "model": 0,
+    "load": 0,
+    "forward": 0,
+    "training": 0
+  }
+}

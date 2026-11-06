@@ -1673,6 +1673,29 @@ node scripts/research/replay-lookahead-pairs.mjs --recorded <local-private-looka
 node --test scripts/research/test-lookahead-pairs.mjs
 ```
 
+### 5.49 Information Audit — Distinct Lists Can Still Impose Contradictory Rankings
+
+**저장 자료 분석 — 2026-11-06.** 5.48의 32개 보드와 정답을 그대로 읽었다. 새 보드 생성·domain 전이·모델 추론·학습은 모두 0이다.
+
+전체 후보 목록이 다르더라도, 후보 하나씩 독립적으로 점수를 매기는 scorer가 모든 정답을 만족할 수 있는지는 별개다. 보드 A가 같은 입력의 후보 X를 Y보다 높게 요구하고, 보드 B가 Y를 X보다 높게 요구하면 두 요구를 동시에 만족할 수 없다.
+
+| 후보별 scorer가 받는 정보                 | 서로 다른 전체 입력 목록 | 양쪽 정답을 함께 만족할 수 없는 쌍 |  Pointwise top1 이론 상한 |
+| ----------------------------------------- | -----------------------: | ---------------------------------: | ------------------------: |
+| Outcome22                                 |                        4 |                              16/16 |                    ≤16/32 |
+| Outcome22 + 절대 좌표, 24차원             |                       32 |                              16/16 |                    ≤16/32 |
+| 원래 candidate74                          |                       32 |                              16/16 |                    ≤16/32 |
+| 기존 spatial 입력에서 보드 점유 plane만 0 |                       32 |                              16/16 |                    ≤16/32 |
+| 원래 보드·metadata·candidate74·footprint  |                       32 |                               0/16 | 이 제약으로 배제되지 않음 |
+
+정답 후보는 앞선 후보보다 엄격히 높은 score, 뒤 후보보다 같거나 높은 score를 받아야 first-index argmax가 맞는다. 저장 입력을 FP32로 비교하고 이 부등식 그래프의 strongly connected components를 검사했다. 양수 margin을 요구하는 조건도 따로 확인했다. 새 11개를 포함한 201개 Node 검사와 두 저장 분석의 byte 일치가 통과했다. [비민감 집계](assets/research/lookahead-information-20261106-v1.json)에 분모와 순위 제약 결과를 남겼다.
+
+**보드 정보를 포함한 입력에는 이번 순위 모순이 없었다.** 이는 기존 CNN의 학습 성공이나 실제 정확도 100%를 뜻하지 않는다. Native FP32 logits는 계산하지 않았고, 독립 일반화나 실제 게임 성능도 평가하지 않았다. 후보 목록 전체를 함께 처리하는 모델은 pointwise 가정을 벗어나므로 24·74차원의 상한을 그대로 적용할 수 없다.
+
+```sh
+node scripts/research/lookahead-information.mjs --recorded <local-private-lookahead-archive> --output .research-output/my-information-audit
+node --test scripts/research/test-lookahead-information.mjs
+```
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
