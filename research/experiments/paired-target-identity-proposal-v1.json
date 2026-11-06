@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "id": "paired-target-identity-proposal-v1",
+  "status": "PROPOSED_NOT_RUN",
+  "approval": "DESIGN_ONLY",
+  "executionRequiresSeparateUserDecision": true,
+  "contract": {
+    "inheritedContrast": {
+      "dataset": {
+        "states": 32,
+        "candidatesEach": 32,
+        "totalCandidates": 1024,
+        "split": "FIT_ONLY_NO_GENERALIZATION",
+        "source": "Exact P110 build1 bytes and ordered unique quality roots; no generation or reference",
+        "labels": "Single complete quality root per example; no relabeling or target-dependent features"
+      },
+      "model": {
+        "architecture": "Unmodified SpatialCandidateCNN v3",
+        "parameters": 13292,
+        "chunk": 32,
+        "residualScale": 1,
+        "initialization": "Two sequential cold same-seed models; exact initial logical weights across arms; checkpoint loads zero",
+        "config": {
+          "seed": 20261008,
+          "epochs": 12,
+          "batchSize": 8,
+          "threads": 2,
+          "convChannels": 8,
+          "embedding": 32,
+          "poolRows": 4,
+          "poolCols": 5,
+          "learningRate": 0.001,
+          "weightDecay": 0.0001
+        },
+        "interopThreads": 1
+      },
+      "input": {
+        "planes": [3, 16, 10],
+        "metadata": 140,
+        "candidateFeatures": 74,
+        "footprint": [1, 16, 10],
+        "factor": "OCCUPIED_PLANE_ONLY",
+        "control": "Set occupied plane channel 0 to literal FP32 zero in both common and residual branches; preserve item planes",
+        "candidate": "Use original three planes",
+        "unchanged": "All ordered features, metadata, footprints, targets, architecture, seed, loss, optimizer, order, update count and selection",
+        "excluded": "No descriptor, family, arm, coordinate key, reference evaluation or paths enter forward"
+      },
+      "fit": {
+        "runs": 2,
+        "updatesEach": 1000,
+        "observationsPerUpdate": 32,
+        "optimizer": "Adam",
+        "loss": "Mean native FP32 flat cross_entropy over original 32 candidates; unique quality root target",
+        "order": "Original P110 descriptor order; one optimizer step after all 32 per-example backward calls",
+        "selection": "Final step 1000 only; original first-index argmax; no early stopping, extra seed, sweep or tuning"
+      },
+      "budget": {
+        "initialEach": 32,
+        "trainingEach": 32000,
+        "finalEach": 64,
+        "totalEach": 32096,
+        "totalTopLevelForwardMax": 64192,
+        "modelCreations": 2,
+        "checkpointLoads": 0,
+        "domainReferenceMaterializations": 0
+      },
+      "resources": {
+        "sequentialChildren": 2,
+        "childWallSeconds": 600,
+        "ownerWallSeconds": 1260,
+        "sampledRssBytes": 2147483648,
+        "retries": 0,
+        "runtime": "Existing local CPU PyTorch only; no install/GPU/service"
+      },
+      "validation": {
+        "beforeExecution": "Separate explicit user decision, new execution config/source hashes and clean commit; original proposal preserved",
+        "beforeCandidate": "Control technical/hash/budget/repeat checks PASS; its expected quality failure is not a technical STOP",
+        "sharedInitial": "Initial logical weight hashes exact across arms; initial logits are NOT expected equal with different planes",
+        "nativePointwise": "For each counterfactual pair, require exact FP32 identity of both opposing target inputs, bitwise-equal native scores for each anchor across the pair, and unchanged relative first-index tie priority. Require control top1 <=16/32. Global non-anchor input-class drift is reported without changing scores or applying tolerances.",
+        "counting": "Durable pre-call global/arm/phase ledger; top-level calls include initial/training/final repeats, no extra warmup or telemetry",
+        "stop": "Nonfinite/input/hash/schema/initial weights/ledger/repeat/resource mismatch STOP; no retry or tuning"
+      },
+      "acceptance": {
+        "candidate": {
+          "correct": 32,
+          "maximumMeanNll": 0.05,
+          "minimumEveryTargetMarginExclusive": 0
+        },
+        "pairedMinimumNetCorrect": 1,
+        "controlPointwiseUpperCorrect": 16,
+        "technical": "Budget and exact repeated final logits checked separately from fit gates",
+        "interpretation": "Full fit PASS with control ceiling validates occupancy availability for this fixed fit-only task, not residual mechanism, independent generalization, original CNN error resolution or app adoption"
+      },
+      "exclusions": [
+        "new data",
+        "reference",
+        "teacher",
+        "new architecture",
+        "new loss",
+        "checkpoint continuation",
+        "dev/test selection",
+        "held-out access",
+        "RL",
+        "app integration",
+        "installation",
+        "service",
+        "GPU",
+        "deployment",
+        "blanket publication"
+      ]
+    },
+    "revision": {
+      "onlyScientificContractChange": "Required native identity scope: opposing target anchors within each pair",
+      "requiredAt": ["initial", "final1", "final2"],
+      "globalDrift": "Measure every identical-input class, signed-zero/ULP gaps and target occurrence counts; diagnostic only outside required anchors",
+      "tolerance": 0,
+      "targetPairScoreEquality": "Bitwise exact; one ULP target difference still STOP",
+      "proof": "Both opposite target inputs occur in both original ordered lists; each anchor's score is equal across that pair; tie priority has same relative order. Both opposite targets cannot win first-index argmax. Sixteen disjoint pairs imply at most16 correct.",
+      "candidate": "Unchanged original planes, inputs and gates; initial logical weights exact to fresh control; initial logits not forced equal"
+    },
+    "execution": {
+      "status": "PROPOSED_NOT_RUN",
+      "runnerImplemented": false,
+      "newExecutionConfigRequired": true,
+      "freshAttempt": "New explicit approval required after P115 STOP; no reuse of unused V1 budget",
+      "originalAttempt": {
+        "modelCreations": 1,
+        "initialForwards": 32,
+        "optimizerUpdates": 0,
+        "retries": 0
+      },
+      "newProposed": {
+        "modelCreations": 2,
+        "trainingRuns": 2,
+        "updatesEach": 1000,
+        "topLevelForwardMax": 64192,
+        "checkpointLoads": 0
+      },
+      "maximumAcrossOldAndNewIfApproved": 64224,
+      "oldSourceConfigDataFailureImmutable": true
+    },
+    "claims": {
+      "notANumericalToleranceIncrease": true,
+      "noNewModelInputLossArchitectureOrData": true,
+      "fitOnly": true,
+      "noIndependentGeneralization": true,
+      "noResidualMechanismClaim": true,
+      "oldFailedContractNotWaived": true
+    }
+  },
+  "sourceHashes": {
+    "research/cnn/board_context_fit.py": "f07e2c09f2e0799444b49ea170895ebfd0a69591e43c5067625d567d685091b7",
+    "research/experiments/board-context-v1.json": "eee24ecfd34328204fa231a64349e95a9e36de6944c32dd02ed516e07aa3fa91",
+    "scripts/research/board-context-contract.mjs": "22ef82e86639bf60769f34fbc1bab5ca87d4934d074659b4bb6c81a67e43f660",
+    "scripts/research/board-context-stop.mjs": "13d237eb39edaf61faff4e56d91ffd3d0800d20b531ede1331906641aa773648",
+    "scripts/research/validate-board-context-proposal.mjs": "2ab17b65b703c18459a9d25565fec6ed081996b1645ac88a031f11e1c55fa153",
+    "scripts/research/validate-paired-target-proposal.mjs": "ff67465b2368334c055fd54c088f7e75317be34944e7969ee96cfd7fc8570be8"
+  },
+  "evidenceSha256": "160f5ec80499de5d81874aa2b0257c239170b3878fe0c4cfee29277edf143aaa"
+}

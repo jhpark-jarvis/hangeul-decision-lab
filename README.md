@@ -1745,6 +1745,25 @@ node scripts/research/board-context-stop.mjs --recorded <local-private-stopped-b
 node --test scripts/research/test-board-context-stop.mjs
 ```
 
+### 5.52 Proposed Revision — Exact Target Anchors, Zero Tolerance
+
+**정정 계약 설계 완료, 새 실행 전 — 2026-11-06.** 다음 시도는 수치 허용 오차를 늘리는 방식으로 제안하지 않았다. 각 반사실 쌍의 반대 정답 A/B에 필요한 점수 동일성만 bit 단위로 검사한다.
+
+- A와 B는 두 원래 후보 목록에 같은 FP32 입력으로 존재해야 한다.
+- A의 양쪽 score와 B의 양쪽 score는 각각 exact여야 한다. Target의1ULP 차이도 중단 조건이다.
+- A/B의 상대 first-index tie priority가 같아야 한다. 두 score가 고정되면 서로 반대인 두 정답을 함께 선택할 수 없으므로16쌍의 control 상한16/32가 유지된다.
+
+다른 입력 class의 ULP 차이는 측정해 보고하며 score를 반올림하거나 보정하지 않는다. 이 검사를 control의 initial·final1·final2에 적용하고, 같은 초기 weights·최종 반복·기존 fit gate와 모든 자원 제한을 유지하는 제안이다.
+
+[고정 proposal](research/experiments/paired-target-identity-proposal-v1.json)과243개 Node 검사·정적 검증을 완료했다. **새 실행은 아직 승인·구현하지 않았다.** 제안은 같은 기존 CNN·stored32·CPU 학습2회·각1,000 update·새 예산64,192 forward다. 원래 중단된32회와 별도이며, 승인 시 누적 상한은64,224회다. 기존 source/config·실패 기록을 보존하고 남은 예산으로 자동 재시작하지 않는다.
+
+이번 초기 출력의 anchor 조건이 통과했다고 해서 학습 후에도 같으리라 보장하지 않는다. 새 시도에서도 target anchor·tie priority·예산·반복 검사에 실패하면 중단하며, 기존 P115의 technical FAIL을 소급해 지우지 않는다.
+
+```sh
+node scripts/research/validate-paired-target-proposal.mjs
+node --test scripts/research/test-paired-target-proposal.mjs
+```
+
 ## 6. Reproduction and Usage
 
 환경: **Node.js 24.x**, **pnpm 11.16.0**. package/lock에 고정된 TypeScript·Next.js·React·Vitest·Playwright를 사용한다.
